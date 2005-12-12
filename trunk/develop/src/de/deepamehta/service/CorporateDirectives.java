@@ -27,7 +27,7 @@ import java.util.*;
  * with every constructor call).
  * <P>
  * <HR>
- * Last functional change: 5.2.2005 (2.0b5)<BR>
+ * Last functional change: 6.12.2005 (2.0b7)<BR>
  * Last documentation update: 17.11.2000 (2.0a7-pre3)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -186,7 +186,8 @@ public class CorporateDirectives extends Directives {
 		boolean evoke;
 		PresentableTopic viewMetadata;
 		//
-		// ### int[] count;
+		Vector syncList = new Vector();		// list of topic IDs to be synchronized
+		//
 		// loop through all directives
 		while (e.hasMoreElements()) {
 			try {
@@ -304,7 +305,9 @@ public class CorporateDirectives extends Directives {
 					break;
 				case DIRECTIVE_UPDATE_TOPIC_TYPE:
 				case DIRECTIVE_UPDATE_ASSOC_TYPE:
-					as.initTypeTopic((PresentableType) param1, true, session);
+					PresentableType type = (PresentableType) param1;
+					as.initTypeTopic(type, true, session);
+					addToSyncList(syncList, type.getID());
 					break;
 				case DIRECTIVE_SHOW_TOPIC_PROPERTIES:
 					topicID = (String) param1;
@@ -329,7 +332,17 @@ public class CorporateDirectives extends Directives {
 						session, topicMapID, viewMode);
 					break;
 				case DIRECTIVE_SET_TOPIC_NAME:
-					changeTopicName((String) param1, ((Integer) param3).intValue(), (String) param2, as);
+					topicID = (String) param1;
+					changeTopicName(topicID, ((Integer) param3).intValue(), (String) param2, as);
+					addToSyncList(syncList, topicID);
+					break;
+				case DIRECTIVE_SET_TOPIC_LABEL:
+					setTopicProperties((String) param1, ((Integer) param3).intValue(),
+						(Hashtable) param4, as, session, topicMapID, viewMode);
+					break;
+				case DIRECTIVE_SET_TOPIC_ICON:
+					topicID = (String) param1;
+					addToSyncList(syncList, topicID);
 					break;
 				case DIRECTIVE_SET_TOPIC_GEOMETRY:
 					Point p = (Point) param2;
@@ -358,10 +371,6 @@ public class CorporateDirectives extends Directives {
 				case DIRECTIVE_CLOSE_EDITOR:
 					as.removeViewInUse((String) param1, session);
 					break;
-				case DIRECTIVE_SET_TOPIC_LABEL:
-					setTopicProperties((String) param1, ((Integer) param3).intValue(),
-						(Hashtable) param4, as, session, topicMapID, viewMode);
-					break;
 				case DIRECTIVE_QUEUE_DIRECTIVES:
 					((CorporateDirectives) param1).updateCorporateMemory(as, session, topicMapID, viewMode);	// (called recursively)
 					// ### Note: the corporate memory is not updated for the queued directives
@@ -372,7 +381,6 @@ public class CorporateDirectives extends Directives {
 				case DIRECTIVE_FOCUS_TYPE:
 				case DIRECTIVE_FOCUS_NAME:
 				case DIRECTIVE_FOCUS_PROPERTY:
-				case DIRECTIVE_SET_TOPIC_ICON:
 				case DIRECTIVE_SET_TOPIC_LOCK:
 				case DIRECTIVE_SHOW_MENU:
 				case DIRECTIVE_SHOW_DETAIL:
@@ -410,7 +418,9 @@ public class CorporateDirectives extends Directives {
 				add(DIRECTIVE_SHOW_MESSAGE, "Server error while updating the corporate memory according to a directive " +
 					"of type " + dirType + " (" + e2.getMessage() + ")", new Integer(NOTIFICATION_WARNING));
 			}
-		} // end of directives loop
+		} // end while
+		//
+		synchronizeTopics(syncList, as);
 	}
 
 
@@ -892,5 +902,21 @@ public class CorporateDirectives extends Directives {
 			System.out.println("*** ApplicationService.deleteTopic(): " + e);
 		}
 		return directives;
+	}
+
+	// ---
+
+	private void addToSyncList(Vector syncList, String topicID) {
+		if (!syncList.contains(topicID)) {
+			syncList.addElement(topicID);
+		}
+	}
+
+	private void synchronizeTopics(Vector syncList, ApplicationService as) {
+		Enumeration e = syncList.elements();
+		while (e.hasMoreElements()) {
+			String topicID = (String) e.nextElement();
+			as.getHostObject().broadcastChangeNotification(topicID);
+		}
 	}
 }

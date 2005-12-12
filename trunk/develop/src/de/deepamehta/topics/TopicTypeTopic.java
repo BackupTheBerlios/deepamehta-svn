@@ -31,7 +31,7 @@ import java.util.Hashtable;
  * A Topic Type.
  * <P>
  * <HR>
- * Last functional change: 7.6.2005 (2.0b6)<BR>
+ * Last functional change: 6.12.2005 (2.0b7)<BR>
  * Last documentation update: 29.11.2000 (2.0a7)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -217,10 +217,6 @@ public class TopicTypeTopic extends TypeTopic {
 			CorporateDirectives directives = new CorporateDirectives();
 			PresentableType typeTopic = new PresentableType(this);
 			directives.add(DIRECTIVE_UPDATE_TOPIC_TYPE, typeTopic);
-			//
-			// notify listeners
-			as.getHostObject().broadcastChangeNotification(getID());
-			//
 			return directives;
 		} else if (actionCommand.equals(CMD_ASSIGN_CREATION_ICON)) {
 			CorporateDirectives directives = new CorporateDirectives();

@@ -50,7 +50,7 @@ import java.util.*;
  * <IMG SRC="../../../../../images/3-tier-lcm.gif">
  * <P>
  * <HR>
- * Last functional change: 29.3.2005 (2.0b6)<BR>
+ * Last functional change: 6.12.2005 (2.0b7)<BR>
  * Last documentation update: 30.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -1692,11 +1692,6 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 				}
 				if (name != null) {
 					directives.add(changeTopicName(topicID, version, name, topicmapID, VIEWMODE_USE));
-				}
-				//
-				// notify listeners ### too early here! name change is not yet performed, just the directicves are constructed
-				if (name != null || props.get(PROPERTY_ICON) != null) {		// ###
-					getHostObject().broadcastChangeNotification(topicID);
 				}
 			}
 		} catch (DeepaMehtaException e) {

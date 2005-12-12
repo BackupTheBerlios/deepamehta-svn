@@ -78,8 +78,7 @@ final class DeepaMehtaServer implements ApplicationServiceHost, DeepaMehtaConsta
 	}
 
 	/**
-	 * @see		de.deepamehta.service.ApplicationService#setTopicProperties		(PROPERTY_ICON)
-	 * @see		de.deepamehta.topics.TopicTypeTopic#executeCommand				(CMD_UPDATE_TYPEDEF)
+	 * @see		CorporateDirectives#synchronizeTopics
 	 */
 	public void broadcastChangeNotification(String topicID) {
 		System.out.println(">>> DeepaMehtaServer.broadcastChangeNotification(): topicID=\"" + topicID +
