@@ -299,6 +299,7 @@ public interface DeepaMehtaConstants {
 		{"Assign Association Type", "Assoziationstyp zuordnen"},
 		// --- "User" commands ---
 		{"Set Standard Workspace", "Standard Workspace setzen"},
+		{"Choose ...", "Auswählen ..."},
 	};
 
 	static final int ITEM_NEW_TOPIC    = 0;
@@ -347,6 +348,7 @@ public interface DeepaMehtaConstants {
 	static final int VIEWMODE_BUILD_LABEL = 42;
 	static final int MESSAGE_LABEL = 43;
 	static final int BUTTON_ASSIGN_FILE = 44;
+	static final int BUTTON_CHOOSE_COLOR = 50;
 	// --- "Workspace" commands ---
 	static final int ITEM_JOIN_WORKSPACE = 45;
 	static final int ITEM_LEAVE_WORKSPACE = 46;
@@ -428,6 +430,8 @@ public interface DeepaMehtaConstants {
 	static final String CMD_CLOSE_VIEW   = "closeView";
 	static final String CMD_PROCESS_FILELIST = "processDroppedFiles";
 	static final String CMD_PROCESS_STRING = "processDroppedString";
+	static final String CMD_CHOOSE_COLOR = "chooseColor";
+	static final String CMD_CHOOSE_BACKGROUND_COLOR = "chooseBackgroundColor";
 	// ### static final String CMD_SET_WORKSPACE = "setWorkspace";
 
 
@@ -722,7 +726,8 @@ public interface DeepaMehtaConstants {
 	public static final int DIRECTIVE_QUEUE_DIRECTIVES = 45;
 	public static final int DIRECTIVE_LAUNCH_APPLICATION = 46;
 	public static final int DIRECTIVE_OPEN_URL = 47;
-
+	public static final int DIRECTIVE_CHOOSE_COLOR = 49;
+	
 
 
 	// ---------------------
@@ -1124,6 +1129,7 @@ public interface DeepaMehtaConstants {
 	public static final String VISUAL_DATE_CHOOSER = "Date Chooser";
 	public static final String VISUAL_TIME_CHOOSER = "Time Chooser";
 	public static final String VISUAL_FILE_CHOOSER = "File Chooser";
+	public static final String VISUAL_COLOR_CHOOSER = "Color Chooser";
 	public static final String VISUAL_HIDDEN = "hidden";	// ### not a real mode
 
 

@@ -374,8 +374,34 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 		} else if (actionCommand.equals(CMD_CREATE_SUBTYPE)) {
 			createChildTopic(getType(), SEMANTIC_TYPE_DERIVATION, session, directives);
 			return directives;
+		} else if (actionCommand.equals(CMD_CHOOSE_COLOR)) {
+			String currentColor = getProperty(PROPERTY_COLOR);
+			directives.add(DIRECTIVE_CHOOSE_COLOR, currentColor);
+			return directives;
 		} else {
 			return super.executeCommand(actionCommand, session, topicmapID, viewmode);
+		}
+	}
+
+	/**
+	 * Subclasses can override this method to process result of chanined actions.<BR>
+	 * [### explain]
+	 * <P>
+	 * ### The default implementation returns null.
+	 *
+	 * @see		de.deepamehta.service.ApplicationService#performChainedTopicCommand
+	 */
+	public CorporateDirectives executeChainedCommand(String command, String result,
+												String topicmapID, String viewmode, Session session) {
+		CorporateDirectives directives = new CorporateDirectives();
+		//
+		if (command.equals(CMD_CHOOSE_COLOR)) {
+			if (!result.equals("")) {
+				setTopicData(PROPERTY_COLOR, result, session, topicmapID, viewmode);
+			}
+			return directives;
+		} else {
+			throw new DeepaMehtaException("no chained command handler implemented");
 		}
 	}
 

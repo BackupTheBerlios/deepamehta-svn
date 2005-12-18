@@ -1411,6 +1411,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			String visualization = propertyDef.getVisualization();
 			if (visualization.equals(VISUAL_FIELD) ||
 				visualization.equals(VISUAL_FILE_CHOOSER) ||
+				visualization.equals(VISUAL_COLOR_CHOOSER) ||
 				visualization.equals(VISUAL_PASSWORD_FIELD) ||
 				visualization.equals(VISUAL_AREA) || visualization.equals("")) {
 				return ((JTextComponent) model).getText();
@@ -1471,6 +1472,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			String visualization = propertyDef.getVisualization();
 			if (visualization.equals(VISUAL_FIELD) ||
 				visualization.equals(VISUAL_FILE_CHOOSER) ||
+				visualization.equals(VISUAL_COLOR_CHOOSER) ||
 				visualization.equals(VISUAL_PASSWORD_FIELD) ||
 				visualization.equals(VISUAL_AREA) || visualization.equals("")) {
 				JTextComponent comp = (JTextComponent) model;
@@ -1555,6 +1557,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			String visualization = propertyDef.getVisualization();
 			if (visualization.equals(VISUAL_FIELD) ||
 				visualization.equals(VISUAL_FILE_CHOOSER) ||
+				visualization.equals(VISUAL_COLOR_CHOOSER) ||
 				visualization.equals(VISUAL_PASSWORD_FIELD) ||
 				visualization.equals(VISUAL_AREA) || visualization.equals("")) {
 				((JTextComponent) model).setEnabled(enabled);
@@ -1587,6 +1590,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			String visualization = propertyDef.getVisualization();
 			if (visualization.equals(VISUAL_FIELD) ||
 				visualization.equals(VISUAL_FILE_CHOOSER) ||
+				visualization.equals(VISUAL_COLOR_CHOOSER) ||
 				visualization.equals(VISUAL_PASSWORD_FIELD) ||
 				visualization.equals(VISUAL_AREA) || visualization.equals("")) {
 				((JTextComponent) model).requestFocus();

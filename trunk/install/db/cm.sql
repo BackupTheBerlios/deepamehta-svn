@@ -1065,7 +1065,7 @@ INSERT INTO TopicProp VALUES ('pp-icon', 1, 'Edit Icon', 'editicon.gif');
 
 --- "Color" ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-color', 'Color');
-INSERT INTO TopicProp VALUES ('pp-color', 1, 'Visualization', 'Input Field');
+INSERT INTO TopicProp VALUES ('pp-color', 1, 'Visualization', 'Color Chooser');
 INSERT INTO TopicProp VALUES ('pp-color', 1, 'Edit Icon', 'editcolor.gif');
 
 --- "Creation Icon" ---
@@ -1112,7 +1112,7 @@ INSERT INTO TopicProp VALUES ('pp-createpermission', 1, 'Default Value', 'view')
 
 --- "Background Color" ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-bgcolor', 'Background Color');
-INSERT INTO TopicProp VALUES ('pp-bgcolor', 1, 'Visualization', 'Input Field');
+INSERT INTO TopicProp VALUES ('pp-bgcolor', 1, 'Visualization', 'Color Chooser');
 
 --- "Background Image" ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-backgroundimage', 'Background Image');
@@ -1433,6 +1433,10 @@ INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-file', 'File Chooser');
 INSERT INTO TopicProp VALUES ('t-file', 1, 'Name', 'File Chooser');
 INSERT INTO TopicProp VALUES ('t-file', 1, 'Icon', 'document.gif');
 
+INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-color', 'Color Chooser');
+INSERT INTO TopicProp VALUES ('t-color', 1, 'Name', 'Color Chooser');
+INSERT INTO TopicProp VALUES ('t-color', 1, 'Icon', 'inputfield.gif');
+
 INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-hiddenproperty', 'hidden');
 INSERT INTO TopicProp VALUES ('t-hiddenproperty', 1, 'Name', 'hidden');
 INSERT INTO TopicProp VALUES ('t-hiddenproperty', 1, 'Icon', 'hidden.gif');
@@ -1489,6 +1493,7 @@ INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-127', '', 'pp-visuali
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-292', '', 'pp-visualization', 1, 't-datechooser', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-293', '', 'pp-visualization', 1, 't-timechooser', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-291', '', 'pp-visualization', 1, 't-file', 1);
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-297', '', 'pp-visualization', 1, 't-color', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-57', '', 'pp-visualization', 1, 't-hiddenproperty', 1);
 INSERT INTO AssociationProp VALUES ('a-51',  1, 'Ordinal Number', '01');
 INSERT INTO AssociationProp VALUES ('a-52',  1, 'Ordinal Number', '02');
@@ -1501,6 +1506,7 @@ INSERT INTO AssociationProp VALUES ('a-292', 1, 'Ordinal Number', '08');
 INSERT INTO AssociationProp VALUES ('a-293', 1, 'Ordinal Number', '09');
 INSERT INTO AssociationProp VALUES ('a-291', 1, 'Ordinal Number', '10');
 INSERT INTO AssociationProp VALUES ('a-57',  1, 'Ordinal Number', '11');
+INSERT INTO AssociationProp VALUES ('a-297', 1, 'Ordinal Number', '12');
 -- assign property values to "Access Permission"
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-243', '', 'pp-createpermission', 1, 't-view', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-244', '', 'pp-createpermission', 1, 't-create', 1);

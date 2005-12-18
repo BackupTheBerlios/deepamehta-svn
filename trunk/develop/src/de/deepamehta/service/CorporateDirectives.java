@@ -79,7 +79,8 @@ public class CorporateDirectives extends Directives {
 
 	public void add(int type) {
 		directives.addElement(new Directive(type));
-		if (type == DIRECTIVE_CHOOSE_FILE) {
+		if ((type == DIRECTIVE_CHOOSE_FILE) || 
+			(type == DIRECTIVE_CHOOSE_COLOR)) {
 			setChained(type);
 		}
 	}
@@ -392,6 +393,7 @@ public class CorporateDirectives extends Directives {
 				case DIRECTIVE_SHOW_MESSAGE:
 				case DIRECTIVE_PLAY_SOUND:
 				case DIRECTIVE_CHOOSE_FILE:
+				case DIRECTIVE_CHOOSE_COLOR:
 				case DIRECTIVE_COPY_FILE:
 				case DIRECTIVE_DOWNLOAD_FILE:
 				case DIRECTIVE_UPLOAD_FILE:
@@ -592,6 +594,9 @@ public class CorporateDirectives extends Directives {
 					break;
 				case DIRECTIVE_CHOOSE_FILE:
 					// no parameters
+					break;
+				case DIRECTIVE_CHOOSE_COLOR:
+					out.writeUTF((String) param1);					// current color
 					break;
 				case DIRECTIVE_COPY_FILE:
 					out.writeUTF((String) param1);					// path

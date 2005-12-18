@@ -449,6 +449,10 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		String propName = propDef.getPropertyName();
 		if (propName.equals(PROPERTY_ICON)) {
 			propDef.setActionButton(as.string(BUTTON_ASSIGN_FILE), CMD_ASSIGN_ICON);
+		} else if (propName.equals(PROPERTY_COLOR)) {
+			propDef.setActionButton(as.string(BUTTON_CHOOSE_COLOR), CMD_CHOOSE_COLOR);
+		} else if (propName.equals(PROPERTY_BACKGROUND_COLOR)) {
+			propDef.setActionButton(as.string(BUTTON_CHOOSE_COLOR), CMD_CHOOSE_BACKGROUND_COLOR);
 		}
 	}
 

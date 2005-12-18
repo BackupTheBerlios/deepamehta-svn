@@ -201,6 +201,8 @@ public class TopicTypeTopic extends TypeTopic {
 		String propName = propDef.getPropertyName();
 		if (propName.equals(PROPERTY_CREATION_ICON)) {
 			propDef.setActionButton(as.string(BUTTON_ASSIGN_FILE), CMD_ASSIGN_CREATION_ICON);
+		} else {
+			TypeTopic.buttonCommand(propDef, as, session);
 		}
 	}
 

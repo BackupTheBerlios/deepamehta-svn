@@ -74,6 +74,7 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 		Object result[] = new Object[2];
 		if (visualization.equals(VISUAL_FIELD) ||
 			visualization.equals(VISUAL_FILE_CHOOSER) ||
+			visualization.equals(VISUAL_COLOR_CHOOSER) ||
 			visualization.equals("")) {
 			JComponent field = createTextField(actionListener);
 			// --- add action button ---

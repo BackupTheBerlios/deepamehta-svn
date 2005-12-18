@@ -183,6 +183,10 @@ public class PresentationDirectives extends Directives {
 				case DIRECTIVE_COPY_FILE:
 					directives.addElement(new Directive(type, param1, param2));
 					break;
+				case DIRECTIVE_CHOOSE_COLOR:
+					directives.addElement(new Directive(type, param1));
+					setChained(type);
+					break;
 				case DIRECTIVE_DOWNLOAD_FILE:
 				case DIRECTIVE_UPLOAD_FILE:
 				case DIRECTIVE_SET_LAST_MODIFIED:
@@ -422,6 +426,11 @@ public class PresentationDirectives extends Directives {
 				case DIRECTIVE_CHOOSE_FILE:
 					directives.addElement(new Directive(type));
 					setChained(type);				// set chanined
+					break;
+				case DIRECTIVE_CHOOSE_COLOR:
+					param1 = in.readUTF();
+					directives.addElement(new Directive(type, param1));
+					setChained(type);
 					break;
 				case DIRECTIVE_COPY_FILE:
 					param1 = in.readUTF();

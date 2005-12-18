@@ -308,6 +308,8 @@ public class TopicMapTopic extends LiveTopic {
 		String propName = propDef.getPropertyName();
 		if (propName.equals(PROPERTY_BACKGROUND_IMAGE)) {
 			propDef.setActionButton(as.string(BUTTON_ASSIGN_FILE), CMD_ASSIGN_BACKGROUND);
+		} else {
+			LiveTopic.buttonCommand(propDef, as, session);
 		}
 	}
 
@@ -383,6 +385,9 @@ public class TopicMapTopic extends LiveTopic {
 			String userID = session.getUserID();
 			String formatID = st.nextToken();
 			setExportFormat(userID, formatID, directives);
+		} else if (cmd.equals(CMD_CHOOSE_BACKGROUND_COLOR)) {
+			String currentColor = getProperty(PROPERTY_BACKGROUND_COLOR);
+			directives.add(DIRECTIVE_CHOOSE_COLOR, currentColor);
 		} else if (cmd.equals(CMD_ASSIGN_BACKGROUND)) {
 			directives.add(DIRECTIVE_CHOOSE_FILE);
 		} else if (cmd.equals(CMD_PROCESS_FILELIST)) {
@@ -416,6 +421,12 @@ public class TopicMapTopic extends LiveTopic {
 			// Note: the result of a DIRECTIVE_CHOOSE_FILE contains the absolute
 			// path of the (client side) selected icon file
 			copyAndUpload(result, FILE_BACKGROUND, PROPERTY_BACKGROUND_IMAGE, session, directives);
+			return directives;
+		} else if (command.equals(CMD_CHOOSE_BACKGROUND_COLOR)) {
+			CorporateDirectives directives = new CorporateDirectives();
+			if (!result.equals("")) {
+				setTopicData(PROPERTY_BACKGROUND_COLOR, result, session, topicmapID, viewmode);
+			}
 			return directives;
 		} else {
 			return super.executeChainedCommand(command, result, topicmapID, viewmode, session);

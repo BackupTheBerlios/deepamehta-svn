@@ -1129,6 +1129,8 @@ public final class PresentationService implements DeepaMehtaConstants,
 	 * @return	processing result, used for chained directives:<BR>
 	 *			DIRECTIVE_CHOOSE_FILE: result is the path of the choosen file, resp. "" if file
 	 *				choosing has been aborted by the user
+	 *			DIRECTIVE_CHOOSE_COLOR: result is the chosen color representation, resp. "" if color
+	 *				choosing has been aborted by the user
 	 *
 	 * @see		DeepaMehtaClient#createGUI
 	 * @see		MessagingConnection#processMessage
@@ -1445,6 +1447,11 @@ public final class PresentationService implements DeepaMehtaConstants,
 				case DIRECTIVE_CHOOSE_FILE:
 					String path = chooseFile();
 					result = path != null ? path : "";
+					break;
+				case DIRECTIVE_CHOOSE_COLOR:
+					String currentColor = (String) param1;
+					String newColor = chooseColor(currentColor);
+					result = newColor != null ? newColor : "";
 					break;
 				case DIRECTIVE_COPY_FILE:
 					path = (String) param1;
@@ -2446,6 +2453,59 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 	// ---
 
+	/**
+	 * Processes <CODE>DIRECTIVE_CHOOSE_COLOR</CODE> and <CODE>DIRECTIVE_CHOOSE_BACKGROUND_COLOR</CODE>
+	 * <P>
+	 * Presents the color chooser dialog to let the user choose a color.
+	 * If a color has been selected the hexadecimal representation is returned. If the
+	 * user aborts the selection or if an error occurs <CODE>null</CODE> is returned.
+	 *
+	 * @see         #processDirectives
+	 */
+	private String chooseColor(String currentColor) {
+		String colText = null;
+		Color current, col;
+		try {
+			current = Color.decode(currentColor);
+		} catch (Exception e) {
+			current = Color.white;
+		}
+		JColorChooser chooser = new JColorChooser();
+		col = chooser.showDialog(mainWindow, "Choose color", current);
+		if (col != null)
+		{
+			int r = col.getRed();
+			int g = col.getGreen();
+			int b = col.getBlue();
+			String cv;
+			colText = "#";
+			
+			cv = Integer.toHexString(r);
+			if (cv.length() == 1) {
+				colText = colText + "0" + cv;
+			} else {
+				colText = colText + cv;
+			}
+			
+			cv = Integer.toHexString(g);
+			if (cv.length() == 1) {
+				colText = colText + "0" + cv;
+			} else {
+				colText = colText + cv;
+			}
+			
+			cv = Integer.toHexString(b);
+			if (cv.length() == 1) {
+				colText = colText + "0" + cv;
+			} else {
+				colText = colText + cv;
+			}
+		} 
+		return colText;
+	}
+
+	// ---
+	
 	/**
 	 * Processes <CODE>DIRECTIVE_COPY_FILE</CODE>.
 	 * <P>

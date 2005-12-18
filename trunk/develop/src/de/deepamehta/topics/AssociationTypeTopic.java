@@ -4,6 +4,7 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableType;
+import de.deepamehta.PropertyDefinition;
 import de.deepamehta.service.Session;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
@@ -123,7 +124,10 @@ public class AssociationTypeTopic extends TypeTopic {
 		return commands;
 	}
 
-
+	public static void buttonCommand(PropertyDefinition propDef, ApplicationService as, Session session) {
+		TypeTopic.buttonCommand(propDef, as, session);
+		
+	}
 
 	// --------------------------
 	// --- Executing Commands ---
