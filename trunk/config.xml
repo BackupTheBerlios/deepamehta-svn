@@ -1,0 +1,66 @@
+<!-- DeepaMehta Directories -->
+<property name="build"    location="develop/build"/>
+<property name="sources"  location="develop/src"/>
+<property name="install"  location="install"/>
+<property name="client"   location="install/client"/>
+<property name="server"   location="install/server"/>
+<property name="db"       location="install/db"/>
+<property name="examples" location="install/examples"/>
+
+<!-- Servlet Engine -->
+<property name="web.deploy.dir"  value="/usr/local/tomcat/webapps"/>					<!-- configure this -->
+<property name="web.lib.dir"     value="/usr/local/tomcat/shared/lib"/>					<!-- configure this -->
+<property name="web.classes.dir" value="/usr/local/tomcat/shared/classes"/>				<!-- configure this -->
+<property name="web.servlet.lib" value="/usr/local/tomcat/common/lib/servlet-api.jar"/>	<!-- configure this -->
+
+<!-- Build Support -->
+<property name="build.archive.dir" value="/Users/jri/Archive/DeepaMehta"/>	<!-- configure this -->
+<property name="build.name" value="deepamehta-2.0b6.zip"/>					<!-- configure this -->
+
+<!-- 3rd Party Libraries -->
+<property name="libpath" location="/Users/jri/Library/Java"/>				<!-- configure this -->
+<path id="javalibs">
+	<pathelement location="${libpath}/mysql-3.1.7.jar"/>
+	<pathelement location="${libpath}/servlet.jar"/>
+	<pathelement location="${libpath}/mail.jar"/>
+	<pathelement location="${libpath}/activation.jar"/>
+	<pathelement location="${libpath}/jndi.jar"/>
+	<pathelement location="${libpath}/batik.jar"/>
+	<pathelement location="${libpath}/fop.jar"/>
+	<pathelement location="${libpath}/xml4j.jar"/>
+	<pathelement location="${libpath}/jimi-1.0.jar"/>
+	<pathelement location="${libpath}/avalon-framework.jar"/>
+	<pathelement location="${libpath}/commons-fileupload-1.0.jar"/>
+	<pathelement location="${libpath}/googleapi.jar"/>
+</path>
+
+<!-- DeepaMehta Service -->
+<property name="dm.instance" value="default"/>						<!-- configure this -->
+<property name="dm.host" value="localhost"/>						<!-- configure this -->
+<property name="dm.port" value="7557"/>								<!-- configure this -->
+
+<!-- DeepaMehta Applications -->									<!-- configure this -->
+<path id="dmapps">
+	<pathelement location="${examples}/movies/MoviesTopics.jar"/>
+	<pathelement location="${examples}/artfacts/ArtfactsTopics.jar"/>
+	<pathelement location="${examples}/messageboard/messageboard.jar"/>
+	<pathelement location="${examples}/kompetenzstern/kompetenzstern.jar"/>
+	<pathelement location="../Kiez-Atlas/kiezatlas.jar"/>
+	<pathelement location="../TeenKom/teenkom.jar"/>
+	<pathelement location="../OLAP/olap.jar"/>
+	<pathelement location="../Importer/importer.jar"/>
+	<pathelement location="../DeepaMehta Coordination/coordination-platform.jar"/>
+</path>
+
+<!-- Database -->
+<property name="db.name" value="DeepaMehta"/>						<!-- configure this -->
+<property name="db.userid" value="dm"/>								<!-- configure this -->
+<property name="db.password" value="dm"/>							<!-- configure this -->
+<property name="db.driver" value="org.gjt.mm.mysql.Driver"/>		<!-- configure this -->
+<property name="db.host" value="127.0.0.1"/>						<!-- configure this -->
+
+<property name="db.tables" value="${db}/db_tables_mysql.sql"/>
+<property name="db.sysname" value="mysql"/>
+<property name="db.sysuser" value="root"/>
+<property name="db.url"    value="jdbc:mysql://${db.host}/${db.name}?useUnicode=true&amp;characterEncoding=latin1"/>
+<property name="db.sysurl" value="jdbc:mysql://${db.host}/${db.sysname}"/>
