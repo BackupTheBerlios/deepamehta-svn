@@ -39,17 +39,18 @@
 <property name="dm.host" value="localhost"/>						<!-- configure this -->
 <property name="dm.port" value="7557"/>								<!-- configure this -->
 
-<!-- DeepaMehta Applications -->									<!-- configure this -->
+<!-- DeepaMehta Applications -->
+<property name="appspath" location="/Users/jri/Projects"/>			<!-- configure this -->
 <path id="dmapps">
-	<pathelement location="${examples}/movies/MoviesTopics.jar"/>
-	<pathelement location="${examples}/artfacts/ArtfactsTopics.jar"/>
-	<pathelement location="${examples}/messageboard/messageboard.jar"/>
-	<pathelement location="${examples}/kompetenzstern/kompetenzstern.jar"/>
-	<pathelement location="../Kiez-Atlas/kiezatlas.jar"/>
-	<pathelement location="../TeenKom/teenkom.jar"/>
-	<pathelement location="../OLAP/olap.jar"/>
-	<pathelement location="../Importer/importer.jar"/>
-	<pathelement location="../DeepaMehta Coordination/coordination-platform.jar"/>
+	<pathelement location="${examples}/movies/MoviesTopics.jar"/>								<!-- configure this -->
+	<pathelement location="${examples}/artfacts/ArtfactsTopics.jar"/>							<!-- configure this -->
+	<pathelement location="${examples}/messageboard/messageboard.jar"/>							<!-- configure this -->
+	<pathelement location="${examples}/kompetenzstern/kompetenzstern.jar"/>						<!-- configure this -->
+	<pathelement location="${appspath}/Kiez-Atlas/kiezatlas.jar"/>								<!-- configure this -->
+	<pathelement location="${appspath}/TeenKom/teenkom.jar"/>									<!-- configure this -->
+	<pathelement location="${appspath}/OLAP/olap.jar"/>											<!-- configure this -->
+	<pathelement location="${appspath}/Importer/importer.jar"/>									<!-- configure this -->
+	<pathelement location="${appspath}/DeepaMehta Coordination/coordination-platform.jar"/>		<!-- configure this -->
 </path>
 
 <!-- Database -->
