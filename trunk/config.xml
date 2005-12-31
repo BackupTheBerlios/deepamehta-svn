@@ -1,3 +1,4 @@
+<project>
 <!-- DeepaMehta Directories -->
 <property name="build"        location="develop/build"/>
 <property name="sources"      location="develop/src"/>
@@ -66,3 +67,4 @@
 <property name="db.sysuser" value="root"/>
 <property name="db.url"    value="jdbc:mysql://${db.host}/${db.name}?useUnicode=true&amp;characterEncoding=latin1"/>
 <property name="db.sysurl" value="jdbc:mysql://${db.host}/${db.sysname}"/>
+</project>

@@ -1,13 +1,10 @@
-<!DOCTYPE project [
-   <!ENTITY config SYSTEM "config.xml">
-]> 
 <project name="DeepaMehta" default="deploy" basedir=".">
 
 	<description>
 		DeepaMehta build file
 	</description>
 
-	&config;
+	<import file="config.xml"/>
 
 	<!-- Install -->
 
