@@ -1,11 +1,13 @@
 <!-- DeepaMehta Directories -->
-<property name="build"    location="develop/build"/>
-<property name="sources"  location="develop/src"/>
-<property name="install"  location="install"/>
-<property name="client"   location="install/client"/>
-<property name="server"   location="install/server"/>
-<property name="db"       location="install/db"/>
-<property name="examples" location="install/examples"/>
+<property name="build"        location="develop/build"/>
+<property name="sources"      location="develop/src"/>
+<property name="install"      location="install"/>
+<property name="client"       location="install/client"/>
+<property name="server"       location="install/server"/>
+<property name="db"           location="install/db"/>
+<property name="examples"     location="install/examples"/>
+<property name="libpath"      location="libs"/>
+<property name="endorsedpath" location="libs/endorsed"/>
 
 <!-- Servlet Engine -->
 <property name="web.deploy.dir"  value="/usr/local/tomcat/webapps"/>					<!-- configure this -->
@@ -18,7 +20,6 @@
 <property name="build.name" value="deepamehta-2.0b6.zip"/>					<!-- configure this -->
 
 <!-- 3rd Party Libraries -->
-<property name="libpath" location="/Users/jri/Library/Java"/>				<!-- configure this -->
 <path id="javalibs">
 	<pathelement location="${libpath}/mysql-3.1.7.jar"/>
 	<pathelement location="${libpath}/servlet.jar"/>

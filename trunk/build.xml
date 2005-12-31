@@ -165,6 +165,7 @@
 				<path refid="dmapps"/> 
 				<path refid="javalibs"/> 
 			</classpath>
+			<sysproperty key="java.endorsed.dirs" path="${endorsedpath}"/>
 			<arg value="${dm.instance}"/>
         </java>
 	</target>
@@ -177,6 +178,7 @@
 				<path refid="dmapps"/> 
 				<path refid="javalibs"/> 
 			</classpath>
+			<sysproperty key="java.endorsed.dirs" path="${endorsedpath}"/>
 			<arg value="${dm.instance}"/>
         </java>
 	</target>
@@ -186,6 +188,7 @@
 			<classpath>
 				<pathelement location="${client}/DeepaMehtaClient.jar"/>
 			</classpath>
+			<sysproperty key="java.endorsed.dirs" path="${endorsedpath}"/>
 			<arg value="${dm.host}:${dm.port}"/>
         </java>
 	</target>

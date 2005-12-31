@@ -1,0 +1,31 @@
+This directory contains the libraries required to run DeepaMehta. You can
+either download all of the required files manually or use the pre-packed file
+dm-libs.zip available from the DeepaMehta website.
+
+The following files are required in the "libs" folder:
+
+ - activation.jar                 version ?
+ - avalon-framework.jar           version 4.1.2
+ - batik.jar                      version ?
+ - commons-fileupload-1.0.jar     version 1.0
+ - fop.jar                        version 0.20.5
+ - googleapi.jar                  version ?
+ - jaas.jar                       version ?
+ - jimi-1.0.jar                   version 1.0
+ - jndi.jar                       version ?
+ - ldapbp.jar                     version ?
+ - ldap.jar                       version ?
+ - mail.jar                       version 1.2
+ - mysql-3.1.7.jar                version 3.1.7
+ - providerutil.jar               version ?
+ - servlet.jar                    version ?
+ - xml4j.jar                      version 2.0.13
+
+The following files are required in the "libs/endorsed" folder:
+
+ - xalan-2.1.0.jar                version 2.1.0
+ - xerces_2_3_0.jar               version 2.3.0
+ - xml-apis.jar                   version ?
+
+Please pay attention to the library versions as DeepaMeta might behave
+erroneously with the wrong library versions.
