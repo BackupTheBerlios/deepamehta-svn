@@ -35,6 +35,13 @@
 	<pathelement location="${libpath}/commons-fileupload-1.0.jar"/>
 	<pathelement location="${libpath}/googleapi.jar"/>
 </path>
+<pathconvert property="jarclasspath" pathsep=" " refid="javalibs">
+	<!-- The classpath inside the .JAR archive is always interpreted relative to the location
+	     of the archive itself. Thus, if the archive resides in install/client/somename.jar and
+	     the libs reside in libs/, the JRE has to look in ../../libs/. The following option
+	     takes care of this. -->
+	<map from="${libpath}" to="../../libs"/>
+</pathconvert>
 
 <!-- DeepaMehta Service -->
 <property name="dm.instance" value="default"/>						<!-- configure this -->

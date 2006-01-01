@@ -225,6 +225,7 @@
 			<exclude name="de/deepamehta/service/DeepaMehtaServer$Connection.class"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehta"/>
+				<attribute name="Class-Path" value="${jarclasspath}"/>
 			</manifest>
 		</jar>
 		<!-- client -->
@@ -233,6 +234,7 @@
 			<include name="de/deepamehta/client/*.class"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.client.DeepaMehtaClient"/>
+				<attribute name="Class-Path" value="${jarclasspath}"/>
 			</manifest>
 		</jar>
 		<!-- server -->
@@ -241,6 +243,7 @@
 			<include name="de/deepamehta/service/**/*.class"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehtaServer"/>
+				<attribute name="Class-Path" value="${jarclasspath}"/>
 			</manifest>
 		</jar>
 		<!-- topics -->
