@@ -185,7 +185,6 @@
 			<classpath>
 				<pathelement location="${client}/DeepaMehtaClient.jar"/>
 			</classpath>
-			<sysproperty key="java.endorsed.dirs" path="${endorsedpath}"/>
 			<arg value="${dm.host}:${dm.port}"/>
         </java>
 	</target>
