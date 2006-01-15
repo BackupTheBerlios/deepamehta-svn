@@ -27,7 +27,7 @@ import java.util.*;
  * with every constructor call).
  * <P>
  * <HR>
- * Last functional change: 6.12.2005 (2.0b7)<BR>
+ * Last functional change: 15.1.2006 (2.0b7)<BR>
  * Last documentation update: 17.11.2000 (2.0a7-pre3)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -233,11 +233,11 @@ public class CorporateDirectives extends Directives {
 					if (topicmapID.equals("")) {
 						topicmapID = topicMapID;
 					}
-					showAssociation(as, (PresentableAssociation) param1, evoke, topicmapID, 1);
+					showAssociation(as, session, (PresentableAssociation) param1, evoke, topicmapID, 1);
 					break;
 				case DIRECTIVE_SHOW_ASSOCIATIONS:
 					evoke = ((Boolean) param2).booleanValue();
-					showAssociations(as, (Vector) param1, evoke, topicMapID, 1);
+					showAssociations(as, session, (Vector) param1, evoke, topicMapID, 1);
 					break;
 				case DIRECTIVE_HIDE_TOPIC:
 					String topicID = (String) param1;
@@ -667,12 +667,12 @@ public class CorporateDirectives extends Directives {
 	 *
 	 * @see		#updateCorporateMemory
 	 */
-	private void showAssociations(ApplicationService as, Vector assocs, boolean evoke,
+	private void showAssociations(ApplicationService as, Session session, Vector assocs, boolean evoke,
 												String topicmapID, int topicmapVersion) {
 		Enumeration e = assocs.elements();
 		while (e.hasMoreElements()) {
 			PresentableAssociation assoc = (PresentableAssociation) e.nextElement();
-			showAssociation(as, assoc, evoke, topicmapID, topicmapVersion);
+			showAssociation(as, session, assoc, evoke, topicmapID, topicmapVersion);
 		}
 	}
 
@@ -723,9 +723,8 @@ public class CorporateDirectives extends Directives {
 	 * @see		#updateCorporateMemory		package
 	 * @see		#showAssociations		private
 	 */
-	private void showAssociation(ApplicationService as,
-				PresentableAssociation assoc, boolean evoke, String topicmapID,
-				int topicmapVersion) {
+	private void showAssociation(ApplicationService as, Session session, PresentableAssociation assoc,
+									boolean evoke, String topicmapID, int topicmapVersion) {
 		//
 		String assocID = assoc.getID();
 		int assocVersion = assoc.getVersion();
@@ -733,11 +732,13 @@ public class CorporateDirectives extends Directives {
 		// Note: an existence check is performed to prevent an association from being added more than once to a view
 		as.createViewAssociation(topicmapID, topicmapVersion, VIEWMODE_USE, assocID, assocVersion, true);	// performExistenceCheck=true
 		// --- update corporate memory ---
-		/* ### Hashtable props = assoc.getProperties();
-		if (props != null) {
-			as.setAssociationData(assocID, assocVersion, props);
-		} */
-		// --- create association in live corporate memory ---
+		if (evoke) {
+			// set owner
+			if (!session.isDemo()) {		// Note: a demo user has no user ID (null)
+				as.cm.setAssociationData(assocID, assocVersion, PROPERTY_OWNER_ID, session.getUserID());
+			}
+		}
+		//
 		as.createLiveAssociation(assoc, false, evoke, this);
 	}
 
