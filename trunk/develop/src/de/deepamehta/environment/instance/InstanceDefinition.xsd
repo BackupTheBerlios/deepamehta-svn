@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.deepamehta.de/schema/InstanceDefinition.xsd"
+	xmlns="http://www.deepamehta.de/schema/InstanceDefinition.xsd"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	
+	<xsd:complexType name="cmType">
+		<xsd:sequence>
+			<xsd:element name="property" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:attribute name="name" type="xsd:string" use="required"/>
+					<xsd:attribute name="value" type="xsd:string" use="required"/>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="class" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="instanceType">
+		<xsd:choice>
+			<xsd:element name="monolithic">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="cm" type="cmType" minOccurs="1"
+							maxOccurs="1"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="server">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="cm" type="cmType" minOccurs="1"
+							maxOccurs="1"/>
+					</xsd:sequence>
+					<xsd:attribute name="interface" type="xsd:string" default="*"/>
+					<xsd:attribute name="port" type="xsd:integer" default="7557"/>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="client">
+				<xsd:complexType>
+					<xsd:attribute name="host" type="xsd:string" use="required"/>
+					<xsd:attribute name="port" type="xsd:integer" default="7557"/>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:choice>
+		<xsd:attribute name="id" type="xsd:ID" use="required"/>
+		<xsd:attribute name="description" type="xsd:string"/>
+	</xsd:complexType>
+	
+	<xsd:element name="instances">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="instance" type="instanceType"
+					minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+				
+</xsd:schema>

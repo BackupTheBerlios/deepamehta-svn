@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.deepamehta.de/schema/PluginDefinition.xsd"
+	xmlns="http://www.deepamehta.de/schema/PluginDefinition.xsd"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:complexType name="classType">
+		<xsd:attribute name="class" type="xsd:string" use="required"/>
+		<xsd:attribute name="loadFrom" type="xsd:string" use="required"/>
+	</xsd:complexType>
+
+	<xsd:element name="plugins">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="plugin" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="preload" type="classType" minOccurs="0" maxOccurs="unbounded" />
+							<xsd:element name="main" type="classType" minOccurs="1" maxOccurs="1" />
+							<xsd:element name="postload" type="classType" minOccurs="0" maxOccurs="unbounded" />
+						</xsd:sequence>
+						<xsd:attribute name="name" type="xsd:string" use="required"/>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
