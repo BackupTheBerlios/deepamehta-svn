@@ -7,14 +7,63 @@ The following files are required in the "libs" folder:
  - activation.jar                 version ?
  - avalon-framework.jar           version 4.1.2
  - batik.jar                      version ?
- - commons-fileupload-1.0.jar     version 1.0
+ 
+ - Jakarta Commons BeanUtils
+   homepage:        http://jakarta.apache.org/commons/beanutils/
+   version:         1.7.0
+   files:           commons-beanutils-core-1.7.0.jar, commons-beanutils-1.7.0.jar
+   download source: http://jakarta.apache.org/site/downloads/downloads_commons-beanutils.cgi
+   
+ - Jakarta Commons Command Line Interface
+   homepage:        http://jakarta.apache.org/commons/cli/
+   version:         1.0
+   file:            commons-cli-1.0.jar
+   download source: http://jakarta.apache.org/site/downloads/downloads_commons-cli.cgi
+
+ - Jakarta Commons Collections
+   homepage:        http://jakarta.apache.org/commons/collections/
+   version:         3.1
+   file:            commons-collections-3.1.jar
+   download source: http://jakarta.apache.org/site/downloads/downloads_commons-collections.cgi
+   
+ - Jakarta Commons Digester
+   homepage:        http://jakarta.apache.org/commons/digester/
+   version:         1.7
+   file:            commons-digester-1.7.jar
+   download source: http://jakarta.apache.org/site/downloads/downloads_commons-digester.cgi
+   
+ - Jakarta Commons FileUpload
+   hoempage:        http://jakarta.apache.org/commons/fileupload/
+   version:         1.0
+   file:            commons-fileupload-1.1.jar
+   download source: http://jakarta.apache.org/site/downloads/downloads_commons-fileupload.cgi
+
+ - Jakarta Commons Logging
+   homepage:        http://jakarta.apache.org/commons/logging/
+   version:         1.0.4
+   files:           commons-logging-api-1.0.4.jar, commons-logging-1.0.4.jar
+   download source: http://jakarta.apache.org/site/downloads/downloads_commons-logging.cgi
+
  - fop.jar                        version 0.20.5
- - googleapi.jar                  version ?
+
+ - Google Web API
+   homepage:        http://www.google.com/apis/
+   version:         (none specified by vendor)
+   file:            googleapi.jar
+   download source: http://www.google.com/apis/download.html  
+
  - jaas.jar                       version ?
  - jimi-1.0.jar                   version 1.0
  - jndi.jar                       version ?
  - ldapbp.jar                     version ?
  - ldap.jar                       version ?
+
+ - Log4j
+   homepage:        http://logging.apache.org/log4j
+   version:         1.2.13
+   file:            log4j-2.1.13.jar
+   download source: http://logging.apache.org/log4j/docs/download.html
+ 
  - mail.jar                       version 1.2
  - mysql-3.1.7.jar                version 3.1.7
  - providerutil.jar               version ?
