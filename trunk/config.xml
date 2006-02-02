@@ -2,6 +2,7 @@
 <!-- DeepaMehta Directories -->
 <property name="build"        location="develop/build"/>
 <property name="sources"      location="develop/src"/>
+<property name="bin"          location="bin"/>
 <property name="install"      location="install"/>
 <property name="client"       location="install/client"/>
 <property name="server"       location="install/server"/>
