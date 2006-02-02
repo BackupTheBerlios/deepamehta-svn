@@ -2,6 +2,8 @@ package de.deepamehta.service;
 
 import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseAssociation;
+import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
+
 import java.util.*;
 
 
@@ -19,6 +21,111 @@ import java.util.*;
  */
 public interface CorporateMemory {
 
+	// ----------------------------------------
+	// --- Bootstrapping, Startup, Shutdown ---
+	// ----------------------------------------
+	
+	/**
+	 * This method determines the properties supported by this corpororate memory
+	 * implementation. If no properties are supported, the implementation may return
+	 * either an empty Vector or null.
+	 * @return A Vector of Strings containing the names of the properties supported 
+	 * by the implementation.
+	 */
+	Vector getSupportedProperties();
+	
+	/**
+	 * This method determines the values that a single property may assume. If the property
+	 * may asssume any value, the implementation should return null. Note that an empty vector
+	 * returned may lead to inconsistencies in the user interface.
+	 * @param propertyName The name of the property to examine.
+	 * @return A Vector of Strings representing the valid values.
+	 */
+	Vector getSupportedPropertyValues(String propertyName);
+	
+	/**
+	 * This method determines the default value for a property. The default value must be
+	 * part of the supported values if the valid values of the property are restricted (that is,
+	 * if getSupportedPropertyValues return a non-null value. 
+	 * @param propertyName The name of the property to examine.
+	 * @return The default value of the property.
+	 */
+	String getDefaultPropertyValue(String propertyName);
+	
+	/**
+	 * This method is called during the setup process to check whether the storage
+	 * area (e. g. the file, directory, database, ...) is accessible. If this method 
+	 * returns true, the caller may safely assume that no further action is required 
+	 * to prepare the storage area for further usage. If this method returns false, the 
+	 * caller may try to call setupStorageArea to prepare the area. Please note that 
+	 * any kind of connection required to check the storage area should be closed before 
+	 * leaving the method.
+	 * @param config The Corporate Memory configuration to check.
+	 * @return true if the storage area described by the properties of config is 
+	 * usable, false otherwise.
+	 */
+	boolean checkStorageArea(CorporateMemoryConfiguration config);
+
+	/**
+	 * This method is called during the setup proces if checkStorageArea returns false.
+	 * It can be used to prepare the storage area (e. g. create database and user). 
+	 * This method should return true if the storage area is usable after the call, 
+	 * regardless whether any action has been taken. Note that returning false will 
+	 * in all likelyhood cause the setup process to fail. Please note also that any 
+	 * kind of connection required to check the storage area should be closed before 
+	 * leaving the method.
+	 * @param config The Corporate Memory Configuration to prepare.
+	 * @return true if the storage area is usable after the call.
+	 */
+	boolean setupStorageArea(CorporateMemoryConfiguration config);
+	
+	/**
+	 * This method is called during the setup process to check whether the storage
+	 * area contains the structures (e. g. the database tables, ...) necessary to run 
+	 * DeepaMehta. If this method returns true, the caller may safely assume that no 
+	 * further action is required to prepare the structures for further usage. If 
+	 * this method returns false, the caller may try to call setupStructure to prepare 
+	 * the structures. Please note that any kind of connection required to check the 
+	 * structures should be closed before leaving the method.  
+	 * @param config The Corporate Memory configuration pointing to a storage location
+	 * whose structures are to be checked.
+	 * @return true if the structures are in a usable state.
+	 */
+	boolean checkStructure(CorporateMemoryConfiguration config);
+	
+	/**
+	 * This method is called during the setup process if checkStructure returns false.
+	 * It can be used to setup the structures required to run DeepaMehta (e. g. create 
+	 * the database tables). This method should return true if the structures are 
+	 * usable after the call, regardless whether any action has been taken. Note that 
+	 * returning false will in all likelyhood cause the setup process to fail.  
+	 * Please note also that any kind of connection required to check the structures 
+	 * should be closed before leaving the method.
+	 * @param config The Corporate Memory configuration pointing to a storage location
+	 * whose structures are to be created.
+	 * @return true if the structures are in a usable state.
+	 */
+	boolean setupStructure(CorporateMemoryConfiguration config);
+	
+	/**
+	 * This method is used to start the Corporate Memory - whatever that might mean for 
+	 * the actual implementation. A relational implementation may want to connect to the
+	 * database server at this point, for example.
+	 * @param config The Corporate Memory configuration defining the storage location.
+	 * @param isBootstrap This parameter is set to <code>true</code> during the 
+	 * bootstrapping process only; during normal operation it is set to <code>false</code>.
+	 * This might be interesting for some implementations that may want to perform 
+	 * additional checks during normal startup that cannot be performed during the
+	 * bootstrapping process.  
+	 * @return <code>true</code> if the Corporate Memory instance is up and running.
+	 */
+	boolean startup(CorporateMemoryConfiguration config, boolean isBootstrap);
+	
+	/**
+	 * This method is used to shutdown the Corporate Memory and cleanup whatever resources
+	 * have been allocated.
+	 */
+	void shutdown();
 
 
 	// -------------------------
@@ -27,12 +134,60 @@ public interface CorporateMemory {
 
 
 
+	/**
+	 * Retrieves a {@link de.deepamehta.BaseTopic} from the corporate memory specified 
+	 * by ID and version.
+	 * @param id The ID of the topic to retrieve.
+	 * @param version The version of the topic to retrieve.
+	 * @return The {@link de.deepamehta.BaseTopic} specified by <code>id</code> and 
+	 * <code>version</code>, or <code>null</code> if no topic with this key 
+	 * exists. Note that if multiple topics are found,
+	 * it is not defined which of the topics is returned.
+	 */
 	BaseTopic getTopic(String id, int version);
+	
+	/**
+	 * Retrieves a {@link de.deepamehta.BaseTopic} from the corporate memory specified
+	 * by type, name and version
+	 * @param type The ID of the topic type of the topic to retrieve.
+	 * @param name The name of the topic to retrieve.
+	 * @param version The version of the topic to retrieve.
+	 * @return The {@link de.deepamehta.BaseTopic} specified by <code>type</code>, 
+	 * <code>name</code> and <code>version</code>, or null if no topic meets
+	 * the specified parameters. Note that if multiple topics are found,
+	 * it is not defined which of the topics is returned.
+	 */
 	BaseTopic getTopic(String type, String name, int version);
-	//
+	
+	/**
+	 * Retrieve all topics from the corporate memory. Note: This method will 
+	 * very likely return a huge result set. Use only as a last resort and
+	 * if you really know what you're doing (e. g. for exporting the entire
+	 * corporate memory).
+	 * @return A <code>Vector</code> of all {@link de.deepamehta.BaseTopic}s contained
+	 * in the corporate memory.
+	 */
 	Vector getTopics();
+	
+	/**
+	 * Retrieves all topics of a certain topic type.
+	 * @param typeID The ID of the topic type to search for.
+	 * @return A <code>Vector</code> of all {@link de.deepamehta.BaseTopic}s of type
+	 * <code>typeID</code> contained in the corporate memory.
+	 */
 	Vector getTopics(String typeID);
+	
+	/**
+	 * Retrieves all topics of a certain topic type that match a certain name 
+	 * filter.
+	 * @param typeID The ID of the topic type to search for.
+	 * @param nameFilter The name pattern to search for.
+	 * @return A <code>Vector</code> of all {@link de.deepamehta.BaseTopic}s of type
+	 * <code>typeID</code> whose name contains the String 
+	 * <code>nameFilter</code>.
+	 */
 	Vector getTopics(String typeID, String nameFilter);
+	
 	Vector getTopics(String typeID, Hashtable propertyFilter);
 	Vector getTopics(String typeID, Hashtable propertyFilter, boolean caseSensitiv);
 	Vector getTopics(String typeID, Hashtable propertyFilter, String topicmapID);

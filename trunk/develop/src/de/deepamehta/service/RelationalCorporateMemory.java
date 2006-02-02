@@ -10,10 +10,14 @@ import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableType;
 import de.deepamehta.Topic;
+import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
 //
 import java.sql.*;
 import java.util.*;
 import java.awt.Point;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 
@@ -54,6 +58,8 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	private Connection con;
 
 	private String dbmsHint;
+	private CorporateMemoryConfiguration config = null;
+	private static Log logger = LogFactory.getLog(RelationalCorporateMemory.class);
 
 
 
@@ -67,6 +73,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 * @see		ApplicationServiceInstance#createCorporateMemory
 	 */
 	RelationalCorporateMemory(String jdbcDriverClass, String jdbcURL) throws Exception {
+		// FIXME remove this code ASAP - it is being replaced by startup()
 		Class.forName(jdbcDriverClass);
 		this.con = DriverManager.getConnection(jdbcURL);
 		this.dbmsHint = jdbcDriverClass.indexOf(DBMS_HINT_ORACLE) != -1 ?
@@ -80,7 +87,396 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	// *** Implementation of Interface de.deepamehta.service.CorporateMemory ***
 	// *************************************************************************
 
+	// ----------------------------------------
+	// --- Bootstrapping, Startup, Shutdown ---
+	// ----------------------------------------
+	
+    /* (non-Javadoc)
+     * @see de.deepamehta.service.CorporateMemory#getSupportedProperties()
+     */
+    public Vector getSupportedProperties() {
+        Vector properties = new Vector();
+        properties.add("driver");
+        properties.add("host");
+        properties.add("port");
+        properties.add("database");
+        properties.add("user");
+        properties.add("password");
+        properties.add("connection"); // the entire connection string
+        properties.add("dba_user");
+        properties.add("dba_password");
+        return properties;
+    }
 
+    /* (non-Javadoc)
+     * @see de.deepamehta.service.CorporateMemory#getSupportedPropertyValues(java.lang.String)
+     */
+    public Vector getSupportedPropertyValues(String propertyName) {
+        if (propertyName.equals("driver")) {
+            // return a list of all JDBC drivers
+            Vector driverNames = new Vector();
+            for (Enumeration d = DriverManager.getDrivers(); d.hasMoreElements();) {
+                driverNames.add(d.nextElement().getClass().getName());
+            }
+            return driverNames; 
+        }
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see de.deepamehta.service.CorporateMemory#getDefaultPropertyValue(java.lang.String)
+     */
+    public String getDefaultPropertyValue(String propertyName) {
+        if (propertyName.equals("driver")) {
+            return "com.mysql.jdbc.Driver"; 
+            // FIXME Will cause problems if the driver is not present! 
+        }
+        if (propertyName.equals("host")) {
+            return "localhost";
+        }
+        if (propertyName.equals("user")) {
+            return "dm";
+        }
+        if (propertyName.equals("password")) {
+            return "dm";
+        }
+        if (propertyName.equals("database")) {
+            return "DeepaMehta";
+        }
+        if (propertyName.equals("dba_user")) {
+            return "root";
+        }
+        return null;
+    }
+    
+    /**
+     * This method assembles a JDBC connection string from the properties stored inside a
+     * CorporateMemoryConfiguration instance. 
+     * @param cmConfig The configuration data to read.
+     * @return A JDBC connection string. 
+     */
+    private String getConnectionString(CorporateMemoryConfiguration cmConfig) {
+        if (cmConfig.containsProperty("connection")) {
+            return cmConfig.getProperty("connection");
+        } else {
+            // no connection string specified - assemble config string from separate properties
+            String host = cmConfig.getProperty("host");
+            String port = cmConfig.getProperty("port");
+            String db   = cmConfig.getProperty("database");
+            String user = cmConfig.getProperty("user");
+            String pass = cmConfig.getProperty("password");
+            
+            // TODO only supports mysql right now
+            String conn = "jdbc:mysql://" + host;
+            if (!port.equals(""))
+                conn = conn + ":" + port;
+            conn = conn + "/" + db + "?user=" + user + "&password=" + pass;
+            conn = conn + "&useUnicode=true&characterEncoding=latin1";            
+            return conn;
+        }
+    }
+
+
+    /**
+     * @param cmConfig
+     * @return
+     * MISSDOC No documentation for method RelationalCorporateMemory.getSystemConnectionString
+     */
+    private String getSystemConnectionString(CorporateMemoryConfiguration cmConfig) {
+        String host = cmConfig.getProperty("host");
+        String port = cmConfig.getProperty("port");
+        String user = cmConfig.getProperty("dba_user");
+        String pass = cmConfig.getProperty("dba_password");
+        
+        // TODO only supports mysql right now
+        String conn = "jdbc:mysql://" + host;
+        if (!port.equals(""))
+            conn = conn + ":" + port;
+        conn = conn + "/mysql?user=" + user + "&password=" + pass;
+        conn = conn + "&useUnicode=true&characterEncoding=latin1";            
+        return conn;
+    }
+
+    /* (non-Javadoc)
+     * @see de.deepamehta.service.CorporateMemory#checkStorageArea(de.deepamehta.environment.instance.CorporateMemoryConfiguration, java.lang.String)
+     */
+    public boolean checkStorageArea(CorporateMemoryConfiguration cmConfig) {
+        
+        Connection conn;
+        String url = getConnectionString(cmConfig);
+        
+        logger.debug("Checking storage area " + url);
+        try {
+            conn = DriverManager.getConnection(url);
+            // if we can connect to the database, everything looks alright
+            logger.debug("Storage area looks good.");
+            conn.close();
+            return true;
+        } catch (SQLException e) {
+            // something went wrong
+            logger.debug("Problem with storage area.", e);
+            return false;
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see de.deepamehta.service.CorporateMemory#setupStorageArea(de.deepamehta.environment.instance.CorporateMemoryConfiguration, java.lang.String)
+     */
+    public boolean setupStorageArea(CorporateMemoryConfiguration cmCnfig) {
+        
+        Connection conn;        
+        
+        try {
+            String sysurl = getSystemConnectionString(cmCnfig);
+            logger.debug("Connecting to system database using " + sysurl);
+            conn = DriverManager.getConnection(sysurl);
+            logger.debug("Preparing statement...");
+            Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            // TODO this is rather MySQL specific too
+            logger.debug("Creating database...");
+            stmt.executeUpdate("CREATE DATABASE " + cmCnfig.getProperty("database") + ";");
+            logger.debug("Creating user...");
+            stmt.executeUpdate("GRANT ALL PRIVILEGES ON " + cmCnfig.getProperty("database") + ".* TO " + cmCnfig.getProperty("user") + "@\"%\" IDENTIFIED BY '" + cmCnfig.getProperty("password") + "' WITH GRANT OPTION;");
+            stmt.executeUpdate("GRANT ALL PRIVILEGES ON " + cmCnfig.getProperty("database") + ".* TO " + cmCnfig.getProperty("user") + "@localhost IDENTIFIED BY '" + cmCnfig.getProperty("password") + "' WITH GRANT OPTION;");
+            logger.debug("Database prepared.");
+            conn.close();
+            return true;
+        } catch (SQLException e) {
+            logger.error("Unable to setup storage area.", e);
+            return false;
+        }
+        
+    }
+
+    /* (non-Javadoc)
+     * @see de.deepamehta.service.CorporateMemory#checkStructure(de.deepamehta.environment.instance.CorporateMemoryConfiguration, java.lang.String)
+     */
+    public boolean checkStructure(CorporateMemoryConfiguration cmConfig) {
+        
+        Connection conn = null;
+        String url = getConnectionString(cmConfig);
+        logger.debug("Checking structures of storage area " + url);
+        try {
+            conn = DriverManager.getConnection(url);
+            
+            // TODO check table structure later on
+            
+            if (!tableExists(conn, "Topic")) { 
+                logger.warn("Table 'Topic' is missing.");
+                conn.close();
+                return false;
+            }
+            
+            if (!tableExists(conn, "Association")) {
+                logger.warn("Table 'Association' is missing.");
+                conn.close();
+                return false;
+            }
+
+            if (!tableExists(conn, "ViewTopic")) {
+                logger.warn("Table 'ViewTopic' is missing.");
+                conn.close();
+                return false;
+            }
+
+            if (!tableExists(conn, "ViewAssociation")) {
+                logger.warn("Table 'ViewAssociation is missing.");
+                conn.close();
+                return false;
+            }
+            
+            if (!tableExists(conn, "TopicProp")) {
+                logger.warn("Table 'TopicProp' is missing.");
+                conn.close();
+                return false;
+            }
+
+            if (!tableExists(conn, "AssociationProp")) {
+                logger.warn("Table 'AssociationProp' is missing.");
+                conn.close();
+                return false;
+            }
+
+            if (!tableExists(conn, "KeyGenerator")) {
+                logger.warn("Table 'KeyGenerator' is missing.");
+                conn.close();
+                return false;
+            }
+            
+            conn.close();
+            return true;
+        } catch (SQLException e) {
+            logger.debug("Problem during structural check.", e);
+            return false;
+        }
+    }	
+
+    /**
+     * Little helper function to check whether a database table exists.
+     * @param dbConn The JDBC connection to use.
+     * @param tableName The name of the table to check
+     * @return <code>true</code> if the table exists.
+     * @throws SQLException
+     */
+    private boolean tableExists(Connection dbConn, String tableName) throws SQLException {
+        logger.debug("Checking existence of table '" + tableName + "'");
+        ResultSet tables = dbConn.getMetaData().getTables(null, null, tableName, null);
+        return tables.first();
+    }
+
+    /* (non-Javadoc)
+     * @see de.deepamehta.service.CorporateMemory#setupStructure(de.deepamehta.environment.instance.CorporateMemoryConfiguration, java.lang.String)
+     */
+    public boolean setupStructure(CorporateMemoryConfiguration cmConfig) {
+        
+        Connection conn;        
+        
+        try {
+            String url = getConnectionString(cmConfig);
+            logger.debug("Connecting to database using " + url);
+            conn = DriverManager.getConnection(url);
+            logger.debug("Preparing statement...");
+            Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            // TODO this is rather MySQL specific too
+            // TODO some kind of intelligent structure check would be nice
+            
+            if (!tableExists(conn, "Topic")) {
+                logger.debug("Creating table 'Topic'...");
+                stmt.executeUpdate("CREATE TABLE Topic ( " +
+                        "TypeID CHAR(40) NOT NULL," +
+                        "TypeVersion INT NOT NULL," +
+                        "Version INT NOT NULL," +
+                        "ID CHAR(40) NOT NULL," +
+                        "Name CHAR(255) NOT NULL," +
+                        "PRIMARY KEY (ID, Version)," +
+                "INDEX (TypeID, TypeVersion, Name) );");
+            }
+            
+            if (!tableExists(conn, "Association")) {
+                logger.debug("Creating table 'Association'...");
+                stmt.executeUpdate("CREATE TABLE Association (" +
+                        "TypeID CHAR(40) NOT NULL," +
+                        "TypeVersion INT NOT NULL," +
+                        "Version INT NOT NULL," +
+                        "ID CHAR(40) NOT NULL," +
+                        "Name CHAR(255) NOT NULL," +
+                        "TopicID1 CHAR(40) NOT NULL," +
+                        "TopicVersion1 INT NOT NULL," +
+                        "TopicID2 CHAR(40) NOT NULL," +
+                        "TopicVersion2 INT NOT NULL," +
+                        "PRIMARY KEY (ID, Version)," +
+                        "INDEX (ID, Version, TypeID, TypeVersion)," +
+                        "INDEX (TopicID1, TopicVersion1)," +
+                "INDEX (TopicID2, TopicVersion2) ); ");
+            }
+            
+            if (!tableExists(conn, "ViewTopic")) {
+                logger.debug("Creating table 'ViewTopic'...");
+                stmt.executeUpdate("CREATE TABLE ViewTopic (" +
+                        "ViewTopicID CHAR(40) NOT NULL," +
+                        "ViewTopicVersion INT NOT NULL," +
+                        "TopicID CHAR(40) NOT NULL," +
+                        "TopicVersion INT NOT NULL," +
+                        "x INT NOT NULL," +
+                        "y INT NOT NULL," +
+                        "INDEX (ViewTopicID, ViewTopicVersion)," +
+                "INDEX (TopicID) );");
+            }
+            
+            if (!tableExists(conn, "ViewAssociation")) {
+                logger.debug("Creating table 'ViewAssociation'...");
+                stmt.executeUpdate("CREATE TABLE ViewAssociation (" +
+                        "ViewTopicID CHAR(40) NOT NULL," +
+                        "ViewTopicVersion INT NOT NULL," +
+                        "AssociationID CHAR(40) NOT NULL," +
+                        "AssociationVersion INT NOT NULL," +
+                "INDEX (ViewTopicID, ViewTopicVersion) );");
+            }
+
+            if (!tableExists(conn, "TopicProp")) {
+                logger.debug("Creating table 'TopicProp'...");
+                stmt.executeUpdate("CREATE TABLE TopicProp (" +
+                        "TopicID CHAR(40) NOT NULL," +
+                        "TopicVersion INT NOT NULL," +
+                        "PropName CHAR(40) NOT NULL," +
+                        "PropValue MEDIUMTEXT," +
+                "INDEX (TopicID, TopicVersion, PropName) );");
+            }
+                
+            if (!tableExists(conn, "AssociationProp"))  {
+                logger.debug("Creating table 'AssociationProp'...");
+                stmt.executeUpdate("CREATE TABLE AssociationProp (" +
+                        "AssociationID CHAR(40) NOT NULL," +
+                        "AssociationVersion INT NOT NULL," +
+                        "PropName CHAR(40) NOT NULL," +
+                        "PropValue MEDIUMTEXT," +
+                "INDEX (AssociationID, AssociationVersion, PropName) );");
+            }
+            
+            if (!tableExists(conn, "KeyGenerator")) {
+                logger.debug("Creating table 'KeyGenerator'...");
+                stmt.executeUpdate("CREATE TABLE KeyGenerator (" +
+                        "Relation CHAR(24) PRIMARY KEY NOT NULL," +
+                "NextKey INT NOT NULL );");
+            }
+
+            logger.debug("Structures created.");
+            conn.close();
+            return true;
+        } catch (SQLException e) {
+            logger.error("Unable to setup structures.", e);
+            return false;
+        }
+
+    }
+
+    /* (non-Javadoc)
+     * @see de.deepamehta.service.CorporateMemory#setKeyGenerator(java.lang.String, int)
+     */
+    public void setKeyGenerator(String genName, int nextKey) {
+        delete("DELETE FROM KeyGenerator WHERE Relation = '" + genName + "'");
+        update("INSERT INTO KeyGenerator VALUES ('" + genName + "', " + nextKey + ")");
+    }
+
+    /* (non-Javadoc)
+     * @see de.deepamehta.service.CorporateMemory#startup(de.deepamehta.environment.instance.CorporateMemoryConfiguration, boolean)
+     */
+    public boolean startup(CorporateMemoryConfiguration cmConfig, boolean isBootstrap) {
+        this.config = cmConfig;
+        try {
+            String jdbcDriverClass = cmConfig.getProperty("driver");
+            Class.forName(jdbcDriverClass);
+            this.con = DriverManager.getConnection(getConnectionString(this.config));
+            this.dbmsHint = jdbcDriverClass.indexOf(DBMS_HINT_ORACLE) != -1 ?
+                    DBMS_HINT_ORACLE : DBMS_HINT_SQL92;
+            return true;
+        } catch (SQLException e) {
+            logger.error("Unable to startup corporate memory.", e);
+            this.config = null;
+            this.con = null;
+            return false;
+        } catch (ClassNotFoundException e) {
+            logger.error("Unable to initialize low-level driver.", e);
+            this.config = null;
+            this.con = null;
+            return false;
+}
+    }
+
+    /* (non-Javadoc)
+     * @see de.deepamehta.service.CorporateMemory#shutdown()
+     */
+    public void shutdown() {
+        try {
+            this.con.close();
+        } catch (SQLException e) {
+            logger.error("Something went wrong during CM shutdown.", e);
+        }
+        this.con = null;
+        this.config = null;
+    }
+
+	
 
 	// -------------------------
 	// --- Retrieving Topics ---
