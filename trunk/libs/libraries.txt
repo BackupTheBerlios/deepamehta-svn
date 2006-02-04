@@ -44,6 +44,12 @@ The following files are required in the "libs" folder:
    files:           commons-logging-api-1.0.4.jar, commons-logging-1.0.4.jar
    download source: http://jakarta.apache.org/site/downloads/downloads_commons-logging.cgi
 
+ - Java Wizard Framework
+   homepage:        http://sourceforge.net/projects/jwf/
+   version:         1.0.1
+   files:           jwf-1.0.1.jar
+   download source: http://sourceforge.net/project/showfiles.php?group_id=47019&package_id=39962&release_id=111523
+
  - fop.jar                        version 0.20.5
 
  - Google Web API
