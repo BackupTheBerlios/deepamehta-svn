@@ -45,7 +45,7 @@ public class InstanceManager {
     private static Log logger = LogFactory.getLog(InstanceManager.class);
     private Environment env;
     private Hashtable instances;
-//    private InstanceTableModel model = null;
+    private InstanceTableModel model = null;
     
     /**
      * The default constructor to create a new instance manager. 
@@ -54,7 +54,7 @@ public class InstanceManager {
         super();
         this.env = Environment.getEnvironment();
         this.instances = new Hashtable();
-//        model = new InstanceTableModel(this);
+        this.model = new InstanceTableModel(this);
     }
 
     /**
@@ -233,16 +233,16 @@ public class InstanceManager {
      */
     public void add(InstanceConfiguration instance) {
         addInstance(instance);
-//        model.fireTableDataChanged();
+        model.fireTableDataChanged();
         // TODO check for duplicate IDs before adding
         saveToFile(this.env.getInstanceFile());
         
     }
 
-//    /**
-//     * @return Returns the model.
-//     */
-//    public InstanceTableModel getModel() {
-//    	return model;
-//    }
+    /**
+     * @return Returns the model.
+     */
+    public InstanceTableModel getModel() {
+    	return this.model;
+    }
 }
