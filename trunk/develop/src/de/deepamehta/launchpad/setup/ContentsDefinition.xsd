@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+	targetNamespace="http://www.deepamehta.de/schema/ContentsDefinition.xsd"
+	xmlns="http://www.deepamehta.de/schema/ContentsDefinition.xsd"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	
+	<xsd:complexType name="propertyType">
+		<attribute name="name" type="xsd:string" use="required"/>
+		<attribute name="value" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="topicType">
+		<xsd:sequence>
+			<xsd:element name="property" type="propertyType" minOccurs="0"
+				maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<attribute name="id" type="xsd:string" use="required"/>
+		<attribute name="version" type="xsd:integer" default="1"/>
+		<attribute name="name" type="xsd:string" use="required"/>
+		<attribute name="type" type="xsd:string" use="required"/>
+		<attribute name="typeversion" type="xsd:integer" default="1"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="associationType">
+		<xsd:sequence>
+			<xsd:element name="property" type="propertyType" minOccurs="0"
+				maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<attribute name="id" type="xsd:string" use="required"/>
+		<attribute name="name" type="xsd:string" default=""/>
+		<attribute name="version" type="xsd:integer" default="1"/>
+		<attribute name="type" type="xsd:string" use="required"/>
+		<attribute name="typeversion" type="xsd:integer" default="1"/>
+		<attribute name="from" type="xsd:string" use="required"/>
+		<attribute name="fromversion" type="xsd:integer" default="1"/>
+		<attribute name="to" type="xsd:string" use="required"/>
+		<attribute name="toversion" type="xsd:integer" default="1"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="topicmapType">
+		<xsd:sequence>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="property" type="propertyType"/>
+				<xsd:element name="viewtopic">
+					<xsd:complexType>
+						<attribute name="id" type="xsd:string" use="required"/>
+						<attribute name="version" type="xsd:integer" default="1"/>
+						<attribute name="x" type="xsd:integer" use="required"/>
+						<attribute name="y" type="xsd:integer" use="required"/>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="viewassociation">
+					<xsd:complexType>
+						<attribute name="id" type="xsd:string" use="required"/>
+						<attribute name="version" type="xsd:integer" default="1"/>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:choice>
+		</xsd:sequence>
+		<attribute name="id" type="xsd:string" use="required"/>
+		<attribute name="version" type="xsd:integer" default="1"/>
+		<attribute name="name" type="xsd:string" default=""/>
+	</xsd:complexType>
+	
+	<xsd:element name="contents">
+		<xsd:complexType>
+			<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+				<xsd:choice>
+					<xsd:element name="topic" type="topicType"/>
+					<xsd:element name="association" type="associationType"/>
+					<xsd:element name="topicmap" type="topicmapType"/>
+				</xsd:choice>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+</xsd:schema>

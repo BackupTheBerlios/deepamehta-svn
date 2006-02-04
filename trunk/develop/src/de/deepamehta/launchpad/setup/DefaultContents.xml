@@ -1,0 +1,2259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmc:contents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.deepamehta.de/schema/ContentsDefinition.xsd ContentsDefinition.xsd" xmlns:dmc="http://www.deepamehta.de/schema/ContentsDefinition.xsd">
+	
+	<!--                 -->
+	<!--   Topic Types   -->
+	<!--                 -->
+	
+	<!--   "Topic"   -->
+	<topic id="tt-generic" name="Topic" type="tt-topictype">
+		<property name="Name" value="Topic"/>
+		<property name="Plural Name" value="Topics"/>
+		<property name="Icon" value="generic.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-295" type="at-composition" from="tt-generic" to="pp-name">
+		<property name="Ordinal Number" value="100"/>
+	</association>
+	<association id="a-11" type="at-composition" from="tt-generic" to="pp-info">
+		<property name="Ordinal Number" value="200"/>
+	</association>
+	<association id="a-4" type="at-composition" from="tt-generic" to="pp-icon">
+		<property name="Ordinal Number" value="300"/>
+	</association>
+	<association id="a-91" type="at-composition" from="tt-generic" to="pp-owner">
+		<property name="Ordinal Number" value="400"/>
+	</association>
+	<association id="a-254" type="at-composition" from="tt-generic" to="pp-geometrylocked">
+		<property name="Ordinal Number" value="500"/>
+	</association>
+	<!--    container type -->
+	<topic id="tt-genericcontainer" name="Topic Search" type="tt-topictype">
+		<property name="Name" value="Topic Search"/>
+		<property name="Icon" value="genericcontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-31" type="at-derivation" from="tt-topiccontainer" to="tt-genericcontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-61" type="at-aggregation" from="tt-genericcontainer" to="tt-generic"/>
+	
+	<!--   - "Topic Type"   - -->
+	<topic id="tt-topictype" name="Topic Type" type="tt-topictype">
+		<property name="Name" value="Topic Type"/>
+		<property name="Plural Name" value="Topic Types"/>
+		
+		<!-- TODO <property name="Description" value="<HTML><BODY>A <I>Topic Type</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="topictype.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.TopicTypeTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-59" type="at-composition" from="tt-topictype" to="pp-pluraltypename">
+		<property name="Ordinal Number" value="110"/>
+	</association>
+	<association id="a-284" type="at-composition" from="tt-topictype" to="pp-descriptionquery">
+		<property name="Ordinal Number" value="210"/>
+	</association>
+	<association id="a-283" type="at-composition" from="tt-topictype" to="pp-creationicon">
+		<property name="Ordinal Number" value="310"/>
+	</association>
+	<association id="a-13" type="at-composition" from="tt-topictype" to="pp-color">
+		<property name="Ordinal Number" value="320"/>
+	</association>
+	<association id="a-255" type="at-composition" from="tt-topictype" to="pp-disabled">
+		<property name="Ordinal Number" value="330"/>
+	</association>
+	<association id="a-249" type="at-composition" from="tt-topictype" to="pp-hideinstancenames">
+		<property name="Ordinal Number" value="340"/>
+	</association>
+	<association id="a-pp-unique" type="at-composition" from="tt-topictype" to="pp-unique">
+		<property name="Ordinal Number" value="350"/>
+	</association>
+	<association id="a-12" type="at-composition" from="tt-topictype" to="pp-implementingclass">
+		<property name="Ordinal Number" value="360"/>
+	</association>
+	<!--    super type -->
+	<association id="a-5" type="at-derivation" from="tt-generic" to="tt-topictype"/>
+	<!--    container type -->
+	<topic id="tt-topictypecontainer" name="Topic Type Search" type="tt-topictype">
+		<property name="Name" value="Topic Type Search"/>
+		<property name="Icon" value="topictypecontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-32" type="at-derivation" from="tt-topiccontainer" to="tt-topictypecontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-62" type="at-aggregation" from="tt-topictypecontainer" to="tt-topictype"/>
+	
+	<!--   - "Association Type"   - -->
+	<topic id="tt-assoctype" name="Association Type" type="tt-topictype">
+		<property name="Name" value="Association Type"/>
+		<property name="Plural Name" value="Association Types"/>
+		
+		<!-- TODO <property name="Description" value="<HTML><BODY>A <I>Association Type</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="associationtype.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.AssociationTypeTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-241" type="at-composition" from="tt-assoctype" to="pp-pluraltypename">
+		<property name="Ordinal Number" value="110"/>
+	</association>
+	<association id="a-15" type="at-composition" from="tt-assoctype" to="pp-descriptionquery">
+		<property name="Ordinal Number" value="220"/>
+	</association>
+	<association id="a-14" type="at-composition" from="tt-assoctype" to="pp-color">
+		<property name="Ordinal Number" value="230"/>
+	</association>
+	<association id="a-258" type="at-composition" from="tt-assoctype" to="pp-disabled">
+		<property name="Ordinal Number" value="320"/>
+	</association>
+	<association id="a-242" type="at-composition" from="tt-assoctype" to="pp-implementingclass">
+		<property name="Ordinal Number" value="350"/>
+	</association>
+	<!--    super type -->
+	<association id="a-256" type="at-derivation" from="tt-generic" to="tt-assoctype"/>
+	<!--    container type -->
+	<topic id="tt-assoctypecontainer" name="Association Type Search" type="tt-topictype">
+		<property name="Name" value="Association Type Search"/>
+		<property name="Icon" value="associationtypecontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-33" type="at-derivation" from="tt-topiccontainer" to="tt-assoctypecontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-63" type="at-aggregation" from="tt-assoctypecontainer" to="tt-assoctype"/>
+	
+	<!--   - "Property"   - -->
+	<topic id="tt-property" name="Property" type="tt-topictype">
+		<property name="Name" value="Property"/>
+		<property name="Plural Name" value="Properties"/>
+		<!-- TODO ><property name="Description" value="<HTML><BODY>A <I>Property</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="property.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.PropertyTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-16" type="at-composition" from="tt-property" to="pp-visualization">
+		<property name="Ordinal Number" value="110"/>
+	</association>
+	<association id="a-92" type="at-composition" from="tt-property" to="pp-defaultvalue">
+		<property name="Ordinal Number" value="120"/>
+	</association>
+	<association id="a-285" type="at-composition" from="tt-property" to="pp-editicon">
+		<property name="Ordinal Number" value="310"/>
+	</association>
+	<!--    super type -->
+	<association id="a-257" type="at-derivation" from="tt-generic" to="tt-property"/>
+	<!--    container type -->
+	<topic id="tt-propertycontainer" name="Property Search" type="tt-topictype">
+		<property name="Name" value="Property Search"/>
+		<property name="Icon" value="propertycontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-34" type="at-derivation" from="tt-topiccontainer" to="tt-propertycontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-64" type="at-aggregation" from="tt-propertycontainer" to="tt-property"/>
+	
+	<!--   - "Property Value"   - -->
+	<topic id="tt-constant" name="Property Value" type="tt-topictype">
+		<property name="Name" value="Property Value"/>
+		<property name="Plural Name" value="Property Values"/>
+		<!-- TODO <property name="Description" value="<HTML><BODY>A <I>Property Value</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="constant.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-17" type="at-derivation" from="tt-generic" to="tt-constant"/>
+	<!--    container type -->
+	<topic id="tt-constantcontainer" name="Property Value Search" type="tt-topictype">
+		<property name="Name" value="Property Value Search"/>
+		<property name="Icon" value="constantcontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-35" type="at-derivation" from="tt-topiccontainer" to="tt-constantcontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-65" type="at-aggregation" from="tt-constantcontainer" to="tt-constant"/>
+	
+	<!--   - "Search"   - -->
+	<topic id="tt-container" name="Search" type="tt-topictype">
+		<property name="Name" value="Search"/>
+		<!-- TODO <property name="Description" value="<HTML><BODY>A <I>Search</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="container.gif"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-18" type="at-composition" from="tt-container" to="pp-elementcount"/>
+	<association id="a-19" type="at-composition" from="tt-container" to="pp-queryelements"/>
+	<association id="a-45" type="at-composition" from="tt-container" to="pp-relatedtopicid"/>
+	<association id="a-173" type="at-composition" from="tt-container" to="pp-assoctypeid"/>
+	
+	<!--   - "Data Source"   - -->
+	<topic id="tt-datasource" name="Data Source" type="tt-topictype">
+		<property name="Name" value="Data Source"/>
+		<property name="Plural Name" value="Data Sources"/>
+		<!-- TODO <property name="Description" value="<HTML><BODY>A <I>Data Source</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="datasource.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.DataSourceTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-20" type="at-composition" from="tt-datasource" to="pp-url">
+		<property name="Ordinal Number" value="110"/>
+	</association>
+	<association id="a-21" type="at-composition" from="tt-datasource" to="pp-driver">
+		<property name="Ordinal Number" value="120"/>
+	</association>
+	<association id="a-134" type="at-composition" from="tt-datasource" to="pp-idleelementtype">
+		<property name="Ordinal Number" value="130"/>
+	</association>
+	<association id="a-22" type="at-composition" from="tt-datasource" to="pp-entities">
+		<property name="Ordinal Number" value="140"/>
+	</association>
+	<!--    super type -->
+	<association id="a-47" type="at-derivation" from="tt-generic" to="tt-datasource"/>
+	<!--    container type -->
+	<topic id="tt-datasourcecontainer" name="Data Source Search" type="tt-topictype">
+		<property name="Name" value="Data Source Search"/>
+		<property name="Icon" value="datasourcecontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-36" type="at-derivation" from="tt-topiccontainer" to="tt-datasourcecontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-66" type="at-aggregation" from="tt-datasourcecontainer" to="tt-datasource"/>
+	
+	<!--   - "Webpage"   - -->
+	<topic id="tt-webpage" name="Webpage" type="tt-topictype">
+		<property name="Name" value="Webpage"/>
+		<property name="Plural Name" value="Webpages"/>
+		<!-- TODO <property name="Description" value="<HTML><BODY>A <I>Webpage</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="webpage.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.WebpageTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-23" type="at-composition" from="tt-webpage" to="pp-url"/>
+	<!-- TODO INSERT INTO AssociationProp VALUES ('a-23', 1, 'Ordinal Number', '1'); -->
+	<!--    super type -->
+	<association id="a-46" type="at-derivation" from="tt-generic" to="tt-webpage"/>
+	<!--    container type -->
+	<topic id="tt-webpagecontainer" name="Webpage Search" type="tt-topictype">
+		<property name="Name" value="Webpage Search"/>
+		<property name="Icon" value="webpagecontainer.gif"/>
+	</topic>
+	<!--    assign properties to container type -->
+	<association id="a-10" type="at-composition" from="tt-webpagecontainer" to="pp-url"/>
+	<!--    derive container type -->
+	<association id="a-37" type="at-derivation" from="tt-topiccontainer" to="tt-webpagecontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-67" type="at-aggregation" from="tt-webpagecontainer" to="tt-webpage"/>
+	
+	<!--   - "Website"   - -->
+	<topic id="tt-website" name="Website" type="tt-topictype">
+		<property name="Name" value="Website"/>
+		<property name="Plural Name" value="Websites"/>
+		<!--TODO <property name="Description" value="<HTML><BODY>A <I>Website</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="website.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-211" type="at-derivation" from="tt-generic" to="tt-website"/>
+	<!--    container type -->
+	<topic id="tt-websitecontainer" name="Website Search" type="tt-topictype">
+		<property name="Name" value="Website Search"/>
+		<property name="Icon" value="websitecontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-213" type="at-derivation" from="tt-topiccontainer" to="tt-websitecontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-215" type="at-aggregation" from="tt-websitecontainer" to="tt-website"/>
+	
+	<!--   - "Internet Domain"   - -->
+	<topic id="tt-internetdomain" name="Internet Domain" type="tt-topictype">
+		<property name="Name" value="Internet Domain"/>
+		<property name="Plural Name" value="Internet Domains"/>
+		<!-- TODO <property name="Description" value="<HTML><BODY>An <I>Internet Domain</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="internetdomain.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.InternetDomainTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-217" type="at-composition" from="tt-internetdomain" to="pp-domaininfo"/>
+	<!--    super type -->
+	<association id="a-212" type="at-derivation" from="tt-generic" to="tt-internetdomain"/>
+	<!--    container type -->
+	<topic id="tt-internetdomaincontainer" name="Internet Domain Search" type="tt-topictype">
+		<property name="Name" value="Internet Domain Search"/>
+		<property name="Icon" value="internetdomaincontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-214" type="at-derivation" from="tt-topiccontainer" to="tt-internetdomaincontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-216" type="at-aggregation" from="tt-internetdomaincontainer" to="tt-internetdomain"/>
+	
+	<!--   - "Email Address"   - -->
+	<topic id="tt-emailaddress" name="Email Address" type="tt-topictype">
+		<property name="Name" value="Email Address"/>
+		<property name="Plural Name" value="Email Addresses"/>
+		<!-- TODO <property name="Description" value="<HTML><BODY>An <I>Email Address</I> is ...</BODY></HTML>"/> -->
+		<property name="Icon" value="emailtopicmap.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.EmailAddressTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-402" type="at-composition" from="tt-emailaddress" to="pp-emailaddress">
+		<property name="Ordinal Number" value="1"/>
+	</association>
+	<association id="a-403" type="at-composition" from="tt-emailaddress" to="pp-mailboxurl">
+		<property name="Ordinal Number" value="2"/>
+	</association>
+	<!--    super type -->
+	<!--    container type -->
+	<topic id="tt-emailaddresscontainer" name="Email Address Search" type="tt-topictype">
+		<property name="Name" value="Email Address Search"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-299" type="at-derivation" from="tt-topiccontainer" to="tt-emailaddresscontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-401" type="at-aggregation" from="tt-emailaddresscontainer" to="tt-emailaddress"/>
+	
+	<!--   - "Person"   - -->
+	<topic id="tt-person" name="Person" type="tt-topictype">
+		<property name="Name" value="Person"/>
+		<property name="Plural Name" value="Persons"/>
+		<!-- TODO <property name="Description" value="<HTML><BODY>A <I>Person</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="person.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.PersonTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-296" type="at-composition" from="tt-person" to="pp-forename">
+		<property name="Ordinal Number" value="90"/>
+	</association>
+	<association id="a-147" type="at-composition" from="tt-person" to="pp-gender">
+		<property name="Ordinal Number" value="105"/>
+	</association>
+	<association id="a-30" type="at-composition" from="tt-person" to="pp-birthday">
+		<property name="Ordinal Number" value="110"/>
+	</association>
+	<!--    super type -->
+	<association id="a-137" type="at-derivation" from="tt-generic" to="tt-person"/>
+	<!--    container type -->
+	<topic id="tt-personcontainer" name="Person Search" type="tt-topictype">
+		<property name="Name" value="Person Search"/>
+		<property name="Icon" value="personcontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-38" type="at-derivation" from="tt-topiccontainer" to="tt-personcontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-68" type="at-aggregation" from="tt-personcontainer" to="tt-person"/>
+	<!--    relation to "Address" -->
+	<association id="a-308" type="at-relation" from="tt-person" to="tt-address">
+		<property name="Cardinality" value="one"/>
+		<property name="Association Type ID" value="at-association"/>
+		<property name="Web Info" value="Deeply Related Info"/>
+		<property name="Web Form" value="Deeply Related Form"/>
+		<property name="Ordinal Number" value="140"/>
+	</association>
+	<!--    relation to "Email Address" -->
+	<association id="a-404" type="at-relation" from="tt-person" to="tt-emailaddress">
+		<property name="Cardinality" value="many"/>
+		<property name="Association Type ID" value="at-association"/>
+		<property name="Web Info" value="Related Topic Name"/>
+		<property name="Web Form" value="Related Form"/>
+		<property name="Ordinal Number" value="170"/>
+	</association>
+	<!--    relation to "Phone Number" -->
+	<association id="a-107" type="at-relation" from="tt-person" to="tt-phonenumber">
+		<property name="Cardinality" value="many"/>
+		<property name="Association Type ID" value="at-association"/>
+		<property name="Web Info" value="Related Topic Name"/>
+		<property name="Web Form" value="Related Form"/>
+		<property name="Ordinal Number" value="160"/>
+	</association>
+	<!--    relation to "Fax Number" -->
+	<association id="a-108" type="at-relation" from="tt-person" to="tt-faxnumber">
+		<property name="Cardinality" value="many"/>
+		<property name="Association Type ID" value="at-association"/>
+		<property name="Web Info" value="Related Topic Name"/>
+		<property name="Web Form" value="Related Form"/>
+		<property name="Ordinal Number" value="165"/>
+	</association>
+	<!--    relation to "Mobile Number" -->
+	<association id="a-55" type="at-relation" from="tt-person" to="tt-personphone">
+		<property name="Cardinality" value="many"/>
+		<property name="Association Type ID" value="at-association"/>
+		<property name="Web Info" value="Related Topic Name"/>
+		<property name="Web Form" value="Related Form"/>
+		<property name="Ordinal Number" value="168"/>
+	</association>
+	<!--    relation to "Webpage" -->
+	<association id="a-416" type="at-relation" from="tt-person" to="tt-webpage">
+		<property name="Cardinality" value="many"/>
+		<property name="Association Type ID" value="at-association"/>
+		<property name="Web Info" value="Related Topic Name"/>
+		<property name="Web Form" value="Related Form"/>
+		<property name="Ordinal Number" value="150"/>
+	</association>
+	<!--   - "Institution"   - -->
+	<topic id="tt-institution" name="Institution" type="tt-topictype">
+		<property name="Name" value="Institution"/>
+		<property name="Plural Name" value="Institutions"/>
+		<property name="Icon" value="institution.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-316" type="at-derivation" from="tt-generic" to="tt-institution"/>
+	<!--    container type -->
+	<topic id="tt-institutioncontainer" name="Institution Search" type="tt-topictype">
+		<property name="Name" value="Institution Search"/>
+		<property name="Icon" value="institution-search.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-317" type="at-derivation" from="tt-topiccontainer" to="tt-institutioncontainer"/>
+	<!--    assign topic type to its container type -->
+	<association id="a-318" type="at-aggregation" from="tt-institutioncontainer" to="tt-institution"/>
+	<!--    relation to "Address" -->
+	<association id="a-319" type="at-relation" from="tt-institution" to="tt-address">
+		<property name="Cardinality" value="one"/>
+		<property name="Association Type ID" value="at-association"/>
+		<property name="Web Info" value="Deeply Related Info"/>
+		<property name="Web Form" value="Deeply Related Form"/>
+		<property name="Ordinal Number" value="140"/>
+	</association>
+	<!--    relation to "Email Address" -->
+	<association id="a-406" type="at-relation" from="tt-institution" to="tt-emailaddress">
+		<property name="Cardinality" value="many"/>
+		<property name="Association Type ID" value="at-association"/>
+		<property name="Web Info" value="Related Topic Name"/>
+		<property name="Web Form" value="Related Form"/>
+		<property name="Ordinal Number" value="170"/>
+	</association>
+	<!--    relation to "Phone Number" -->
+	<association id="a-163" type="at-relation" from="tt-institution" to="tt-phonenumber">
+		<property name="Cardinality" value="many"/>
+		<property name="Association Type ID" value="at-association"/>
+		<property name="Web Info" value="Related Topic Name"/>
+		<property name="Web Form" value="Related Form"/>
+		<property name="Ordinal Number" value="160"/>
+	</association>
+	<!--    relation to "Fax Number" -->
+	<association id="a-106" type="at-relation" from="tt-institution" to="tt-faxnumber">
+		<property name="Cardinality" value="many"/>
+		<property name="Association Type ID" value="at-association"/>
+		<property name="Web Info" value="Related Topic Name"/>
+		<property name="Web Form" value="Related Form"/>
+		<property name="Ordinal Number" value="165"/>
+	</association>
+	<!--    relation to "Webpage" -->
+	<association id="a-417" type="at-relation" from="tt-institution" to="tt-webpage">
+		<property name="Cardinality" value="many"/>
+		<property name="Association Type ID" value="at-association"/>
+		<property name="Web Info" value="Related Topic Name"/>
+		<property name="Web Form" value="Related Form"/>
+		<property name="Ordinal Number" value="150"/>
+	</association>
+	
+	<!--   - "Address"   - -->
+	<topic id="tt-address" name="Address" type="tt-topictype">
+		<property name="Name" value="Address"/>
+		<property name="Plural Name" value="Addresses"/>
+		<property name="Icon" value="address.gif"/>
+		<property name="Unique Topic Names" value="off"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.AddressTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-305" type="at-composition" from="tt-address" to="pp-street">
+		<property name="Ordinal Number" value="1"/>
+	</association>
+	<association id="a-306" type="at-composition" from="tt-address" to="pp-postalcode">
+		<property name="Ordinal Number" value="2"/>
+	</association>
+	<!--    super type -->
+	<association id="a-302" type="at-derivation" from="tt-generic" to="tt-address"/>
+	<!--    container type -->
+	<topic id="tt-addresscontainer" name="Address Search" type="tt-topictype">
+		<property name="Name" value="Address Search"/>
+		<property name="Icon" value="address-search.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-303" type="at-derivation" from="tt-topiccontainer" to="tt-addresscontainer"/>
+	<!--    assign topic type to its container type -->
+	<association id="a-304" type="at-aggregation" from="tt-addresscontainer" to="tt-address"/>
+	<!--   - Define Relations   - -->
+	<!--    "City" -->
+	<association id="a-307" type="at-relation" from="tt-address" to="tt-city">
+		<property name="Cardinality" value="one"/>
+		<property name="Association Type ID" value="at-association"/>
+	</association>
+	
+	<!--   - "Phone Number"   - -->
+	<topic id="tt-phonenumber" name="Phone Number" type="tt-topictype">
+		<property name="Name" value="Phone Number"/>
+		<property name="Plural Name" value="Phone Numbers"/>
+		<property name="Icon" value="phone.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.PhoneNumberTopic"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-48" type="at-derivation" from="tt-generic" to="tt-phonenumber"/>
+	<!--    search type -->
+	<topic id="tt-phonenumbercontainer" name="Phone Number Search" type="tt-topictype">
+		<property name="Name" value="Phone Number Search"/>
+		<property name="Icon" value="phone-search.gif"/>
+	</topic>
+	<!--    derive search type -->
+	<association id="a-49" type="at-derivation" from="tt-topiccontainer" to="tt-phonenumbercontainer"/>
+	<!--    assign type to search type -->
+	<association id="a-50" type="at-aggregation" from="tt-phonenumbercontainer" to="tt-phonenumber"/>
+	
+	<!--   - "Fax Number"   - -->
+	<topic id="tt-faxnumber" name="Fax Number" type="tt-topictype">
+		<property name="Name" value="Fax Number"/>
+		<property name="Plural Name" value="Fax Numbers"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.FaxNumberTopic"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-103" type="at-derivation" from="tt-phonenumber" to="tt-faxnumber"/>
+	<!--    search type -->
+	<topic id="tt-faxnumbersearch" name="Fax Number Search" type="tt-topictype">
+		<property name="Name" value="Fax Number Search"/>
+		<property name="Icon" value="phone-search.gif"/>
+	</topic>
+	<!--    derive search type -->
+	<association id="a-104" type="at-derivation" from="tt-topiccontainer" to="tt-faxnumbersearch"/>
+	<!--    assign type to search type -->
+	<association id="a-105" type="at-aggregation" from="tt-faxnumbersearch" to="tt-faxnumber"/>
+	
+	<!--   - "Mobile Number"   - -->
+	<topic id="tt-personphone" name="Mobile Number" type="tt-topictype">
+		<property name="Name" value="Mobile Number"/>
+		<property name="Plural Name" value="Mobile Numbers"/>
+		<property name="Icon" value="mobile.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.MobileNumberTopic"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-100" type="at-derivation" from="tt-phonenumber" to="tt-personphone"/>
+	<!--    search type -->
+	<topic id="tt-personphonesearch" name="Mobile Number Search" type="tt-topictype">
+		<property name="Name" value="Mobile Number Search"/>
+		<property name="Icon" value="mobile-search.gif"/>
+	</topic>
+	<!--    derive search type -->
+	<association id="a-101" type="at-derivation" from="tt-topiccontainer" to="tt-personphonesearch"/>
+	<!--    assign type to search type -->
+	<association id="a-102" type="at-aggregation" from="tt-personphonesearch" to="tt-personphone"/>
+	
+	<!--   - "City"   - -->
+	<topic id="tt-city" name="City" type="tt-topictype">
+		<property name="Name" value="City"/>
+		<property name="Plural Name" value="Cities"/>
+		<property name="Icon" value="city.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-309" type="at-derivation" from="tt-generic" to="tt-city"/>
+	<!--    container type -->
+	<topic id="tt-citycontainer" name="City Search" type="tt-topictype">
+		<property name="Name" value="City Search"/>
+		<property name="Icon" value="city-search.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-310" type="at-derivation" from="tt-topiccontainer" to="tt-citycontainer"/>
+	<!--    assign topic type to its container type -->
+	<association id="a-311" type="at-aggregation" from="tt-citycontainer" to="tt-city"/>
+	<!--   - Define Relations   - -->
+	<!--    "Country" -->
+	<association id="a-312" type="at-relation" from="tt-city" to="tt-country">
+		<property name="Cardinality" value="one"/>
+		<property name="Association Type ID" value="at-association"/>
+	</association>
+	<!--   - "Country"   - -->
+	<topic id="tt-country" name="Country" type="tt-topictype">
+		<property name="Name" value="Country"/>
+		<property name="Plural Name" value="Countries"/>
+		<property name="Icon" value="country.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-313" type="at-derivation" from="tt-generic" to="tt-country"/>
+	<!--    container type -->
+	<topic id="tt-countrycontainer" name="Country Search" type="tt-topictype">
+		<property name="Name" value="Country Search"/>
+		<property name="Icon" value="country-search.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-314" type="at-derivation" from="tt-topiccontainer" to="tt-countrycontainer"/>
+	<!--    assign topic type to its container type -->
+	<association id="a-315" type="at-aggregation" from="tt-countrycontainer" to="tt-country"/>
+	
+	<!--   - "Image"   - -->
+	<topic id="tt-image" name="Image" type="tt-topictype">
+		<property name="Name" value="Image"/>
+		<property name="Plural Name" value="Images"/>
+		<property name="Icon" value="image.gif"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.ImageTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-56" type="at-composition" from="tt-image" to="pp-width">
+		<property name="Ordinal Number" value="20"/>
+	</association>
+	<association id="a-72" type="at-composition" from="tt-image" to="pp-height">
+		<property name="Ordinal Number" value="30"/>
+	</association>
+	<!--    super type -->
+	<association id="a-27" type="at-derivation" from="tt-file" to="tt-image"/>
+	<!--    container type -->
+	<topic id="tt-imagecontainer" name="Image Search" type="tt-topictype">
+		<property name="Name" value="Image Search"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-29" type="at-derivation" from="tt-topiccontainer" to="tt-imagecontainer"/>
+	<!--    assign topic type to its container type -->
+	<association id="a-42" type="at-aggregation" from="tt-imagecontainer" to="tt-image"/>
+	
+	<!--   - "User"   - -->
+	<topic id="tt-user" name="User" type="tt-topictype">
+		<property name="Name" value="User"/>
+		<property name="Plural Name" value="Users"/>
+		<!-- TODO <property name="Description" value="A "User" is a person who can login to DeepaMehta.\n\nA "User" can be assigned to workgroups by "membership" associations (direction is from user to group).\n\nA "User" can made be an administrator by assigning them to the "Administration" group. Administrators can create users and groups and can publish to the corporate space"/> -->
+		<property name="Icon" value="user.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.UserTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-298" type="at-composition" from="tt-user" to="pp-username">
+		<property name="Ordinal Number" value="1"/>
+	</association>
+	<association id="a-24" type="at-composition" from="tt-user" to="pp-password">
+		<property name="Ordinal Number" value="2"/>
+	</association>
+	<!--    super type -->
+	<association id="a-9" type="at-derivation" from="tt-person" to="tt-user"/>
+	<!--    container type -->
+	<topic id="tt-usercontainer" name="User Search" type="tt-topictype">
+		<property name="Name" value="User Search"/>
+		<property name="Icon" value="usercontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-39" type="at-derivation" from="tt-topiccontainer" to="tt-usercontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-69" type="at-aggregation" from="tt-usercontainer" to="tt-user"/>
+	
+	<!--   - "Workspace"   - -->
+	<topic id="tt-workspace" name="Workspace" type="tt-topictype">
+		<property name="Name" value="Workspace"/>
+		<property name="Plural Name" value="Workspaces"/>
+		<property name="Icon" value="workgroup.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.WorkspaceTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-400" type="at-composition" from="tt-workspace" to="pp-subscribable">
+		<property name="Ordinal Number" value="110"/>
+	</association>
+	<association id="a-247" type="at-composition" from="tt-workspace" to="pp-corporateworkgroup">
+		<property name="Ordinal Number" value="120"/>
+	</association>
+	<!--    super type -->
+	<association id="a-138" type="at-derivation" from="tt-generic" to="tt-workspace"/>
+	<!--    container type -->
+	<topic id="tt-workgroupcontainer" name="Workspace Search" type="tt-topictype">
+		<property name="Name" value="Workspace Search"/>
+		<property name="Icon" value="workgroupcontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-40" type="at-derivation" from="tt-topiccontainer" to="tt-workgroupcontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-70" type="at-aggregation" from="tt-workgroupcontainer" to="tt-workspace"/>
+	
+	<!--   - "Topic Map"   - -->
+	<topic id="tt-topicmap" name="Topic Map" type="tt-topictype">
+		<property name="Name" value="Topic Map"/>
+		<property name="Plural Name" value="Topicmaps"/>
+		<!-- TODO <property name="Description" value="<HTML><BODY>A <I>Topic Map</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="show.gif"/>
+		<property name="Creation Icon" value="create.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.TopicMapTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-248" type="at-composition" from="tt-topicmap" to="pp-backgroundimage">
+		<property name="Ordinal Number" value="310"/>
+	</association>
+	<association id="a-25" type="at-composition" from="tt-topicmap" to="pp-bgcolor">
+		<property name="Ordinal Number" value="320"/>
+	</association>
+	<association id="a-140" type="at-composition" from="tt-topicmap" to="pp-translationUse"/>
+	<!--    super type -->
+	<association id="a-135" type="at-derivation" from="tt-generic" to="tt-topicmap"/>
+	<!--    container type -->
+	<topic id="tt-topicmapcontainer" name="Topic Map Search" type="tt-topictype">
+		<property name="Name" value="Topic Map Search"/>
+		<property name="Icon" value="topicmapcontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-41" type="at-derivation" from="tt-topiccontainer" to="tt-topicmapcontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-71" type="at-aggregation" from="tt-topicmapcontainer" to="tt-topicmap"/>
+	
+	<!--   - "File"   - -->
+	<topic id="tt-file" name="File" type="tt-topictype">
+		<property name="Name" value="File"/>
+		<property name="Icon" value="file.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.FileTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-26" type="at-composition" from="tt-file" to="pp-file">
+		<property name="Ordinal Number" value="10"/>
+	</association>
+	<!--    super type -->
+	<association id="a-136" type="at-derivation" from="tt-generic" to="tt-file"/>
+	
+	<!--   - "Document"   - -->
+	<topic id="tt-document" name="Document" type="tt-topictype">
+		<property name="Name" value="Document"/>
+		<property name="Plural Name" value="Documents"/>
+		<!-- TODO <property name="Description" value="<HTML><BODY>A <I>Document</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="document.gif"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.DocumentTopic"/>
+		<property name="Unique Topic Names" value="on"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-1" type="at-derivation" from="tt-file" to="tt-document"/>
+	<!--    container type -->
+	<topic id="tt-documentcontainer" name="Document Search" type="tt-topictype">
+		<property name="Name" value="Document Search"/>
+		<property name="Icon" value="documentcontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-43" type="at-derivation" from="tt-topiccontainer" to="tt-documentcontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-73" type="at-aggregation" from="tt-documentcontainer" to="tt-document"/>
+	
+	<!--   - "Document Type"   - -->
+	<topic id="tt-documenttype" name="Document Type" type="tt-topictype">
+		<property name="Name" value="Document Type"/>
+		<property name="Plural Name" value="Document Types"/>
+		<!-- TODO <property name="Description" value="<HTML><BODY>A <I>Document Type</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="documenttype.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-118" type="at-derivation" from="tt-generic" to="tt-documenttype"/>
+	<!--    container type -->
+	<topic id="tt-documenttypecontainer" name="Document Type Search" type="tt-topictype">
+		<property name="Name" value="Document Type Search"/>
+		<property name="Icon" value="documenttypecontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-88" type="at-derivation" from="tt-topiccontainer" to="tt-documenttypecontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-75" type="at-aggregation" from="tt-documenttypecontainer" to="tt-documenttype"/>
+	
+	<!--   - "MIME Type"   - -->
+	<topic id="tt-mimetype" name="MIME Type" type="tt-topictype">
+		<property name="Name" value="MIME Type"/>
+		<property name="Plural Name" value="MIME Types"/>
+		<!-- TODO <property name="Description" value="<HTML><BODY>A <I>MIME Type</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="mimetype.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-119" type="at-derivation" from="tt-generic" to="tt-mimetype"/>
+	<!--    container type -->
+	<topic id="tt-mimetypecontainer" name="MIME Type Search" type="tt-topictype">
+		<property name="Name" value="MIME Type Search"/>
+		<property name="Icon" value="mimetypecontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-89" type="at-derivation" from="tt-topiccontainer" to="tt-mimetypecontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-60" type="at-aggregation" from="tt-mimetypecontainer" to="tt-mimetype"/>
+	
+	<!--   - "Application"   - -->
+	<topic id="tt-application" name="Application" type="tt-topictype">
+		<property name="Name" value="Application"/>
+		<property name="Plural Name" value="Applications"/>
+		<!-- TODO <property name="Description" value="<HTML><BODY>An <I>Application</I> is a ...</BODY></HTML>"/> -->
+		<property name="Icon" value="application.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.ApplicationTopic"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-2" type="at-derivation" from="tt-file" to="tt-application"/>
+	<!--    container type -->
+	<topic id="tt-applicationcontainer" name="Application Search" type="tt-topictype">
+		<property name="Name" value="Application Search"/>
+		<property name="Icon" value="applicationcontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-44" type="at-derivation" from="tt-topiccontainer" to="tt-applicationcontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-74" type="at-aggregation" from="tt-applicationcontainer" to="tt-application"/>
+	
+	<!--   - "TopicContainer"   - -->
+	<topic id="tt-topiccontainer" name="TopicContainer" type="tt-topictype">
+		<property name="Name" value="TopicContainer"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.TopicContainerTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-28" type="at-composition" from="tt-topiccontainer" to="pp-topicname">
+		<property name="Ordinal Number" value="100"/>
+	</association>
+	<!--    super type -->
+	<association id="a-6" type="at-derivation" from="tt-container" to="tt-topiccontainer"/>
+	
+	<!--   - "ElementContainer"   - -->
+	<topic id="tt-elementcontainer" name="ElementContainer" type="tt-topictype">
+		<property name="Name" value="ElementContainer"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-7" type="at-derivation" from="tt-container" to="tt-elementcontainer"/>
+	
+	<!--   - "Authentification Source"   - -->
+	<topic id="tt-authentificationsource" name="Authentification Source" type="tt-topictype">
+		<property name="Name" value="Authentification Source"/>
+		<property name="Plural Name" value="Authentification Sources"/>
+		<property name="Icon" value="authentificationsource.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.AuthentificationSourceTopic"/>
+		<!--    assign properties -->
+		<!--    ### INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-48', '', 'tt-authentificationsource', 1, 'pp-profileelementtype', 1); -->
+		<!--    ### INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-49', '', 'tt-authentificationsource', 1, 'pp-usernameattr', 1); -->
+		<!--    ### INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-50', '', 'tt-authentificationsource', 1, 'pp-passwordattr', 1); -->
+	</topic>
+	<!--    super type -->
+	<association id="a-150" type="at-derivation" from="tt-generic" to="tt-authentificationsource">
+		<!--    ### INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-15', '', 'tt-datasource', 1, 'tt-authentificationsource', 1); -->
+	</association>
+	<!--    container type -->
+	<topic id="tt-authentificationsourcecontainer" name="Authentification Source Search" type="tt-topictype">
+		<property name="Name" value="Authentification Source Search"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-90" type="at-derivation" from="tt-topiccontainer" to="tt-authentificationsourcecontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-87" type="at-aggregation" from="tt-authentificationsourcecontainer" to="tt-authentificationsource"/>
+	
+	<!--   - "Chat Board"   - -->
+	<topic id="tt-chatboard" name="Chat Board" type="tt-topictype">
+		<property name="Name" value="Chat Board"/>
+		<property name="Plural Name" value="Chat Boards"/>
+		<property name="Icon" value="chat.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.ChatBoardTopic"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-120" type="at-derivation" from="tt-topicmap" to="tt-chatboard"/>
+	<!--    container type -->
+	<topic id="tt-chatboardcontainer" name="Chat Board Search" type="tt-topictype">
+		<property name="Name" value="Chat Board Search"/>
+		<property name="Icon" value="chat-search.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-121" type="at-derivation" from="tt-topiccontainer" to="tt-chatboardcontainer"/>
+	<!--    assign topic type to its container type -->
+	<association id="a-117" type="at-aggregation" from="tt-chatboardcontainer" to="tt-chatboard"/>
+	
+	<!--   - "Chat"   - -->
+	<topic id="tt-chat" name="Chat" type="tt-topictype">
+		<property name="Name" value="Chat"/>
+		<property name="Plural Name" value="Chats"/>
+		<property name="Icon" value="chat.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.ChatTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-320" type="at-composition" from="tt-chat" to="pp-date">
+		<property name="Ordinal Number" value="1"/>
+	</association>
+	<association id="a-321" type="at-composition" from="tt-chat" to="pp-starttime">
+		<property name="Ordinal Number" value="2"/>
+	</association>
+	<association id="a-300" type="at-composition" from="tt-chat" to="pp-chatarea">
+		<property name="Ordinal Number" value="3"/>
+	</association>
+	<association id="a-301" type="at-composition" from="tt-chat" to="pp-userentry">
+		<property name="Ordinal Number" value="4"/>
+	</association>
+	<!--    super type -->
+	<!--    container type -->
+	<topic id="tt-chatcontainer" name="Chat Search" type="tt-topictype">
+		<property name="Name" value="Chat Search"/>
+		<property name="Icon" value="chat-search.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-122" type="at-derivation" from="tt-topiccontainer" to="tt-chatcontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-123" type="at-aggregation" from="tt-chatcontainer" to="tt-chat"/>
+	
+	<!--   - "Message Board"   - -->
+	<topic id="tt-messageboard" name="Message Board" type="tt-topictype">
+		<property name="Name" value="Message Board"/>
+		<property name="Plural Name" value="Message Boards"/>
+		<property name="Icon" value="messageboard.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.messageboard.topics.MessageBoardTopic"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-859" type="at-derivation" from="tt-topicmap" to="tt-messageboard"/>
+	<!--    container type -->
+	<topic id="tt-messageboardcontainer" name="Message Board Search" type="tt-topictype">
+		<property name="Name" value="Message Board Search"/>
+		<property name="Icon" value="messageboard-search.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-860" type="at-derivation" from="tt-topiccontainer" to="tt-messageboardcontainer"/>
+	<!--    assign topic type to its container type -->
+	<association id="a-861" type="at-aggregation" from="tt-messageboardcontainer" to="tt-messageboard"/>
+	
+	<!--   - "Message"   - -->
+	<topic id="tt-message" name="Message" type="tt-topictype">
+		<property name="Name" value="Message"/>
+		<property name="Plural Name" value="Messages"/>
+		<property name="Icon" value="message.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.messageboard.topics.MessageTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-865" type="at-composition" from="tt-message" to="pp-from">
+		<property name="Ordinal Number" value="210"/>
+	</association>
+	<association id="a-866" type="at-composition" from="tt-message" to="pp-date">
+		<property name="Ordinal Number" value="220"/>
+	</association>
+	<association id="a-869" type="at-composition" from="tt-message" to="pp-lastreplydate">
+		<property name="Ordinal Number" value="230"/>
+	</association>
+	<association id="a-870" type="at-composition" from="tt-message" to="pp-lastreplytime">
+		<property name="Ordinal Number" value="240"/>
+	</association>
+	<!--    super type -->
+	<association id="a-862" type="at-derivation" from="tt-generic" to="tt-message"/>
+	<!--    container type -->
+	<topic id="tt-messagecontainer" name="Message Search" type="tt-topictype">
+		<property name="Name" value="Message Search"/>
+		<property name="Icon" value="message-search.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-863" type="at-derivation" from="tt-topiccontainer" to="tt-messagecontainer"/>
+	<!--    assign topic type to its container type -->
+	<association id="a-864" type="at-aggregation" from="tt-messagecontainer" to="tt-message"/>
+	
+	<!--   - "Appointment"   - -->
+	<topic id="tt-appointment" name="Appointment" type="tt-topictype">
+		<property name="Name" value="Appointment"/>
+		<property name="Plural Name" value="Appointments"/>
+		<property name="Icon" value="appointment.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-294" type="at-composition" from="tt-appointment" to="pp-date">
+		<property name="Ordinal Number" value="110"/>
+	</association>
+	<association id="a-attr_ap4" type="at-composition" from="tt-appointment" to="pp-starttime">
+		<property name="Ordinal Number" value="120"/>
+	</association>
+	<association id="a-attr_ap5" type="at-composition" from="tt-appointment" to="pp-duration">
+		<property name="Ordinal Number" value="130"/>
+	</association>
+	<!--    super type -->
+	<association id="a-126" type="at-derivation" from="tt-generic" to="tt-appointment"/>
+	<!--    container type -->
+	<topic id="tt-appointmentcontainer" name="Appointment Search" type="tt-topictype">
+		<property name="Name" value="Appointment Search"/>
+		<property name="Icon" value="appointmentcontainer.gif"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-124" type="at-derivation" from="tt-topiccontainer" to="tt-appointmentcontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-125" type="at-aggregation" from="tt-appointmentcontainer" to="tt-appointment"/>
+	
+	<!--   - "Export Format"   - -->
+	<topic id="tt-exportformat" name="Export Format" type="tt-topictype">
+		<property name="Name" value="Export Format"/>
+		<property name="Plural Name" value="Export Formats"/>
+		<property name="Icon" value="document.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+	</topic>
+	<!--   - super type -->
+	<association id="a-250" type="at-derivation" from="tt-generic" to="tt-exportformat"/>
+	<!--   - container type -->
+	<topic id="tt-exportformatcontainer" name="Export Format Search" type="tt-topictype">
+		<property name="Name" value="Export Format Search"/>
+	</topic>
+	<!--   - derive container type -->
+	<association id="a-251" type="at-derivation" from="tt-topiccontainer" to="tt-exportformatcontainer"/>
+	<!--   - assign type to container type -->
+	<association id="a-252" type="at-aggregation" from="tt-exportformatcontainer" to="tt-exportformat"/>
+	
+	<!--   - "Installation"   - -->
+	<topic id="tt-installation" name="Installation" type="tt-topictype">
+		<property name="Name" value="Installation"/>
+		<property name="Plural Name" value="Installations"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.InstallationTopic"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-276" type="at-composition" from="tt-installation" to="pp-active">
+		<property name="Ordinal Number" value="110"/>
+	</association>
+	<association id="a-275" type="at-composition" from="tt-installation" to="pp-clientname">
+		<property name="Ordinal Number" value="210"/>
+	</association>
+	<association id="a-274" type="at-composition" from="tt-installation" to="pp-servicename">
+		<property name="Ordinal Number" value="220"/>
+	</association>
+	<association id="a-279" type="at-composition" from="tt-installation" to="pp-language">
+		<property name="Ordinal Number" value="230"/>
+	</association>
+	<association id="a-277" type="at-composition" from="tt-installation" to="pp-serviceicon">
+		<property name="Ordinal Number" value="310"/>
+	</association>
+	<association id="a-278" type="at-composition" from="tt-installation" to="pp-customericon">
+		<property name="Ordinal Number" value="320"/>
+	</association>
+	<!--    super type -->
+	<association id="a-271" type="at-derivation" from="tt-generic" to="tt-installation"/>
+	<!--    container type -->
+	<topic id="tt-installationcontainer" name="Installation Search" type="tt-topictype">
+		<property name="Name" value="Installation Search"/>
+	</topic>
+	<!--    derive container type -->
+	<association id="a-272" type="at-derivation" from="tt-topiccontainer" to="tt-installationcontainer"/>
+	<!--    assign type to container type -->
+	<association id="a-273" type="at-aggregation" from="tt-installationcontainer" to="tt-installation"/>
+	
+	<!--   - "CM Import/Export"   - -->
+	<topic id="tt-cmimportexport" name="CM Import/Export" type="tt-topictype">
+		<property name="Name" value="CM Import/Export"/>
+		<property name="Description" value="The CM Import/Export is used for importing/exporting of corporate memory from/to external archive file."/>
+		<property name="Icon" value="cmimportexport.gif"/>
+		<property name="Unique Topic Names" value="on"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.CMImportExportTopic"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-142" type="at-derivation" from="tt-generic" to="tt-cmimportexport"/>
+	
+	<!--                       -->
+	<!--   Association Types   -->
+	<!--                       -->
+	
+	<!--   - "generic"   - -->
+	<topic id="at-generic" name="Association" type="tt-assoctype">
+		<property name="Name" value="Association"/>
+		<property name="Plural Name" value="Associations"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-328" type="at-composition" from="at-generic" to="pp-name">
+		<property name="Ordinal Number" value="100"/>
+	</association>
+	<association id="a-238" type="at-composition" from="at-generic" to="pp-info">
+		<property name="Ordinal Number" value="200"/>
+	</association>
+	<association id="a-236" type="at-composition" from="at-generic" to="pp-ordinalnumber">
+		<property name="Ordinal Number" value="500"/>
+	</association>
+	
+	<!--   - "association"   - -->
+	<topic id="at-association" name="Association" type="tt-assoctype">
+		<property name="Name" value="Association"/>
+		<property name="Plural Name" value="Associations"/>
+		<property name="Color" value="#FF00FF"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-233" type="at-derivation" from="at-generic" to="at-association"/>
+	
+	<!--   - "derivation"   - -->
+	<topic id="at-derivation" name="Derivation" type="tt-assoctype">
+		<property name="Name" value="Derivation"/>
+		<property name="Plural Name" value="Derivations"/>
+		<property name="Color" value="#0000FF"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-235" type="at-derivation" from="at-generic" to="at-derivation"/>
+	
+	<!--   - "aggregation"   - -->
+	<topic id="at-aggregation" name="Aggregation" type="tt-assoctype">
+		<property name="Name" value="Aggregation"/>
+		<property name="Plural Name" value="Aggregations"/>
+		<property name="Color" value="#FF0000"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-232" type="at-derivation" from="at-generic" to="at-aggregation"/>
+	
+	<!--   - "composition"   - -->
+	<topic id="at-composition" name="Composition" type="tt-assoctype">
+		<property name="Name" value="Composition"/>
+		<property name="Plural Name" value="Compositions"/>
+		<property name="Color" value="#00FF00"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-234" type="at-derivation" from="at-generic" to="at-composition"/>
+	
+	<!--   - "relation"   - -->
+	<topic id="at-relation" name="Relation" type="tt-assoctype">
+		<property name="Name" value="Relation"/>
+		<property name="Plural Name" value="Relations"/>
+		<property name="Color" value="#A000A0"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-227" type="at-composition" from="at-relation" to="pp-cardinality">
+		<property name="Ordinal Number" value="110"/>
+	</association>
+	<association id="a-290" type="at-composition" from="at-relation" to="pp-associationtypeid">
+		<property name="Ordinal Number" value="120"/>
+	</association>
+	<association id="a-413" type="at-composition" from="at-relation" to="pp-webinfo">
+		<property name="Ordinal Number" value="210"/>
+	</association>
+	<association id="a-414" type="at-composition" from="at-relation" to="pp-webform">
+		<property name="Ordinal Number" value="220"/>
+	</association>
+	<!--    super type -->
+	<association id="a-218" type="at-derivation" from="at-generic" to="at-relation"/>
+	
+	<!--   - "membership"   - -->
+	<topic id="at-membership" name="Membership" type="tt-assoctype">
+		<property name="Name" value="Membership"/>
+		<property name="Plural Name" value="Memberships"/>
+		<property name="Color" value="#FF8000"/>
+	</topic>
+	<!--    super type -->
+	
+	<!--   - "publish permission"   - -->
+	<topic id="at-publishpermission" name="Publish Permission" type="tt-assoctype">
+		<property name="Name" value="Publish Permission"/>
+	</topic>
+	<!--    super type -->
+	
+	<!--   - "publishing"   - -->
+	<topic id="at-publishing" name="Publishing" type="tt-assoctype">
+		<property name="Name" value="Publishing"/>
+		<property name="Color" value="#FF00FF"/>
+	</topic>
+	<!--    super type -->
+	
+	<!--   - "dating"   - -->
+	<topic id="at-dating" name="Dating" type="tt-assoctype">
+		<property name="Name" value="Dating"/>
+		<property name="Plural Name" value="Datings"/>
+		<property name="Color" value="#FF8040"/>
+	</topic>
+	
+	<!--   - "view in use"   - -->
+	<topic id="at-viewinuse" name="view in use" type="tt-assoctype">
+		<property name="Name" value="view in use"/>
+	</topic>
+	
+	<!--   - "type access"   - -->
+	<topic id="at-uses" name="Type Access" type="tt-assoctype">
+		<property name="Name" value="Type Access"/>
+		<property name="Color" value="#00E0FF"/>
+	</topic>
+	<!--    assign properties -->
+	<association id="a-239" type="at-composition" from="at-uses" to="pp-createpermission"/>
+	<!--    super type -->
+	<association id="a-237" type="at-derivation" from="at-generic" to="at-uses"/>
+	
+	<!--   - "group leader"   - -->
+	<topic id="at-groupleader" name="Group Leader" type="tt-assoctype">
+		<property name="Name" value="Group Leader"/>
+	</topic>
+	<!--    super type -->
+	
+	<!--   - "navigation"   - -->
+	<topic id="at-navigation" name="Search Result" type="tt-assoctype">
+		<property name="Name" value="Search Result"/>
+	</topic>
+	<!--    super type -->
+	
+	<!--   - "preference"   - -->
+	<topic id="at-preference" name="Preference" type="tt-assoctype">
+		<property name="Name" value="Preference"/>
+		<property name="Plural Name" value="Preferences"/>
+		<property name="Color" value="#A00000"/>
+	</topic>
+	
+	<!--   - "Google Result"   - -->
+	<topic id="at-googleresult" name="Google Result" type="tt-assoctype">
+		<property name="Name" value="Google Result"/>
+		<property name="Plural Name" value="Google Results"/>
+		<property name="Color" value="#A000A0"/>
+	</topic>
+	<!--    super type -->
+	<association id="a-174" type="at-derivation" from="at-association" to="at-googleresult"/>
+	
+	<!--                -->
+	<!--   Properties   -->
+	<!--                -->
+	
+	<!--   - "Name"   - -->
+	<topic id="pp-name" name="Name" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+		<property name="Edit Icon" value="rename.gif"/>
+	</topic>
+	
+	<!--   - "Description"   - -->
+	<topic id="pp-info" name="Description" type="tt-property">
+		<property name="Visualization" value="Text Editor"/>
+		<property name="Edit Icon" value="editdescription.gif"/>
+	</topic>
+	
+	<!--   - "Description" (single line)   - -->
+	<topic id="pp-infosingle" name="Description" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Locked Geometry"   - -->
+	<topic id="pp-geometrylocked" name="Locked Geometry" type="tt-property">
+		<property name="Visualization" value="hidden"/>
+	</topic>
+	
+	<!--   - "Owner ID"   - -->
+	<topic id="pp-owner" name="Owner ID" type="tt-property">
+		<property name="Name" value="Owner ID"/>
+		<property name="Visualization" value="hidden"/>
+	</topic>
+	
+	<!--   - "Icon"   - -->
+	<topic id="pp-icon" name="Icon" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+		<property name="Edit Icon" value="editicon.gif"/>
+	</topic>
+	
+	<!--   - "Color"   - -->
+	<topic id="pp-color" name="Color" type="tt-property">
+		<property name="Visualization" value="Color Chooser"/>
+		<property name="Edit Icon" value="editcolor.gif"/>
+	</topic>
+	
+	<!--   - "Creation Icon"   - -->
+	<topic id="pp-creationicon" name="Creation Icon" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+		<property name="Edit Icon" value="editicon.gif"/>
+	</topic>
+	
+	<!--   - "Description Query"   - -->
+	<topic id="pp-descriptionquery" name="Description Query" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+		<property name="Edit Icon" value="editdescription.gif"/>
+	</topic>
+	
+	<!--   - "Plural Name"   - -->
+	<topic id="pp-pluraltypename" name="Plural Name" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Hidden Topic Names"   - -->
+	<topic id="pp-hideinstancenames" name="Hidden Topic Names" type="tt-property">
+		<property name="Visualization" value="Switch"/>
+		<property name="Edit Icon" value="sethiddentopicnames.gif"/>
+	</topic>
+	
+	<!--   - "Unique Topic Names"   - -->
+	<topic id="pp-unique" name="Unique Topic Names" type="tt-property">
+		<property name="Visualization" value="Switch"/>
+	</topic>
+	
+	<!--   - "Disabled"   - -->
+	<topic id="pp-disabled" name="Disabled" type="tt-property">
+		<property name="Visualization" value="Switch"/>
+		<property name="Edit Icon" value="setdisabled.gif"/>
+	</topic>
+	
+	<!--   - "Custom Implementation"   - -->
+	<topic id="pp-implementingclass" name="Custom Implementation" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+		<property name="Edit Icon" value="editdescription.gif"/>
+	</topic>
+	
+	<!--   - "Ordinal Number"   - -->
+	<topic id="pp-ordinalnumber" name="Ordinal Number" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Access Permission"   - -->
+	<topic id="pp-createpermission" name="Access Permission" type="tt-property">
+		<property name="Visualization" value="Options Menu"/>
+		<property name="Default Value" value="view"/>
+	</topic>
+	
+	<!--   - "Background Color"   - -->
+	<topic id="pp-bgcolor" name="Background Color" type="tt-property">
+		<property name="Visualization" value="Color Chooser"/>
+	</topic>
+	
+	<!--   - "Background Image"   - -->
+	<topic id="pp-backgroundimage" name="Background Image" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Translation"   - -->
+	<topic id="pp-translationUse" name="Translation" type="tt-property">
+		<property name="Visualization" value="hidden"/>
+	</topic>
+	
+	<!--   - "Visualization"   - (Property) -->
+	<topic id="pp-visualization" name="Visualization" type="tt-property">
+		<property name="Visualization" value="Options Menu"/>
+		<property name="Default Value" value="Input Field"/>
+		<property name="Edit Icon" value="setvisualization.gif"/>
+	</topic>
+	
+	<!--   - "Default Value"   - (Property) -->
+	<topic id="pp-defaultvalue" name="Default Value" type="tt-property">
+		<property name="Name" value="Default Value"/>
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Edit Icon"   - (Property) -->
+	<topic id="pp-editicon" name="Edit Icon" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+		<property name="Edit Icon" value="editicon.gif"/>
+	</topic>
+	
+	<!--   - "Public" (Workspace)   - -->
+	<topic id="pp-subscribable" name="Public" type="tt-property">
+		<property name="Visualization" value="Switch"/>
+		<property name="Edit Icon" value="setsubscribable.gif"/>
+	</topic>
+	
+	<!--   - "Default" (Workspace)   - -->
+	<topic id="pp-corporateworkgroup" name="Default" type="tt-property">
+		<property name="Visualization" value="Switch"/>
+		<property name="Edit Icon" value="setcorporateworkgroup.gif"/>
+	</topic>
+	
+	<!--   - "ElementCount" (Search)   - -->
+	<topic id="pp-elementcount" name="ElementCount" type="tt-property">
+		<property name="Visualization" value="hidden"/>
+	</topic>
+	
+	<!--   - "QueryElements" (Search)   - -->
+	<topic id="pp-queryelements" name="QueryElements" type="tt-property">
+		<property name="Visualization" value="hidden"/>
+	</topic>
+	
+	<!--   - "RelatedTopicID" (Search)   - -->
+	<topic id="pp-relatedtopicid" name="RelatedTopicID" type="tt-property">
+		<property name="Visualization" value="hidden"/>
+	</topic>
+	
+	<!--   - "AssociationTypeID" (Search)   - -->
+	<topic id="pp-assoctypeid" name="AssociationTypeID" type="tt-property">
+		<property name="Name" value="AssociationTypeID"/>
+		<property name="Visualization" value="hidden"/>
+	</topic>
+	
+	<!--    "Email Address" -->
+	<topic id="pp-emailaddress" name="Email Address" type="tt-property">
+		<property name="Name" value="Email Address"/>
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	<!--    "Mailbox URL" -->
+	<topic id="pp-mailboxurl" name="Mailbox URL" type="tt-property">
+		<property name="Name" value="Mailbox URL"/>
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "URL"   - -->
+	<topic id="pp-url" name="URL" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Domain Information"   - -->
+	<topic id="pp-domaininfo" name="Domain Information" type="tt-property">
+		<property name="Visualization" value="Multiline Input Field"/>
+	</topic>
+	
+	<!--   - "Server" (Whois)   - -->
+	<topic id="pp-wit_server" name="Server" type="tt-property">
+		<property name="Name" value="Server"/>
+	</topic>
+	
+	<!--   - "Domains" (Whois)   - -->
+	<topic id="pp-wit_domains" name="Domains" type="tt-property">
+		<property name="Name" value="Domains"/>
+	</topic>
+	
+	<!--   - "Driver"   - -->
+	<topic id="pp-driver" name="Driver" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Entities"   - -->
+	<topic id="pp-entities" name="Entities" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Idle Elementtype"   - -->
+	<topic id="pp-idleelementtype" name="Idle Elementtype" type="tt-property"/>
+	
+	<!--   - "Profile Elementtype"   - -->
+	<topic id="pp-profileelementtype" name="Profile Elementtype" type="tt-property"/>
+	
+	<!--   - "Username Attribute"   - -->
+	<topic id="pp-usernameattr" name="Username Attribute" type="tt-property">
+		<property name="Name" value="Username Attribute"/>
+	</topic>
+	
+	<!--   - "Password Attribute"   - -->
+	<topic id="pp-passwordattr" name="Password Attribute" type="tt-property"/>
+	
+	<!--   - "Username"   - -->
+	<topic id="pp-username" name="Username" type="tt-property">
+		<property name="Name" value="Username"/>
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Password"   - -->
+	<topic id="pp-password" name="Password" type="tt-property">
+		<property name="Visualization" value="Password Field"/>
+	</topic>
+	
+	<!--   - "File"   - -->
+	<topic id="pp-file" name="File" type="tt-property">
+		<property name="Visualization" value="File Chooser"/>
+	</topic>
+	
+	<!--   - "Search"   - -->
+	<topic id="pp-topicname" name="Search" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Chat Flow" (Chat)   - -->
+	<topic id="pp-chatarea" name="Chat Flow" type="tt-property">
+		<property name="Visualization" value="Text Editor"/>
+	</topic>
+	
+	<!--   - "Your Remark" (Chat)   - -->
+	<topic id="pp-userentry" name="Your Remark" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Last Reply Date" (Message)   - -->
+	<topic id="pp-lastreplydate" name="Last Reply Date" type="tt-property">
+		<property name="Name" value="Last Reply Date"/>
+		<property name="Visualization" value="Date Chooser"/>
+	</topic>
+	
+	<!--   - "Last Reply Time" (Message)   - -->
+	<topic id="pp-lastreplytime" name="Last Reply Time" type="tt-property">
+		<property name="Name" value="Last Reply Time"/>
+		<property name="Visualization" value="Time Chooser"/>
+	</topic>
+	
+	<!--    "First Name" -->
+	<topic id="pp-forename" name="First Name" type="tt-property">
+		<property name="Name" value="First Name"/>
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--    "Surname" -->
+	<topic id="pp-surname2" name="Surname" type="tt-property">
+		<property name="Name" value="Surname"/>
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Gender" (Person)   - -->
+	<topic id="pp-gender" name="Gender" type="tt-property">
+		<property name="Name" value="Gender"/>
+		<property name="Visualization" value="Option Buttons"/>
+	</topic>
+	<!--    property values -->
+	<topic id="t-male" name="Male" type="tt-constant">
+		<property name="Name" value="Male"/>
+	</topic>
+	<topic id="t-female" name="Female" type="tt-constant">
+		<property name="Name" value="Female"/>
+	</topic>
+	<!--    assign property values -->
+	<association id="a-145" type="at-composition" from="pp-gender" to="t-male">
+		<property name="Ordinal Number" value="1"/>
+	</association>
+	<association id="a-146" type="at-composition" from="pp-gender" to="t-female">
+		<property name="Ordinal Number" value="2"/>
+	</association>
+	
+	<!--   - "Birthday" (Person)   - -->
+	<topic id="pp-birthday" name="Birthday" type="tt-property">
+		<property name="Visualization" value="Date Chooser"/>
+	</topic>
+	
+	<!--   - "Street" (Address)   - -->
+	<topic id="pp-street" name="Street" type="tt-property">
+		<property name="Name" value="Street"/>
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Postal Code" (Address)   - -->
+	<topic id="pp-postalcode" name="Postal Code" type="tt-property">
+		<property name="Name" value="Postal Code"/>
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Start Time"   - -->
+	<topic id="pp-starttime" name="Begin" type="tt-property">
+		<property name="Visualization" value="Time Chooser"/>
+	</topic>
+	
+	<!--   - "Duration"   - -->
+	<topic id="pp-duration" name="Duration" type="tt-property">
+		<property name="Visualization" value="Time Chooser"/>
+	</topic>
+	
+	<!--   - "Language"   - -->
+	<topic id="pp-language" name="Language" type="tt-property">
+		<property name="Visualization" value="Options Menu"/>
+	</topic>
+	
+	<!--   - "Splitted screen"   - -->
+	<topic id="pp-splitscreen" name="Splitted screen" type="tt-property">
+		<property name="Visualization" value="Switch"/>
+		<property name="Edit Icon" value="setsplittedscreen.gif"/>
+	</topic>
+	
+	<!--   - "Show side panel"   - -->
+	<topic id="pp-showsidebar" name="Show side panel" type="tt-property">
+		<property name="Visualization" value="Switch"/>
+		<property name="Edit Icon" value="setshowsidepanel.gif"/>
+	</topic>
+	
+	<!--   - "Show build panel"   - -->
+	<topic id="pp-showbuildpanel" name="Show build panel" type="tt-property">
+		<property name="Visualization" value="Switch"/>
+		<property name="Edit Icon" value="setshowbuildpanel.gif"/>
+	</topic>
+	
+	<!--   - "Server Name", "Client Name", "Active", "Corporate Icon", "Customer Icon"   - -->
+	<topic id="pp-servicename" name="Server Name" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	<topic id="pp-clientname" name="Client Name" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	<topic id="pp-active" name="Active" type="tt-property">
+		<property name="Visualization" value="Switch"/>
+	</topic>
+	<topic id="pp-serviceicon" name="Corporate Icon" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	<topic id="pp-customericon" name="Customer Icon" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Cardinality"   - -->
+	<topic id="pp-cardinality" name="Cardinality" type="tt-property">
+		<property name="Visualization" value="Option Buttons"/>
+		<property name="Default Value" value="one"/>
+	</topic>
+	<!--    assign property values to "Cardinality" -->
+	<association id="a-228" type="at-composition" from="pp-cardinality" to="t-one">
+		<property name="Ordinal Number" value="1"/>
+	</association>
+	<association id="a-289" type="at-composition" from="pp-cardinality" to="t-many">
+		<property name="Ordinal Number" value="2"/>
+	</association>
+	
+	<!--   - "Association Type ID"   - -->
+	<topic id="pp-associationtypeid" name="Association Type ID" type="tt-property">
+		<property name="Visualization" value="Input Field"/>
+		<property name="Default Value" value="at-association"/>
+	</topic>
+	
+	<!--   - "Web Alias"   - -->
+	<topic id="pp-webalias" name="Web Alias" type="tt-property">
+		<property name="Name" value="Web Alias"/>
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--   - "Web Info"   - -->
+	<topic id="pp-webinfo" name="Web Info" type="tt-property">
+		<property name="Name" value="Web Info"/>
+		<property name="Visualization" value="Options Menu"/>
+		<property name="Default Value" value="Related Topic Name"/>
+	</topic>
+	<!--    property values -->
+	<topic id="t-relatedtopicname" name="Related Topic Name" type="tt-constant">
+		<property name="Name" value="Related Topic Name"/>
+	</topic>
+	<topic id="t-relatedinfo" name="Related Info" type="tt-constant">
+		<property name="Name" value="Related Info"/>
+	</topic>
+	<topic id="t-deeplyrelatedinfo" name="Deeply Related Info" type="tt-constant">
+		<property name="Name" value="Deeply Related Info"/>
+	</topic>
+	<!--    assign property values -->
+	<association id="a-408" type="at-composition" from="pp-webinfo" to="t-relatedtopicname">
+		<property name="Ordinal Number" value="1"/>
+	</association>
+	<association id="a-418" type="at-composition" from="pp-webinfo" to="t-relatedinfo">
+		<property name="Ordinal Number" value="2"/>
+	</association>
+	<association id="a-409" type="at-composition" from="pp-webinfo" to="t-deeplyrelatedinfo">
+		<property name="Ordinal Number" value="3"/>
+	</association>
+	
+	<!--   - "Web Form"   - -->
+	<topic id="pp-webform" name="Web Form" type="tt-property">
+		<property name="Name" value="Web Form"/>
+		<property name="Visualization" value="Options Menu"/>
+		<property name="Default Value" value="Related Topic Selector"/>
+	</topic>
+	<!--    property values -->
+	<topic id="t-relatedtopicselector" name="Related Topic Selector" type="tt-constant">
+		<property name="Name" value="Related Topic Selector"/>
+	</topic>
+	<topic id="t-relatedform" name="Related Form" type="tt-constant">
+		<property name="Name" value="Related Form"/>
+	</topic>
+	<topic id="t-deeplyrelatedform" name="Deeply Related Form" type="tt-constant">
+		<property name="Name" value="Deeply Related Form"/>
+	</topic>
+	<!--    assign property values -->
+	<association id="a-410" type="at-composition" from="pp-webform" to="t-relatedtopicselector">
+		<property name="Ordinal Number" value="1"/>
+	</association>
+	<association id="a-412" type="at-composition" from="pp-webform" to="t-relatedform">
+		<property name="Ordinal Number" value="2"/>
+	</association>
+	<association id="a-415" type="at-composition" from="pp-webform" to="t-deeplyrelatedform">
+		<property name="Ordinal Number" value="3"/>
+	</association>
+	
+	<!--                     -->
+	<!--   Property Values   -->
+	<!--                     -->
+	
+	<!--   - "Visualization"   - -->
+	<topic id="t-inputfield" name="Input Field" type="tt-constant">
+		<property name="Name" value="Input Field"/>
+		<property name="Icon" value="inputfield.gif"/>
+	</topic>
+	
+	<topic id="t-multilineinputfield" name="Multiline Input Field" type="tt-constant">
+		<property name="Name" value="Multiline Input Field"/>
+		<property name="Icon" value="multilineinputfield.gif"/>
+	</topic>
+	
+	<topic id="t-texteditor" name="Text Editor" type="tt-constant">
+		<property name="Name" value="Text Editor"/>
+		<property name="Icon" value="texteditor.gif"/>
+	</topic>
+	
+	<topic id="t-optionsmenu" name="Options Menu" type="tt-constant">
+		<property name="Name" value="Options Menu"/>
+		<property name="Icon" value="optionsmenu.gif"/>
+	</topic>
+	
+	<topic id="t-optionbuttons" name="Option Buttons" type="tt-constant">
+		<property name="Name" value="Option Buttons"/>
+		<property name="Icon" value="optionbuttons.gif"/>
+	</topic>
+	
+	<topic id="t-switch" name="Switch" type="tt-constant">
+		<property name="Name" value="Switch"/>
+		<property name="Icon" value="switch.gif"/>
+	</topic>
+	
+	<topic id="t-passwordfield" name="Password Field" type="tt-constant">
+		<property name="Name" value="Password Field"/>
+		<property name="Icon" value="passwordfield.gif"/>
+	</topic>
+	
+	<topic id="t-datechooser" name="Date Chooser" type="tt-constant">
+		<property name="Name" value="Date Chooser"/>
+		<property name="Icon" value="appointment.gif"/>
+	</topic>
+	
+	<topic id="t-timechooser" name="Time Chooser" type="tt-constant">
+		<property name="Name" value="Time Chooser"/>
+		<property name="Icon" value="appointment.gif"/>
+	</topic>
+	
+	<topic id="t-file" name="File Chooser" type="tt-constant">
+		<property name="Name" value="File Chooser"/>
+		<property name="Icon" value="document.gif"/>
+	</topic>
+	
+	<topic id="t-color" name="Color Chooser" type="tt-constant">
+		<property name="Name" value="Color Chooser"/>
+		<property name="Icon" value="inputfield.gif"/>
+	</topic>
+	
+	<topic id="t-hiddenproperty" name="hidden" type="tt-constant">
+		<property name="Name" value="hidden"/>
+		<property name="Icon" value="hidden.gif"/>
+	</topic>
+	
+	<!--   - "Access Permission"   - -->
+	<topic id="t-view" name="view" type="tt-constant">
+		<property name="Name" value="view"/>
+	</topic>
+	
+	<topic id="t-create" name="create" type="tt-constant">
+		<property name="Name" value="create"/>
+	</topic>
+	
+	<topic id="t-createinworkspace" name="create in workspace" type="tt-constant">
+		<property name="Name" value="create in workspace"/>
+	</topic>
+	
+	<!--   - "Language"   - -->
+	<topic id="t-english" name="English" type="tt-constant">
+		<property name="Name" value="English"/>
+	</topic>
+	
+	<topic id="t-deutsch" name="Deutsch" type="tt-constant">
+		<property name="Name" value="Deutsch"/>
+	</topic>
+	
+	<!--   - "Relation"   - -->
+	<topic id="t-one" name="one" type="tt-constant">
+		<property name="Name" value="one"/>
+	</topic>
+	
+	<topic id="t-many" name="many" type="tt-constant">
+		<property name="Name" value="many"/>
+	</topic>
+	
+	<!--   - "Width"   - -->
+	<topic id="pp-width" name="Width" type="tt-property">
+		<property name="Name" value="Width"/>
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	<!--   - "Height"   - -->
+	<topic id="pp-height" name="Height" type="tt-property">
+		<property name="Name" value="Height"/>
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+	
+	<!--                  -->
+	<!--   Associations   -->
+	<!--                  -->
+	
+	<!--    assign property values to "Visualization" -->
+	<association id="a-51" type="at-composition" from="pp-visualization" to="t-inputfield">
+		<property name="Ordinal Number" value="01"/>
+	</association>
+	<association id="a-52" type="at-composition" from="pp-visualization" to="t-multilineinputfield">
+		<property name="Ordinal Number" value="02"/>
+	</association>
+	<association id="a-259" type="at-composition" from="pp-visualization" to="t-texteditor">
+		<property name="Ordinal Number" value="03"/>
+	</association>
+	<association id="a-53" type="at-composition" from="pp-visualization" to="t-optionsmenu">
+		<property name="Ordinal Number" value="04"/>
+	</association>
+	<association id="a-54" type="at-composition" from="pp-visualization" to="t-optionbuttons">
+		<property name="Ordinal Number" value="05"/>
+	</association>
+	<association id="a-240" type="at-composition" from="pp-visualization" to="t-switch">
+		<property name="Ordinal Number" value="06"/>
+	</association>
+	<association id="a-127" type="at-composition" from="pp-visualization" to="t-passwordfield">
+		<property name="Ordinal Number" value="07"/>
+	</association>
+	<association id="a-292" type="at-composition" from="pp-visualization" to="t-datechooser">
+		<property name="Ordinal Number" value="08"/>
+	</association>
+	<association id="a-293" type="at-composition" from="pp-visualization" to="t-timechooser">
+		<property name="Ordinal Number" value="09"/>
+	</association>
+	<association id="a-291" type="at-composition" from="pp-visualization" to="t-file">
+		<property name="Ordinal Number" value="10"/>
+	</association>
+	<association id="a-297" type="at-composition" from="pp-visualization" to="t-color">
+		<property name="Ordinal Number" value="12"/>
+	</association>
+	<association id="a-57" type="at-composition" from="pp-visualization" to="t-hiddenproperty">
+		<property name="Ordinal Number" value="11"/>
+	</association>
+	<!--    assign property values to "Access Permission" -->
+	<association id="a-243" type="at-composition" from="pp-createpermission" to="t-view"/>
+	<association id="a-244" type="at-composition" from="pp-createpermission" to="t-create"/>
+	<association id="a-245" type="at-composition" from="pp-createpermission" to="t-createinworkspace"/>
+	<!--    assign property values to "Language" -->
+	<association id="a-280" type="at-composition" from="pp-language" to="t-english">
+		<property name="Ordinal Number" value="1"/>
+	</association>
+	<association id="a-281" type="at-composition" from="pp-language" to="t-deutsch">
+		<property name="Ordinal Number" value="2"/>
+	</association>
+	
+	<!--   - assign types to workspaces   - -->
+	
+	<!--    "DeepaMehta" -->
+	<association id="a-185" type="at-uses" from="t-corporategroup" to="tt-generic">
+		<property name="Access Permission" value="create"/>
+		<property name="Ordinal Number" value="01"/>
+	</association>
+	<association id="a-246" type="at-uses" from="t-corporategroup" to="tt-topicmap">
+		<property name="Access Permission" value="create in workspace"/>
+		<property name="Ordinal Number" value="02"/>
+	</association>
+	<association id="a-192" type="at-uses" from="t-corporategroup" to="tt-workspace">
+		<property name="Access Permission" value="create"/>
+		<property name="Ordinal Number" value="03"/>
+	</association>
+	<association id="a-189" type="at-uses" from="t-corporategroup" to="tt-person">
+		<property name="Access Permission" value="create"/>
+		<property name="Ordinal Number" value="04"/>
+	</association>
+	<association id="a-188" type="at-uses" from="t-corporategroup" to="tt-document">
+		<property name="Access Permission" value="create"/>
+		<property name="Ordinal Number" value="05"/>
+	</association>
+	<association id="a-186" type="at-uses" from="t-corporategroup" to="tt-appointment">
+		<property name="Access Permission" value="create"/>
+		<property name="Ordinal Number" value="06"/>
+	</association>
+	<association id="a-181" type="at-uses" from="t-corporategroup" to="tt-email">
+		<property name="Access Permission" value="create"/>
+		<property name="Ordinal Number" value="07"/>
+	</association>
+	<association id="a-191" type="at-uses" from="t-corporategroup" to="tt-webpage">
+		<property name="Access Permission" value="create"/>
+		<property name="Ordinal Number" value="08"/>
+	</association>
+	<association id="a-326" type="at-uses" from="t-corporategroup" to="tt-institution">
+		<property name="Access Permission" value="create"/>
+		<property name="Ordinal Number" value="09"/>
+	</association>
+	<association id="a-324" type="at-uses" from="t-corporategroup" to="tt-city">
+		<property name="Access Permission" value="create"/>
+		<property name="Ordinal Number" value="10"/>
+	</association>
+	<association id="a-325" type="at-uses" from="t-corporategroup" to="tt-country">
+		<property name="Access Permission" value="create"/>
+		<property name="Ordinal Number" value="11"/>
+	</association>
+	<association id="a-193" type="at-uses" from="t-corporategroup" to="at-generic">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-194" type="at-uses" from="t-corporategroup" to="at-association">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-195" type="at-uses" from="t-corporategroup" to="at-aggregation">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-196" type="at-uses" from="t-corporategroup" to="at-composition">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-197" type="at-uses" from="t-corporategroup" to="at-derivation">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-205" type="at-uses" from="t-corporategroup" to="at-relation">
+		<property name="Access Permission" value="create"/>
+	</association>
+	
+	<!--    "Type Builder" -->
+	<association id="a-263" type="at-uses" from="t-constructionworkspace" to="tt-topictype">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-264" type="at-uses" from="t-constructionworkspace" to="tt-assoctype">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-265" type="at-uses" from="t-constructionworkspace" to="tt-property">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-266" type="at-uses" from="t-constructionworkspace" to="tt-constant">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-267" type="at-uses" from="t-constructionworkspace" to="tt-datasource">
+		<property name="Access Permission" value="create"/>
+	</association>
+	
+	<!--    "Administration" -->
+	<association id="a-180" type="at-uses" from="t-administrationgroup" to="tt-user">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-230" type="at-uses" from="t-administrationgroup" to="tt-whoistopic">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-282" type="at-uses" from="t-administrationgroup" to="tt-installation">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-260" type="at-uses" from="t-administrationgroup" to="tt-documenttype">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-261" type="at-uses" from="t-administrationgroup" to="tt-mimetype">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-262" type="at-uses" from="t-administrationgroup" to="tt-application">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-208" type="at-uses" from="t-administrationgroup" to="tt-exportformat">
+		<property name="Access Permission" value="view"/>
+	</association>
+	<association id="a-229" type="at-uses" from="t-administrationgroup" to="tt-message">
+		<property name="Access Permission" value="view"/>
+	</association>
+	<association id="a-209" type="at-uses" from="t-administrationgroup" to="tt-messageboard">
+		<property name="Access Permission" value="view"/>
+	</association>
+	<association id="a-210" type="at-uses" from="t-administrationgroup" to="tt-chat">
+		<property name="Access Permission" value="view"/>
+	</association>
+	<association id="a-116" type="at-uses" from="t-administrationgroup" to="tt-chatboard">
+		<property name="Access Permission" value="view"/>
+	</association>
+	<association id="a-182" type="at-uses" from="t-administrationgroup" to="at-membership">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-183" type="at-uses" from="t-administrationgroup" to="at-groupleader">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-184" type="at-uses" from="t-administrationgroup" to="at-publishpermission">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-207" type="at-uses" from="t-administrationgroup" to="at-uses">
+		<property name="Access Permission" value="create"/>
+	</association>
+	<association id="a-171" type="at-uses" from="t-administrationgroup" to="at-preference">
+		<property name="Access Permission" value="create"/>
+	</association>
+	
+	<!--                        -->
+	<!--   Users & Workspaces   -->
+	<!--                        -->
+	
+	<!--   - "root" (User)   - -->
+	<topic id="t-rootuser" name="root" type="tt-user">
+		<property name="Username" value="root"/>
+	</topic>
+	<!--    workspace topicmap -->
+	<topicmap id="t-rootuserpersonalmap" name="root">
+		<property name="Name" value="root"/>
+		<viewtopic id="t-rootuserconfmap" x="600" y="30"/>
+	</topicmap>
+	<association id="a-77" type="at-aggregation" from="t-rootuser" to="t-rootuserpersonalmap"/>
+	<!--    MIME Configuration -->
+	<topicmap id="t-rootuserconfmap" name="MIME Configuration">
+		<property name="Name" value="MIME Configuration"/>
+		<viewtopic id="t-textfile" x="50" y="50"/>
+		<viewtopic id="t-gifimage" x="50" y="90"/>
+		<viewtopic id="t-jpgimage" x="50" y="130"/>
+		<viewtopic id="t-tiffimage" x="50" y="170"/>
+		<viewtopic id="t-mp3audio" x="50" y="210"/>
+		<viewtopic id="t-worddocument" x="50" y="250"/>
+		<viewtopic id="t-textplain" x="150" y="50"/>
+		<viewtopic id="t-imagegif" x="150" y="90"/>
+		<viewtopic id="t-imagejpeg" x="150" y="130"/>
+		<viewtopic id="t-imagetiff" x="150" y="170"/>
+		<viewtopic id="t-audioxmpeg" x="150" y="210"/>
+		<viewtopic id="t-applicationmsword" x="150" y="250"/>
+		<viewtopic id="t-supernotetab" x="350" y="50"/>
+		<viewtopic id="t-nedit" x="350" y="90"/>
+		<viewtopic id="t-bbedit" x="350" y="130"/>
+		<viewtopic id="t-photoshop" x="350" y="170"/>
+		<viewtopic id="t-gimp" x="350" y="210"/>
+		<viewtopic id="t-winamp" x="350" y="250"/>
+		<viewtopic id="t-xmms" x="350" y="290"/>
+		<viewtopic id="t-microsoftword" x="350" y="330"/>
+		<viewtopic id="t-staroffice" x="350" y="370"/>
+		<viewassociation id="a-81"/>
+		<viewassociation id="a-82"/>
+		<viewassociation id="a-83"/>
+		<viewassociation id="a-84"/>
+		<viewassociation id="a-85"/>
+		<viewassociation id="a-86"/>
+	</topicmap>
+	<association id="a-80" type="at-association" from="t-rootuser" to="t-rootuserconfmap"/>
+	<!--    memberships -->
+	<association id="a-3" type="at-membership" from="t-rootuser" to="t-corporategroup"/>
+	<association id="a-76" type="at-membership" from="t-rootuser" to="t-administrationgroup"/>
+	<association id="a-268" type="at-membership" from="t-rootuser" to="t-constructionworkspace"/>
+	
+	<!--   - "DeepaMehta" (Workspace)   - -->
+	<topic id="t-corporategroup" name="DeepaMehta" type="tt-workspace">
+		<property name="Name" value="DeepaMehta"/>
+		<property name="Public" value="off"/>
+		<property name="Default" value="on"/>
+	</topic>
+	<!--    workspace topicmap -->
+	<topicmap id="t-corporatemap" name="DeepaMehta">
+		<property name="Name" value="DeepaMehta"/>
+		<viewtopic id="t-corparatechat" x="500" y="100"/>
+		<viewtopic id="t-deepamehtaforum" x="500" y="50"/>
+		<viewtopic id="t-deepamehtaarch" x="100" y="100"/>
+	</topicmap>
+	<association id="a-79" type="at-aggregation" from="t-corporategroup" to="t-corporatemap"/>
+	<!--    chat -->
+	<topic id="t-corparatechat" name="DeepaMehta Chats" type="tt-chatboard">
+		<property name="Name" value="DeepaMehta Chats"/>
+	</topic>
+	<!--    forum -->
+	<topic id="t-deepamehtaforum" name="DeepaMehta Forum" type="tt-messageboard">
+		<property name="Name" value="DeepaMehta Forum"/>
+	</topic>
+	<!--    example topicmap -->
+	<topicmap id="t-deepamehtaarch" name="DeepaMehta Architecture">
+		<property name="Name" value="DeepaMehta Architecture"/>
+		<property name="Background Image" value="arch.png"/>
+	</topicmap>
+	
+	<!--    webpage -->
+	<topic id="t-deepamehtawebpage" name="DeepaMehta -\- Homepage" type="tt-webpage">
+		<property name="Name" value="DeepaMehta -\- Homepage"/>
+		<property name="URL" value="http://www.deepamehta.de/"/>
+	</topic>
+	<!--    website -->
+	<topic id="t-deepamehtawebsite" name="www.deepamehta.de" type="tt-website">
+		<property name="Name" value="www.deepamehta.de"/>
+	</topic>
+	<!--    domain -->
+	<topic id="t-deepamehtadomain" name="deepamehta.de" type="tt-internetdomain">
+		<property name="Name" value="deepamehta.de"/>
+	</topic>
+	<!--    associate forum with webpage -->
+	<association id="a-269" type="at-association" from="t-deepamehtaforum" to="t-deepamehtawebpage"/>
+	<!--    associate webpage with website -->
+	<association id="a-206" type="at-association" from="t-deepamehtawebpage" to="t-deepamehtawebsite"/>
+	<!--    associate website with domain -->
+	<association id="a-322" type="at-association" from="t-deepamehtawebsite" to="t-deepamehtadomain"/>
+	
+	<!--   - "Type Builder" (Workspace)   - -->
+	<topic id="t-constructionworkspace" name="Type Builder" type="tt-workspace">
+		<property name="Name" value="Type Builder"/>
+		<property name="Public" value="off"/>
+		<property name="Default" value="off"/>
+	</topic>
+	<!--    workspace topicmap -->
+	<topicmap id="t-constructiontopicmap" name="Type Builder">
+		<property name="Name" value="Type Builder"/>
+		<viewtopic id="t-constructionchatboard" x="600" y="100"/>
+		<viewtopic id="t-constructionforum" x="600" y="50"/>
+	</topicmap>
+	<association id="a-231" type="at-aggregation" from="t-constructionworkspace" to="t-constructiontopicmap"/>
+	<!--    chat -->
+	<topic id="t-constructionchatboard" name="Type Builder Chats" type="tt-chatboard">
+		<property name="Name" value="Type Builder Chats"/>
+	</topic>
+	<!--    forum -->
+	<topic id="t-constructionforum" name="Type Builder Forum" type="tt-messageboard">
+		<property name="Name" value="Type Builder Forum"/>
+	</topic>
+	
+	<!--   - "Administration" (Workspace)   - -->
+	<topic id="t-administrationgroup" name="Administration" type="tt-workspace">
+		<property name="Name" value="Administration"/>
+		<property name="Public" value="off"/>
+		<property name="Default" value="off"/>
+	</topic>
+	<!--    workspace topicmap -->
+	<topicmap id="t-administrationgroupmap" name="Administration">
+		<property name="Name" value="Administration"/>
+		<viewtopic id="t-adminchat" x="430" y="120"/>
+		<viewtopic id="t-administrationforum" x="430" y="70"/>
+		<viewtopic id="t-workgroupmap" x="30" y="70"/>
+		<viewtopic id="t-directoriesmap" x="30" y="120"/>
+		<viewtopic id="t-cmimportexport" x="230" y="70"/>
+	</topicmap>
+	<association id="a-78" type="at-aggregation" from="t-administrationgroup" to="t-administrationgroupmap"/>
+	<!--    chat -->
+	<topic id="t-adminchat" name="Administration Chats" type="tt-chatboard">
+		<property name="Name" value="Administration Chats"/>
+	</topic>
+	<!--    forum -->
+	<topic id="t-administrationforum" name="Administration Forum" type="tt-messageboard">
+		<property name="Name" value="Administration Forum"/>
+	</topic>
+	
+	<!--    set default "Export Format" preference for "root" -->
+	<association id="a-253" type="at-preference" from="t-rootuser" to="t-xml"/>
+	
+	<!--    The views for the "Administration" group -->
+	<topicmap id="t-workgroupmap" name="Users and Groups">
+		<property name="Name" value="Users and Groups"/>
+		<viewtopic id="t-rootuser" x="250" y="200"/>
+		<viewtopic id="t-corporategroup" x="270" y="100"/>
+		<viewtopic id="t-administrationgroup" x="170" y="240"/>
+		<viewtopic id="t-constructionworkspace" x="310" y="260"/>
+		<viewassociation id="a-3"/>
+		<viewassociation id="a-76"/>
+		<viewassociation id="a-268"/>
+	</topicmap>
+	<topicmap id="t-directoriesmap" name="Directory Services">
+		<property name="Name" value="Directory Services"/>
+		<viewtopic id="t-useraccounts" x="100" y="150"/>
+	</topicmap>
+	<!--    the User Authentification Datasource -->
+	<topic id="t-useraccounts" name="User Accounts" type="tt-authentificationsource">
+		<property name="Name" value="User Accounts"/>
+	</topic>
+	<!--    CM Import/Export -->
+	<topic id="t-cmimportexport" name="CM Import/Export" type="tt-cmimportexport">
+		<property name="Name" value="CM Import/Export"/>
+	</topic>
+	
+	<!--   - Export Formats -->
+	<topic id="t-xml" name="XML (ISO 13250 Topic Map)" type="tt-exportformat">
+		<property name="Name" value="XML (ISO 13250 Topic Map)"/>
+	</topic>
+	<topic id="t-svg" name="SVG (Scalable Vector Graphics)" type="tt-exportformat">
+		<property name="Name" value="SVG (Scalable Vector Graphics)"/>
+	</topic>
+	<topic id="t-pdf" name="PDF (Portable Document Format)" type="tt-exportformat">
+		<property name="Name" value="PDF (Portable Document Format)"/>
+	</topic>
+	<!--   - Document Types -->
+	<topic id="t-textfile" name=".txt" type="tt-documenttype">
+		<property name="Name" value=".txt"/>
+	</topic>
+	<topic id="t-gifimage" name=".gif" type="tt-documenttype">
+		<property name="Name" value=".gif"/>
+	</topic>
+	<topic id="t-jpgimage" name=".jpg" type="tt-documenttype">
+		<property name="Name" value=".jpg"/>
+	</topic>
+	<topic id="t-tiffimage" name=".tiff" type="tt-documenttype">
+		<property name="Name" value=".tiff"/>
+	</topic>
+	<topic id="t-mp3audio" name=".mp3" type="tt-documenttype">
+		<property name="Name" value=".mp3"/>
+	</topic>
+	<topic id="t-worddocument" name=".doc" type="tt-documenttype">
+		<property name="Name" value=".doc"/>
+	</topic>
+	<topic id="t-exceldocument" name=".xls" type="tt-documenttype">
+		<property name="Name" value=".xls"/>
+	</topic>
+	<topic id="t-powerpointdocument" name=".ppt" type="tt-documenttype">
+		<property name="Name" value=".ppt"/>
+	</topic>
+	<topic id="t-pdfdocument" name=".pdf" type="tt-documenttype">
+		<property name="Name" value=".pdf"/>
+	</topic>
+	<!--   - MIME Types -->
+	<topic id="t-textplain" name="text/plain" type="tt-mimetype">
+		<property name="Name" value="text/plain"/>
+	</topic>
+	<topic id="t-imagegif" name="image/gif" type="tt-mimetype">
+		<property name="Name" value="image/gif"/>
+	</topic>
+	<topic id="t-imagejpeg" name="image/jpeg" type="tt-mimetype">
+		<property name="Name" value="image/jpeg"/>
+	</topic>
+	<topic id="t-imagetiff" name="image/tiff" type="tt-mimetype">
+		<property name="Name" value="image/tiff"/>
+	</topic>
+	<topic id="t-audioxmpeg" name="audio/x-mpeg" type="tt-mimetype">
+		<property name="Name" value="audio/x-mpeg"/>
+	</topic>
+	<topic id="t-applicationmsword" name="application/msword" type="tt-mimetype">
+		<property name="Name" value="application/msword"/>
+	</topic>
+	<topic id="t-applicationmsexcel" name="application/msexcel" type="tt-mimetype">
+		<property name="Name" value="application/msexcel"/>
+	</topic>
+	<topic id="t-applicationmspowerpoint" name="application/mspowerpoint" type="tt-mimetype">
+		<property name="Name" value="application/mspowerpoint"/>
+	</topic>
+	<topic id="t-applicationadobeacrobat" name="application/adobeacrobat" type="tt-mimetype">
+		<property name="Name" value="application/adobeacrobat"/>
+	</topic>
+	<!--   - Applications -->
+	<topic id="t-supernotetab" name="SuperNotetab" type="tt-application">
+		<property name="Name" value="SuperNotetab"/>
+	</topic>
+	<topic id="t-nedit" name="Nedit" type="tt-application">
+		<property name="Name" value="Nedit"/>
+	</topic>
+	<topic id="t-bbedit" name="BBEdit" type="tt-application">
+		<property name="Name" value="BBEdit"/>
+	</topic>
+	<topic id="t-photoshop" name="Photoshop" type="tt-application">
+		<property name="Name" value="Photoshop"/>
+	</topic>
+	<topic id="t-gimp" name="Gimp" type="tt-application">
+		<property name="Name" value="Gimp"/>
+	</topic>
+	<topic id="t-winamp" name="WinAmp" type="tt-application">
+		<property name="Name" value="WinAmp"/>
+	</topic>
+	<topic id="t-xmms" name="Xmms" type="tt-application">
+		<property name="Name" value="Xmms"/>
+	</topic>
+	<topic id="t-microsoftword" name="Word" type="tt-application">
+		<property name="Name" value="Word"/>
+	</topic>
+	<topic id="t-staroffice" name="Star Office" type="tt-application">
+		<property name="Name" value="Star Office"/>
+	</topic>
+	<topic id="t-microsoftexcel" name="Excel" type="tt-application">
+		<property name="Name" value="Excel"/>
+	</topic>
+	<topic id="t-microsoftpowerpoint" name="Powerpoint" type="tt-application">
+		<property name="Name" value="Powerpoint"/>
+	</topic>
+	<topic id="t-acrobatreader" name="Acrobat Reader" type="tt-application">
+		<property name="Name" value="Acrobat Reader"/>
+	</topic>
+	<!--    Standard associations between document types and MIME types -->
+	<association id="a-81" type="at-aggregation" from="t-textplain" to="t-textfile"/>
+	<association id="a-82" type="at-aggregation" from="t-imagegif" to="t-gifimage"/>
+	<association id="a-83" type="at-aggregation" from="t-imagejpeg" to="t-jpgimage"/>
+	<association id="a-84" type="at-aggregation" from="t-imagetiff" to="t-tiffimage"/>
+	<association id="a-85" type="at-aggregation" from="t-audioxmpeg" to="t-mp3audio"/>
+	<association id="a-86" type="at-aggregation" from="t-applicationmsword" to="t-worddocument"/>
+	<association id="a-286" type="at-aggregation" from="t-applicationmsexcel" to="t-exceldocument"/>
+	<association id="a-287" type="at-aggregation" from="t-applicationmspowerpoint" to="t-powerpointdocument"/>
+	<association id="a-288" type="at-aggregation" from="t-applicationadobeacrobat" to="t-pdfdocument"/>
+	
+	<!--                                               -->
+	<!--   Create standard installation "DeepaMehta"   -->
+	<!--                                               -->
+	<topic id="t-deepamehtainstallation" name="DeepaMehta" type="tt-installation">
+		<property name="Name" value="DeepaMehta"/>
+		<property name="Server Name" value="DeepaMehtaServer 2.0b6"/>
+		<property name="Client Name" value="DeepaMehta 2.0b6"/>
+		<property name="Active" value="on"/>
+		<property name="Corporate Icon" value="logo.png"/>
+	</topic>
+	<!--    INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Customer Icon', ''); -->
+	
+	<!--    assign preferences to installation ("Export Format") -->
+	<association id="a-270" type="at-preference" from="t-deepamehtainstallation" to="t-xml"/>
+	
+	<!--                    -->
+	<!--   Standard Views   -->
+	<!--                    -->
+	
+	<topicmap id="t-genericconfmap" name="TODO">
+		<viewtopic id="t-textfile" x="50" y="50"/>
+		<viewtopic id="t-gifimage" x="50" y="90"/>
+		<viewtopic id="t-jpgimage" x="50" y="130"/>
+		<viewtopic id="t-tiffimage" x="50" y="170"/>
+		<viewtopic id="t-mp3audio" x="50" y="210"/>
+		<viewtopic id="t-worddocument" x="50" y="250"/>
+		<viewtopic id="t-textplain" x="150" y="50"/>
+		<viewtopic id="t-imagegif" x="150" y="90"/>
+		<viewtopic id="t-imagejpeg" x="150" y="130"/>
+		<viewtopic id="t-imagetiff" x="150" y="170"/>
+		<viewtopic id="t-audioxmpeg" x="150" y="210"/>
+		<viewtopic id="t-applicationmsword" x="150" y="250"/>
+		<viewtopic id="t-supernotetab" x="350" y="50"/>
+		<viewtopic id="t-nedit" x="350" y="90"/>
+		<viewtopic id="t-bbedit" x="350" y="130"/>
+		<viewtopic id="t-photoshop" x="350" y="170"/>
+		<viewtopic id="t-gimp" x="350" y="210"/>
+		<viewtopic id="t-winamp" x="350" y="250"/>
+		<viewtopic id="t-xmms" x="350" y="290"/>
+		<viewtopic id="t-microsoftword" x="350" y="330"/>
+		<viewtopic id="t-staroffice" x="350" y="370"/>
+		<viewassociation id="a-81"/>
+		<viewassociation id="a-82"/>
+		<viewassociation id="a-83"/>
+		<viewassociation id="a-84"/>
+		<viewassociation id="a-85"/>
+		<viewassociation id="a-86"/>
+	</topicmap>
+	
+</dmc:contents>
+
+
+
