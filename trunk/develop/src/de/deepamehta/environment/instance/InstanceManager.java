@@ -208,17 +208,18 @@ public class InstanceManager {
             throw new UnknownInstanceException(id);
         }
     }
-    
-//    /**
-//     * @param pos
-//     * @return
-//     * MISSDOC No documentation for method InstanceManager.get
-//     */
-//    public InstanceConfiguration get(int pos) throws UnknownInstanceException {
-//	    // FIXME using this method is dangerous - remove ASAP
-//		return get((String)instances.keySet().toArray()[pos]);
-//    }
-    
+
+    /**
+     * Retrieves an instance configuration by its position.
+     * @param pos
+     * @return
+     * @throws UnknownInstanceException 
+     */
+    public InstanceConfiguration get(int pos) throws UnknownInstanceException {
+    	// FIXME using this method is dangerous - remove ASAP
+    	return get((String)this.instances.keySet().toArray()[pos]);
+    }
+ 
     /**
      * @return Returns the number of instances in the current set.
      */
