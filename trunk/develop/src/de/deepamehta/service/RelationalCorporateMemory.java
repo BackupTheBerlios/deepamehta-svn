@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
  */
-class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants {
+public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants {
 
 
 
@@ -68,6 +68,11 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	// *******************
 
 
+	public RelationalCorporateMemory() {
+		// default constructor does nothing - well, almost nothing
+		con = null;
+		dbmsHint = "";
+	}
 
 	/**
 	 * @see		ApplicationServiceInstance#createCorporateMemory
