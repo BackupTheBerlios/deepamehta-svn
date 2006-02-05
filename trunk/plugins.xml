@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmp:plugins xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xsi:schemaLocation="http://www.deepamehta.de/schema/PluginDefinition.xsd PluginDefinition.xsd"
+           xmlns:dmp="http://www.deepamehta.de/schema/PluginDefinition.xsd">
+	<!-- Please don't touch this file unless you really know what you're doing. Thanks. -->
+	<plugin name="MySQL Driver">
+		<main class="org.gjt.mm.mysql.Driver" loadFrom="libs/mysql-3.1.7.jar"/>
+	</plugin>
+	<plugin name="Relational Corporate Memory Implementation">
+		<main class="de.deepamehta.service.RelationalCorporateMemory" loadFrom="core"/>
+	</plugin>
+</dmp:plugins>
