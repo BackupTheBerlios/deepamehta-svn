@@ -208,7 +208,7 @@ public class Environment implements DeepaMehtaConstants {
      * Initializes the instance manager and loads the instance configuration file.
      */
     private void initializeInstanceManager() {
-        this.instances = new InstanceManager();
+        this.instances = new InstanceManager(this);
         this.instances.loadFromFile(this.instanceFile);
     }
 

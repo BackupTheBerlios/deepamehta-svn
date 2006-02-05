@@ -49,10 +49,11 @@ public class InstanceManager {
     
     /**
      * The default constructor to create a new instance manager. 
+     * @param envi The parent environment.
      */
-    public InstanceManager() {
+    public InstanceManager(Environment envi) {
         super();
-        this.env = Environment.getEnvironment();
+        this.env = envi;
         this.instances = new Hashtable();
         this.model = new InstanceTableModel(this);
     }
