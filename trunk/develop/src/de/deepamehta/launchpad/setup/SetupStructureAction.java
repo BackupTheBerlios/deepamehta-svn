@@ -8,6 +8,7 @@ package de.deepamehta.launchpad.setup;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.EnvironmentException;
 import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
 import de.deepamehta.environment.instance.InstanceConfiguration;
@@ -42,8 +43,11 @@ class SetupStructureAction implements SetupAction {
      * @see de.deepamehta.launchpad.setup.SetupAction#getDescription()
      */
     public String getDescription() {
-        // FIXME Auto-generated method stub
-        return null;
+    	if (this.cmConfig.getImplementingClassName().equals("de.deepamehta.service.RelationalCorporateMemory")) {
+    		return DeepaMehtaMessages.getString("SetupStructureAction.SetupRelationalDescription"); //$NON-NLS-1$
+    	} else {
+    		return DeepaMehtaMessages.getString("SetupStructureAction.SetupGenericDescription"); //$NON-NLS-1$
+    	}
     }
 
     /* (non-Javadoc)

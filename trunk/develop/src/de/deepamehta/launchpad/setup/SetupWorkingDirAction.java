@@ -16,6 +16,7 @@ import java.util.zip.ZipFile;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.Environment;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 
@@ -48,8 +49,7 @@ class SetupWorkingDirAction implements SetupAction {
      * @see de.deepamehta.launchpad.setup.SetupAction#getDescription()
      */
     public String getDescription() {
-        // FIXME Auto-generated method stub
-        return null;
+    	return DeepaMehtaMessages.getString("SetupWorkingDirAction.SetupDescription"); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)
