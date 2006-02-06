@@ -19,6 +19,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.EnvironmentException;
 import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
 import de.deepamehta.environment.instance.InstanceConfiguration;
@@ -60,7 +61,7 @@ class SetupContentsAction extends DefaultHandler implements SetupAction {
      * @see de.deepamehta.launchpad.setup.SetupAction#getDescription()
      */
     public String getDescription() {
-        return "Populate the corporate memory with initial data.";
+        return DeepaMehtaMessages.getString("SetupContentsAction.SetupDescription"); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)
