@@ -130,6 +130,8 @@ public class SetupWizard implements WizardListener {
         if (current.equals(getAdminCredentialsPanel())) {
             if (getSetupTypePanel().useDefault()) {
                 // default setup: proceed to confirmation panel
+                this.actions.prepare(getInstanceSpecification());
+                getConfirmationPanel().setModel(this.actions);
                 return getConfirmationPanel();
             } else {
                 // manual configuration
@@ -152,6 +154,7 @@ public class SetupWizard implements WizardListener {
         
         if (current.equals(getInstanceNamePanel())) {
             this.actions.prepare(getInstanceSpecification());
+            getConfirmationPanel().setModel(this.actions);
             return getConfirmationPanel();
         }
         

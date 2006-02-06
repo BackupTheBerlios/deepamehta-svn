@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.ListModel;
 /**
  * This panel is the last panel of the wizard. It summarizes the actions planned.
  * FIXME This panel has yet to learn how to perform anything sensible.
@@ -142,6 +143,10 @@ public class ConfirmationPanel extends AbstractWizardPanel {
      */
     public boolean hasNext() {
         return false;
+    }
+    
+    public void setModel(ListModel model) {
+    	getListActions().setModel(model);
     }
     
 }

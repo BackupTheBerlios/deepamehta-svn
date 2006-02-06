@@ -5,8 +5,12 @@
  */
 package de.deepamehta.launchpad.setup;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
+
+import javax.swing.ListModel;
+import javax.swing.event.ListDataListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,7 +23,7 @@ import de.deepamehta.environment.instance.InstanceConfiguration;
  * successfully, create a new DeepaMehta instance.
  * @author vwegert
  */
-public class ActionList {
+public class ActionList implements ListModel {
 
     private static Log logger = LogFactory.getLog(ActionList.class);
     private Vector actions;
@@ -61,6 +65,22 @@ public class ActionList {
     }
         
     /**
+     * @return Returns the descriptions of the actions.
+     */
+    public String[] getDescriptions() {
+    	
+    	ArrayList descriptions = new ArrayList();
+    	
+    	for (Iterator iter = this.actions.iterator(); iter.hasNext();) {
+			SetupAction action = (SetupAction) iter.next();
+			descriptions.add(action.getDescription());
+		}
+
+    	return (String[]) descriptions.toArray();
+    }
+    
+    
+    /**
      * This method executes the list of steps that has been prepared using #prepare().
      * @return <code>true</code> if all of the actions were executed successfully.
      */
@@ -80,5 +100,25 @@ public class ActionList {
         } 
         return true;
     }
+
+
+	public int getSize() {
+		return this.actions.size();
+	}
+
+
+	public Object getElementAt(int index) {
+		return ((SetupAction)this.actions.get(index)).getDescription();
+	}
+
+
+	public void addListDataListener(ListDataListener l) {
+		// TODO Auto-generated method stub
+	}
+
+
+	public void removeListDataListener(ListDataListener l) {
+		// TODO Auto-generated method stub
+	}
     
 }
