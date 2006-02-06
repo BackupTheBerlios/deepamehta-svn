@@ -33,13 +33,22 @@ public class CorporateMemoryConfiguration {
     
     
     /**
+     * Default constructor without parameters required for digester. Note: The class
+     * will not work properly without the implementing class set.
+     */
+    public CorporateMemoryConfiguration() {
+        this.properties = new Hashtable();
+        this.implementingClass = null;
+    }
+    
+    /**
      * This constructor creates a new CM configuration based upon the 
      * implementing class specified.
      * @param implementingClass The name of the class implementing the 
      * interface <code>CorporateMemory</code>.
      */
     public CorporateMemoryConfiguration(String implementingClass) {
-        this.properties = new Hashtable();
+        this();
         logger.debug("Creating new CM configuration based on class " + implementingClass);
         this.implementingClass = implementingClass;
     }
