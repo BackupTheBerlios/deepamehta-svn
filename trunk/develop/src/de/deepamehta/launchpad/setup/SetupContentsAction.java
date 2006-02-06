@@ -121,23 +121,13 @@ class SetupContentsAction extends DefaultHandler implements SetupAction {
 				return false;
 			}
             
-             
-            
-            
-//            !--   - -->
-//            <!--   - Key Generator -->
-//            <!--   - -->
-//            <!--      1 -  500 Kernel -->
-//            <!--    501 - 1000 included examples -->
-//            <!--    600 -  799 Kompetenzstern -->
-//            Line not recognized: INSERT INTO KeyGenerator VALUES ('Topic', 1001);
-//            Line not recognized: INSERT INTO KeyGenerator VALUES ('Association', 1001);
-//            <!--    Not a Key Generator but the (constant) version of the database model -->
-//            Line not recognized: INSERT INTO KeyGenerator VALUES ('DB-Model Version', 2);
-//            <!--    Not a Key Generator but the (constant) version of the database content -->
-//            Line not recognized: INSERT INTO KeyGenerator VALUES ('DB-Content Version', 15);
-//            
-            
+			// setup the key generators
+			//     1 -  500 Kernel
+			//   501 - 1000 included examples 
+			//   600 -  799 Kompetenzstern
+			this.cm.setKeyGenerator("Topic", 1001);
+			this.cm.setKeyGenerator("Association", 1001);
+			
 			this.cm.shutdown();
 			this.cm = null;
         } else {
@@ -154,6 +144,9 @@ class SetupContentsAction extends DefaultHandler implements SetupAction {
 	 */
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		
+		if (qName.equals("contents")) {
+			setCMVersions(attributes);
+		}
 		if (qName.equals("topic")) {
 			ensureTopicExists(attributes);
 		}
@@ -178,6 +171,16 @@ class SetupContentsAction extends DefaultHandler implements SetupAction {
 		}
 	}
 	
+	private void setCMVersions(Attributes attributes) {
+		
+		int modelVersion = Integer.parseInt(attributes.getValue("modelVersion"));
+		int contentVersion = Integer.parseInt(attributes.getValue("contentVersion"));
+		
+		this.cm.setKeyGenerator("DB-Model Version", modelVersion);
+		this.cm.setKeyGenerator("DB-Content Version", contentVersion);
+	
+	}
+
 	private int getVersion(Attributes attributes, String key) {
 		int i;
 		try {

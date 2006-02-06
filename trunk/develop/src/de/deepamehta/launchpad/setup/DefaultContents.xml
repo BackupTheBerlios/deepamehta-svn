@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmc:contents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.deepamehta.de/schema/ContentsDefinition.xsd ContentsDefinition.xsd" xmlns:dmc="http://www.deepamehta.de/schema/ContentsDefinition.xsd">
+<dmc:contents 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.deepamehta.de/schema/ContentsDefinition.xsd ContentsDefinition.xsd" 
+	xmlns:dmc="http://www.deepamehta.de/schema/ContentsDefinition.xsd"
+	modelVersion="2" contentVersion="15" >
 	
 	<!--                 -->
 	<!--   Topic Types   -->

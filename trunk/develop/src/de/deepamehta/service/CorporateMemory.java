@@ -108,6 +108,14 @@ public interface CorporateMemory {
 	boolean setupStructure(CorporateMemoryConfiguration config);
 	
 	/**
+	 * Changes the state of a key generator. <b>Warning:</b> This method is intended 
+	 * for use during the bootstrap process <b>ONLY!</b>
+	 * @param genName The generator to change.
+	 * @param nextKey The value the generator should return upon next usage.
+	 */
+	public void setKeyGenerator(String genName, int nextKey);
+	
+	/**
 	 * This method is used to start the Corporate Memory - whatever that might mean for 
 	 * the actual implementation. A relational implementation may want to connect to the
 	 * database server at this point, for example.
