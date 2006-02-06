@@ -346,7 +346,7 @@ public class Environment implements DeepaMehtaConstants {
      * of a newly created instance.
      */
     public String getInstanceDataSourceFile() {
-        return getWorkingDirectory() + getFileSeparator() + "install" 
+        return getWorkingDirectory() + getFileSeparator() + "bin" 
         		+ getFileSeparator() + "instance-data.zip"; 
         // TODO Remove hard-coded ZIP file name and path.
     }
