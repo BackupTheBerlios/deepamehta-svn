@@ -219,11 +219,13 @@ public class SetupWizard implements WizardListener {
             } else {
                 // use values entered by user
                 cmConfig.setProperty("host", getRelationalConnectionPanel().getHost());
-                cmConfig.setProperty("port", getRelationalConnectionPanel().getPort());
+                if (!getRelationalConnectionPanel().getPort().equals(""))
+                	cmConfig.setProperty("port", getRelationalConnectionPanel().getPort());
                 cmConfig.setProperty("database", getRelationalConnectionPanel().getDatabase());
                 cmConfig.setProperty("user", getRelationalConnectionPanel().getUser());
                 cmConfig.setProperty("password", getRelationalConnectionPanel().getPassword());
-                cmConfig.setProperty("connection", getRelationalConnectionPanel().getConnectionString());
+                if (!getRelationalConnectionPanel().getConnectionString().equals(("")))
+                	cmConfig.setProperty("connection", getRelationalConnectionPanel().getConnectionString());
             }
             
             // add DBA credentials
