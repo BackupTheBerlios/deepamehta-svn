@@ -205,7 +205,7 @@
 		<!-- ensure target path exists -->
 		<mkdir dir="${bin}"/>
 		<!-- monolith -->
-		<jar jarfile="${client}/DeepaMehta.jar" basedir="${build}">
+		<jar jarfile="${bin}/DeepaMehta.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
 			<include name="de/deepamehta/client/*.class"/>
 			<include name="de/deepamehta/service/*.class"/>
@@ -226,29 +226,29 @@
 			<exclude name="de/deepamehta/service/DeepaMehtaServer$Connection.class"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehta"/>
-				<attribute name="Class-Path" value="${jarclasspath}"/>
+				<attribute name="Class-Path" value="${jarclasspath-srv} DeepaMehtaTopics.jar"/>
 			</manifest>
 		</jar>
 		<!-- client --> 
-		<jar jarfile="${client}/DeepaMehtaClient.jar" basedir="${build}">
+		<jar jarfile="${bin}/DeepaMehtaClient.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
 			<include name="de/deepamehta/client/*.class"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.client.DeepaMehtaClient"/>
-				<attribute name="Class-Path" value="${jarclasspath}"/>
+				<!-- <attribute name="Class-Path" value="${jarclasspath}"/> -->
 			</manifest>
 		</jar>
 		<!-- server -->
-		<jar jarfile="${server}/DeepaMehtaService.jar" basedir="${build}">
+		<jar jarfile="${bin}/DeepaMehtaService.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
 			<include name="de/deepamehta/service/**/*.class"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehtaServer"/>
-				<attribute name="Class-Path" value="${jarclasspath}"/>
+				<attribute name="Class-Path" value="${jarclasspath-srv} DeepaMehtaTopics.jar"/>
 			</manifest>
 		</jar>
 		<!-- topics -->
-		<jar jarfile="${server}/DeepaMehtaTopics.jar" basedir="${build}">
+		<jar jarfile="${bin}/DeepaMehtaTopics.jar" basedir="${build}">
 			<include name="de/deepamehta/topics/**/*.class"/>
 			<include name="de/deepamehta/assocs/**/*.class"/>
 		</jar>

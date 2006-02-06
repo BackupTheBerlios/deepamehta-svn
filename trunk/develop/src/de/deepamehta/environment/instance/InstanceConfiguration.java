@@ -186,13 +186,13 @@ public class InstanceConfiguration {
 	public String getExecutableArchive() {
 	    String base = Environment.getEnvironment().getWorkingDirectory();
 	    String sep  = Environment.getEnvironment().getFileSeparator();
-	    base = base + sep + "install" + sep;		    
+	    base = base + sep;		    
 	    if (this.instanceType.isMonolithic())
-		    return base + "client" + sep + "DeepaMehta.jar"; 
+		    return base + "bin" + sep + "DeepaMehta.jar"; 
 		if (this.instanceType.isServer())     
-		    return base + "server" + sep + "DeepaMehtaService.jar"; 
+		    return base + "bin" + sep + "DeepaMehtaService.jar"; 
 		if (this.instanceType.isClient())     
-		    return base + "client" + sep + "DeepaMehtaClient.jar"; 
+		    return base + "bin" + sep + "DeepaMehtaClient.jar"; 
 	    return null; // should never be reached
 	}
 

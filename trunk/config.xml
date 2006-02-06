@@ -21,8 +21,8 @@
 <property name="build.archive.dir" value="/Users/jri/Archive/DeepaMehta"/>	<!-- configure this -->
 <property name="build.name" value="deepamehta-2.0b6.zip"/>					<!-- configure this -->
 
-<!-- 3rd Party Libraries -->
-<path id="javalibs">
+<!-- 3rd Party Libraries required for the server and the monolithic instance -->
+<path id="javalibs-srv">
 	<pathelement location="${libpath}/mysql-3.1.7.jar"/>
 	<pathelement location="${libpath}/servlet.jar"/>
 	<pathelement location="${libpath}/mail.jar"/>
@@ -36,13 +36,6 @@
 	<pathelement location="${libpath}/commons-fileupload-1.0.jar"/>
 	<pathelement location="${libpath}/googleapi.jar"/>
 </path>
-<pathconvert property="jarclasspath" pathsep=" " refid="javalibs">
-	<!-- The classpath inside the .JAR archive is always interpreted relative to the location
-	     of the archive itself. Thus, if the archive resides in install/client/somename.jar and
-	     the libs reside in libs/, the JRE has to look in ../../libs/. The following option
-	     takes care of this. -->
-	<map from="${libpath}" to="../../libs"/>
-</pathconvert>
 
 <!-- 3rd Party Libraries required for the launch pad -->
 <path id="javalibs-lp">
@@ -68,11 +61,16 @@
 	<pathelement location="${libpath}/jwf-1.0.1.jar"/>
 	<pathelement location="${libpath}/log4j-1.2.13.jar"/>
 </path>
+	
+	
+<!-- The classpath inside the .JAR archive is always interpreted relative to the location
+     of the archive itself. Thus, if the archive resides in bin/somename.jar and
+     the libs reside in libs/, the JRE has to look in ../libs/. The following option
+     takes care of this. -->
+<pathconvert property="jarclasspath-srv" pathsep=" " refid="javalibs-srv">
+	<map from="${libpath}" to="../libs"/>
+</pathconvert>
 <pathconvert property="jarclasspath-lp" pathsep=" " refid="javalibs-lp">
-	<!-- The classpath inside the .JAR archive is always interpreted relative to the location
-	     of the archive itself. Thus, if the archive resides in bin/somename.jar and
-	     the libs reside in libs/, the JRE has to look in ../libs/. The following option
-	     takes care of this. -->
 	<map from="${libpath}" to="../libs"/>
 </pathconvert>
 
