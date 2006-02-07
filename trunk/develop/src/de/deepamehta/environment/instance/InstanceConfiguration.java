@@ -269,9 +269,15 @@ public class InstanceConfiguration {
      * @return Returns the working directory of the instance. 
      */
     public String getWorkingDirectory() {
-        String base = Environment.getEnvironment().getWorkingDirectory();
-        String sep = Environment.getEnvironment().getFileSeparator();
-        return base + sep + "data" + sep + getId() + sep;
+    	if (getInstanceType().isClient())
+    	{
+    		// FIXME will run into trouble with icons some day
+    		return Environment.getEnvironment().getWorkingDirectory();
+    	} else {
+    		String base = Environment.getEnvironment().getWorkingDirectory();
+    		String sep = Environment.getEnvironment().getFileSeparator();
+    		return base + sep + "data" + sep + getId() + sep;
+    	}
     }
     
 
