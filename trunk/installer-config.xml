@@ -1,0 +1,83 @@
+<installation version="1.0">
+	
+	<info>
+		<appname>DeepaMehta</appname>
+		<appversion>2.0b6</appversion>
+		<authors>
+			<author name="Joerg Richter" email="jri@freenet.de"/>
+			<author name="Volker Wegert" email="deepamehta@volker-wegert.de"/>
+		</authors>
+		<url>http://www.deepametha.de</url>
+		<webdir>http://www.deepamehta.de/webinstall</webdir>
+	</info>
+	
+	<guiprefs width="640" height="480" resizable="no"/>
+	
+	<locale>
+		<langpack iso3="eng"/>
+	</locale>
+	
+	<resources>
+		<res id="HTMLLicencePanel.licence" src="doc/license.html"/>
+		<res id="HTMLInfoPanel.info" src="doc/readme.html"/>
+	</resources>
+	
+	<panels>
+		<panel classname="HelloPanel"/>
+		<panel classname="HTMLInfoPanel"/>
+		<panel classname="HTMLLicencePanel"/>
+		<panel classname="TargetPanel"/>
+		<panel classname="PacksPanel"/>
+		<panel classname="InstallPanel"/>
+		<panel classname="SimpleFinishPanel"/>
+	</panels>
+	
+	<packs>
+		<pack name="DeepaMehta Application" required="yes">
+			<description>The DeepaMehta core components.</description>
+			<fileset dir="" targetdir="$INSTALL_PATH">
+				<include name="plugins.xml"/>
+				<include name="bin/*"/>
+				<include name="data"/>
+				<include name="doc/license.html"/>
+				<include name="doc/readme.html"/>
+			</fileset>
+			<file targetdir="$INSTALL_PATH" src="DeepaMehta.sh">
+				<os family="unix"/>
+			</file>
+			<executable targetfile="$INSTALL_PATH/DeepaMehta.sh" stage="never">
+				<os family="unix"/>
+			</executable>
+				
+		</pack>
+		
+		<pack name="Libraries" required="no" preselected="yes">
+			<description>Third party libraries needed to run DeepaMehta.</description>
+			<fileset dir="" targetdir="$INSTALL_PATH">
+				<include name="libs/*"/>
+				<include name="libs/endorsed/*"/>
+			</fileset>
+		</pack>
+		
+		<pack name="Sources" required="no" preselected="no">
+			<description>The sources of the DeepaMehta framework.</description>
+			<fileset dir="" targetdir="$INSTALL_PATH">
+				<include name="develop/src/**/*"/>
+				<include name="build.xml"/>
+				<include name="config.xml"/>
+				<include name="build-installer.xml"/>
+				<include name="installer-config.xml"/>
+				<include name="doc/stylesheet.css"/>
+			</fileset>
+		</pack>
+		
+		<pack name="API documentation" required="no" preselected="no">
+			<description>The API reference documentation.</description>
+			<fileset dir="" targetdir="$INSTALL_PATH">
+				<include name="doc/api/**/*"/>
+			</fileset>
+		</pack>
+		
+	</packs>
+	
+</installation>

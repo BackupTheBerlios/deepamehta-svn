@@ -1,0 +1,37 @@
+<project name="DeepaMehtaInstaller" default="installer" basedir=".">
+	
+	<!-- In order to build the installation packages, you need to download and install 
+		 the izPack installer from http://www.izforge.com/izpack/. The default configuration
+		 assumes that the package was installed into develop/libs/izpack. Once you'Ve got
+		 the installer in place, simply run 'ant -f build-installer.xml' to create the 
+		 installation packages. -->
+	
+	<description> 
+		DeepaMehta Installer build file
+	</description>
+
+	<!-- location of izPack installation -->
+	<property name="izpack" value="develop/libs/izPack/"/>
+
+	<taskdef name="izpack" 
+		classpath="${izpack}/lib/compiler.jar" 
+		classname="com.izforge.izpack.ant.IzPackTask"/>
+	
+	<target name="installer">
+		<mkdir dir="install/monolithic"/>
+		<izpack 
+			input="installer-config.xml"
+			output="install/monolithic/DeepaMehta-Installer.jar" 
+			installerType="standard" 
+			basedir="." 
+			izPackDir="${izpack}" />
+		<mkdir dir="install/web"/>
+		<izpack 
+			input="installer-config.xml"
+			output="install/web/DeepaMehta-Web-Installer.jar" 
+			installerType="web" 
+			basedir="." 
+			izPackDir="${izpack}" />
+	</target>
+	
+</project>
