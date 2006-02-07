@@ -330,16 +330,18 @@
 
 	<target name="apidocs" description="generates the API documentation">
 		<javadoc 
-		   destdir="docs/apidocs"
-		   stylesheetfile="docs/stylesheet.css"
+		   destdir="doc/api"
+		   stylesheetfile="doc/stylesheet.css"
 		   package="true"
 		   windowtitle="DeepaMehta -- API Documentation">
 			<fileset dir="develop/src">
 			</fileset>		
 		</javadoc>
+		<!--
         <copy file="docs/overview-frame.html" todir="docs/apidocs" overwrite="true"/>
         <copy file="docs/overview-summary.html" todir="docs/apidocs" overwrite="true"/>
         <copy file="docs/apidocs-index.html" tofile="docs/apidocs/index.html" overwrite="true"/>
+		-->
 	</target>
 
 	<target name="cleanup" description="remove build directory">
