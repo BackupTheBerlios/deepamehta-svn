@@ -1,5 +1,33 @@
 package de.deepamehta.service;
 
+import java.awt.Component;
+import java.awt.Point;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.google.soap.search.GoogleSearch;
+import com.google.soap.search.GoogleSearchFault;
+import com.google.soap.search.GoogleSearchResult;
+import com.google.soap.search.GoogleSearchResultElement;
+
 import de.deepamehta.AmbiguousSemanticException;
 import de.deepamehta.Association;
 import de.deepamehta.BaseAssociation;
@@ -15,32 +43,23 @@ import de.deepamehta.PresentableType;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Topic;
 import de.deepamehta.TopicInitException;
-import de.deepamehta.TopicMap;
 import de.deepamehta.assocs.LiveAssociation;
+import de.deepamehta.environment.EnvironmentException;
+import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
+import de.deepamehta.environment.instance.InstanceConfiguration;
+import de.deepamehta.service.web.DeepaMehtaServlet;
 import de.deepamehta.topics.AssociationTypeTopic;
 import de.deepamehta.topics.AuthentificationSourceTopic;
+import de.deepamehta.topics.ChatTopic;
 import de.deepamehta.topics.ContainerTopic;
 import de.deepamehta.topics.LiveTopic;
 import de.deepamehta.topics.LoginTopic;
-import de.deepamehta.topics.TypeTopic;
 import de.deepamehta.topics.TopicMapTopic;
 import de.deepamehta.topics.TopicTypeTopic;
-import de.deepamehta.topics.helper.TopicMapImporter;
+import de.deepamehta.topics.TypeTopic;
 import de.deepamehta.topics.helper.EmailChecker;
 import de.deepamehta.topics.helper.HTMLParser;
-//
-import com.google.soap.search.GoogleSearch;
-import com.google.soap.search.GoogleSearchResult;
-import com.google.soap.search.GoogleSearchResultElement;
-import com.google.soap.search.GoogleSearchFault;
-//
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.io.*;	// File
-import java.net.*;	// URL
-import java.awt.*;
-import java.util.*;
+import de.deepamehta.topics.helper.TopicMapImporter;
 
 
 
@@ -63,7 +82,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	// *** Fields ***
 	// **************
 
-
+	private static Log logger = LogFactory.getLog(ApplicationService.class);
 
 	private ApplicationServiceHost host;
 
@@ -219,6 +238,73 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		return as;
 	}
 
+	public static ApplicationService create(ApplicationServiceHost host, InstanceConfiguration config) throws DeepaMehtaException {
+		
+		CorporateMemoryConfiguration cmConfig;
+		
+		try {
+			cmConfig = config.getCMConfig();
+		} catch (EnvironmentException e) {
+			logger.error("Unable to retrieve CM configuration.", e);
+			throw new DeepaMehtaException("Unable to retrieve CM configuration.");
+		}
+		
+		logger.info("DeepaMehta Application Service");
+		logger.info("  version: " + SERVER_VERSION);
+		logger.info("  standard topics version: " + LiveTopic.kernelTopicsVersion);
+		logger.info("  communication: " + host.getCommInfo());
+		logger.info("  service name: \"" + config.getId() + "\"");
+		logger.info("Corporate Memory");
+		logger.info("  implementation: \"" + cmConfig.getImplementingClassName() + "\"");
+		// TODO re-enable this
+//		logger.info("  URL: \"" + instance.cmURL + "\"");
+//		logger.info("  driver: \"" + instance.cmDriverClass + "\"");
+		
+		CorporateMemory cm = cmConfig.getInstance();
+		if (cm == null)
+			throw new DeepaMehtaException("Unable to instantiate CM implementation.");
+		
+		if (cm.startup(cmConfig, false)) {
+				
+            // error check 1: standard topics compatibility ### move to LCM.create
+            int kernelVersion = LiveTopic.kernelTopicsVersion;
+            if (kernelVersion != REQUIRED_STANDARD_TOPICS) {
+                throw new DeepaMehtaException("DeepaMehta Service " + SERVER_VERSION +
+                    " requires standard topics version " + REQUIRED_STANDARD_TOPICS +
+                    " but version " + kernelVersion + " is installed");
+            }
+            
+            // get content version 
+            int cmModel = cm.getModelVersion();		// throws DME
+            int cmContent = cm.getContentVersion();	// throws DME
+            logger.info("  model/content version: " + cmModel + "." + cmContent);
+            
+            // error check 2: corporate memory compatibility
+            if (cmModel != REQUIRED_DB_MODEL || cmContent != REQUIRED_DB_CONTENT) {
+                throw new DeepaMehtaException("DeepaMehta Service " + SERVER_VERSION +
+                    " requires corporate memory " + REQUIRED_DB_MODEL + "." +
+                    REQUIRED_DB_CONTENT + " but " + cmModel + "." + cmContent +
+                    " is installed");
+            }
+		} else {
+			throw new DeepaMehtaException("Unable to startup corporate memory.");
+		}
+		
+		// create application service
+		ApplicationService as = new ApplicationService(host, cm);
+		
+		// set authorisation source
+		as.setAuthentificationSourceTopic();
+
+		// start statictics thread, basically to keep the CM connection alive,
+		// compare to DataSourceTopic.startIdleThread()
+		as.statisticsThread = new Thread(as);
+		as.statisticsThread.start();
+
+		return as;
+	}
+	
+	
 	/**
 	 * @see		DeepaMehtaServer#main
 	 * @see		DeepaMehta#createApplicationService

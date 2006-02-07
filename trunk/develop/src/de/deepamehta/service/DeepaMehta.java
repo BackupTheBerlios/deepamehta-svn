@@ -1,27 +1,19 @@
 package de.deepamehta.service;
 
-import de.deepamehta.BaseTopic;
+import java.awt.Container;
+
+import javax.swing.JApplet;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.Detail;
-import de.deepamehta.Directive;
-import de.deepamehta.FileServer;
-import de.deepamehta.PresentableTopic;
-import de.deepamehta.Topic;
-//
 import de.deepamehta.client.PresentationDirectives;
 import de.deepamehta.client.PresentationService;
-//
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.plaf.*;
-import java.sql.SQLException;
-import java.awt.*;
-import java.awt.event.*;
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentException;
+import de.deepamehta.environment.instance.InstanceConfiguration;
 
 
 
@@ -44,8 +36,11 @@ public class DeepaMehta extends JApplet implements ApplicationServiceHost, Deepa
 	// *** Fields ***
 	// **************
 
+	
+	private static Log logger = LogFactory.getLog(DeepaMehta.class);
 
-
+	private Environment env;
+	private InstanceConfiguration instanceConfig;
 	private PresentationService ps;
 	private ApplicationService as;
 
@@ -89,6 +84,7 @@ public class DeepaMehta extends JApplet implements ApplicationServiceHost, Deepa
 
 	/**
 	 * Application specific initialization.
+	 * @param args command line arguments
 	 */
 	private void initApplication(String[] args) {
 		// >>> compare to init()
@@ -96,34 +92,40 @@ public class DeepaMehta extends JApplet implements ApplicationServiceHost, Deepa
 		// >>> compare to DeepaMehtaServer.main()
 		// >>> compare to DeepaMehtaServer.runServer()
 		try {
-			// --- create presentation service ---
+			// initialize environment
+			this.env = Environment.getEnvironment(args);
+			logger.info("Running as monolithic application.");
+			
+			// find out which instance to start
+			this.instanceConfig = this.env.guessInstance();
+			logger.info("Starting instance " + this.instanceConfig.getId() + "...");
+			
+			// create presentation service 
 			this.ps = new PresentationService();
 			// reporting
-			System.out.println("\n--- DeepaMehta " + CLIENT_VERSION + " runs as " +
-				"application on \"" + ps.hostAddress + "\" (" + ps.platform + ") ---");
-			//
-			ps.initialize();
-			// --- create application service ---
-			ApplicationServiceInstance instance = ApplicationServiceInstance.lookup(args);
-			ApplicationService as = ApplicationService.create(this, instance);		// throws DME
+			this.ps.initialize();
+			
+			// create application service
+			ApplicationService aslocal = ApplicationService.create(this, this.instanceConfig);
+			
 			// ### Note: the client name is unknown at this point
-			ps.createMainWindow("DeepaMehta " + CLIENT_VERSION);
-			as.setGraphicsContext(ps.mainWindow);
-			ps.installationProps = as.getInstallationProps();
-			// --- create session ---
-			Session session = as.createSession(as.getNewSessionID(), "localhost", ps.hostAddress);
-			//
-			ps.setService(new EmbeddedService(session, as, ps));
-			ps.cp.add(ps.createLoginGUI());
-			ps.mainWindow.setTitle(ps.getClientName());
+			
+			this.ps.createMainWindow("DeepaMehta " + CLIENT_VERSION);
+			aslocal.setGraphicsContext(this.ps.mainWindow);
+			this.ps.installationProps = aslocal.getInstallationProps();
+			
+			// create session
+			Session session = aslocal.createSession(aslocal.getNewSessionID(), "localhost", this.ps.hostAddress);
+			
+			this.ps.setService(new EmbeddedService(session, aslocal, this.ps));
+			this.ps.cp.add(this.ps.createLoginGUI());
+			this.ps.mainWindow.setTitle(this.ps.getClientName());
 			// ### ps.mainWindow.pack();
-			ps.mainWindow.setVisible(true);
+			this.ps.mainWindow.setVisible(true);
 		} catch (DeepaMehtaException e) {
-			System.out.println("*** " + errText + " (" + e.getMessage() + ")");
-			// ### e.printStackTrace();
+			logger.error("Caught unhandled DeepaMehta exception at top level.", e);
 		} catch (Throwable e) {
-			System.out.println("*** DeepaMehta.initApplication(): " + e);
-			e.printStackTrace();
+			logger.error("Caught other unhandled exception at top level.", e);
 		}
 	}
 

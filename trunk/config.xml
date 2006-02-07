@@ -35,6 +35,14 @@
 	<pathelement location="${libpath}/avalon-framework.jar"/>
 	<pathelement location="${libpath}/commons-fileupload-1.0.jar"/>
 	<pathelement location="${libpath}/googleapi.jar"/>
+	<pathelement location="${libpath}/commons-beanutils-1.7.0.jar"/>
+	<pathelement location="${libpath}/commons-beanutils-core-1.7.0.jar"/>
+	<pathelement location="${libpath}/commons-cli-1.0.jar"/>
+	<pathelement location="${libpath}/commons-collections-3.1.jar"/>
+	<pathelement location="${libpath}/commons-digester-1.7.jar"/>
+	<pathelement location="${libpath}/commons-logging-1.0.4.jar"/>
+	<pathelement location="${libpath}/commons-logging-api-1.0.4.jar"/>
+	<pathelement location="${libpath}/log4j-1.2.13.jar"/>
 </path>
 
 <!-- 3rd Party Libraries required for the launch pad -->
