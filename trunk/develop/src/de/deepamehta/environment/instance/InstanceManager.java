@@ -92,7 +92,7 @@ public class InstanceManager {
         digester.addSetProperties("instances/instance/server/", "interface", "serverInterface");
         digester.addSetProperties("instances/instance/server/", "port", "serverPort");
         digester.addObjectCreate("instances/instance/server/cm", CorporateMemoryConfiguration.class);
-        digester.addSetProperties("instances/instance/server/cm/", "class", "implementingClass");
+        digester.addSetProperties("instances/instance/server/cm/", "class", "implementingClassName");
         digester.addCallMethod("instances/instance/server/cm/property", "setProperty", 2);
         digester.addCallParam("instances/instance/server/cm/property", 0, "name");
         digester.addCallParam("instances/instance/server/cm/property", 1, "value");
