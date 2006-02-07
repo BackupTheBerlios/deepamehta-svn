@@ -82,7 +82,7 @@ public class InstanceManager {
         
         digester.addCallMethod("instances/instance/monolithic", "setInstanceTypeMonolithic");
         digester.addObjectCreate("instances/instance/monolithic/cm", CorporateMemoryConfiguration.class);
-        digester.addSetProperties("instances/instance/monolithic/cm/", "class", "implementingClass");
+        digester.addSetProperties("instances/instance/monolithic/cm/", "class", "implementingClassName");
         digester.addCallMethod("instances/instance/monolithic/cm/property", "setProperty", 2);
         digester.addCallParam("instances/instance/monolithic/cm/property", 0, "name");
         digester.addCallParam("instances/instance/monolithic/cm/property", 1, "value");

@@ -53,6 +53,13 @@ public class CorporateMemoryConfiguration {
         this.implementingClass = implementingClass;
     }
     
+	/**
+	 * @param implementingClass The implementing class to set.
+	 */
+	public void setImplementingClassName(String implementingClass) {
+		this.implementingClass = implementingClass;
+	}
+    
     /**
      * @return Returns the name of the implementing class.
      */
@@ -65,12 +72,17 @@ public class CorporateMemoryConfiguration {
      * implementing class;
      */
     public Class getImplementingClass() {
-        try {
-            return Class.forName(this.implementingClass);
-        } catch (ClassNotFoundException e) {
-            logger.error("Unable to find CM implementation " + this.implementingClass);
-            return null;
-        }
+    	if (this.implementingClass != null) {
+    		try {
+    			return Class.forName(this.implementingClass);
+    		} catch (ClassNotFoundException e) {
+    			logger.error("Unable to find CM implementation " + this.implementingClass);
+    			return null;
+    		} 
+    	} else {
+    		logger.error("No CM implementation provided.");
+    		return null;
+    	}
     }
     
     /**
@@ -171,5 +183,5 @@ public class CorporateMemoryConfiguration {
         }
         return me;
     }
-    
+
 }
