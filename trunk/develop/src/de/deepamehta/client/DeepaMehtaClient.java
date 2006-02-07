@@ -1,23 +1,20 @@
 package de.deepamehta.client;
 
-import de.deepamehta.BaseTopic;
+import java.awt.Container;
+import java.awt.Graphics;
+import java.io.IOException;
+
+import javax.swing.JApplet;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.Detail;
-import de.deepamehta.Directive;
-import de.deepamehta.FileServer;
-import de.deepamehta.PresentableTopic;
-import de.deepamehta.Topic;
-//
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.plaf.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.instance.InstanceConfiguration;
+import de.deepamehta.environment.instance.InstanceType;
+import de.deepamehta.environment.instance.UnknownInstanceException;
 
 
 
@@ -39,8 +36,10 @@ public class DeepaMehtaClient extends JApplet implements DeepaMehtaConstants {
 	// *** Fields ***
 	// **************
 
-
-
+	private static Log logger = LogFactory.getLog(DeepaMehtaClient.class);
+	
+	private Environment env;
+	private InstanceConfiguration instanceConfig;
 	private PresentationService ps;
 	//
 	private static final String errText = "DeepaMehtaClient can't run";
@@ -60,54 +59,79 @@ public class DeepaMehtaClient extends JApplet implements DeepaMehtaConstants {
 
 
 
+	/**
+	 * The main method to start the client.
+	 * @param args The command line arguments.
+	 */
 	public static void main(String[] args) {
-		String host = args.length > 0 ? args[0] : SERVER_DEFAULT_HOST;	// server host
-		int port = DEFAULT_PORT;
-		// does host contain port number?
-		int pos = host.indexOf(":");
-		if (pos != -1) {
-			port = Integer.parseInt(host.substring(pos + 1));
-			host = host.substring(0, pos);
-		}
-		//
-		new DeepaMehtaClient().initApplication(host, port);
+		new DeepaMehtaClient().initApplication(args);
 	}
 
 	/**
-	 * Application specific initialization.
+	 * Client-specific initialization.
+	 * @param args The command line arguments.
 	 */
-	private void initApplication(String host, int port) {
-		// >>> compare to init()
+	private void initApplication(String[] args ) {
+
+	    // >>> compare to init()
 		// >>> compare to DeepaMehta.initApplication()
-		try {
-			// --- create presentation service ---
-			this.ps = new PresentationService();
-			//
-			System.out.println("\n--- DeepaMehtaClient " + CLIENT_VERSION + " runs as " +
-				"application on \"" + ps.hostAddress + "\" (" + ps.platform + ") ---");
-			//
-			ps.initialize();
-			// ### Note: the client name is unknown at this point
-			ps.createMainWindow("DeepaMehta " + CLIENT_VERSION);
-			// --- create application service ---
-			ps.setService(new SocketService(host, port, ps));	// throws DME, IO
-            // --- create login GUI ---
-			ps.cp.add(ps.createLoginGUI());
-			ps.mainWindow.setTitle(ps.getClientName());
-		} catch (DeepaMehtaException e) {
+
+	    try {
+            // initialize environment
+            this.env = Environment.getEnvironment(args, InstanceType.CLIENT);
+            logger.info("Running as client only.");
+            
+            // find out which instance to start
+            this.instanceConfig = this.env.guessInstance();
+            logger.info("Starting instance " + this.instanceConfig.getId() + "...");
+            
+            // create presentation service 
+            this.ps = new PresentationService();
+            this.ps.initialize();
+            // ### Note: the client name is unknown at this point
+            this.ps.createMainWindow("DeepaMehta " + CLIENT_VERSION);
+            
+            //	    // TODO re-implement this logic some day
+            //		String host = args.length > 0 ? args[0] : SERVER_DEFAULT_HOST;	// server host
+            //		int port = DEFAULT_PORT;
+            //		// does host contain port number?
+            //		int pos = host.indexOf(":");
+            //		if (pos != -1) {
+            //			port = Integer.parseInt(host.substring(pos + 1));
+            //			host = host.substring(0, pos);
+            //		}		
+            
+            
+            // create application service 
+            logger.debug("Connecting to host " + this.instanceConfig.getClientHost() 
+            		+ " port " + this.instanceConfig.getClientPort() + " ...");
+            this.ps.setService(new SocketService(this.instanceConfig.getClientHost(), 
+            		this.instanceConfig.getClientPort(), this.ps));
+            
+            // create login GUI
+            this.ps.cp.add(this.ps.createLoginGUI());
+            this.ps.mainWindow.setTitle(this.ps.getClientName());
+            
+            
+        } catch (UnknownInstanceException e) {
+            logger.error("Unable to load the instance specified.", e);
+        } catch (DeepaMehtaException e) {
+            logger.error("Uncaught DeepaMehta exception at top level.", e);
 			// Note: if SocketService() throws DeepaMehtaException installationProps
 			// IS initialized ### not nice
-			System.out.println("*** " + errText + " (" + e.getMessage() + ")");
-			ps.cp.add(ps.createErrorGUI(e, host, port));
-			ps.mainWindow.setTitle(ps.getClientName());
-		} catch (IOException e) {
+			this.ps.cp.add(this.ps.createErrorGUI(e, this.instanceConfig.getClientHost(), 
+					this.instanceConfig.getClientPort()));
+			this.ps.mainWindow.setTitle(this.ps.getClientName());
+        } catch (IOException e) {
 			// Note: if SocketService() throws IOException installationProps is
 			// NOT initialized ### not nice
-			System.out.println("*** " + errText + " (" + e + ")");
-			ps.cp.add(ps.createErrorGUI(e, host, port));
+			logger.error("Uncaught I/O exception at top level.", e);
+			this.ps.cp.add(this.ps.createErrorGUI(e, this.instanceConfig.getClientHost(), 
+					this.instanceConfig.getClientPort()));
 		} finally {
 			// ### ps.mainWindow.pack();
-			ps.mainWindow.setVisible(true);
+			this.ps.mainWindow.setVisible(true);
+			// FIXME this   should not be run if one of the first two exceptions is caught
 		}
 	}
 

@@ -237,9 +237,12 @@
 		<jar jarfile="${bin}/DeepaMehtaClient.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
 			<include name="de/deepamehta/client/*.class"/>
+			<include name="de/deepamehta/environment/**/*.class"/>
+			<include name="de/deepamehta/environment/**/*.xml"/>
+			<include name="de/deepamehta/environment/**/*.xsd"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.client.DeepaMehtaClient"/>
-				<!-- <attribute name="Class-Path" value="${jarclasspath}"/> -->
+				<attribute name="Class-Path" value="${jarclasspath-cli}"/>
 			</manifest>
 		</jar>
 		<!-- server -->
