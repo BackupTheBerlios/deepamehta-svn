@@ -246,6 +246,9 @@
 		<jar jarfile="${bin}/DeepaMehtaService.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
 			<include name="de/deepamehta/service/**/*.class"/>
+			<include name="de/deepamehta/environment/**/*.class"/>
+			<include name="de/deepamehta/environment/**/*.xml"/>
+			<include name="de/deepamehta/environment/**/*.xsd"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehtaServer"/>
 				<attribute name="Class-Path" value="${jarclasspath-srv} DeepaMehtaTopics.jar"/>

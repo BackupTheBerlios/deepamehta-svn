@@ -1,15 +1,26 @@
 package de.deepamehta.service;
 
+import java.awt.HeadlessException;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.BindException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Enumeration;
+import java.util.Vector;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.topics.LiveTopic;
-//
-import java.awt.HeadlessException;
-import java.util.*;
-import java.sql.*;
-import java.net.*;
-import java.io.*;
+import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentException;
+import de.deepamehta.environment.instance.InstanceConfiguration;
+import de.deepamehta.environment.instance.UnknownInstanceException;
 
 
 
@@ -34,11 +45,13 @@ final class DeepaMehtaServer implements ApplicationServiceHost, DeepaMehtaConsta
 	// *** Fields ***
 	// **************
 
-
+	private static Log logger = LogFactory.getLog(DeepaMehtaServer.class);
+	
+	private Environment env;
+	private InstanceConfiguration instanceConfig;
 
 	private ApplicationService as;
-	//
-	private int port;
+
 	private ServerSocket socket;
 	private ServerConsole console;
 	//
@@ -53,10 +66,8 @@ final class DeepaMehtaServer implements ApplicationServiceHost, DeepaMehtaConsta
 	// ***************************
 
 
-
-	private DeepaMehtaServer(int port) throws IOException {
-		this.port = port;
-		this.socket = new ServerSocket(port);
+	private DeepaMehtaServer() {
+		// The server is only instantiated using its static main method.
 	}
 
 
@@ -68,7 +79,7 @@ final class DeepaMehtaServer implements ApplicationServiceHost, DeepaMehtaConsta
 
 
 	public String getCommInfo() {
-		return "port " + port;
+		return "port " + this.instanceConfig.getServerPort();
 	}
 
 	public void sendDirectives(Session session, CorporateDirectives directives,
@@ -98,43 +109,68 @@ final class DeepaMehtaServer implements ApplicationServiceHost, DeepaMehtaConsta
 
 
 
+	/**
+	 * Main method used to start the server process.
+	 * @param args The command line arguments.
+	 */
 	public static void main(String[] args) {
-		DeepaMehtaUtils.reportVMProperties();
-		if (LOG_MEM_STAT) {
-			DeepaMehtaUtils.memoryStatus();
-		}
-		ApplicationServiceInstance instance = null;
-		try {
-			// --- create application service ---
-			instance = ApplicationServiceInstance.lookup(args);
-			DeepaMehtaServer dms = new DeepaMehtaServer(instance.port);		// throws IO
-			dms.as = ApplicationService.create(dms, instance);				// throws DME
-			// --- create server console ---
-			try {
-				dms.console = new ServerConsole(dms.as);
-				dms.as.setGraphicsContext(dms.console);
-			} catch (HeadlessException e) {
-				System.out.println(">>> Note: the graphical server console is not available (the server runs in headless mode)");
-				System.out.println(">>> Kill the server process for shutdown");
-			} catch (InternalError e) {
-				System.out.println(">>> Note: the graphical server console is not available");
-				System.out.println(">>> Kill the server process for shutdown");
-			}
-			// --- accept clients ---
-			dms.runServer();	// falls into endless loop
-		} catch (BindException e) {
-			System.out.println("*** " + errText + " (port " + instance.port + " is in use)");
-		} catch (IOException e) {
-			System.out.println("*** " + errText + " (" + e.getMessage() + ")");
-			// ### e.printStackTrace();
-		} catch (DeepaMehtaException e) {
-			System.out.println("*** " + errText + " (" + e.getMessage() + ")");
-			// ### e.printStackTrace();
-		}
+		DeepaMehtaServer dms = new DeepaMehtaServer();
+		if (dms.initApplication(args))
+			dms.runServer(); // endless loop right now, no external shutdown
 		System.exit(1);
+
 	}
 
-
+	/**
+	 * Server-specific initialization.
+	 * @param args The command line arguments
+	 * @return <code>true</code> if the server is ready to run.
+	 */
+	private boolean initApplication(String[] args) {
+		
+		try {
+			// initialize environment
+			this.env = Environment.getEnvironment(args);
+			logger.info("Running as standalone server.");
+			
+			// say hello
+			if (LOG_MEM_STAT) {
+				DeepaMehtaUtils.memoryStatus();
+			}
+			
+			// retrieve instance configuration
+			this.instanceConfig = this.env.guessInstance();
+			logger.info("Starting instance " + this.instanceConfig.getId() + "...");
+			
+			// initialize server socket
+			// TODO use server interface too
+			this.socket = new ServerSocket(this.instanceConfig.getServerPort());
+			
+			// initialize application service
+			this.as = ApplicationService.create(this, this.instanceConfig);
+			
+			// --- create server console ---
+			try {
+				this.console = new ServerConsole(this.as);
+				this.as.setGraphicsContext(this.console);
+			} catch (HeadlessException e) {
+				logger.warn("Note: the graphical server console is not available (the server is running in headless mode). Kill the server process for shutdown.", e);
+			} catch (InternalError e) {
+				logger.warn("Note: the graphical server console is not available. Kill the server process for shutdown.", e);
+			}
+			
+			return true;
+		} catch (UnknownInstanceException e) {
+			logger.error("Unable to load the instance specified.", e);
+			return false;
+		} catch (BindException e) {
+			logger.error("The socket is already in use.", e);
+			return false;
+		} catch (IOException e) {
+			logger.error("Unable to initialize server socket.", e);
+			return false;
+		}
+	}
 
 	// ***********************
 	// *** Private Methods ***
