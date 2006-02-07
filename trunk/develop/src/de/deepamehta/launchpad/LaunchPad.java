@@ -48,7 +48,7 @@ public class LaunchPad {
 	 * @return 0 if the launch pad was started successfully.
 	 */
 	public Integer start(String[] args) {
-        this.env = Environment.getEnvironment(args);
+        this.env = Environment.getEnvironment(args, null);
         try {
         	this.runInteractive();
         } catch (HeadlessException he) {

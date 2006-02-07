@@ -79,28 +79,31 @@ public class InstanceManager {
         digester.addObjectCreate("instances/instance", InstanceConfiguration.class);
         digester.addSetProperties("instances/instance/", "id", "id");
         digester.addSetProperties("instances/instance/", "description", "description");
-        
-        digester.addCallMethod("instances/instance/monolithic", "setInstanceTypeMonolithic");
-        digester.addObjectCreate("instances/instance/monolithic/cm", CorporateMemoryConfiguration.class);
-        digester.addSetProperties("instances/instance/monolithic/cm/", "class", "implementingClassName");
-        digester.addCallMethod("instances/instance/monolithic/cm/property", "setProperty", 2);
-        digester.addCallParam("instances/instance/monolithic/cm/property", 0, "name");
-        digester.addCallParam("instances/instance/monolithic/cm/property", 1, "value");
-        digester.addSetNext("instances/instance/monolithic/cm", "setCMConfig");
 
-        digester.addCallMethod("instances/instance/server", "setInstanceTypeServer");
-        digester.addSetProperties("instances/instance/server/", "interface", "serverInterface");
-        digester.addSetProperties("instances/instance/server/", "port", "serverPort");
-        digester.addObjectCreate("instances/instance/server/cm", CorporateMemoryConfiguration.class);
-        digester.addSetProperties("instances/instance/server/cm/", "class", "implementingClassName");
-        digester.addCallMethod("instances/instance/server/cm/property", "setProperty", 2);
-        digester.addCallParam("instances/instance/server/cm/property", 0, "name");
-        digester.addCallParam("instances/instance/server/cm/property", 1, "value");
-        digester.addSetNext("instances/instance/server/cm", "setCMConfig");
+    	// do not attempt to parse CM configuration during client startup
+        if (this.env.getInstanceType() != InstanceType.CLIENT) {
+        	digester.addCallMethod("instances/instance/monolithic", "setInstanceTypeMonolithic");
+        	digester.addObjectCreate("instances/instance/monolithic/cm", CorporateMemoryConfiguration.class);
+        	digester.addSetProperties("instances/instance/monolithic/cm/", "class", "implementingClassName");
+        	digester.addCallMethod("instances/instance/monolithic/cm/property", "setProperty", 2);
+        	digester.addCallParam("instances/instance/monolithic/cm/property", 0, "name");
+        	digester.addCallParam("instances/instance/monolithic/cm/property", 1, "value");
+        	digester.addSetNext("instances/instance/monolithic/cm", "setCMConfig");
+        	
+        	digester.addCallMethod("instances/instance/server", "setInstanceTypeServer");
+        	digester.addSetProperties("instances/instance/server/", "interface", "serverInterface");
+        	digester.addSetProperties("instances/instance/server/", "port", "serverPort");
+        	digester.addObjectCreate("instances/instance/server/cm", CorporateMemoryConfiguration.class);
+        	digester.addSetProperties("instances/instance/server/cm/", "class", "implementingClassName");
+        	digester.addCallMethod("instances/instance/server/cm/property", "setProperty", 2);
+        	digester.addCallParam("instances/instance/server/cm/property", 0, "name");
+        	digester.addCallParam("instances/instance/server/cm/property", 1, "value");
+        	digester.addSetNext("instances/instance/server/cm", "setCMConfig");
+        }
 
         digester.addCallMethod("instances/instance/client", "setInstanceTypeClient");
-        digester.addSetProperties("instances/instance/client/", "host", "host");
-        digester.addSetProperties("instances/instance/client/", "port", "port");
+        digester.addSetProperties("instances/instance/client/", "host", "clientHost");
+        digester.addSetProperties("instances/instance/client/", "port", "clientPort");
         
         digester.addSetNext("instances/instance", "add" );
 

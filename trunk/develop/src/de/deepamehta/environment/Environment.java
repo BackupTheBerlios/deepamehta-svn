@@ -26,6 +26,7 @@ import org.apache.log4j.PropertyConfigurator;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 import de.deepamehta.environment.instance.InstanceManager;
+import de.deepamehta.environment.instance.InstanceType;
 import de.deepamehta.environment.instance.UnknownInstanceException;
 import de.deepamehta.environment.plugin.PluginManager;
 
@@ -42,6 +43,7 @@ public class Environment implements DeepaMehtaConstants {
     private static final String DEFAULT_PLUGIN_FILE = "plugins.xml";
     private static Log logger = LogFactory.getLog(Environment.class);
     private static Environment singleton = null;
+    private InstanceType instanceType;
     private PluginManager plugins;
     private InstanceManager instances;
     private String workingDirectory;
@@ -53,10 +55,12 @@ public class Environment implements DeepaMehtaConstants {
      * This is the internal constructor to initialize the one and only singleton 
      * instance of the Environment class. 
      * @param args command line arguments
+     * @param type the instance type to startup
      */
-    private Environment(String[] args) {
+    private Environment(String[] args, InstanceType type) {
         
         this.workingDirectory = System.getProperty("user.dir");
+        this.instanceType = type;
         parseOptions(args);
         initializeLogger();
         
@@ -67,7 +71,8 @@ public class Environment implements DeepaMehtaConstants {
         //		System.out.println("\n--- DeepaMehta " + CLIENT_VERSION + " runs as applet on \"" + ps.hostAddress + "\" (" + ps.platform + ") ---");
 
         logJavaDetails();
-        initializePluginManager();
+        if (this.instanceType != InstanceType.CLIENT)
+        	initializePluginManager();
         initializeInstanceManager();
     }
     
@@ -219,9 +224,9 @@ public class Environment implements DeepaMehtaConstants {
      * @param args The command line arguments.
      * @return Returns the singleton instance of the environment. 
      */
-    public static Environment getEnvironment(String[] args) {
+    public static Environment getEnvironment(String[] args, InstanceType type) {
         if (singleton == null) {
-            singleton = new Environment(args);
+            singleton = new Environment(args, type);
         } 
         return singleton;
     }
@@ -391,4 +396,13 @@ public class Environment implements DeepaMehtaConstants {
     public InstanceConfiguration guessInstance() throws UnknownInstanceException  {
         return getInstances().get(guessInstanceName());
     }
+
+
+
+	/**
+	 * @return Returns the instance type.
+	 */
+	public InstanceType getInstanceType() {
+		return this.instanceType;
+	}
 }
