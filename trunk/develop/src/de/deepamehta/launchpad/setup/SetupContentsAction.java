@@ -144,7 +144,7 @@ class SetupContentsAction extends DefaultHandler implements SetupAction {
 	 */
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		
-		if (qName.equals("contents")) {
+		if (qName.equals("dmc:contents")) {
 			setCMVersions(attributes);
 		}
 		if (qName.equals("topic")) {
