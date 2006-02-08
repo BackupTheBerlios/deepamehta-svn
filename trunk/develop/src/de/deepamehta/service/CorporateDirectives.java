@@ -75,14 +75,10 @@ public class CorporateDirectives extends Directives {
 	// *** Methods ***
 	// ***************
 
-
+	// PresentationDirectives anyway.
 
 	public void add(int type) {
 		directives.addElement(new Directive(type));
-		if ((type == DIRECTIVE_CHOOSE_FILE) || 
-			(type == DIRECTIVE_CHOOSE_COLOR)) {
-			setChained(type);
-		}
 	}
 
 	/**
