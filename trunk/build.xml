@@ -336,7 +336,7 @@
 
 	<target name="apidocs" description="generates the API documentation">
 		<javadoc 
-		   destdir="doc/api"
+		   destdir="docs/apidocs"
 		   stylesheetfile="doc/stylesheet.css"
 		   package="true"
 		   windowtitle="DeepaMehta -- API Documentation">

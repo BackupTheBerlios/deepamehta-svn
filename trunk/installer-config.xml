@@ -18,8 +18,8 @@
 	</locale>
 	
 	<resources>
-		<res id="HTMLLicencePanel.licence" src="doc/license.html"/>
-		<res id="HTMLInfoPanel.info" src="doc/readme.html"/>
+		<res id="HTMLLicencePanel.licence" src="docs/license.html"/>
+		<res id="HTMLInfoPanel.info" src="docs/readme.html"/>
 	</resources>
 	
 	<panels>
@@ -39,8 +39,8 @@
 				<include name="plugins.xml"/>
 				<include name="bin/*"/>
 				<include name="data"/>
-				<include name="doc/license.html"/>
-				<include name="doc/readme.html"/>
+				<include name="docs/license.html"/>
+				<include name="docs/readme.html"/>
 			</fileset>
 			<file targetdir="$INSTALL_PATH" src="DeepaMehta.sh">
 				<os family="unix"/>
@@ -67,14 +67,14 @@
 				<include name="config.xml"/>
 				<include name="build-installer.xml"/>
 				<include name="installer-config.xml"/>
-				<include name="doc/stylesheet.css"/>
+				<include name="docs/stylesheet.css"/>
 			</fileset>
 		</pack>
 		
 		<pack name="API documentation" required="no" preselected="no">
 			<description>The API reference documentation.</description>
 			<fileset dir="" targetdir="$INSTALL_PATH">
-				<include name="doc/api/**/*"/>
+				<include name="docs/apidocs/**/*"/>
 			</fileset>
 		</pack>
 		
