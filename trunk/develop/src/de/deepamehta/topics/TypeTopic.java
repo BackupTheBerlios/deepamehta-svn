@@ -401,7 +401,7 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 			}
 			return directives;
 		} else {
-			throw new DeepaMehtaException("no chained command handler implemented");
+			return super.executeChainedCommand(command, result, topicmapID, viewmode, session);
 		}
 	}
 
