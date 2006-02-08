@@ -356,6 +356,21 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 		return commands;
 	}
 
+	/**
+	 * Subclasses can override this method to customize the topic property form.
+	 * <P>
+	 * ### The default implementation does nothing.
+	 *
+	 * @see		TypeTopic#makeTypeDefinition
+	 */
+	public static void buttonCommand(PropertyDefinition propDef, ApplicationService as, Session session) {
+		String propName = propDef.getPropertyName();
+		if (propName.equals(PROPERTY_COLOR)) {
+			propDef.setActionButton(as.string(BUTTON_CHOOSE_COLOR), CMD_CHOOSE_COLOR);
+		} else {
+			LiveTopic.buttonCommand(propDef, as, session);
+		}
+	}
 
 
 	// --------------------------

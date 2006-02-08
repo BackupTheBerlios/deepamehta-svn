@@ -308,6 +308,8 @@ public class TopicMapTopic extends LiveTopic {
 		String propName = propDef.getPropertyName();
 		if (propName.equals(PROPERTY_BACKGROUND_IMAGE)) {
 			propDef.setActionButton(as.string(BUTTON_ASSIGN_FILE), CMD_ASSIGN_BACKGROUND);
+		} else if (propName.equals(PROPERTY_BACKGROUND_COLOR)) {
+			propDef.setActionButton(as.string(BUTTON_CHOOSE_COLOR), CMD_CHOOSE_BACKGROUND_COLOR);
 		} else {
 			LiveTopic.buttonCommand(propDef, as, session);
 		}
