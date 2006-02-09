@@ -333,7 +333,7 @@
 	<target name="apidocs" description="generates the API documentation">
 		<javadoc 
 		   destdir="docs/apidocs"
-		   stylesheetfile="doc/stylesheet.css"
+		   stylesheetfile="docs/stylesheet.css"
 		   package="true"
 		   windowtitle="DeepaMehta -- API Documentation">
 			<fileset dir="develop/src">
