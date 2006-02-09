@@ -226,7 +226,6 @@
 			<exclude name="de/deepamehta/service/DeepaMehtaServer.class"/>
 			<exclude name="de/deepamehta/service/DeepaMehtaServer$Connection.class"/>
 			<include name="de/deepamehta/environment/**/*.class"/>
-			<include name="de/deepamehta/environment/**/*.xml"/>
 			<include name="de/deepamehta/environment/**/*.xsd"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehta"/>
@@ -238,7 +237,6 @@
 			<include name="de/deepamehta/*.class"/>
 			<include name="de/deepamehta/client/*.class"/>
 			<include name="de/deepamehta/environment/**/*.class"/>
-			<include name="de/deepamehta/environment/**/*.xml"/>
 			<include name="de/deepamehta/environment/**/*.xsd"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.client.DeepaMehtaClient"/>
@@ -250,7 +248,6 @@
 			<include name="de/deepamehta/*.class"/>
 			<include name="de/deepamehta/service/**/*.class"/>
 			<include name="de/deepamehta/environment/**/*.class"/>
-			<include name="de/deepamehta/environment/**/*.xml"/>
 			<include name="de/deepamehta/environment/**/*.xsd"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehtaServer"/>
@@ -269,7 +266,6 @@
 			<include name="de/deepamehta/launchpad/**/*.xml"/>
 			<include name="de/deepamehta/launchpad/**/*.xsd"/>
 			<include name="de/deepamehta/environment/**/*.class"/>
-			<include name="de/deepamehta/environment/**/*.xml"/>
 			<include name="de/deepamehta/environment/**/*.xsd"/>
 			<include name="de/deepamehta/service/*.class"/>
 			<include name="de/deepamehta/*.class"/>

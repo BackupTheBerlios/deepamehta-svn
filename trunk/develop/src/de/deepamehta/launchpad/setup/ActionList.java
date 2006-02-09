@@ -49,14 +49,14 @@ public class ActionList implements ListModel {
         
         // MONOLITHIC or SERVER only
         if (!config.getInstanceType().isClient()) {
+            // create and populate working directory
+            this.actions.addElement(new SetupWorkingDirAction(config));
             // check and if necessary prepare storage area
             this.actions.addElement(new SetupStorageAction(config));
             // check and if necessary prepare structures
             this.actions.addElement(new SetupStructureAction(config));
             // check and if necessary prepare basic contents
             this.actions.addElement(new SetupContentsAction(config));
-            // create and populate working directory
-            this.actions.addElement(new SetupWorkingDirAction(config));
         }        
         
         // all types: store configuration

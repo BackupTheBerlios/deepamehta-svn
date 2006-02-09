@@ -5,8 +5,8 @@
  */
 package de.deepamehta.launchpad.setup;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Hashtable;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import de.deepamehta.DeepaMehtaMessages;
+import de.deepamehta.environment.Environment;
 import de.deepamehta.environment.EnvironmentException;
 import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
 import de.deepamehta.environment.instance.InstanceConfiguration;
@@ -34,6 +35,9 @@ class SetupContentsAction extends DefaultHandler implements SetupAction {
 
     private static Log logger = LogFactory.getLog(SetupStorageAction.class);
     
+    private Environment env;
+    
+    private String workingDir = null;
     private CorporateMemoryConfiguration cmConfig;
     private CorporateMemory cm = null;
     
@@ -49,8 +53,10 @@ class SetupContentsAction extends DefaultHandler implements SetupAction {
      * @param config The instance configuration to populate.
      */
     public SetupContentsAction(InstanceConfiguration config) {
+    	this.env = Environment.getEnvironment();
         try {
             this.cmConfig = config.getCMConfig();
+            this.workingDir = config.getWorkingDirectory();
         } catch (EnvironmentException e) {
             logger.error("Unable to get CM configuration.", e);
             this.cmConfig = null;
@@ -93,7 +99,9 @@ class SetupContentsAction extends DefaultHandler implements SetupAction {
             logger.debug("Initializing Corporate Memory contents...");
             
             // get input data file 
-            InputStream input = this.getClass().getClassLoader().getResourceAsStream("de/deepamehta/launchpad/setup/DefaultContents.xml");
+            String filename = this.workingDir + this.env.getFileSeparator() + "DefaultContents.xml";
+            logger.debug("Loading contents from file " + filename);
+            File input = new File(filename);
             
             // prepare SAX parser
             SAXParserFactory factory = SAXParserFactory.newInstance();
