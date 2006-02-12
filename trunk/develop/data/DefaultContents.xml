@@ -898,7 +898,7 @@
 		<property name="Plural Name" value="Message Boards"/>
 		<property name="Icon" value="messageboard.gif"/>
 		<property name="Unique Topic Names" value="on"/>
-		<property name="Custom Implementation" value="de.deepamehta.messageboard.topics.MessageBoardTopic"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.messageboard.MessageBoardTopic"/>
 	</topic>
 	<!--    super type -->
 	<association id="a-859" type="at-derivation" from="tt-topicmap" to="tt-messageboard"/>
@@ -918,7 +918,7 @@
 		<property name="Plural Name" value="Messages"/>
 		<property name="Icon" value="message.gif"/>
 		<property name="Unique Topic Names" value="on"/>
-		<property name="Custom Implementation" value="de.deepamehta.messageboard.topics.MessageTopic"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.messageboard.MessageTopic"/>
 	</topic>
 	<!--    assign properties -->
 	<association id="a-865" type="at-composition" from="tt-message" to="pp-from">
