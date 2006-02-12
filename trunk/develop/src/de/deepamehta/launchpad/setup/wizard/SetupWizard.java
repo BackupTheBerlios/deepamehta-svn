@@ -19,6 +19,7 @@ import jwf.WizardPanel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 import de.deepamehta.environment.instance.InstanceType;
@@ -63,7 +64,7 @@ public class SetupWizard implements WizardListener {
         // FIXME The wizard should be modal. 
         // For some unknown reason, using a JDialog disturbs the JWF so much that it ceases to work.
         // dialog = new JDialog(parent, "DeepaMehta Setup Wizard", true);
-        this.dialog = new JFrame(Messages.getString("SetupWizard.Title")); //$NON-NLS-1$
+        this.dialog = new JFrame(DeepaMehtaMessages.getString("SetupWizard.Title")); //$NON-NLS-1$
         this.dialog.setContentPane(this.wizard);
         this.dialog.pack();
         this.dialog.setSize(600, 500);
@@ -178,7 +179,7 @@ public class SetupWizard implements WizardListener {
         if (getSetupTypePanel().useDefault()) {
             // default setup
             instance.setId("default");
-            instance.setDescription(Messages.getString("SetupWizard.DefaultInstanceDescription")); //$NON-NLS-1$
+            instance.setDescription(DeepaMehtaMessages.getString("SetupWizard.DefaultInstanceDescription")); //$NON-NLS-1$
             instance.setInstanceType(InstanceType.MONOLITHIC);
         } else {
             // manual setup
@@ -249,8 +250,8 @@ public class SetupWizard implements WizardListener {
         // FIXME The "please wait" window doesn't contain any text.
         // FIXME The "please wait" window should be modal.
         JDialog pleaseWait = new JDialog();
-        pleaseWait.getContentPane().add(new JLabel(Messages.getString("SetupWizard.PleaseWaitMessage"))); //$NON-NLS-1$
-        pleaseWait.setTitle(Messages.getString("SetupWizard.PleaseWaitTitle")); //$NON-NLS-1$
+        pleaseWait.getContentPane().add(new JLabel(DeepaMehtaMessages.getString("SetupWizard.PleaseWaitMessage"))); //$NON-NLS-1$
+        pleaseWait.setTitle(DeepaMehtaMessages.getString("SetupWizard.PleaseWaitTitle")); //$NON-NLS-1$
         pleaseWait.setSize(250, 50);
         pleaseWait.setLocation(200, 200);
         pleaseWait.pack();
@@ -348,6 +349,13 @@ public class SetupWizard implements WizardListener {
         }
         return this.pConfirmation;
     }
+
+	/**
+	 * @return Returns the dialog.
+	 */
+	public JFrame getDialog() {
+		return dialog;
+	}
     
     
     

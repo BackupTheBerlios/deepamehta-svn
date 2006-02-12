@@ -16,7 +16,7 @@ import jwf.WizardPanel;
  */
 public abstract class AbstractWizardPanel extends WizardPanel {
 
-    private SetupWizard wizard;
+    protected SetupWizard wizard;
     
     /**
      * The default constructor stores the reference to the parent wizard.

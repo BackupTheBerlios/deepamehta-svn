@@ -5,6 +5,7 @@
  */
 package de.deepamehta.launchpad.setup.wizard;
 
+import de.deepamehta.DeepaMehtaMessages;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -70,12 +71,12 @@ public class AdminCredentialsPanel extends AbstractWizardPanel {
 		gridBagConstraints32.gridy = 11;
 		gridBagConstraints32.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints32.insets = new java.awt.Insets(2,2,2,2);
-		this.labelUser.setText(Messages.getString("AdminCredentialsPanel.User")); //$NON-NLS-1$
+		this.labelUser.setText(DeepaMehtaMessages.getString("SetupWizard.AdminCredentialsPanel.User")); //$NON-NLS-1$
 		gridBagConstraints33.gridx = 1;
 		gridBagConstraints33.gridy = 12;
 		gridBagConstraints33.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints33.insets = new java.awt.Insets(2,2,2,2);
-		this.labelPassword.setText(Messages.getString("AdminCredentialsPanel.Password")); //$NON-NLS-1$
+		this.labelPassword.setText(DeepaMehtaMessages.getString("SetupWizard.AdminCredentialsPanel.Password")); //$NON-NLS-1$
 		gridBagConstraints34.gridx = 2;
 		gridBagConstraints34.gridy = 11;
 		gridBagConstraints34.weightx = 1.0;
@@ -115,8 +116,9 @@ public class AdminCredentialsPanel extends AbstractWizardPanel {
 			this.taGlobalExplanation = new JTextArea();
 			this.taGlobalExplanation.setBackground(null);
 			this.taGlobalExplanation.setEditable(false);
-			this.taGlobalExplanation.setText(Messages.getString("AdminCredentialsPanel.GlobalExplanation")); //$NON-NLS-1$
+			this.taGlobalExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.AdminCredentialsPanel.GlobalExplanation")); //$NON-NLS-1$
 			this.taGlobalExplanation.setLineWrap(true);
+			this.taGlobalExplanation.setWrapStyleWord(true);
 		}
 		return this.taGlobalExplanation;
 	}
@@ -165,7 +167,9 @@ public class AdminCredentialsPanel extends AbstractWizardPanel {
 			this.taAdminCredentials = new JTextArea();
 			this.taAdminCredentials.setBackground(null);
 			this.taAdminCredentials.setEditable(false);
-			this.taAdminCredentials.setText(Messages.getString("AdminCredentialsPanel.CredentialsExplanation")); //$NON-NLS-1$
+			this.taAdminCredentials.setLineWrap(true);
+			this.taAdminCredentials.setWrapStyleWord(true);
+			this.taAdminCredentials.setText(DeepaMehtaMessages.getString("SetupWizard.AdminCredentialsPanel.CredentialsExplanation")); //$NON-NLS-1$
 		}
 		return this.taAdminCredentials;
 	}
@@ -179,7 +183,7 @@ public class AdminCredentialsPanel extends AbstractWizardPanel {
 			this.labelTitle = new JLabel();
 			this.panelTitle = new JPanel();
 			this.panelTitle.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-			this.labelTitle.setText(Messages.getString("AdminCredentialsPanel.Title")); //$NON-NLS-1$
+			this.labelTitle.setText(DeepaMehtaMessages.getString("SetupWizard.AdminCredentialsPanel.Title")); //$NON-NLS-1$
 			this.labelTitle.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 18));
 			this.panelTitle.add(this.labelTitle, null);
 		}

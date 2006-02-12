@@ -13,6 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
+
+import de.deepamehta.DeepaMehtaMessages;
 /**
  * This panel determines whether the user wants a default setup or manual configuration
  * @author vwegert
@@ -85,7 +87,7 @@ public class SetupTypePanel extends AbstractWizardPanel {
 		gridBagConstraints5.gridy = 2;
 		gridBagConstraints5.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints5.insets = new java.awt.Insets(2,2,2,2);
-		this.labelDefaultInstallation.setText(Messages.getString("SetupTypePanel.DefaultInstallation")); //$NON-NLS-1$
+		this.labelDefaultInstallation.setText(DeepaMehtaMessages.getString("SetupWizard.SetupTypePanel.DefaultInstallation")); //$NON-NLS-1$
 		gridBagConstraints6.gridx = 1;
 		gridBagConstraints6.gridy = 6;
 		gridBagConstraints6.fill = java.awt.GridBagConstraints.VERTICAL;
@@ -97,7 +99,7 @@ public class SetupTypePanel extends AbstractWizardPanel {
 		gridBagConstraints8.gridy = 4;
 		gridBagConstraints8.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints8.insets = new java.awt.Insets(2,2,2,2);
-		this.labelManualConfiguration.setText(Messages.getString("SetupTypePanel.ManualConfiguration")); //$NON-NLS-1$
+		this.labelManualConfiguration.setText(DeepaMehtaMessages.getString("SetupWizard.SetupTypePanel.ManualConfiguration")); //$NON-NLS-1$
 		gridBagConstraints9.gridx = 1;
 		gridBagConstraints9.gridy = 5;
 		gridBagConstraints9.weightx = 1.0;
@@ -132,7 +134,7 @@ public class SetupTypePanel extends AbstractWizardPanel {
 		if (this.panelTitle == null) {
 			this.labelTitle = new JLabel();
 			this.panelTitle = new JPanel();
-			this.labelTitle.setText(Messages.getString("SetupTypePanel.Title")); //$NON-NLS-1$
+			this.labelTitle.setText(DeepaMehtaMessages.getString("SetupWizard.SetupTypePanel.Title")); //$NON-NLS-1$
 			this.labelTitle.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 18));
 			this.panelTitle.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 			this.panelTitle.add(this.labelTitle, null);
@@ -146,10 +148,11 @@ public class SetupTypePanel extends AbstractWizardPanel {
 	private JTextArea getTaGlobalExplanation() {
 		if (this.taGlobalExplanation == null) {
 			this.taGlobalExplanation = new JTextArea();
-			this.taGlobalExplanation.setText(Messages.getString("SetupTypePanel.GlobalExplanation")); //$NON-NLS-1$
+			this.taGlobalExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.SetupTypePanel.GlobalExplanation")); //$NON-NLS-1$
 			this.taGlobalExplanation.setBackground(null);
 			this.taGlobalExplanation.setEditable(false);
 			this.taGlobalExplanation.setLineWrap(true);
+			this.taGlobalExplanation.setWrapStyleWord(true);
 		}
 		return this.taGlobalExplanation;
 	}
@@ -173,10 +176,11 @@ public class SetupTypePanel extends AbstractWizardPanel {
 	private JTextArea getTaDefaultExplanation() {
 		if (this.taDefaultExplanation == null) {
 			this.taDefaultExplanation = new JTextArea();
-			this.taDefaultExplanation.setText(Messages.getString("SetupTypePanel.DefaultExplanation")); //$NON-NLS-1$
+			this.taDefaultExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.SetupTypePanel.DefaultExplanation")); //$NON-NLS-1$
 			this.taDefaultExplanation.setBackground(null);
 			this.taDefaultExplanation.setEditable(false);
 			this.taDefaultExplanation.setLineWrap(true);
+			this.taDefaultExplanation.setWrapStyleWord(true);
 		}
 		return this.taDefaultExplanation;
 	}
@@ -210,10 +214,11 @@ public class SetupTypePanel extends AbstractWizardPanel {
 	private JTextArea getTaManualExplanation() {
 		if (this.taManualExplanation == null) {
 			this.taManualExplanation = new JTextArea();
-			this.taManualExplanation.setText(Messages.getString("SetupTypePanel.ManualExplanation")); //$NON-NLS-1$
+			this.taManualExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.SetupTypePanel.ManualExplanation")); //$NON-NLS-1$
 			this.taManualExplanation.setBackground(null);
 			this.taManualExplanation.setLineWrap(true);
 			this.taManualExplanation.setEditable(false);
+			this.taManualExplanation.setWrapStyleWord(true);
 		}
 		return this.taManualExplanation;
 	}

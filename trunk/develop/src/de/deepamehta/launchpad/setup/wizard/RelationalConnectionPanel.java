@@ -7,6 +7,7 @@ package de.deepamehta.launchpad.setup.wizard;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,6 +17,8 @@ import javax.swing.JTextField;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import de.deepamehta.DeepaMehtaMessages;
 /**
  * This panel obtains the information required to setup a relational CM.
  * @author vwegert
@@ -100,7 +103,7 @@ public class RelationalConnectionPanel extends AbstractWizardPanel {
 		gridBagConstraints18.gridy = 4;
 		gridBagConstraints18.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints18.insets = new java.awt.Insets(2,2,2,2);
-		this.labelServer.setText(Messages.getString("RelationalConnectionPanel.Server")); //$NON-NLS-1$
+		this.labelServer.setText(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.Server")); //$NON-NLS-1$
 		gridBagConstraints19.gridx = 1;
 		gridBagConstraints19.gridy = 4;
 		gridBagConstraints19.weightx = 1.0;
@@ -120,7 +123,7 @@ public class RelationalConnectionPanel extends AbstractWizardPanel {
 		gridBagConstraints27.gridy = 7;
 		gridBagConstraints27.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints27.insets = new java.awt.Insets(2,2,2,2);
-		this.labelPort.setText(Messages.getString("RelationalConnectionPanel.Port")); //$NON-NLS-1$
+		this.labelPort.setText(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.Port")); //$NON-NLS-1$
 		gridBagConstraints28.gridx = 1;
 		gridBagConstraints28.gridy = 7;
 		gridBagConstraints28.weightx = 1.0;
@@ -130,7 +133,7 @@ public class RelationalConnectionPanel extends AbstractWizardPanel {
 		gridBagConstraints29.gridy = 9;
 		gridBagConstraints29.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints29.insets = new java.awt.Insets(2,2,2,2);
-		this.labelDatabase.setText(Messages.getString("RelationalConnectionPanel.Database")); //$NON-NLS-1$
+		this.labelDatabase.setText(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.Database")); //$NON-NLS-1$
 		gridBagConstraints30.gridx = 1;
 		gridBagConstraints30.gridy = 9;
 		gridBagConstraints30.weightx = 1.0;
@@ -146,12 +149,12 @@ public class RelationalConnectionPanel extends AbstractWizardPanel {
 		gridBagConstraints32.gridy = 11;
 		gridBagConstraints32.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints32.insets = new java.awt.Insets(2,2,2,2);
-		this.labelUser.setText(Messages.getString("RelationalConnectionPanel.User")); //$NON-NLS-1$
+		this.labelUser.setText(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.User")); //$NON-NLS-1$
 		gridBagConstraints33.gridx = 0;
 		gridBagConstraints33.gridy = 12;
 		gridBagConstraints33.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints33.insets = new java.awt.Insets(2,2,2,2);
-		this.labelPassword.setText(Messages.getString("RelationalConnectionPanel.Password")); //$NON-NLS-1$
+		this.labelPassword.setText(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.Password")); //$NON-NLS-1$
 		gridBagConstraints34.gridx = 1;
 		gridBagConstraints34.gridy = 11;
 		gridBagConstraints34.weightx = 1.0;
@@ -172,7 +175,7 @@ public class RelationalConnectionPanel extends AbstractWizardPanel {
 		gridBagConstraints39.gridy = 15;
 		gridBagConstraints39.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints39.insets = new java.awt.Insets(2,2,2,2);
-		this.labelConnectionString.setText(Messages.getString("RelationalConnectionPanel.Connection")); //$NON-NLS-1$
+		this.labelConnectionString.setText(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.Connection")); //$NON-NLS-1$
 		gridBagConstraints40.gridx = 1;
 		gridBagConstraints40.gridy = 15;
 		gridBagConstraints40.weightx = 1.0;
@@ -218,7 +221,7 @@ public class RelationalConnectionPanel extends AbstractWizardPanel {
 			this.taGlobalExplanation = new JTextArea();
 			this.taGlobalExplanation.setBackground(null);
 			this.taGlobalExplanation.setEditable(false);
-			this.taGlobalExplanation.setText(Messages.getString("RelationalConnectionPanel.GlobalExplanation")); //$NON-NLS-1$
+			this.taGlobalExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.GlobalExplanation")); //$NON-NLS-1$
 			this.taGlobalExplanation.setLineWrap(true);
 			this.taGlobalExplanation.setWrapStyleWord(true);
 		}
@@ -245,7 +248,8 @@ public class RelationalConnectionPanel extends AbstractWizardPanel {
 		if (this.taServerPort == null) {
 			this.taServerPort = new JTextArea();
 			this.taServerPort.setBackground(null);
-			this.taServerPort.setText(Messages.getString("RelationalConnectionPanel.ServerPortExplanation")); //$NON-NLS-1$
+			this.taServerPort.setEditable(false);
+			this.taServerPort.setText(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.ServerPortExplanation")); //$NON-NLS-1$
 			this.taServerPort.setLineWrap(true);
 			this.taServerPort.setWrapStyleWord(true);
 		}
@@ -295,7 +299,7 @@ public class RelationalConnectionPanel extends AbstractWizardPanel {
 			this.taDatabase = new JTextArea();
 			this.taDatabase.setBackground(null);
 			this.taDatabase.setEditable(false);
-			this.taDatabase.setText(Messages.getString("RelationalConnectionPanel.DatabaseExplanation")); //$NON-NLS-1$
+			this.taDatabase.setText(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.DatabaseExplanation")); //$NON-NLS-1$
 			this.taDatabase.setLineWrap(true);
 			this.taDatabase.setWrapStyleWord(true);
 		}
@@ -335,7 +339,7 @@ public class RelationalConnectionPanel extends AbstractWizardPanel {
 			this.taUserPassword = new JTextArea();
 			this.taUserPassword.setBackground(null);
 			this.taUserPassword.setEditable(false);
-			this.taUserPassword.setText(Messages.getString("RelationalConnectionPanel.CredentialsExplanation")); //$NON-NLS-1$
+			this.taUserPassword.setText(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.CredentialsExplanation")); //$NON-NLS-1$
 			this.taUserPassword.setLineWrap(true);
 			this.taUserPassword.setWrapStyleWord(true);
 		}
@@ -362,7 +366,7 @@ public class RelationalConnectionPanel extends AbstractWizardPanel {
 			this.taConnectionString = new JTextArea();
 			this.taConnectionString.setBackground(null);
 			this.taConnectionString.setEditable(false);
-			this.taConnectionString.setText(Messages.getString("RelationalConnectionPanel.ConnectionExplanation")); //$NON-NLS-1$
+			this.taConnectionString.setText(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.ConnectionExplanation")); //$NON-NLS-1$
 			this.taConnectionString.setLineWrap(true);
 			this.taConnectionString.setWrapStyleWord(true);
 		}
@@ -378,7 +382,7 @@ public class RelationalConnectionPanel extends AbstractWizardPanel {
 			this.labelTitle = new JLabel();
 			this.panelTitle = new JPanel();
 			this.panelTitle.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-			this.labelTitle.setText(Messages.getString("RelationalConnectionPanel.Title")); //$NON-NLS-1$
+			this.labelTitle.setText(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.Title")); //$NON-NLS-1$
 			this.labelTitle.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 18));
 			this.panelTitle.add(this.labelTitle, null);
 		}
@@ -437,4 +441,39 @@ public class RelationalConnectionPanel extends AbstractWizardPanel {
             // FIXME initialize this panel            this.defaultValuesSet = true;
         }
     }
+
+	/* (non-Javadoc)
+	 * @see de.deepamehta.launchpad.setup.wizard.AbstractWizardPanel#validateNext(java.util.List)
+	 */
+	public boolean validateNext(List list) {
+		
+		boolean valid = true;
+		
+		if (getEditServer().getText().equals("")) {
+			list.add(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.ErrorMissingServer"));  //$NON-NLS-1$
+			valid = false;
+		}
+		
+		if (!getEditPort().getText().equals("")) {
+			try {
+				Integer.parseInt(getEditPort().getText());
+			} catch (NumberFormatException e) {
+				list.add(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.ErrorNonNumericPort")); //$NON-NLS-1$
+				valid = false;			
+			}
+			
+		}
+		
+		if (getEditDatabase().getText().equals("")) {
+			list.add(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.ErrorMissingDatabase"));  //$NON-NLS-1$
+			valid = false;
+		}
+		
+		if (getEditUser().getText().equals("")) {
+			list.add(DeepaMehtaMessages.getString("SetupWizard.RelationalConnectionPanel.ErrorMissingUser")); //$NON-NLS-1$
+			valid = false;
+		}
+		
+		return valid;
+	}
 }  //  @jve:decl-index=0:visual-constraint="12,10"

@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.instance.InstanceType;
 /**
  * This panel determines whether the user wants to create a monolithic, server or client instance.
@@ -83,7 +84,7 @@ public class InstanceTypePanel extends AbstractWizardPanel {
 		gridBagConstraints3.gridy = 2;
 		gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints3.insets = new java.awt.Insets(2,2,2,2);
-		this.labelMonolithic.setText(Messages.getString("InstanceTypePanel.MonolithicInstance")); //$NON-NLS-1$
+		this.labelMonolithic.setText(DeepaMehtaMessages.getString("SetupWizard.InstanceTypePanel.MonolithicInstance")); //$NON-NLS-1$
 		gridBagConstraints4.gridx = 1;
 		gridBagConstraints4.gridy = 3;
 		gridBagConstraints4.weightx = 1.0;
@@ -97,7 +98,7 @@ public class InstanceTypePanel extends AbstractWizardPanel {
 		gridBagConstraints7.gridy = 4;
 		gridBagConstraints7.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints7.insets = new java.awt.Insets(2,2,2,2);
-		this.labelServer.setText(Messages.getString("InstanceTypePanel.ServerInstance")); //$NON-NLS-1$
+		this.labelServer.setText(DeepaMehtaMessages.getString("SetupWizard.InstanceTypePanel.ServerInstance")); //$NON-NLS-1$
 		gridBagConstraints8.gridx = 1;
 		gridBagConstraints8.gridy = 5;
 		gridBagConstraints8.weightx = 1.0;
@@ -110,7 +111,7 @@ public class InstanceTypePanel extends AbstractWizardPanel {
 		gridBagConstraints11.gridy = 6;
 		gridBagConstraints11.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints11.insets = new java.awt.Insets(2,2,2,2);
-		this.labelClient.setText(Messages.getString("InstanceTypePanel.ClientInstance")); //$NON-NLS-1$
+		this.labelClient.setText(DeepaMehtaMessages.getString("SetupWizard.InstanceTypePanel.ClientInstance")); //$NON-NLS-1$
 		gridBagConstraints12.gridx = 1;
 		gridBagConstraints12.gridy = 7;
 		gridBagConstraints12.weightx = 1.0;
@@ -156,7 +157,7 @@ public class InstanceTypePanel extends AbstractWizardPanel {
 	private JTextArea getTaGlobalExplanation() {
 		if (this.taGlobalExplanation == null) {
 			this.taGlobalExplanation = new JTextArea();
-			this.taGlobalExplanation.setText(Messages.getString("InstanceTypePanel.GlobalExplanation")); //$NON-NLS-1$
+			this.taGlobalExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.InstanceTypePanel.GlobalExplanation")); //$NON-NLS-1$
 			this.taGlobalExplanation.setEditable(false);
 			this.taGlobalExplanation.setBackground(null);
 			this.taGlobalExplanation.setLineWrap(true);
@@ -184,7 +185,7 @@ public class InstanceTypePanel extends AbstractWizardPanel {
 	private JTextArea getTaMonolithicExplanation() {
 		if (this.taMonolithicExplanation == null) {
 			this.taMonolithicExplanation = new JTextArea();
-			this.taMonolithicExplanation.setText(Messages.getString("InstanceTypePanel.MonolithicExplanation")); //$NON-NLS-1$
+			this.taMonolithicExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.InstanceTypePanel.MonolithicExplanation")); //$NON-NLS-1$
 			this.taMonolithicExplanation.setEditable(false);
 			this.taMonolithicExplanation.setBackground(null);
 			this.taMonolithicExplanation.setLineWrap(true);
@@ -211,7 +212,7 @@ public class InstanceTypePanel extends AbstractWizardPanel {
 	private JTextArea getTaServerExplanation() {
 		if (this.taServerExplanation == null) {
 			this.taServerExplanation = new JTextArea();
-			this.taServerExplanation.setText(Messages.getString("InstanceTypePanel.ServerExplanation")); //$NON-NLS-1$
+			this.taServerExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.InstanceTypePanel.ServerExplanation")); //$NON-NLS-1$
 			this.taServerExplanation.setBackground(null);
 			this.taServerExplanation.setEditable(false);
 			this.taServerExplanation.setLineWrap(true);
@@ -238,7 +239,7 @@ public class InstanceTypePanel extends AbstractWizardPanel {
 	private JTextArea getTaClientExplanation() {
 		if (this.taClientExplanation == null) {
 			this.taClientExplanation = new JTextArea();
-			this.taClientExplanation.setText(Messages.getString("InstanceTypePanel.ClientExplanation")); //$NON-NLS-1$
+			this.taClientExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.InstanceTypePanel.ClientExplanation")); //$NON-NLS-1$
 			this.taClientExplanation.setEditable(false);
 			this.taClientExplanation.setBackground(null);
 			this.taClientExplanation.setLineWrap(true);
@@ -267,7 +268,7 @@ public class InstanceTypePanel extends AbstractWizardPanel {
 			this.labelTitle = new JLabel();
 			this.panelTitle = new JPanel();
 			this.panelTitle.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-			this.labelTitle.setText(Messages.getString("InstanceTypePanel.Title")); //$NON-NLS-1$
+			this.labelTitle.setText(DeepaMehtaMessages.getString("SetupWizard.InstanceTypePanel.Title")); //$NON-NLS-1$
 			this.labelTitle.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 18));
 			this.panelTitle.add(this.labelTitle, null);
 		}

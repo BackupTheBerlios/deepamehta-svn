@@ -18,6 +18,7 @@ import javax.swing.JTextArea;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.service.CorporateMemory;
 /**
  * This panel gathers information about the CM implementation to use.
@@ -77,7 +78,7 @@ public class CorporateMemoryPanel extends AbstractWizardPanel {
 		gridBagConstraints18.gridy = 4;
 		gridBagConstraints18.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints18.insets = new java.awt.Insets(2,2,2,2);
-		this.labelCMClass.setText(Messages.getString("CorporateMemoryPanel.Implementation")); //$NON-NLS-1$
+		this.labelCMClass.setText(DeepaMehtaMessages.getString("SetupWizard.CorporateMemoryPanel.Implementation")); //$NON-NLS-1$
 		gridBagConstraints20.gridx = 1;
 		gridBagConstraints20.gridy = 5;
 		gridBagConstraints20.weightx = 1.0;
@@ -101,7 +102,7 @@ public class CorporateMemoryPanel extends AbstractWizardPanel {
 		gridBagConstraints10.gridy = 6;
 		gridBagConstraints10.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints10.insets = new java.awt.Insets(2,2,2,2);
-		this.labelDriverPlugin.setText(Messages.getString("CorporateMemoryPanel.Driver")); //$NON-NLS-1$
+		this.labelDriverPlugin.setText(DeepaMehtaMessages.getString("SetupWizard.CorporateMemoryPanel.Driver")); //$NON-NLS-1$
 		gridBagConstraints11.gridx = 1;
 		gridBagConstraints11.gridy = 6;
 		gridBagConstraints11.weightx = 1.0;
@@ -142,7 +143,7 @@ public class CorporateMemoryPanel extends AbstractWizardPanel {
 			this.taGlobalExplanation = new JTextArea();
 			this.taGlobalExplanation.setBackground(null);
 			this.taGlobalExplanation.setEditable(false);
-			this.taGlobalExplanation.setText(Messages.getString("CorporateMemoryPanel.GlobalExplananation")); //$NON-NLS-1$
+			this.taGlobalExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.CorporateMemoryPanel.GlobalExplananation")); //$NON-NLS-1$
 			this.taGlobalExplanation.setLineWrap(true);
 			this.taGlobalExplanation.setWrapStyleWord(true);
 		}
@@ -157,7 +158,7 @@ public class CorporateMemoryPanel extends AbstractWizardPanel {
 		if (this.taCMClassExplanation == null) {
 			this.taCMClassExplanation = new JTextArea();
 			this.taCMClassExplanation.setBackground(null);
-			this.taCMClassExplanation.setText(Messages.getString("CorporateMemoryPanel.ImplementationExplanation")); //$NON-NLS-1$
+			this.taCMClassExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.CorporateMemoryPanel.ImplementationExplanation")); //$NON-NLS-1$
 			this.taCMClassExplanation.setLineWrap(true);
 			this.taCMClassExplanation.setEditable(false);
 			this.taCMClassExplanation.setWrapStyleWord(true);
@@ -239,7 +240,7 @@ public class CorporateMemoryPanel extends AbstractWizardPanel {
 			this.labelTitle = new JLabel();
 			this.panelTitle = new JPanel();
 			this.panelTitle.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-			this.labelTitle.setText(Messages.getString("CorporateMemoryPanel.Title")); //$NON-NLS-1$
+			this.labelTitle.setText(DeepaMehtaMessages.getString("SetupWizard.CorporateMemoryPanel.Title")); //$NON-NLS-1$
 			this.labelTitle.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 18));
 			this.panelTitle.add(this.labelTitle, null);
 		}
@@ -265,7 +266,7 @@ public class CorporateMemoryPanel extends AbstractWizardPanel {
 		if (this.taDriverPluginExplanation == null) {
 			this.taDriverPluginExplanation = new JTextArea();
 			this.taDriverPluginExplanation.setBackground(null);
-			this.taDriverPluginExplanation.setText(Messages.getString("CorporateMemoryPanel.DriverExplanation")); //$NON-NLS-1$
+			this.taDriverPluginExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.CorporateMemoryPanel.DriverExplanation")); //$NON-NLS-1$
 			this.taDriverPluginExplanation.setEditable(false);
 			this.taDriverPluginExplanation.setLineWrap(true);
 			this.taDriverPluginExplanation.setWrapStyleWord(true);

@@ -13,6 +13,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.ListModel;
+
+import de.deepamehta.DeepaMehtaMessages;
 /**
  * This panel is the last panel of the wizard. It summarizes the actions planned.
  * FIXME This panel has yet to learn how to perform anything sensible.
@@ -81,7 +83,7 @@ public class ConfirmationPanel extends AbstractWizardPanel {
 			this.taActionList = new JTextArea();
 			this.taActionList.setBackground(null);
 			this.taActionList.setEditable(false);
-			this.taActionList.setText(Messages.getString("ConfirmationPanel.GlobalExplanation")); //$NON-NLS-1$
+			this.taActionList.setText(DeepaMehtaMessages.getString("SetupWizard.ConfirmationPanel.GlobalExplanation")); //$NON-NLS-1$
 			this.taActionList.setLineWrap(true);
 			this.taActionList.setWrapStyleWord(true);
 		}
@@ -96,7 +98,7 @@ public class ConfirmationPanel extends AbstractWizardPanel {
 		if (this.taNextSteps == null) {
 			this.taNextSteps = new JTextArea();
 			this.taNextSteps.setBackground(null);
-			this.taNextSteps.setText(Messages.getString("ConfirmationPanel.NextStepsExplanation")); //$NON-NLS-1$
+			this.taNextSteps.setText(DeepaMehtaMessages.getString("SetupWizard.ConfirmationPanel.NextStepsExplanation")); //$NON-NLS-1$
 			this.taNextSteps.setEditable(false);
 			this.taNextSteps.setLineWrap(true);
 			this.taNextSteps.setWrapStyleWord(true);
@@ -123,7 +125,7 @@ public class ConfirmationPanel extends AbstractWizardPanel {
 		if (this.panelTitle == null) {
 			this.labelTitle = new JLabel();
 			this.panelTitle = new JPanel();
-			this.labelTitle.setText(Messages.getString("ConfirmationPanel.Title")); //$NON-NLS-1$
+			this.labelTitle.setText(DeepaMehtaMessages.getString("SetupWizard.ConfirmationPanel.Title")); //$NON-NLS-1$
 			this.labelTitle.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 18));
 			this.panelTitle.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 			this.panelTitle.add(this.labelTitle, null);

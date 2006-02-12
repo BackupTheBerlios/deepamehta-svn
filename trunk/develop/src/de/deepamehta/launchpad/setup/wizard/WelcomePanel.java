@@ -11,6 +11,8 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+
+import de.deepamehta.DeepaMehtaMessages;
 /**
  * This panels shows a welcome text and explans what this wizard is for.
  * @author vwegert
@@ -67,7 +69,8 @@ public class WelcomePanel extends AbstractWizardPanel {
 			this.taGlobalExplanation = new JTextArea();
 			this.taGlobalExplanation.setBackground(null);
 			this.taGlobalExplanation.setEditable(false);
-			this.taGlobalExplanation.setText(Messages.getString("WelcomePanel.GlobalExplanation")); //$NON-NLS-1$
+			this.taGlobalExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.WelcomePanel.GlobalExplanation")); //$NON-NLS-1$
+			this.taGlobalExplanation.setWrapStyleWord(true);
 			this.taGlobalExplanation.setLineWrap(true);
 		}
 		return this.taGlobalExplanation;
@@ -92,7 +95,7 @@ public class WelcomePanel extends AbstractWizardPanel {
 			this.labelTitle = new JLabel();
 			this.panelTitle = new JPanel();
 			this.panelTitle.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-			this.labelTitle.setText(Messages.getString("WelcomePanel.Title")); //$NON-NLS-1$
+			this.labelTitle.setText(DeepaMehtaMessages.getString("SetupWizard.WelcomePanel.Title")); //$NON-NLS-1$
 			this.labelTitle.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 18));
 			this.panelTitle.add(this.labelTitle, null);
 		}

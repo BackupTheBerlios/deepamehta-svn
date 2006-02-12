@@ -7,11 +7,14 @@ package de.deepamehta.launchpad.setup.wizard;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import de.deepamehta.DeepaMehtaMessages;
 /**
  * This panel obtains the interface and port the server will use.
  * @author vwegert
@@ -73,7 +76,7 @@ public class ServerConnectionPanel extends AbstractWizardPanel {
 		gridBagConstraints4.gridy = 2;
 		gridBagConstraints4.insets = new java.awt.Insets(2,2,2,2);
 		gridBagConstraints4.anchor = java.awt.GridBagConstraints.WEST;
-		this.labelInterface.setText(Messages.getString("ServerConnectionPanel.Interface")); //$NON-NLS-1$
+		this.labelInterface.setText(DeepaMehtaMessages.getString("SetupWizard.ServerConnectionPanel.Interface")); //$NON-NLS-1$
 		gridBagConstraints5.gridx = 1;
 		gridBagConstraints5.gridy = 2;
 		gridBagConstraints5.weightx = 1.0;
@@ -89,7 +92,7 @@ public class ServerConnectionPanel extends AbstractWizardPanel {
 		gridBagConstraints7.gridy = 4;
 		gridBagConstraints7.insets = new java.awt.Insets(2,2,2,2);
 		gridBagConstraints7.anchor = java.awt.GridBagConstraints.WEST;
-		this.labelPort.setText(Messages.getString("ServerConnectionPanel.Port")); //$NON-NLS-1$
+		this.labelPort.setText(DeepaMehtaMessages.getString("SetupWizard.ServerConnectionPanel.Port")); //$NON-NLS-1$
 		gridBagConstraints8.gridx = 1;
 		gridBagConstraints8.gridy = 4;
 		gridBagConstraints8.weightx = 1.0;
@@ -125,7 +128,7 @@ public class ServerConnectionPanel extends AbstractWizardPanel {
 			this.labelTitle = new JLabel();
 			this.panelTitle = new JPanel();
 			this.panelTitle.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-			this.labelTitle.setText(Messages.getString("ServerConnectionPanel.Title")); //$NON-NLS-1$
+			this.labelTitle.setText(DeepaMehtaMessages.getString("SetupWizard.ServerConnectionPanel.Title")); //$NON-NLS-1$
 			this.labelTitle.setFont(new java.awt.Font("Dialog", java.awt.Font.BOLD, 18));
 			this.panelTitle.add(this.labelTitle, null);
 		}
@@ -142,7 +145,7 @@ public class ServerConnectionPanel extends AbstractWizardPanel {
 			this.taGlobalExplanation.setEditable(false);
 			this.taGlobalExplanation.setLineWrap(true);
 			this.taGlobalExplanation.setBackground(null);
-			this.taGlobalExplanation.setText(Messages.getString("ServerConnectionPanel.GlobalExplanation")); //$NON-NLS-1$
+			this.taGlobalExplanation.setText(DeepaMehtaMessages.getString("SetupWizard.ServerConnectionPanel.GlobalExplanation")); //$NON-NLS-1$
 			this.taGlobalExplanation.setWrapStyleWord(true);
 		}
 		return this.taGlobalExplanation;
@@ -169,7 +172,7 @@ public class ServerConnectionPanel extends AbstractWizardPanel {
 			this.taServer.setEditable(false);
 			this.taServer.setLineWrap(true);
 			this.taServer.setBackground(null);
-			this.taServer.setText(Messages.getString("ServerConnectionPanel.InterfaceExplanation")); //$NON-NLS-1$
+			this.taServer.setText(DeepaMehtaMessages.getString("SetupWizard.ServerConnectionPanel.InterfaceExplanation")); //$NON-NLS-1$
 			this.taServer.setWrapStyleWord(true);
 		}
 		return this.taServer;
@@ -196,7 +199,7 @@ public class ServerConnectionPanel extends AbstractWizardPanel {
 			this.taPort.setEditable(false);
 			this.taPort.setLineWrap(true);
 			this.taPort.setBackground(null);
-			this.taPort.setText(Messages.getString("ServerConnectionPanel.PortExplanation")); //$NON-NLS-1$
+			this.taPort.setText(DeepaMehtaMessages.getString("SetupWizard.ServerConnectionPanel.PortExplanation")); //$NON-NLS-1$
 			this.taPort.setWrapStyleWord(true);
 		}
 		return this.taPort;
@@ -226,4 +229,31 @@ public class ServerConnectionPanel extends AbstractWizardPanel {
     public int getPort() {
         return Integer.parseInt(getEditPort().getText());
     }
+
+	/* (non-Javadoc)
+	 * @see de.deepamehta.launchpad.setup.wizard.AbstractWizardPanel#validateNext(java.util.List)
+	 */
+	public boolean validateNext(List list) {
+		
+		boolean valid = true;
+
+//		if (getEditInterface().getText().equals("")) {
+//			list.add("The interface is required.");
+//			valid = false;
+//		}
+		
+		if (getEditPort().getText().equals("")) {
+			list.add(DeepaMehtaMessages.getString("SetupWizard.ServerConnectionPanel.ErrorMissingPort")); //$NON-NLS-1$
+			valid = false;
+		} else {
+			try {
+				Integer.parseInt(getEditPort().getText());
+			} catch (NumberFormatException e) {
+				list.add(DeepaMehtaMessages.getString("SetupWizard.ServerConnectionPanel.ErrorNonNumericPort")); //$NON-NLS-1$
+				valid = false;
+			}
+		}
+		
+		return valid;
+	}
 }  //  @jve:decl-index=0:visual-constraint="15,9"
