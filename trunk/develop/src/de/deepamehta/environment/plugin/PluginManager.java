@@ -44,10 +44,7 @@ public class PluginManager {
 
         Digester digester = new Digester();
         digester.setNamespaceAware(true);
-        digester.setValidating(false); 
-        // TODO Use the XML Schema to validate the input file
-        // TODO Move schema file to .jar.
-        
+        digester.setValidating(true);         
         
         digester.addObjectCreate("plugins", Vector.class );
         digester.addObjectCreate("plugins/plugin", PluginSpecification.class);

@@ -71,9 +71,7 @@ public class InstanceManager {
 
         Digester digester = new Digester();
         digester.setNamespaceAware(true);
-        digester.setValidating(false); 
-        // FIXME Use the XML Schema to validate the input file.
-        // FIXME Move Schema file into .jar.
+        digester.setValidating(true); 
         
         digester.addObjectCreate("instances", Vector.class );
         digester.addObjectCreate("instances/instance", InstanceConfiguration.class);
