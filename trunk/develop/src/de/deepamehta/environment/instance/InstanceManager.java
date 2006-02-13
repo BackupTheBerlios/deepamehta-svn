@@ -34,6 +34,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentType;
 
 /**
  * This class is responsible for managing the instance configuration data at runtime. Its
@@ -79,7 +80,7 @@ public class InstanceManager {
         digester.addSetProperties("instances/instance/", "description", "description");
 
     	// do not attempt to parse CM configuration during client startup
-        if (this.env.getInstanceType() != InstanceType.CLIENT) {
+        if (this.env.getEnvironmentType() == EnvironmentType.FAT) {
         	digester.addCallMethod("instances/instance/monolithic", "setInstanceTypeMonolithic");
         	digester.addObjectCreate("instances/instance/monolithic/cm", CorporateMemoryConfiguration.class);
         	digester.addSetProperties("instances/instance/monolithic/cm/", "class", "implementingClassName");

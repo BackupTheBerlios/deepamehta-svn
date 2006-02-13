@@ -12,8 +12,8 @@ import org.apache.commons.logging.LogFactory;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentType;
 import de.deepamehta.environment.instance.InstanceConfiguration;
-import de.deepamehta.environment.instance.InstanceType;
 import de.deepamehta.environment.instance.UnknownInstanceException;
 
 
@@ -78,7 +78,7 @@ public class DeepaMehtaClient extends JApplet implements DeepaMehtaConstants {
 
 	    try {
             // initialize environment
-            this.env = Environment.getEnvironment(args, InstanceType.CLIENT);
+            this.env = Environment.getEnvironment(args, EnvironmentType.THIN);
             logger.info("Running as client only.");
             
             // find out which instance to start

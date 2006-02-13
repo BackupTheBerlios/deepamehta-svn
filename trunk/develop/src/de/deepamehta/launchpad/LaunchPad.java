@@ -18,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
 
 import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.Environment;
-import de.deepamehta.environment.EnvironmentException;
+import de.deepamehta.environment.EnvironmentType;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 import de.deepamehta.environment.instance.UnknownInstanceException;
 import de.deepamehta.launchpad.setup.wizard.SetupWizard;
@@ -48,7 +48,7 @@ public class LaunchPad {
 	 * @return 0 if the launch pad was started successfully.
 	 */
 	public Integer start(String[] args) {
-        this.env = Environment.getEnvironment(args, null);
+        this.env = Environment.getEnvironment(args, EnvironmentType.FAT);
         try {
         	this.runInteractive();
         } catch (HeadlessException he) {

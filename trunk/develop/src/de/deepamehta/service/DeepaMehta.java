@@ -12,8 +12,8 @@ import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.client.PresentationDirectives;
 import de.deepamehta.client.PresentationService;
 import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentType;
 import de.deepamehta.environment.instance.InstanceConfiguration;
-import de.deepamehta.environment.instance.InstanceType;
 
 
 
@@ -93,7 +93,7 @@ public class DeepaMehta extends JApplet implements ApplicationServiceHost, Deepa
 		// >>> compare to DeepaMehtaServer.runServer()
 		try {
 			// initialize environment
-			this.env = Environment.getEnvironment(args, InstanceType.MONOLITHIC);
+			this.env = Environment.getEnvironment(args, EnvironmentType.FAT);
 			logger.info("Running as monolithic application.");
 			
 			// find out which instance to start

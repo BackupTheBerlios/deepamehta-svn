@@ -18,8 +18,8 @@ import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentType;
 import de.deepamehta.environment.instance.InstanceConfiguration;
-import de.deepamehta.environment.instance.InstanceType;
 import de.deepamehta.environment.instance.UnknownInstanceException;
 
 
@@ -130,7 +130,7 @@ final class DeepaMehtaServer implements ApplicationServiceHost, DeepaMehtaConsta
 		
 		try {
 			// initialize environment
-			this.env = Environment.getEnvironment(args, InstanceType.SERVER);
+			this.env = Environment.getEnvironment(args, EnvironmentType.FAT);
 			logger.info("Running as standalone server.");
 			
 			// say hello

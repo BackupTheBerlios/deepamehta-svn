@@ -44,7 +44,7 @@ public class Environment implements DeepaMehtaConstants {
     private static final String DEFAULT_PLUGIN_FILE = "plugins.xml";
     private static Log logger = LogFactory.getLog(Environment.class);
     private static Environment singleton = null;
-    private InstanceType instanceType;
+    private EnvironmentType envType;
     private PluginManager plugins;
     private InstanceManager instances;
     private String workingDirectory;
@@ -58,10 +58,10 @@ public class Environment implements DeepaMehtaConstants {
      * @param args command line arguments
      * @param type the instance type to startup
      */
-    private Environment(String[] args, InstanceType type) {
+    private Environment(String[] args, EnvironmentType type) {
         
         this.workingDirectory = System.getProperty("user.dir");
-        this.instanceType = type;
+        this.envType = type;
         parseOptions(args);
         initializeLogger();
         
@@ -72,7 +72,7 @@ public class Environment implements DeepaMehtaConstants {
         //		System.out.println("\n--- DeepaMehta " + CLIENT_VERSION + " runs as applet on \"" + ps.hostAddress + "\" (" + ps.platform + ") ---");
 
         logJavaDetails();
-        if (this.instanceType != InstanceType.CLIENT)
+        if (this.envType == EnvironmentType.FAT)
         	initializePluginManager();
         initializeInstanceManager();
     }
@@ -225,7 +225,7 @@ public class Environment implements DeepaMehtaConstants {
      * @param args The command line arguments.
      * @return Returns the singleton instance of the environment. 
      */
-    public static Environment getEnvironment(String[] args, InstanceType type) {
+    public static Environment getEnvironment(String[] args, EnvironmentType type) {
         if (singleton == null) {
             singleton = new Environment(args, type);
         } 
@@ -394,10 +394,10 @@ public class Environment implements DeepaMehtaConstants {
 
 
 	/**
-	 * @return Returns the instance type.
+	 * @return Returns the environment type.
 	 */
-	public InstanceType getInstanceType() {
-		return this.instanceType;
+	public EnvironmentType getEnvironmentType() {
+		return this.envType;
 	}
 
 
