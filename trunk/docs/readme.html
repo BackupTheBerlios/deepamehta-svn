@@ -2,7 +2,55 @@
 	<head>
 		<title>DeepaMehta Read Me</title>
 	</head>
-	<body>
-		TODO
-	</body>
+	<body> 
+		
+		... TODO ...
+		
+		<h2>Upgrading an existing installation</h2>
+		<p>With version ...TODO..., the file system layout of DeepaMehta has changed. If you're upgrading from an older version, please do <b>not</b> simply install the new version into the existing directories. Instead, perform the following steps to upgrade your installation:</p>
+		<ol>
+			<li>Install DeepaMehta into a new directory (e. g. <tt>/home/fflintstone/DeepaMehta</tt>).</li>
+			<li>Take a look at the file <tt>install/client/dms.rc</tt> of your current installation. You will find a (single) line that looks like this:
+				<br/> <tt><font color="#0000FF">default</font> 7557 <font color="#FF0000">RelationalCorporateMemory</font> <font color="#8B6914">org.gjt.mm.mysql.Driver</font> jdbc:mysql://<font color="#7E9389">127.0.0.1</font>/<font color="#11E141">
+				DeepaMehta</font>?user=<font color="#A020F0">dmuser</font>&amp;password=<font color="#FFA500">sssecrettt</font>&amp;useUnicode=true&amp;characterEncoding=latin1</tt>
+				<br/> In the following steps, replace all the colored passages with the corresponding values from your file. </li>
+			<li>Manually create a new directory inside the data directory (e. g. <tt>data/<font color="#0000FF">default</font></tt>).</li>
+			<li>Copy the following directories including all files from your current installation to the directory you just created. You will find the directories in <tt>install/client</tt> of your current installation.
+				<ul>
+					<li><tt>backgrounds</tt>
+					</li>
+					<li><tt>documents</tt>
+					</li>
+					<li><tt>icons</tt>
+					</li>
+					<li><tt>images</tt>
+					</li>
+					<li><tt>sounds</tt>
+					</li>
+					<li><tt>stylesheets</tt>
+					</li>
+				</ul> </li>
+			<li>Create a text file named <tt>instances.xml</tt> in your new DeepaMehta installation directory and add the following lines:
+				<br/> <tt>&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</tt>
+				<br/> <tt>&lt;dmi:instances xmlns:dmi=&quot;http://www.deepamehta.de/schema/InstanceDefinition.xsd&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+				xsi:schemaLocation=&quot;http://www.deepamehta.de/schema/InstanceDefinition.xsd InstanceDefinition.xsd&quot;&gt;</tt>
+				<br/> <tt>&lt;instance description=&quot;any description text&quot; id=&quot;<font color="#0000FF">default</font>&quot;&gt;</tt>
+				<br/> <tt>&lt;monolithic&gt;</tt>
+				<br/> <tt>&lt;cm class=&quot;de.deepamehta.service.<font color="#FF0000">RelationalCorporateMemory</font>&quot;&gt;</tt>
+				<br/> <tt>&lt;property name=&quot;user&quot; value=&quot;<font color="#A020F0">dmuser</font>&quot;/&gt;</tt>
+				<br/> <tt>&lt;property name=&quot;password&quot; value=&quot;<font color="#FFA500">sssecrettt</font>&quot;/&gt;</tt>
+				<br/> <tt>&lt;property name=&quot;host&quot; value=&quot;<font color="#7E9389">127.0.0.1</font>&quot;/&gt;</tt>
+				<br/> <tt>&lt;property name=&quot;database&quot; value=&quot;<font color="#11E141">DeepaMehta</font>&quot;/&gt;</tt>
+				<br/> <tt>&lt;property name=&quot;driver&quot; value=&quot;<font color="#8B6914">org.gjt.mm.mysql.Driver</font>&quot;/&gt;</tt>
+				<br/> <tt>&lt;/cm&gt;</tt>
+				<br/> <tt>&lt;/monolithic&gt;</tt>
+				<br/> <tt>&lt;/instance&gt;</tt>
+				<br/> <tt>&lt;/dmi:instances&gt;</tt>
+				<br/> </li>
+		</ol>
+		<p>You should be able to start your instance from the launch pad now.</p>
+		
+		... TODO ...
+		
+		 </body>
 </html>
