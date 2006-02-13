@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
 
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataListener;
 
@@ -27,13 +28,17 @@ public class ActionList implements ListModel {
 
     private static Log logger = LogFactory.getLog(ActionList.class);
     private Vector actions;
+    private DefaultBoundedRangeModel progressModel;
     
     /**
      * Default constructor.
      */
     public ActionList() {
         this.actions = new Vector();
-    }
+        this.progressModel = new DefaultBoundedRangeModel();
+        this.progressModel.setMinimum(0);
+        this.progressModel.setExtent(1);
+    }	
     
     
     /**
@@ -62,6 +67,9 @@ public class ActionList implements ListModel {
         // all types: store configuration
         this.actions.addElement(new StoreInstanceAction(config));
         
+        // update progress model
+        this.progressModel.setMaximum(this.actions.size());
+        this.progressModel.setValue(0);
     }
         
     /**
@@ -96,7 +104,8 @@ public class ActionList implements ListModel {
                     logger.error("Something went wrong during execution of setup action '" + action.getDescription() + "'. Cannot continue setup.");
                     return false;
                 }
-            }            
+            }    
+            this.progressModel.setValue(this.progressModel.getValue() + 1);
         } 
         return true;
     }
@@ -119,6 +128,14 @@ public class ActionList implements ListModel {
 
 	public void removeListDataListener(ListDataListener l) {
 		// TODO Auto-generated method stub
+	}
+
+
+	/**
+	 * @return Returns the progressModel.
+	 */
+	public DefaultBoundedRangeModel getProgressModel() {
+		return progressModel;
 	}
     
 }

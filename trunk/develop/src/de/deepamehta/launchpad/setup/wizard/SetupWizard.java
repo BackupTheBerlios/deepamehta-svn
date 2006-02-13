@@ -6,11 +6,11 @@
 package de.deepamehta.launchpad.setup.wizard;
 
 import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.util.Enumeration;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import jwf.Wizard;
 import jwf.WizardListener;
@@ -34,7 +34,7 @@ public class SetupWizard implements WizardListener {
 
     private static Log logger = LogFactory.getLog(SetupWizard.class);
     
-    private JFrame dialog;
+    private JFrame dialog, parent;
     private Wizard wizard;
     private ActionList actions;
     
@@ -58,6 +58,7 @@ public class SetupWizard implements WizardListener {
         
         logger.debug("Preparing setup wizard...");
                 
+        this.parent = parent;
         this.wizard = new Wizard();
         this.wizard.addWizardListener(this);
       
@@ -243,25 +244,30 @@ public class SetupWizard implements WizardListener {
      */
     public void wizardFinished(Wizard wiz) {
         
+    	ProgressDialog progress;
+    	
+    	
         this.dialog.setVisible(false);
+        this.dialog.dispose();
+        this.dialog = null;
         logger.debug("GUI part of setup wizard finished, setting up instance...");
         
         // show "please wait" window
+        progress = new ProgressDialog(this.parent, this.actions.getProgressModel());
+        progress.setVisible(true);
         // FIXME The "please wait" window doesn't contain any text.
         // FIXME The "please wait" window should be modal.
-        JDialog pleaseWait = new JDialog();
-        pleaseWait.getContentPane().add(new JLabel(DeepaMehtaMessages.getString("SetupWizard.PleaseWaitMessage"))); //$NON-NLS-1$
-        pleaseWait.setTitle(DeepaMehtaMessages.getString("SetupWizard.PleaseWaitTitle")); //$NON-NLS-1$
-        pleaseWait.setSize(250, 50);
-        pleaseWait.setLocation(200, 200);
-        pleaseWait.pack();
-        pleaseWait.setVisible(true);
         
         // execute list of actions prepared previously
         this.actions.execute();
         
         // hide "please wait" window
-        pleaseWait.setVisible(false);
+        progress.setVisible(false);
+        progress.dispose();
+        
+        // show status message
+        JOptionPane.showMessageDialog(this.parent, "Your new instance is now prepared. To start it, select the instance from the launch pad and press \"Launch\".", 
+        		DeepaMehtaMessages.getString("SetupWizard.Title"), JOptionPane.INFORMATION_MESSAGE);
         
     }
 
