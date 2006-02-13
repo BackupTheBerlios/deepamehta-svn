@@ -26,6 +26,7 @@ import org.apache.log4j.PropertyConfigurator;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 import de.deepamehta.environment.instance.InstanceManager;
+import de.deepamehta.environment.instance.InstanceTableModel;
 import de.deepamehta.environment.instance.InstanceType;
 import de.deepamehta.environment.instance.UnknownInstanceException;
 import de.deepamehta.environment.plugin.PluginManager;
@@ -290,13 +291,6 @@ public class Environment implements DeepaMehtaConstants {
     }
     
     /**
-     * @return Returns the instance of the instance manager.
-     */
-    public InstanceManager getInstances() {
-        return this.instances;
-    }
-    
-    /**
      * @return Returns the name of the plugin configuration file.
      */
     public String getPluginFile() {
@@ -394,7 +388,7 @@ public class Environment implements DeepaMehtaConstants {
      * @throws UnknownInstanceException 
      */
     public InstanceConfiguration guessInstance() throws UnknownInstanceException  {
-        return getInstances().get(guessInstanceName());
+        return getInstance(guessInstanceName());
     }
 
 
@@ -404,5 +398,50 @@ public class Environment implements DeepaMehtaConstants {
 	 */
 	public InstanceType getInstanceType() {
 		return this.instanceType;
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see de.deepamehta.environment.instance.InstanceManager#add(de.deepamehta.environment.instance.InstanceConfiguration)
+	 */
+	public void addInstance(InstanceConfiguration instance) {
+		instances.add(instance);
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see de.deepamehta.environment.instance.InstanceManager#get(int)
+	 */
+	public InstanceConfiguration getInstance(int pos) throws UnknownInstanceException {
+		return instances.get(pos);
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see de.deepamehta.environment.instance.InstanceManager#get(java.lang.String)
+	 */
+	public InstanceConfiguration getInstance(String id) throws UnknownInstanceException {
+		return instances.get(id);
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see de.deepamehta.environment.instance.InstanceManager#getModel()
+	 */
+	public InstanceTableModel getInstanceModel() {
+		return instances.getModel();
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see de.deepamehta.environment.instance.InstanceManager#size()
+	 */
+	public int numInstances() {
+		return instances.size();
 	}
 }

@@ -79,7 +79,7 @@ public class LaunchPad {
 	 */
 	private void runInteractive() throws HeadlessException {
 		this.mw = new MainWindow(this);
-		if (this.env.getInstances().size() == 0) {
+		if (this.env.numInstances() == 0) {
 		    if (JOptionPane.showConfirmDialog(this.mw, 
 		            DeepaMehtaMessages.getString("LaunchPad.CreateFirstInstanceQuestion"), //$NON-NLS-1$
 		            DeepaMehtaMessages.getString("LaunchPad.CreateFirstInstanceTitle"),  //$NON-NLS-1$ 
@@ -97,7 +97,7 @@ public class LaunchPad {
 		InstanceConfiguration config;
 		logger.info("Starting instance " + id);
 		try {
-			config = env.getInstances().get(id);
+			config = env.getInstance(id);
         } catch (UnknownInstanceException e) {
             logger.error("Trying to start unknown instance - WTF?", e);
             return;

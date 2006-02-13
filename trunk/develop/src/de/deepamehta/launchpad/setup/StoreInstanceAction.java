@@ -58,7 +58,7 @@ class StoreInstanceAction implements SetupAction {
                 this.config.getCMConfig().removeProperty("dba_password");
             }
             // save instance configuration
-            Environment.getEnvironment().getInstances().add(this.config);
+            Environment.getEnvironment().addInstance(this.config);
         } catch (EnvironmentException e) {
             logger.error("Unable to save new instance.", e);
             return false;

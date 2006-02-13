@@ -78,7 +78,7 @@ public class MainWindow extends JFrame implements WindowListener, ActionListener
 		this.selModel = new DefaultListSelectionModel();
 		this.selModel.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
 		this.selModel.addListSelectionListener(this);
-		this.instanceTable = new JTable(env.getInstances().getModel(), null, this.selModel);
+		this.instanceTable = new JTable(env.getInstanceModel(), null, this.selModel);
 		initialize();
 		
 		setLocation(50, 50);
@@ -266,7 +266,7 @@ public class MainWindow extends JFrame implements WindowListener, ActionListener
 			id = "";
 		} else {
 			try {
-                id = this.env.getInstances().get(index).getId();
+                id = this.env.getInstance(index).getId();
             } catch (UnknownInstanceException e) {
                 id = "";
             }
@@ -276,11 +276,11 @@ public class MainWindow extends JFrame implements WindowListener, ActionListener
 		
 		/* view changes are handled by the main window itself */
 		if (command.equals(CMD_VIEW_SIMPLE)) {
-			this.env.getInstances().getModel().setDetailedView(false);
+			this.env.getInstanceModel().setDetailedView(false);
 			return; 
 		}
 		if (command.equals(CMD_VIEW_DETAILED)) {
-		    this.env.getInstances().getModel().setDetailedView(true);
+		    this.env.getInstanceModel().setDetailedView(true);
 			return; 
 		}
 		
