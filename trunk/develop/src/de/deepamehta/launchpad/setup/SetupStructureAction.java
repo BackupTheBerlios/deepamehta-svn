@@ -8,6 +8,7 @@ package de.deepamehta.launchpad.setup;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.EnvironmentException;
 import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
@@ -20,7 +21,7 @@ import de.deepamehta.service.CorporateMemory;
  * @see de.deepamehta.service.CorporateMemory#checkStructure(CorporateMemoryConfiguration)
  * @see de.deepamehta.service.CorporateMemory#setupStructure(CorporateMemoryConfiguration)
  */
-class SetupStructureAction implements SetupAction {
+class SetupStructureAction extends AbstractSetupAction {
 
     private static Log logger = LogFactory.getLog(SetupStorageAction.class);
     
@@ -28,13 +29,14 @@ class SetupStructureAction implements SetupAction {
 
     /**
      * Default constructor
-     * @param spec The instance configuration to prepare
+     * @param config The instance configuration to prepare
      */
-    public SetupStructureAction(InstanceConfiguration spec) {
+    public SetupStructureAction(InstanceConfiguration config) {
+    	super(config);
         try {
-            this.cmConfig = spec.getCMConfig();
+            this.cmConfig = config.getCMConfig();
         } catch (EnvironmentException e) {
-            logger.error("Unable to retrieve CM configuration for instance " + spec.getId(), e);
+            logger.error("Unable to retrieve CM configuration for instance " + config.getId(), e);
             this.cmConfig = null;
         }
     }
@@ -54,10 +56,12 @@ class SetupStructureAction implements SetupAction {
      * @see de.deepamehta.launchpad.setup.SetupAction#canExecute()
      */
     public boolean canExecute() {
-        
+        this.messages.clear();
         // we need a CM configuration to continue
-        if (this.cmConfig == null)
-            return false;
+        if (this.cmConfig == null) {
+        	addErrorMessage("Unable to determine Corporate Memory configuration.");
+        	return false;
+        }
         
         return true;
     }
@@ -66,11 +70,11 @@ class SetupStructureAction implements SetupAction {
      * @see de.deepamehta.launchpad.setup.SetupAction#execute()
      */
     public boolean execute() {
-        
+        this.messages.clear();
         // create CM instance
         CorporateMemory cm = this.cmConfig.getInstance();
         if (cm == null) {
-            logger.error("Unable to instantiate CM implementation.");
+            addErrorMessage("Unable to instantiate CM implementation.");
             return false;
         }
 
@@ -79,8 +83,10 @@ class SetupStructureAction implements SetupAction {
             logger.debug("The structure does not need adjustments.");
         } else {	
             logger.debug("The structure needs adjustments.");
-            if (!cm.setupStructure(this.cmConfig)) {
-                logger.error("unable to setup structure.");
+            try {
+            	cm.setupStructure(this.cmConfig);
+            } catch (DeepaMehtaException e) {
+                addErrorMessage("Unable to setup structure.", e);
                 return false; 
             }
         }

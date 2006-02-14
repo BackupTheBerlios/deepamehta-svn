@@ -17,17 +17,16 @@ import de.deepamehta.environment.instance.InstanceConfiguration;
  * This class stores the newly created instance configuration in the central configuration file.
  * @author vwegert
  */
-class StoreInstanceAction implements SetupAction {
+class StoreInstanceAction extends AbstractSetupAction {
 
     private static Log logger = LogFactory.getLog(StoreInstanceAction.class);
-    
-    private InstanceConfiguration config;
     
     /**
      * Default constructor
      * @param config The instance configuration to use.
      */
     public StoreInstanceAction(InstanceConfiguration config) {
+    	super(config);
         this.config = config;
     }
 
@@ -42,6 +41,7 @@ class StoreInstanceAction implements SetupAction {
      * @see de.deepamehta.launchpad.setup.SetupAction#canExecute()
      */
     public boolean canExecute() {
+		this.messages.clear();
         // right now, there's no reason not to execute this step 
         return true;
     }
@@ -50,7 +50,7 @@ class StoreInstanceAction implements SetupAction {
      * @see de.deepamehta.launchpad.setup.SetupAction#execute()
      */
     public boolean execute() {
-
+		this.messages.clear();
         try {
             if (!this.config.getInstanceType().isClient()) {
                 // remove the admin properties
@@ -60,7 +60,7 @@ class StoreInstanceAction implements SetupAction {
             // save instance configuration
             Environment.getEnvironment().addInstance(this.config);
         } catch (EnvironmentException e) {
-            logger.error("Unable to save new instance.", e);
+            addErrorMessage("Unable to save new instance.", e);
             return false;
         }
         

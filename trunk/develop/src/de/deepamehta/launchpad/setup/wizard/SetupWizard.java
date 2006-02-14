@@ -245,7 +245,7 @@ public class SetupWizard implements WizardListener {
     public void wizardFinished(Wizard wiz) {
         
     	ProgressDialog progress;
-    	
+    	boolean result;
     	
         this.dialog.setVisible(false);
         this.dialog.dispose();
@@ -259,15 +259,21 @@ public class SetupWizard implements WizardListener {
         // FIXME The "please wait" window should be modal.
         
         // execute list of actions prepared previously
-        this.actions.execute();
+        result = this.actions.execute();
         
         // hide "please wait" window
         progress.setVisible(false);
         progress.dispose();
         
-        // show status message
-        JOptionPane.showMessageDialog(this.parent, "Your new instance is now prepared. To start it, select the instance from the launch pad and press \"Launch\".", 
+        if (result) {
+        	// show status message
+        	JOptionPane.showMessageDialog(this.parent, "Your new instance is now prepared. To start it, select the instance from the launch pad and press \"Launch\".", 
         		DeepaMehtaMessages.getString("SetupWizard.Title"), JOptionPane.INFORMATION_MESSAGE);
+        } else {
+        	// show error message
+        	JOptionPane.showMessageDialog(this.parent, this.actions.getMessages(), 
+        			DeepaMehtaMessages.getString("SetupWizard.Title"), JOptionPane.ERROR_MESSAGE);
+        }
         
     }
 

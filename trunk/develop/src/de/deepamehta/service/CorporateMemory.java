@@ -2,6 +2,7 @@ package de.deepamehta.service;
 
 import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseAssociation;
+import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
 
 import java.util.*;
@@ -75,9 +76,9 @@ public interface CorporateMemory {
 	 * kind of connection required to check the storage area should be closed before 
 	 * leaving the method.
 	 * @param config The Corporate Memory Configuration to prepare.
-	 * @return true if the storage area is usable after the call.
+	 * @throws DeepaMehtaException if something went wrong during storage area setup.
 	 */
-	boolean setupStorageArea(CorporateMemoryConfiguration config);
+	void setupStorageArea(CorporateMemoryConfiguration config) throws DeepaMehtaException;
 	
 	/**
 	 * This method is called during the setup process to check whether the storage
@@ -103,9 +104,9 @@ public interface CorporateMemory {
 	 * should be closed before leaving the method.
 	 * @param config The Corporate Memory configuration pointing to a storage location
 	 * whose structures are to be created.
-	 * @return true if the structures are in a usable state.
+	 * @throws DeepaMehtaException if something went wrong during structure creation.
 	 */
-	boolean setupStructure(CorporateMemoryConfiguration config);
+	void setupStructure(CorporateMemoryConfiguration config) throws DeepaMehtaException;
 	
 	/**
 	 * Changes the state of a key generator. <b>Warning:</b> This method is intended 
@@ -125,9 +126,9 @@ public interface CorporateMemory {
 	 * This might be interesting for some implementations that may want to perform 
 	 * additional checks during normal startup that cannot be performed during the
 	 * bootstrapping process.  
-	 * @return <code>true</code> if the Corporate Memory instance is up and running.
+	 * @throws DeepaMehtaException if something went wrong during startup.
 	 */
-	boolean startup(CorporateMemoryConfiguration config, boolean isBootstrap);
+	void startup(CorporateMemoryConfiguration config, boolean isBootstrap) throws DeepaMehtaException;
 	
 	/**
 	 * This method is used to shutdown the Corporate Memory and cleanup whatever resources

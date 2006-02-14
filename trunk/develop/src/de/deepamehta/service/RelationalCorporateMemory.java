@@ -217,7 +217,7 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
             logger.debug("Storage area looks good.");
             conn.close();
             return true;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // something went wrong
             logger.debug("Problem with storage area.", e);
             return false;
@@ -227,7 +227,7 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
     /* (non-Javadoc)
      * @see de.deepamehta.service.CorporateMemory#setupStorageArea(de.deepamehta.environment.instance.CorporateMemoryConfiguration, java.lang.String)
      */
-    public boolean setupStorageArea(CorporateMemoryConfiguration cmCnfig) {
+    public void setupStorageArea(CorporateMemoryConfiguration cmCnfig) throws DeepaMehtaException {
         
         Connection conn;        
         
@@ -245,10 +245,8 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
             stmt.executeUpdate("GRANT ALL PRIVILEGES ON " + cmCnfig.getProperty("database") + ".* TO " + cmCnfig.getProperty("user") + "@localhost IDENTIFIED BY '" + cmCnfig.getProperty("password") + "' WITH GRANT OPTION;");
             logger.debug("Database prepared.");
             conn.close();
-            return true;
-        } catch (SQLException e) {
-            logger.error("Unable to setup storage area.", e);
-            return false;
+        } catch (Exception e) {
+        	throw new DeepaMehtaException("Unable to setup storage area.", e);
         }
         
     }
@@ -310,7 +308,7 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
             
             conn.close();
             return true;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             logger.debug("Problem during structural check.", e);
             return false;
         }
@@ -332,7 +330,7 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
     /* (non-Javadoc)
      * @see de.deepamehta.service.CorporateMemory#setupStructure(de.deepamehta.environment.instance.CorporateMemoryConfiguration, java.lang.String)
      */
-    public boolean setupStructure(CorporateMemoryConfiguration cmConfig) {
+    public void setupStructure(CorporateMemoryConfiguration cmConfig) throws DeepaMehtaException {
         
         Connection conn;        
         
@@ -427,10 +425,8 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
 
             logger.debug("Structures created.");
             conn.close();
-            return true;
-        } catch (SQLException e) {
-            logger.error("Unable to setup structures.", e);
-            return false;
+        } catch (Exception e) {
+        	throw new DeepaMehtaException("Unable to setup structures.", e);
         }
 
     }
@@ -446,7 +442,7 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
     /* (non-Javadoc)
      * @see de.deepamehta.service.CorporateMemory#startup(de.deepamehta.environment.instance.CorporateMemoryConfiguration, boolean)
      */
-    public boolean startup(CorporateMemoryConfiguration cmConfig, boolean isBootstrap) {
+    public void startup(CorporateMemoryConfiguration cmConfig, boolean isBootstrap) throws DeepaMehtaException {
         this.config = cmConfig;
         try {
             String jdbcDriverClass = cmConfig.getProperty("driver");
@@ -454,17 +450,14 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
             this.con = DriverManager.getConnection(getConnectionString(this.config));
             this.dbmsHint = jdbcDriverClass.indexOf(DBMS_HINT_ORACLE) != -1 ?
                     DBMS_HINT_ORACLE : DBMS_HINT_SQL92;
-            return true;
         } catch (SQLException e) {
-            logger.error("Unable to startup corporate memory.", e);
             this.config = null;
             this.con = null;
-            return false;
+            throw new DeepaMehtaException("Unable to startup corporate memory.", e);
         } catch (ClassNotFoundException e) {
-            logger.error("Unable to initialize low-level driver.", e);
-            this.config = null;
-            this.con = null;
-            return false;
+        	this.config = null;
+        	this.con = null;
+            throw new DeepaMehtaException("Unable to initialize low-level driver.", e);
 }
     }
 

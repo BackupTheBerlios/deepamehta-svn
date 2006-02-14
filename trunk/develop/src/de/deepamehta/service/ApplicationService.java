@@ -264,9 +264,10 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		if (cm == null)
 			throw new DeepaMehtaException("Unable to instantiate CM implementation.");
 		
-		if (cm.startup(cmConfig, false)) {
-				
-            // error check 1: standard topics compatibility ### move to LCM.create
+		try {
+			cm.startup(cmConfig, false);
+
+			// error check 1: standard topics compatibility ### move to LCM.create
             int kernelVersion = LiveTopic.kernelTopicsVersion;
             if (kernelVersion != REQUIRED_STANDARD_TOPICS) {
                 throw new DeepaMehtaException("DeepaMehta Service " + SERVER_VERSION +
@@ -286,8 +287,8 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
                     REQUIRED_DB_CONTENT + " but " + cmModel + "." + cmContent +
                     " is installed");
             }
-		} else {
-			throw new DeepaMehtaException("Unable to startup corporate memory.");
+		} catch (DeepaMehtaException e) {
+			throw new DeepaMehtaException("Unable to startup corporate memory.", e);
 		}
 		
 		// create application service

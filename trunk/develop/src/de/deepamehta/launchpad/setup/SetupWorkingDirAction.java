@@ -25,23 +25,23 @@ import de.deepamehta.environment.instance.InstanceConfiguration;
  * a newly created DeepaMehta instance to run.
  * @author vwegert
  */
-class SetupWorkingDirAction implements SetupAction {
+class SetupWorkingDirAction extends AbstractSetupAction {
 
     static final int BUFFER = 2048;  
     
     private static Log logger = LogFactory.getLog(SetupWorkingDirAction.class);
     
-    private Environment env;
     private String workingDir;
     private File target;
     
     /**
      * Default constructor
-     * @param spec The instance configuration to use.
+     * @param config The instance configuration to use.
      */
-    public SetupWorkingDirAction(InstanceConfiguration spec) {
+    public SetupWorkingDirAction(InstanceConfiguration config) {
+    	super(config);
     	this.env = Environment.getEnvironment();
-    	this.workingDir = spec.getWorkingDirectory();
+    	this.workingDir = config.getWorkingDirectory();
         this.target = new File(this.workingDir);
     }
 
@@ -56,6 +56,7 @@ class SetupWorkingDirAction implements SetupAction {
      * @see de.deepamehta.launchpad.setup.SetupAction#canExecute()
      */
     public boolean canExecute() {
+		this.messages.clear();
         // TODO add some checks here
         return true;
     }
@@ -64,7 +65,9 @@ class SetupWorkingDirAction implements SetupAction {
      * @see de.deepamehta.launchpad.setup.SetupAction#execute()
      */
     public boolean execute() {
-        
+
+    	this.messages.clear();
+
         // Create new working directory in instances/ and extract files from ZIP archive.
         logger.debug("Trying to create new working directory " + this.workingDir + " for instance.");
         if (this.target.exists()) {
@@ -72,7 +75,7 @@ class SetupWorkingDirAction implements SetupAction {
             return true;
         } else {
             if (!this.target.mkdir()) {
-                logger.error("Unable to create working directory " + this.workingDir);
+                addErrorMessage("Unable to create working directory " + this.workingDir);
                 return false;
             } else {
                 String zipFileName = this.env.getInstanceDataSourceFile(); 
@@ -88,8 +91,7 @@ class SetupWorkingDirAction implements SetupAction {
                     while (ed.hasMoreElements()) {
                         entry = (ZipEntry) ed.nextElement();
                         if (entry.isDirectory()) {
-                            logger.debug("Creating directory " + this.workingDir
-                                    + entry.getName());
+                            logger.debug("Creating directory " + this.workingDir + entry.getName());
                             File dir = new File(this.workingDir + entry.getName());
                             dir.mkdir();
                         }
@@ -115,13 +117,13 @@ class SetupWorkingDirAction implements SetupAction {
                                 dest.close();
                                 is.close();
                             } catch (Exception e) {
-                                logger.error("Unable to extract file " + this.workingDir + entry.getName(), e);
+                                addErrorMessage("Unable to extract file " + this.workingDir + entry.getName(), e);
                                 return false;
                             }
                         }
                     }
                 } catch (Exception e) {
-                    logger.error("Unable to extract instance data from " + zipFileName);
+                    addErrorMessage("Unable to extract instance data from " + zipFileName);
                     return false;
                 }
             }

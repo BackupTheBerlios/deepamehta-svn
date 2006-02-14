@@ -5,6 +5,8 @@
  */
 package de.deepamehta.launchpad.setup;
 
+import java.util.ArrayList;
+
 /**
  * Every action class that is used by the action list has to implement this interface. 
  * @author vwegert
@@ -32,5 +34,11 @@ public interface SetupAction {
      * @return <code>true</code> if the action was completed successfully.
      */
     boolean execute();
+    
+    /**
+     * MISSDOC No documentation for method getErrorMessage of type SetupAction
+     * @return
+     */
+    String[] getErrorMessage();
 
 }

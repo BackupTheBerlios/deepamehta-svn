@@ -28,6 +28,7 @@ public class ActionList implements ListModel {
 
     private static Log logger = LogFactory.getLog(ActionList.class);
     private Vector actions;
+    private ArrayList messages;
     private DefaultBoundedRangeModel progressModel;
     
     /**
@@ -35,6 +36,7 @@ public class ActionList implements ListModel {
      */
     public ActionList() {
         this.actions = new Vector();
+        this.messages = new ArrayList();
         this.progressModel = new DefaultBoundedRangeModel();
         this.progressModel.setMinimum(0);
         this.progressModel.setExtent(1);
@@ -93,15 +95,25 @@ public class ActionList implements ListModel {
      * @return <code>true</code> if all of the actions were executed successfully.
      */
     public boolean execute() {
+    	String[] msg;
+    	this.messages.clear();
         for (Iterator iter = this.actions.iterator(); iter.hasNext();) {
             SetupAction action = (SetupAction) iter.next();
             if (!action.canExecute()) {
-                logger.error("Unable to execute setup action '" + action.getDescription() + "'. Cannot continue setup.");
+                this.messages.add("Unable to execute setup action '" + action.getDescription() + "'.'");
+                msg = action.getErrorMessage();
+                for (int i = 0; i < msg.length; i++) 
+                    this.messages.add(msg[i]);
+                this.messages.add("Cannot continue setup.");
                 return false;
             } else {
                 logger.debug("Executing action '" + action.getDescription() + "'...");
                 if (!action.execute()) {
-                    logger.error("Something went wrong during execution of setup action '" + action.getDescription() + "'. Cannot continue setup.");
+                    this.messages.add("Something went wrong during execution setup action '" + action.getDescription() + "'.'");
+                    msg = action.getErrorMessage();
+                    for (int i = 0; i < msg.length; i++) 
+                        this.messages.add(msg[i]);
+                    this.messages.add("Cannot continue setup.");
                     return false;
                 }
             }    
@@ -132,10 +144,14 @@ public class ActionList implements ListModel {
 
 
 	/**
-	 * @return Returns the progressModel.
+	 * @return Returns the progress model.
 	 */
 	public DefaultBoundedRangeModel getProgressModel() {
 		return progressModel;
 	}
     
+	public String[] getMessages() {
+		return (String[]) this.messages.toArray(new String [0]);
+	}
+	
 }

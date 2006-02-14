@@ -7,6 +7,7 @@ package de.deepamehta.launchpad.setup;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,6 +20,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.Environment;
 import de.deepamehta.environment.EnvironmentException;
@@ -35,7 +37,9 @@ class SetupContentsAction extends DefaultHandler implements SetupAction {
 
     private static Log logger = LogFactory.getLog(SetupStorageAction.class);
     
-    private Environment env;
+    protected Environment env;
+    protected InstanceConfiguration config;
+    protected ArrayList messages;
     
     private String workingDir = null;
     private CorporateMemoryConfiguration cmConfig;
@@ -53,7 +57,9 @@ class SetupContentsAction extends DefaultHandler implements SetupAction {
      * @param config The instance configuration to populate.
      */
     public SetupContentsAction(InstanceConfiguration config) {
-    	this.env = Environment.getEnvironment();
+		this.env = Environment.getEnvironment();
+		this.config = config;
+		this.messages = new ArrayList();
         try {
             this.cmConfig = config.getCMConfig();
             this.workingDir = config.getWorkingDirectory();
@@ -74,10 +80,13 @@ class SetupContentsAction extends DefaultHandler implements SetupAction {
      * @see de.deepamehta.launchpad.setup.SetupAction#canExecute()
      */
     public boolean canExecute() {
+        this.messages.clear();
 
         // we need a CM configuration to continue
-        if (this.cmConfig == null)
-            return false;
+        if (this.cmConfig == null) {
+        	addErrorMessage("Unable to determine Corporate Memory configuration.");
+        	return false;
+        }
         
         return true;
     }
@@ -86,63 +95,64 @@ class SetupContentsAction extends DefaultHandler implements SetupAction {
      * @see de.deepamehta.launchpad.setup.SetupAction#execute()
      */
     public boolean execute() {
+        this.messages.clear();
 
         // create CM instance
         this.cm = this.cmConfig.getInstance();
         if (this.cm == null) {
-            logger.error("Unable to instantiate CM implementation.");
+            addErrorMessage("Unable to instantiate CM implementation.");
             return false;
         }
 
         // populate database
-        if (this.cm.startup(this.cmConfig, true)) {
-            logger.debug("Initializing Corporate Memory contents...");
-            
-            // get input data file 
-            String filename = this.workingDir + this.env.getFileSeparator() + "DefaultContents.xml";
-            logger.debug("Loading contents from file " + filename);
-            File input = new File(filename);
-            
-            // prepare SAX parser
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            factory.setValidating(true);
-            factory.setNamespaceAware(true);
-            
-            // parse the input file
-            try {
-				SAXParser parser = factory.newSAXParser();
-				parser.parse(input, this);
-			} catch (ParserConfigurationException e) {
-				logger.error("Unable to configure XML parser.", e);
-				this.cm.shutdown();
-				this.cm = null;
-				return false;
-			} catch (SAXException e) {
-				logger.error("Problem parsing XML file.", e);
-				this.cm.shutdown();
-				this.cm = null;
-				return false;
-			} catch (IOException e) {
-				logger.error("I/O error while parsing XML file.", e);
-				this.cm.shutdown();
-				this.cm = null;
-				return false;
-			}
-            
-			// setup the key generators
-			//     1 -  500 Kernel
-			//   501 - 1000 included examples 
-			//   600 -  799 Kompetenzstern
-			this.cm.setKeyGenerator("Topic", 1001);
-			this.cm.setKeyGenerator("Association", 1001);
-			
-			this.cm.shutdown();
+        try {
+        	this.cm.startup(this.cmConfig, true);
+        } catch (DeepaMehtaException e) {
+        	addErrorMessage("Unable to startup Corporate Memory.", e);
 			this.cm = null;
-        } else {
-            logger.error("Unable to startup Corporate Memory.");
-			this.cm = null;
-            return false;
+			return false;
         }
+            
+        // get input data file 
+        String filename = this.workingDir + this.env.getFileSeparator() + "DefaultContents.xml";
+        logger.debug("Loading contents from file " + filename);
+        File input = new File(filename);
+        
+        // prepare SAX parser
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setValidating(true);
+        factory.setNamespaceAware(true);
+            
+        // parse the input file
+        try {
+        	SAXParser parser = factory.newSAXParser();
+        	parser.parse(input, this);
+        } catch (ParserConfigurationException e) {
+        	addErrorMessage("Unable to configure XML parser.", e);
+        	this.cm.shutdown();
+        	this.cm = null;
+        	return false;
+        } catch (SAXException e) {
+        	addErrorMessage("Problem parsing XML file.", e);
+        	this.cm.shutdown();
+        	this.cm = null;
+        	return false;
+        } catch (IOException e) {
+        	addErrorMessage("I/O error while parsing XML file.", e);
+        	this.cm.shutdown();
+        	this.cm = null;
+        	return false;
+        }
+        
+        // setup the key generators
+        //     1 -  500 Kernel
+        //   501 - 1000 included examples 
+        //   600 -  799 Kompetenzstern
+        this.cm.setKeyGenerator("Topic", 1001);
+        this.cm.setKeyGenerator("Association", 1001);
+        
+        this.cm.shutdown();
+        this.cm = null;
         
         return true;
     }
@@ -367,4 +377,25 @@ class SetupContentsAction extends DefaultHandler implements SetupAction {
 
 	}
     
+	public String[] getErrorMessage() {
+		return (String[]) this.messages.toArray(new String [0]);
+	}
+	
+	protected void addErrorMessage(String msg) {
+		this.messages.add(msg);
+	}
+	
+	protected void addErrorMessage(Throwable err) {
+		Throwable curr = err;
+		while (curr != null) {
+			addErrorMessage(curr.toString());
+			curr = curr.getCause();
+		}
+	}
+	
+	protected void addErrorMessage(String msg, Throwable err) {
+		addErrorMessage(msg);
+		addErrorMessage(err);
+	}
+
 }
