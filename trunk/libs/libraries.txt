@@ -159,5 +159,5 @@ The following files are required in the "libs/endorsed" folder:
    note:            OpenSUSE 10.0 has at least two distinct versions of this JAR, one from
                     package <fop>, the other from package <OpenOffice_org>
 
-Please pay attention to the library versions as DeepaMeta might behave
-erroneously been built/shipped/??? with the wrong library versions.
+Please pay attention to the library versions as DeepaMehta might behave
+erroneously when run with the wrong library versions.
