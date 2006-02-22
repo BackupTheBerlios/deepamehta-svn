@@ -11,5 +11,22 @@ package de.deepamehta.environment;
 public class EnvironmentNotInitializedException extends RuntimeException {
 
 	private static final long serialVersionUID = -150585692399216508L;
+
+	public EnvironmentNotInitializedException() {
+		super();
+	}
+
+	public EnvironmentNotInitializedException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public EnvironmentNotInitializedException(String message) {
+		super(message);
+	}
+
+	public EnvironmentNotInitializedException(Throwable cause) {
+		super(cause);
+	}
 	
+
 }
