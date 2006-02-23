@@ -3,7 +3,14 @@
  *
  * This file is part of the DeepaMehta framework.
  */
-package de.deepamehta.environment.plugin;
+package de.deepamehta.environment;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * This class represents a class definition consisting of a class name and a location 
@@ -12,7 +19,11 @@ package de.deepamehta.environment.plugin;
  */
 public class ClassSpecification {
 
+	private static Log logger = LogFactory.getLog(ClassSpecification.class);
+	
     private String className, classSource;
+    private URLClassLoader loader;
+    private Class clazz;
     
     /**
      * The default constructor. Does not initialize anything. 
@@ -45,4 +56,5 @@ public class ClassSpecification {
     public void setClassSource(String classSource) {
         this.classSource = classSource;
     }
+
 }

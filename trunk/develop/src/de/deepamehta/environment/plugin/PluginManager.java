@@ -14,6 +14,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
 
+import de.deepamehta.environment.ClassSpecification;
+
 /**
  * This class manages the plugins that can be loaded by the DeepaMehta core at runtime.
  * It is responsible for both parsing the plugin configuration file and loading the plugins.  
@@ -44,7 +46,8 @@ public class PluginManager {
 
         Digester digester = new Digester();
         digester.setNamespaceAware(true);
-        digester.setValidating(true);         
+        // digester.setValidating(true);         
+        // FIXME Re-enable XML validation
         
         digester.addObjectCreate("plugins", Vector.class );
         digester.addObjectCreate("plugins/plugin", PluginSpecification.class);

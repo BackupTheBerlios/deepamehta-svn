@@ -7,6 +7,8 @@ package de.deepamehta.environment.plugin;
 
 import java.util.Vector;
 
+import de.deepamehta.environment.ClassSpecification;
+
 /**
  * @author vwegert
  *
