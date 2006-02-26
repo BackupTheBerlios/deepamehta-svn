@@ -27,8 +27,6 @@ import de.deepamehta.environment.instance.InstanceConfiguration;
  */
 class SetupWorkingDirAction extends AbstractSetupAction {
 
-    static final int BUFFER = 2048;  
-    
     private static Log logger = LogFactory.getLog(SetupWorkingDirAction.class);
     
     private String workingDir;
@@ -78,58 +76,9 @@ class SetupWorkingDirAction extends AbstractSetupAction {
                 addErrorMessage("Unable to create working directory " + this.workingDir);
                 return false;
             } else {
-                String zipFileName = this.env.getInstanceDataSourceFile(); 
-                BufferedOutputStream dest = null;
-                BufferedInputStream is = null;
-                ZipEntry entry;
-                
-                try {
-                    ZipFile zipfile = new ZipFile(zipFileName);
-                    
-                    // first pass: create directories
-                    Enumeration ed = zipfile.entries();
-                    while (ed.hasMoreElements()) {
-                        entry = (ZipEntry) ed.nextElement();
-                        if (entry.isDirectory()) {
-                            logger.debug("Creating directory " + this.workingDir + entry.getName());
-                            File dir = new File(this.workingDir + entry.getName());
-                            dir.mkdir();
-                        }
-                    }
-                    
-                    // second pass: extract files
-                    Enumeration ef = zipfile.entries();
-                    while (ef.hasMoreElements()) {
-                        entry = (ZipEntry) ef.nextElement();
-                        if (!entry.isDirectory()) {
-                            logger.debug("Extracting file " + this.workingDir
-                                    + entry.getName());
-                            try {
-                                is = new BufferedInputStream(zipfile.getInputStream(entry));
-                                int count;
-                                byte data[] = new byte[BUFFER];
-                                FileOutputStream fos = new FileOutputStream(this.workingDir + entry.getName());
-                                dest = new BufferedOutputStream(fos, BUFFER);
-                                while ((count = is.read(data, 0, BUFFER)) != -1) {
-                                    dest.write(data, 0, count);
-                                }
-                                dest.flush();
-                                dest.close();
-                                is.close();
-                            } catch (Exception e) {
-                                addErrorMessage("Unable to extract file " + this.workingDir + entry.getName(), e);
-                                return false;
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    addErrorMessage("Unable to extract instance data from " + zipFileName);
-                    return false;
-                }
+            	return extractZipFile(this.env.getInstanceDataSourceFile(), this.workingDir);
             }
         }
-        
-        return true;
     }
 
 }
