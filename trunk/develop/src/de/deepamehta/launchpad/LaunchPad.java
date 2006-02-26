@@ -125,8 +125,8 @@ public class LaunchPad {
         cmd.add("-jar");
         cmd.add(config.getExecutableArchive());
 
-        cmd.add("-l");
-        cmd.add("../../log4j.properties");
+//        cmd.add("-l");
+//        cmd.add("../../log4j.properties");
         
 //        cmd.add("--instances");
 //        cmd.add(this.env.getWorkingDirectory() + this.env.getFileSeparator() + this.env.getInstanceFile());
