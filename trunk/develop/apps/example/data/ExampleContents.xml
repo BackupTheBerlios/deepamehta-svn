@@ -1,19 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dmc:contents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.deepamehta.de/schema/ContentsDefinition.xsd ContentsDefinition.xsd" xmlns:dmc="http://www.deepamehta.de/schema/ContentsDefinition.xsd">
 	
+	<!-- define new topic type Counter -->
 	<topic id="tt-ex-counter" name="Counter" type="tt-topictype">
 		<property name="Name" value="Counter"/>
 		<property name="Plural Name" value="Counters"/>
-		<property name="Icon" value="example-counter.gif"/>
+		<property name="Icon" value="example-counter.png"/>
+		<property name="Custom Implementation" value="de.deepamehta.topics.example.CounterTopic"/>
 	</topic>	
 
+	<!-- derive Counter from Topic -->
+	<association id="a-ex-1" type="at-derivation" from="tt-generic" to="tt-ex-counter"/>
+
+	<!-- define new property Value -->
 	<topic id="pp-ex-counterval" name="Value" type="tt-property">
 		<property name="Name" value="Counter Value"/>
 		<property name="Visualization" value="Input Field"/>
 	</topic>
 
-	<association id="a-ex-1" type="at-composition" from="tt-ex-counter" to="pp-ex-countervaö">
+	<!-- assign property Value to topic type Counter -->
+	<association id="a-ex-2" type="at-composition" from="tt-ex-counter" to="pp-ex-counterval">
 		<property name="Ordinal Number" value="150"/>
 	</association>
+
+	<!-- container type (search results) -->
+	<topic id="tt-ex-counter-container" name="Counter Search" type="tt-topictype">
+		<property name="Name" value="Counter Search"/>
+		<property name="Plural name" value="Counter searches"/>
+	</topic>
 	
+	<!-- derive container type -->
+	<association id="a-ex-3" type="at-derivation" from="tt-topiccontainer" to="tt-ex-counter-container"/>
+
+	<!-- assign properties to container type -->
+	<association id="a-ex-4" type="at-composition" from="tt-ex-counter-container" to="pp-ex-counterval"/>
+	
+	<!-- assign type to container type -->
+	<association id="a-ex-5" type="at-aggregation" from="tt-ex-counter-container" to="tt-ex-counter"/>
+
+	<!-- assign new topic type to workspace DeepaMehta -->
+	<association id="a-ex-6" type="at-uses" from="t-corporategroup" to="tt-ex-counter">
+		<property name="Access Permission" value="create"/>
+		<property name="Ordinal Number" value="100"/>
+	</association>
+
+	
+		
 </dmc:contents>
