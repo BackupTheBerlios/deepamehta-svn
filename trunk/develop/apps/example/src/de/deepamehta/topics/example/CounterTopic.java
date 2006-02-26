@@ -57,7 +57,12 @@ public class CounterTopic extends LiveTopic {
 	public CorporateDirectives executeCommand(String command, Session session, String topicmapID, String viewmode) {
 		CorporateDirectives directives = new CorporateDirectives();
 		if (command.equals(CMD_INCREASE_COUNTER)) {
-			int current = Integer.parseInt(getProperty(PROPERTY_VALUE));
+			int current;
+			try {
+				current = Integer.parseInt(getProperty(PROPERTY_VALUE));
+			} catch (NumberFormatException e) {
+				current = 0;
+			}
 			setTopicData(PROPERTY_VALUE, Integer.toString(current + 1), session, topicmapID, viewmode);
 		} else if (command.equals(CMD_RESET_COUNTER)) {
 			setTopicData(PROPERTY_VALUE, "0", session, topicmapID, viewmode);
