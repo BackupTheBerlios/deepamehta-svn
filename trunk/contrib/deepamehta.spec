@@ -45,6 +45,7 @@ ant build
 
 %install
 rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT/%{installpath}/bin/apps
 mkdir -p $RPM_BUILD_ROOT/%{installpath}/libs
 mkdir -p $RPM_BUILD_ROOT/%{installpath}/{backgrounds,icons,images,sounds,stylesheets}
 mkdir -p $RPM_BUILD_ROOT/%{installpath}/install/db
