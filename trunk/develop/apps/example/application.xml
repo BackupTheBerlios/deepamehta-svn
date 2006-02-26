@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dma:applications xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.deepamehta.de/schema/ApplicationDefinition.xsd ApplicationDefinition.xsd"
+        xmlns:dma="http://www.deepamehta.de/schema/ApplicationDefinition.xsd">
+	<application id="example" description="Minimal Application Example">
+		<implementation class="de.deepamehta.topics.example.CounterTopic" loadFrom="example.jar"/>
+		<datafiles source="example-data.zip"/>
+	</application>
+</dma:applications>

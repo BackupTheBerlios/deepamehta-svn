@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmc:contents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.deepamehta.de/schema/ContentsDefinition.xsd ContentsDefinition.xsd" xmlns:dmc="http://www.deepamehta.de/schema/ContentsDefinition.xsd">
+	
+	<topic id="tt-ex-counter" name="Counter" type="tt-topictype">
+		<property name="Name" value="Counter"/>
+		<property name="Plural Name" value="Counters"/>
+		<property name="Icon" value="example-counter.gif"/>
+	</topic>	
+
+	<topic id="pp-ex-counterval" name="Value" type="tt-property">
+		<property name="Name" value="Counter Value"/>
+		<property name="Visualization" value="Input Field"/>
+	</topic>
+
+	<association id="a-ex-1" type="at-composition" from="tt-ex-counter" to="pp-ex-countervaö">
+		<property name="Ordinal Number" value="150"/>
+	</association>
+	
+</dmc:contents>
