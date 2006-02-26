@@ -1,23 +1,31 @@
 package de.deepamehta.service;
 
-import de.deepamehta.Association;
-import de.deepamehta.BaseTopic;
-import de.deepamehta.BaseAssociation;
-import de.deepamehta.DeepaMehtaConstants;
-import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.PresentableTopic;
-import de.deepamehta.PresentableAssociation;
-import de.deepamehta.PresentableType;
-import de.deepamehta.Topic;
-import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
-//
-import java.sql.*;
-import java.util.*;
 import java.awt.Point;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import de.deepamehta.BaseAssociation;
+import de.deepamehta.BaseTopic;
+import de.deepamehta.DeepaMehtaConstants;
+import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.DeepaMehtaUtils;
+import de.deepamehta.PresentableAssociation;
+import de.deepamehta.PresentableTopic;
+import de.deepamehta.PresentableType;
+import de.deepamehta.assocs.LiveAssociation;
+import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
+import de.deepamehta.topics.LiveTopic;
 
 
 
@@ -79,7 +87,7 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
 	 */
 	RelationalCorporateMemory(String jdbcDriverClass, String jdbcURL) throws Exception {
 		// FIXME remove this code ASAP - it is being replaced by startup()
-		Class.forName(jdbcDriverClass);
+		Environment.loadClass(jdbcDriverClass);
 		this.con = DriverManager.getConnection(jdbcURL);
 		this.dbmsHint = jdbcDriverClass.indexOf(DBMS_HINT_ORACLE) != -1 ?
 			DBMS_HINT_ORACLE : DBMS_HINT_SQL92;
@@ -446,7 +454,7 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
         this.config = cmConfig;
         try {
             String jdbcDriverClass = cmConfig.getProperty("driver");
-            Class.forName(jdbcDriverClass);
+            Environment.loadClass(jdbcDriverClass);
             this.con = DriverManager.getConnection(getConnectionString(this.config));
             this.dbmsHint = jdbcDriverClass.indexOf(DBMS_HINT_ORACLE) != -1 ?
                     DBMS_HINT_ORACLE : DBMS_HINT_SQL92;

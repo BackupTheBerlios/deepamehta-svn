@@ -44,13 +44,14 @@ import de.deepamehta.environment.instance.UnknownInstanceException;
 public class MainWindow extends JFrame implements WindowListener, ActionListener, ListSelectionListener {
 	
 	private static final long serialVersionUID = 2315866133648402562L;
-	private static String CMD_INSTANCE_LAUNCH  = "LaunchInstance";
-	private static String CMD_INSTANCE_CREATE  = "CreateInstance";
-	private static String CMD_INSTANCE_EDIT    = "EditInstance";
-	private static String CMD_INSTANCE_DELETE  = "DeleteInstance";
-	private static String CMD_VIEW_SIMPLE      = "SimpleView";
-	private static String CMD_VIEW_DETAILED    = "DetailedView";
-	private static String CMD_EXIT             = "ExitManager";
+	private static final String CMD_INSTANCE_LAUNCH      = "LaunchInstance";
+	private static final String CMD_INSTANCE_CREATE      = "CreateInstance";
+	private static final String CMD_INSTANCE_EDIT        = "EditInstance";
+	private static final String CMD_INSTANCE_DELETE      = "DeleteInstance";
+	private static final String CMD_APPLICATION_INSTALL  = "InstallApplication"; 
+	private static final String CMD_VIEW_SIMPLE          = "SimpleView";
+	private static final String CMD_VIEW_DETAILED        = "DetailedView";
+	private static final String CMD_EXIT                 = "ExitManager";
 	
 	/* component interconnections */
 	private static Log logger = LogFactory.getLog(MainWindow.class);
@@ -103,6 +104,8 @@ public class MainWindow extends JFrame implements WindowListener, ActionListener
 		menu.add(makeMenuItem(DeepaMehtaMessages.getString("LaunchPad.MainWindow.CreateInstance"), CMD_INSTANCE_CREATE)); //$NON-NLS-1$
 		menu.add(makeMenuItem(DeepaMehtaMessages.getString("LaunchPad.MainWindow.EditInstance"), CMD_INSTANCE_EDIT)); //$NON-NLS-1$
 		menu.add(makeMenuItem(DeepaMehtaMessages.getString("LaunchPad.MainWindow.DeleteInstance"), CMD_INSTANCE_DELETE)); //$NON-NLS-1$
+		menu.addSeparator();
+		menu.add(makeMenuItem(DeepaMehtaMessages.getString("LaunchPad.MainWindow.InstallApplication"), CMD_APPLICATION_INSTALL)); //$NON-NLS-1$
 		menu.addSeparator();
 		menu.add(makeMenuItem(DeepaMehtaMessages.getString("LaunchPad.MainWindow.ExitManager"), CMD_EXIT)); //$NON-NLS-1$
 		menubar.add(menu);
@@ -286,6 +289,7 @@ public class MainWindow extends JFrame implements WindowListener, ActionListener
 		
 		/* instance actions are passed on to the controller */
 		if (command.equals(CMD_INSTANCE_LAUNCH)) {
+			// TODO Ensure that an instance is selected.
 			this.manager.launchInstance(id);
 			return; 
 		}
@@ -294,10 +298,17 @@ public class MainWindow extends JFrame implements WindowListener, ActionListener
 			return; 
 		}
 		if (command.equals(CMD_INSTANCE_EDIT)) {
+			// TODO Ensure that an instance is selected.
 			this.manager.editInstance(id);
 			return; 
 		}
+		if (command.equals(CMD_APPLICATION_INSTALL)) {
+			// TODO Ensure that an instance is selected.
+			this.manager.installApplication(id);
+			return;
+		}
 		if (command.equals(CMD_INSTANCE_DELETE)) {
+			// TODO Ensure that an instance is selected.
 			this.manager.deleteInstance(id);
 			return; 
 		}

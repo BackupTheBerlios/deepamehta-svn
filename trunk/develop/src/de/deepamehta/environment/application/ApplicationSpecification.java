@@ -14,15 +14,16 @@ public class ApplicationSpecification {
 
 	private static Log logger = LogFactory.getLog(ApplicationSpecification.class);
 	
-	private String id, description;
+	private String id, description, sourcePath;
 	private Vector implementations; // contains ClassSpecification instances pointing to the JARs to load
-	private Vector dataFiles;
+	private Vector dataFiles, contentFiles;
 	
 	// FIXME handle installation data, too
 	
 	public ApplicationSpecification() {
 		implementations = new Vector();
 		dataFiles = new Vector();
+		contentFiles = new Vector();
 	}
 
 	/**
@@ -56,8 +57,8 @@ public class ApplicationSpecification {
 	/* (non-Javadoc)
 	 * @see java.util.Vector#add(java.lang.Object)
 	 */
-	public boolean addImplementation(ClassSpecification f) {
-		return implementations.add(f);
+	public boolean addImplementation(ClassSpecification spec) {
+		return implementations.add(spec);
 	}
 
 	/* (non-Javadoc)
@@ -87,7 +88,14 @@ public class ApplicationSpecification {
 		for (Iterator iter = implementations.iterator(); iter.hasNext();) {
 			ClassSpecification element = (ClassSpecification) iter.next();
 			try {
-				Environment.getEnvironment().loadExternalJAR(element.getClassSource());
+				String source = element.getClassSource();
+				if (!source.equals("core")) {
+					if (source.startsWith(Environment.getFileSeparator())) {
+						// TODO How about Windoze?
+						source = getSourcePath() + Environment.getFileSeparator() + source;
+					}
+					Environment.getEnvironment().loadExternalJAR(source);
+				}
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				logger.error("Unable to load JAR " + element.getClassSource(), e);
@@ -121,6 +129,48 @@ public class ApplicationSpecification {
 	 */
 	public int numDataFiles() {
 		return dataFiles.size();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.util.Vector#add(java.lang.Object)
+	 */
+	public boolean addContentFile(String filename) {
+		return contentFiles.add(filename);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.util.Vector#get(int)
+	 */
+	public String getContentFile(int index) {
+		return (String) contentFiles.get(index);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.util.AbstractList#iterator()
+	 */
+	public Iterator getContentFileIterator() {
+		return contentFiles.iterator();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.util.Vector#size()
+	 */
+	public int numContentFiles() {
+		return contentFiles.size();
+	}
+
+	/**
+	 * @return Returns the sourcePath.
+	 */
+	public String getSourcePath() {
+		return sourcePath;
+	}
+
+	/**
+	 * @param sourcePath The sourcePath to set.
+	 */
+	public void setSourcePath(String sourcePath) {
+		this.sourcePath = sourcePath;
 	}
 	
 }

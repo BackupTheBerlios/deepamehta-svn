@@ -65,25 +65,30 @@ public class ApplicationManager implements ListModel {
         Digester digester = new Digester();
         digester.setNamespaceAware(true);
         //digester.setValidating(true);
-        // FIXME Re-enable XML validation
+        // FIXME Enable XML validation - need to provide a schema file first!
         
         digester.addObjectCreate("applications", Vector.class );
+        
         digester.addObjectCreate("applications/application", ApplicationSpecification.class);
         digester.addSetProperties("applications/application/", "id", "id");
         digester.addSetProperties("applications/application/", "description", "description");
-
+        
         digester.addObjectCreate("applications/application/implementation", ClassSpecification.class );
         digester.addSetProperties("applications/application/implementation", "class", "className" );
         digester.addSetProperties("applications/application/implementation", "loadFrom", "classSource" );
         digester.addSetNext("applications/application/implementation", "addImplementation" );
-
+        
         digester.addCallMethod("applications/application/datafiles", "addDataFile", 1);
         digester.addCallParam("applications/application/datafiles", 0, "source");
         
-        // FIXME add absolute path prefix to source files
+        digester.addCallMethod("applications/application/contentfiles", "addContentFile", 1);
+        digester.addCallParam("applications/application/contentfiles", 0, "source");
+        
+        digester.addCallMethod("applications/application", "setSourcePath", 1);
+        digester.addObjectParam("applications/application", 0, specFile.getParent());
         
         digester.addSetNext("applications/application", "add" );
-
+        
         try {
             fileContents = (Vector) digester.parse(specFile);
         } catch (IOException e) {
@@ -98,12 +103,6 @@ public class ApplicationManager implements ListModel {
         {
             for (int i = 0; i < fileContents.size(); i++) {
             	ApplicationSpecification spec = (ApplicationSpecification) fileContents.get(i);
-            	for (Iterator iter = spec.getImplementationIterator(); iter.hasNext();) {
-					ClassSpecification element = (ClassSpecification) iter.next();
-					String newSource = specFile.getParentFile().getAbsolutePath() + env.getFileSeparator() + element.getClassSource(); 
-					element.setClassSource(newSource);
-					// FIXME Ugly workaround to get an absolute path - make this more elegant somehow.
-				}
                 applications.put(spec.getId(), spec);
             }
         }

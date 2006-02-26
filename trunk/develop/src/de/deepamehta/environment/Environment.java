@@ -5,6 +5,11 @@
  */
 package de.deepamehta.environment;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,10 +29,11 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import de.deepamehta.DeepaMehtaConstants;
+import de.deepamehta.environment.application.ApplicationManager;
+import de.deepamehta.environment.application.ApplicationSpecification;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 import de.deepamehta.environment.instance.InstanceManager;
 import de.deepamehta.environment.instance.InstanceTableModel;
-import de.deepamehta.environment.instance.InstanceType;
 import de.deepamehta.environment.instance.UnknownInstanceException;
 import de.deepamehta.environment.plugin.PluginManager;
 
@@ -47,7 +53,10 @@ public class Environment implements DeepaMehtaConstants {
     private EnvironmentType envType;
     private PluginManager plugins;
     private InstanceManager instances;
-    private String workingDirectory;
+    private ApplicationManager applications;
+    private ArrayList externalJARs;
+    private ClassLoader loader;
+    private String homeDirectory, workingDirectory;
     private String instanceFile, pluginFile, loggerConfigFile;
     private List args; // anything left over after command line parsing
     
@@ -57,11 +66,21 @@ public class Environment implements DeepaMehtaConstants {
      * instance of the Environment class. 
      * @param args command line arguments
      * @param type the instance type to startup
+     * @throws EnvironmentException 
      */
-    private Environment(String[] args, EnvironmentType type) {
+    private Environment(EnvironmentType type) throws EnvironmentException {
         
-        this.workingDirectory = System.getProperty("user.dir");
         this.envType = type;
+        
+    }
+    
+    private void initialize(String[] args) throws EnvironmentException {
+    	
+        this.workingDirectory = System.getProperty("user.dir");
+        this.homeDirectory = System.getProperty("de.deepamehta.home");
+        if (this.homeDirectory == null)
+        	this.homeDirectory = this.workingDirectory;
+
         parseOptions(args);
         initializeLogger();
         
@@ -72,12 +91,32 @@ public class Environment implements DeepaMehtaConstants {
         //		System.out.println("\n--- DeepaMehta " + CLIENT_VERSION + " runs as applet on \"" + ps.hostAddress + "\" (" + ps.platform + ") ---");
 
         logJavaDetails();
-        if (this.envType == EnvironmentType.FAT)
-        	initializePluginManager();
-        initializeInstanceManager();
+
+        if (this.envType == EnvironmentType.FAT) 
+        {
+        	this.plugins = new PluginManager();
+        	this.instances = new InstanceManager(this);
+        	this.applications = new ApplicationManager(this);
+        	this.externalJARs = new ArrayList();
+
+        	// setup class loader
+        	loader = ClassLoader.getSystemClassLoader();
+        	        	
+            this.plugins.loadFromFile(this.pluginFile);
+            String appPath = this.getHomeDirectory() + this.getFileSeparator() + 
+            				 "bin" + this.getFileSeparator() + "apps"; 
+            this.applications.scanApplicationPath(appPath);
+            
+			// FIXME this is definitely the wrong time to load all the applications - MOVE THIS!
+			for(Enumeration e = this.applications.getApplications(); e.hasMoreElements() ; ) {
+				ApplicationSpecification spec = (ApplicationSpecification) e.nextElement();
+				spec.loadImplementations();
+			}		
+        }
+        this.instances.loadFromFile(this.instanceFile);
+
+    
     }
-    
-    
  
     /**
      * Convenience method to create a command line option without parameter.
@@ -147,12 +186,12 @@ public class Environment implements DeepaMehtaConstants {
         if (line.hasOption("i")) {
             this.instanceFile = line.getOptionValue("i");
         } else {
-            this.instanceFile = DEFAULT_INSTANCE_FILE;
+            this.instanceFile = getHomeDirectory() + getFileSeparator() + DEFAULT_INSTANCE_FILE;
         }
         if (line.hasOption("p")) {
             this.pluginFile = line.getOptionValue("p");
         } else {
-            this.pluginFile = DEFAULT_PLUGIN_FILE;
+            this.pluginFile = getHomeDirectory() + getFileSeparator() + DEFAULT_PLUGIN_FILE;
         }
         
     }
@@ -201,23 +240,7 @@ public class Environment implements DeepaMehtaConstants {
 			logger.error("The VM properties can't be reported because this applet is not signed.", e);
 		}
     }
-
-    /**
-     * Initializes the plugin manager and loads the plugin configuration file.
-     */
-    private void initializePluginManager() {
-        this.plugins = new PluginManager();
-        this.plugins.loadFromFile(this.pluginFile);
-    }
-
-    /**
-     * Initializes the instance manager and loads the instance configuration file.
-     */
-    private void initializeInstanceManager() {
-        this.instances = new InstanceManager(this);
-        this.instances.loadFromFile(this.instanceFile);
-    }
-
+    
     /**
      * Initializes the environment by parsing the command line arguments and initializing
      * the associated components. This method is supposed to be called exactly once during 
@@ -227,7 +250,13 @@ public class Environment implements DeepaMehtaConstants {
      */
     public static Environment getEnvironment(String[] args, EnvironmentType type) {
         if (singleton == null) {
-            singleton = new Environment(args, type);
+            try {
+				singleton = new Environment(type);
+				singleton.initialize(args);
+			} catch (EnvironmentException e) {
+				logger.error("Unable to initialize the environment, bailing out.", e);
+				throw new EnvironmentNotInitializedException(e);
+			}
         } 
         return singleton;
     }
@@ -284,6 +313,13 @@ public class Environment implements DeepaMehtaConstants {
     }
     
     /**
+     * @return Returns the home directory of the DeepaMehta installation.
+     */
+    public String getHomeDirectory() {
+        return this.homeDirectory;
+    }
+    
+    /**
      * @return Returns the name of the instance configuration file.
      */
     public String getInstanceFile() {
@@ -302,6 +338,13 @@ public class Environment implements DeepaMehtaConstants {
      */
     public PluginManager getPlugins() {
         return this.plugins;
+    }
+    
+    /**
+     * @return Returns the instance of the application manager.
+     */
+    public ApplicationManager getApplications() {
+    	return this.applications;
     }
     
     /**
@@ -336,7 +379,7 @@ public class Environment implements DeepaMehtaConstants {
     /**
      * @return Returns the path separator for the current platform.
      */
-    public String getFileSeparator() {
+    public static String getFileSeparator() {
         return System.getProperty("file.separator");
     }
 
@@ -345,7 +388,7 @@ public class Environment implements DeepaMehtaConstants {
      * of a newly created instance.
      */
     public String getInstanceDataSourceFile() {
-        return getWorkingDirectory() + getFileSeparator() + "bin" 
+        return getHomeDirectory() + getFileSeparator() + "bin" 
         		+ getFileSeparator() + "instance-data.zip"; 
         // TODO Remove hard-coded ZIP file name and path.
     }
@@ -444,4 +487,34 @@ public class Environment implements DeepaMehtaConstants {
 	public int numInstances() {
 		return instances.size();
 	}
+	
+	/**
+	 * MISSDOC No documentation for method loadExternalJAR of type Environment
+	 * @param absPath
+	 * @throws MalformedURLException
+	 */
+	public void loadExternalJAR(String absPath) throws MalformedURLException {
+		if (!externalJARs.contains(absPath)) {
+			logger.debug("Adding external JAR " + absPath + " to class loader.");
+			externalJARs.add(new URL("file://" + absPath));
+			URL[] urls = new URL[externalJARs.size()];
+			urls = (URL[]) externalJARs.toArray(urls);
+			loader = new URLClassLoader(urls);
+		}
+	}
+	
+	/**
+	 * MISSDOC No documentation for method loadClass of type Environment
+	 * @param name
+	 * @return
+	 * @throws ClassNotFoundException
+	 */
+	public static Class loadClass(String name) throws ClassNotFoundException {
+        if (singleton == null) {
+            throw new EnvironmentNotInitializedException();
+        } else {
+        	return Class.forName(name, true, singleton.loader);
+        }
+	}
+	
 }

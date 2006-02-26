@@ -16,6 +16,7 @@ import javax.swing.event.ListDataListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import de.deepamehta.environment.application.ApplicationSpecification;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 
 /**
@@ -49,7 +50,7 @@ public class ActionList implements ListModel {
      * steps can then be presented to the user and/or executed by other methods.
      * @param config The instance configuration to use
      */
-    public void prepare(InstanceConfiguration config) {
+    public void prepareInstanceCreation(InstanceConfiguration config) {
     
         // throw away old actions
         this.actions.clear();
@@ -74,6 +75,24 @@ public class ActionList implements ListModel {
         this.progressModel.setValue(0);
     }
         
+    /**
+     * MISSDOC No documentation for method prepareApplicationInstallation of type ActionList
+     * @param config
+     * @param app
+     */
+    public void prepareApplicationInstallation(InstanceConfiguration config, ApplicationSpecification app) {
+
+    	// throw away old actions    	
+    	this.actions.clear();
+    	
+    	this.actions.add(new InstallApplicationFilesAction(config, app));
+    	this.actions.add(new InstallApplicationContentsAction(config, app));
+    	
+        // update progress model
+        this.progressModel.setMaximum(this.actions.size());
+        this.progressModel.setValue(0);
+    }
+    
     /**
      * @return Returns the descriptions of the actions.
      */
@@ -141,7 +160,6 @@ public class ActionList implements ListModel {
 	public void removeListDataListener(ListDataListener l) {
 		// TODO Auto-generated method stub
 	}
-
 
 	/**
 	 * @return Returns the progress model.

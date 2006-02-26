@@ -262,12 +262,15 @@ public class ContentsLoader extends DefaultHandler {
 	
 	private void setCMVersions(Attributes attributes) {
 		
-		int modelVersion = Integer.parseInt(attributes.getValue("modelVersion"));
-		int contentVersion = Integer.parseInt(attributes.getValue("contentVersion"));
+		String strModel = attributes.getValue("modelVersion");
+		String strContent = attributes.getValue("contentVersion");
 		
-		this.cm.setKeyGenerator("DB-Model Version", modelVersion);
-		this.cm.setKeyGenerator("DB-Content Version", contentVersion);
-	
+		if (strModel != null && strContent != null) { 
+			int modelVersion = Integer.parseInt(strModel);
+			int contentVersion = Integer.parseInt(strContent);
+			this.cm.setKeyGenerator("DB-Model Version", modelVersion);
+			this.cm.setKeyGenerator("DB-Content Version", contentVersion);
+		}	
 	}
 
 	private int getVersion(Attributes attributes, String key) {

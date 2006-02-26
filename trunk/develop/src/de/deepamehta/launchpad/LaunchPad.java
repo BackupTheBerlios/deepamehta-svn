@@ -21,7 +21,11 @@ import de.deepamehta.environment.Environment;
 import de.deepamehta.environment.EnvironmentType;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 import de.deepamehta.environment.instance.UnknownInstanceException;
+import de.deepamehta.launchpad.setup.ActionList;
 import de.deepamehta.launchpad.setup.wizard.SetupWizard;
+
+// FIXME add CLI to launch pad
+// FIXME create method to update instance
 
 /**
  * This is the main class of the Launch Pad.
@@ -117,12 +121,17 @@ public class LaunchPad {
         ArrayList cmd = new ArrayList();
         cmd.add(this.env.getJavaRuntime());
         cmd.add("-Djava.endorsed.dirs=" + this.env.getEndorsedPath());
+        cmd.add("-Dde.deepamehta.home=" + this.env.getHomeDirectory());
         cmd.add("-jar");
         cmd.add(config.getExecutableArchive());
-        cmd.add("--instances");
-        cmd.add(this.env.getWorkingDirectory() + this.env.getFileSeparator() + this.env.getInstanceFile());
-        cmd.add("--plugins");
-        cmd.add(this.env.getWorkingDirectory() + this.env.getFileSeparator() + this.env.getPluginFile());
+
+        cmd.add("-l");
+        cmd.add("../../log4j.properties");
+        
+//        cmd.add("--instances");
+//        cmd.add(this.env.getWorkingDirectory() + this.env.getFileSeparator() + this.env.getInstanceFile());
+//        cmd.add("--plugins");
+//        cmd.add(this.env.getWorkingDirectory() + this.env.getFileSeparator() + this.env.getPluginFile());
         cmd.add(config.getId());
         
         // TODO WTF did I use an ArrayList here?
@@ -175,6 +184,40 @@ public class LaunchPad {
 //        } catch (UnknownInstanceException e) {
 //            logger.error("Trying to open properties dialog for non-existing instance - WTF?", e);
 //        }		
+	}
+	
+	/**
+	 * MISSDOC No documentation for method installApplication of type LaunchPad
+	 * @param id
+	 */
+	public void installApplication(String id) {
+
+		InstanceConfiguration config;
+		try {
+			config = env.getInstance(id);
+        } catch (UnknownInstanceException e) {
+            logger.error("Trying to install application into unknown instance - WTF?", e);
+            return;
+        }
+		
+		ApplicationSelectionDialog sel = new ApplicationSelectionDialog(mw, "Install Application...", true);
+		sel.show();
+		String app = sel.getSelectedApplication();
+		if (app != null) {
+			logger.debug("Installing application " + app + " into instance " + id + "...");
+			ActionList actions = new ActionList();
+			actions.prepareApplicationInstallation(config, env.getApplications().getApplication(app));
+			if (actions.execute()) {
+				// show status message
+				JOptionPane.showMessageDialog(mw, "The application " + app + " was installed into the instance " + id + ".", 
+						DeepaMehtaMessages.getString("LaunchPad.Title"), JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				// show error message
+				JOptionPane.showMessageDialog(mw, actions.getMessages(), 
+						DeepaMehtaMessages.getString("LaunchPad.Title"), JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		
 	}
 	
 	/**

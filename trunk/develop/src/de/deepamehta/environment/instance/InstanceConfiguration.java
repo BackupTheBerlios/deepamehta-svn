@@ -184,7 +184,7 @@ public class InstanceConfiguration {
 	 * @return The full path to the executable JAR.
 	 */
 	public String getExecutableArchive() {
-	    String base = Environment.getEnvironment().getWorkingDirectory();
+	    String base = Environment.getEnvironment().getHomeDirectory();
 	    String sep  = Environment.getEnvironment().getFileSeparator();
 	    base = base + sep;		    
 	    if (this.instanceType.isMonolithic())
@@ -274,7 +274,7 @@ public class InstanceConfiguration {
     		// FIXME will run into trouble with icons some day
     		return Environment.getEnvironment().getWorkingDirectory();
     	} else {
-    		String base = Environment.getEnvironment().getWorkingDirectory();
+    		String base = Environment.getEnvironment().getHomeDirectory();
     		String sep = Environment.getEnvironment().getFileSeparator();
     		return base + sep + "data" + sep + getId() + sep;
     	}

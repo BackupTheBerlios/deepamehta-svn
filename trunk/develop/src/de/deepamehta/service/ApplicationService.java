@@ -44,6 +44,7 @@ import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Topic;
 import de.deepamehta.TopicInitException;
 import de.deepamehta.assocs.LiveAssociation;
+import de.deepamehta.environment.Environment;
 import de.deepamehta.environment.EnvironmentException;
 import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
 import de.deepamehta.environment.instance.InstanceConfiguration;
@@ -5093,7 +5094,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 						String errorText, CorporateDirectives directives) throws DeepaMehtaException {
 		try {
 			// create constructor
-			Constructor cons = Class.forName(implementingClass).getConstructor(argClasses);
+			Constructor cons = Environment.loadClass(implementingClass).getConstructor(argClasses);
 			// create instance
 			Object obj = cons.newInstance(argObjects);
 			//
@@ -5135,7 +5136,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	public Object triggerStaticHook(String className, String hookName, Class[] paramTypes, Object[] paramValues,
 															boolean throwIfNoSuchHookExists) throws DeepaMehtaException {
 		try {
-			Class typeClass = Class.forName(className);							// throws ClassNotFoundException
+			Class typeClass = Environment.loadClass(className);							// throws ClassNotFoundException
 			Method hook = typeClass.getDeclaredMethod(hookName, paramTypes);	// throws NoSuchMethodException
 			return hook.invoke(null, paramValues);								// throws IllegalAccessException
 																				// throws InvocationTargetException

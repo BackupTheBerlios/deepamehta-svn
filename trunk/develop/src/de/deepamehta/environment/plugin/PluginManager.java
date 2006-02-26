@@ -6,6 +6,7 @@
 package de.deepamehta.environment.plugin;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -15,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
 
 import de.deepamehta.environment.ClassSpecification;
+import de.deepamehta.environment.Environment;
 
 /**
  * This class manages the plugins that can be loaded by the DeepaMehta core at runtime.
@@ -24,6 +26,7 @@ import de.deepamehta.environment.ClassSpecification;
 public class PluginManager {
 
     private static Log logger = LogFactory.getLog(PluginManager.class);;
+    private Environment env;
     private Hashtable plugins;
     
     /**
@@ -31,6 +34,7 @@ public class PluginManager {
      */
     public PluginManager() {
         super();
+        env = Environment.getEnvironment();
         this.plugins = new Hashtable();
     }
     
@@ -46,8 +50,7 @@ public class PluginManager {
 
         Digester digester = new Digester();
         digester.setNamespaceAware(true);
-        // digester.setValidating(true);         
-        // FIXME Re-enable XML validation
+        digester.setValidating(true);         
         
         digester.addObjectCreate("plugins", Vector.class );
         digester.addObjectCreate("plugins/plugin", PluginSpecification.class);
@@ -97,14 +100,16 @@ public class PluginManager {
         
         if (!this.plugins.containsKey(specification.getMainClass().getClassName())) {
             logger.debug("Loading plugin " + specification.getName() + "...");
-            // TODO May need to modify the classpath here. 
             try {
             	// TODO Load preload and postload classes too.
-                Class.forName(specification.getMainClass().getClassName());
+            	env.loadExternalJAR(specification.getMainClass().getClassSource());
+                Environment.loadClass(specification.getMainClass().getClassName());
                 this.plugins.put(specification.getMainClass().getClassName(), specification);
             } catch (ClassNotFoundException e) {
                 logger.error("Unable to load plugin " + specification.getName(), e);
-            }
+            } catch (MalformedURLException e) {
+				logger.error("The plugin source is invalid.", e);
+			}
         } else {
             logger.debug("Plugin " + specification.getName() + " already loaded.");
         }

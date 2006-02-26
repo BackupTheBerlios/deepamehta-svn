@@ -15,6 +15,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import de.deepamehta.environment.Environment;
 import de.deepamehta.service.CorporateMemory;
 
 /**
@@ -74,7 +75,7 @@ public class CorporateMemoryConfiguration {
     public Class getImplementingClass() {
     	if (this.implementingClass != null) {
     		try {
-    			return Class.forName(this.implementingClass);
+    			return Environment.loadClass(this.implementingClass);
     		} catch (ClassNotFoundException e) {
     			logger.error("Unable to find CM implementation " + this.implementingClass);
     			return null;

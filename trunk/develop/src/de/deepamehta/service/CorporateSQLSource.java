@@ -1,7 +1,16 @@
 package de.deepamehta.service;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import de.deepamehta.environment.Environment;
 
 
 
@@ -46,7 +55,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 		// create database connection
 		System.out.println(">>> CorporateSQLSource(): connecting to database ... ");
 		System.out.println(">    URL: \"" + url + "\"\n>    driver: \"" + driver + "\"");
-		Class.forName(driver);
+		Environment.loadClass(driver);
 		con = DriverManager.getConnection(url);
 		System.out.println(">>> connected.");
 	}

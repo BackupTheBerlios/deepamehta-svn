@@ -1,11 +1,11 @@
 package de.deepamehta.topics;
 
-import de.deepamehta.BaseTopic;
-import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.TopicInitException;
-import de.deepamehta.service.*;
-//
 import java.lang.reflect.Constructor;
+
+import de.deepamehta.BaseTopic;
+import de.deepamehta.environment.Environment;
+import de.deepamehta.service.ApplicationService;
+import de.deepamehta.service.LoginCheck;
 
 
 
@@ -63,7 +63,7 @@ public class LoginTopic extends LiveTopic {
 	private LoginCheck createLoginCheck() {
 		String loginClassName = SERVER_PACKAGE + "." + as.typeName(this);
 		try {
-			Constructor cons = Class.forName(loginClassName).getConstructor(
+			Constructor cons = Environment.loadClass(loginClassName).getConstructor(
 				new Class[] {LiveTopic.class});
 			return (LoginCheck) cons.newInstance(new Object[] {this});
 		} catch (Exception e) {
