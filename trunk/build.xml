@@ -204,6 +204,7 @@
 	<target name="build" depends="compile" description="build jar files">
 		<!-- ensure target path exists -->
 		<mkdir dir="${bin}"/>
+		<mkdir dir="${bin}/apps"/>
 		<!-- monolith -->
 		<jar jarfile="${bin}/DeepaMehta.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
