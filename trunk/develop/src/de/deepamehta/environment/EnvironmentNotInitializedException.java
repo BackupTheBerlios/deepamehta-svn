@@ -12,18 +12,30 @@ public class EnvironmentNotInitializedException extends RuntimeException {
 
 	private static final long serialVersionUID = -150585692399216508L;
 
+	/**
+	 * @see RuntimeException#RuntimeException()
+	 */
 	public EnvironmentNotInitializedException() {
 		super();
 	}
 
+	/**
+	 * @see RuntimeException#RuntimeException(java.lang.String, java.lang.Throwable)
+	 */
 	public EnvironmentNotInitializedException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
+	/**
+	 * @see RuntimeException#RuntimeException(java.lang.String)
+	 */
 	public EnvironmentNotInitializedException(String message) {
 		super(message);
 	}
 
+	/**
+	 * @see RuntimeException#RuntimeException(java.lang.Throwable)
+	 */
 	public EnvironmentNotInitializedException(Throwable cause) {
 		super(cause);
 	}

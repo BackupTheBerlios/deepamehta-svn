@@ -19,11 +19,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ClassSpecification {
 
-	private static Log logger = LogFactory.getLog(ClassSpecification.class);
-	
     private String className, classSource;
-    private URLClassLoader loader;
-    private Class clazz;
     
     /**
      * The default constructor. Does not initialize anything. 
@@ -33,25 +29,26 @@ public class ClassSpecification {
     }
 
     /**
-     * @return Returns the className.
+     * @return Returns the class name.
      */
     public String getClassName() {
         return this.className;
     }
     /**
-     * @param className The className to set.
+     * @param className The class name to set.
      */
     public void setClassName(String className) {
         this.className = className;
     }
     /**
-     * @return Returns the classSource.
+     * @return Returns the class source. This may be either "core" or the name of an external JAR file.
      */
     public String getClassSource() {
         return this.classSource;
     }
     /**
-     * @param classSource The classSource to set.
+     * @param classSource The class source to set.
+     * @see ClassSpecification#setClassSource(String)
      */
     public void setClassSource(String classSource) {
         this.classSource = classSource;

@@ -17,7 +17,6 @@ import javax.swing.ListModel;
 import de.deepamehta.DeepaMehtaMessages;
 /**
  * This panel is the last panel of the wizard. It summarizes the actions planned.
- * FIXME This panel has yet to learn how to perform anything sensible.
  * @author vwegert
  */
 public class ConfirmationPanel extends AbstractWizardPanel {
