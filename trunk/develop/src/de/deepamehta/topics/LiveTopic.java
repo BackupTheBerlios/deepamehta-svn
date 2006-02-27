@@ -5,6 +5,7 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.Detail;
 import de.deepamehta.FileServer;
 import de.deepamehta.PresentableAssociation;
@@ -417,7 +418,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	public static CorporateCommands workspaceCommands(TypeTopic type, ApplicationService as,
 											Session session, CorporateDirectives directives) {
 		CorporateCommands commands = new CorporateCommands(as);
-		commands.addCommand(as.string(ITEM_CREATE_IN_WORKSPACE, type.getName()),
+		commands.addCommand(DeepaMehtaMessages.getString("ApplicationService.CreateNamedObject", type.getName()),
 			CMD_CREATE_TOPIC + ":" + type.getID(), type.getCreationIconPath(), type.getCreationIconfile());
 		return commands;
 	}
@@ -448,7 +449,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	public static void buttonCommand(PropertyDefinition propDef, ApplicationService as, Session session) {
 		String propName = propDef.getPropertyName();
 		if (propName.equals(PROPERTY_ICON)) {
-			propDef.setActionButton(as.string(BUTTON_ASSIGN_FILE), CMD_ASSIGN_ICON);
+			propDef.setActionButton(DeepaMehtaMessages.getString("ApplicationService.ChooseFile"), CMD_ASSIGN_ICON);
 		} 
 	}
 
@@ -1611,7 +1612,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	private Detail createTopicHelp(String typeID) {
 		TypeTopic type = as.type(typeID, 1);
 		String html = type.getProperty(PROPERTY_DESCRIPTION);
-		String title = as.string(ITEM_SHOW_HELP, type.getName());
+		String title = DeepaMehtaMessages.getString("ApplicationService.ShowHelp", type.getName());
 		Detail detail = new Detail(DETAIL_TOPIC, DETAIL_CONTENT_HTML, html, Boolean.FALSE, title, "??");	// ### command="??"
 		return detail;
 	}

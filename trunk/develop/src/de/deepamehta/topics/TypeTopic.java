@@ -4,6 +4,7 @@ import de.deepamehta.AmbiguousSemanticException;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.OrderedItem;
 import de.deepamehta.PresentableTopic;
@@ -366,7 +367,7 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 	public static void buttonCommand(PropertyDefinition propDef, ApplicationService as, Session session) {
 		String propName = propDef.getPropertyName();
 		if (propName.equals(PROPERTY_COLOR)) {
-			propDef.setActionButton(as.string(BUTTON_CHOOSE_COLOR), CMD_CHOOSE_COLOR);
+			propDef.setActionButton(DeepaMehtaMessages.getString("ApplicationService.ChooseColor"), CMD_CHOOSE_COLOR);
 		} else {
 			LiveTopic.buttonCommand(propDef, as, session);
 		}

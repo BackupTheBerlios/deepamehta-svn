@@ -1,6 +1,7 @@
 package de.deepamehta.topics;
 
 import de.deepamehta.BaseTopic;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.service.Session;
 import de.deepamehta.service.CorporateDirectives;
@@ -58,7 +59,7 @@ public abstract class FileTopic extends LiveTopic {
 	public static void buttonCommand(PropertyDefinition propDef, ApplicationService as, Session session) {
 		String propName = propDef.getPropertyName();
 		if (propName.equals(PROPERTY_FILE)) {
-			propDef.setActionButton(as.string(BUTTON_ASSIGN_FILE), CMD_ASSIGN_FILE);
+			propDef.setActionButton(DeepaMehtaMessages.getString("ApplicationService.ChooseFile"), CMD_ASSIGN_FILE);
 		}
 	}
 

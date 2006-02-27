@@ -3,6 +3,7 @@ package de.deepamehta.assocs;
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.Detail;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.service.Session;
@@ -189,7 +190,8 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 			commands.addRetypeAssociationCommand(this, session, directives);
 			commands.addDeleteAssociationCommand(this, session);
 		} else {
-			commands.addDeleteAssociationCommand(as.string(ITEM_REMOVE_ASSOC), FILESERVER_IMAGES_PATH, ICON_HIDE_ASSOC);
+			commands.addDeleteAssociationCommand(DeepaMehtaMessages.getString("ApplicationService.RemoveAssociation"), 
+					FILESERVER_IMAGES_PATH, ICON_HIDE_ASSOC);
 		}
 		//
 		return commands;
@@ -464,7 +466,7 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 	private Detail createAssociationHelp(String typeID) {
 		TypeTopic type = as.type(typeID, 1);
 		String html = type.getProperty(PROPERTY_DESCRIPTION);
-		String title = as.string(ITEM_SHOW_HELP, type.getName());
+		String title = DeepaMehtaMessages.getString("ApplicationService.ShowHelp", type.getName());
 		Detail detail = new Detail(DETAIL_ASSOCIATION, DETAIL_CONTENT_HTML, html, Boolean.FALSE, title, "??");	// ### command="??"
 		return detail;
 	}

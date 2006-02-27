@@ -3,6 +3,7 @@ package de.deepamehta.topics;
 import de.deepamehta.AmbiguousSemanticException;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableType;
@@ -200,7 +201,7 @@ public class TopicTypeTopic extends TypeTopic {
 	public static void buttonCommand(PropertyDefinition propDef, ApplicationService as, Session session) {
 		String propName = propDef.getPropertyName();
 		if (propName.equals(PROPERTY_CREATION_ICON)) {
-			propDef.setActionButton(as.string(BUTTON_ASSIGN_FILE), CMD_ASSIGN_CREATION_ICON);
+			propDef.setActionButton(DeepaMehtaMessages.getString("ApplicationService.ChooseFile"), CMD_ASSIGN_CREATION_ICON);
 		} else {
 			TypeTopic.buttonCommand(propDef, as, session);
 		}

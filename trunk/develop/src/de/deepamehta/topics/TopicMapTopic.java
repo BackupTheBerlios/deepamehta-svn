@@ -6,6 +6,7 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseTopicMap;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.FileServer;
 import de.deepamehta.PresentableAssociation;
@@ -307,9 +308,9 @@ public class TopicMapTopic extends LiveTopic {
 	public static void buttonCommand(PropertyDefinition propDef, ApplicationService as, Session session) {
 		String propName = propDef.getPropertyName();
 		if (propName.equals(PROPERTY_BACKGROUND_IMAGE)) {
-			propDef.setActionButton(as.string(BUTTON_ASSIGN_FILE), CMD_ASSIGN_BACKGROUND);
+			propDef.setActionButton(DeepaMehtaMessages.getString("ApplicationService.ChooseFile"), CMD_ASSIGN_BACKGROUND);
 		} else if (propName.equals(PROPERTY_BACKGROUND_COLOR)) {
-			propDef.setActionButton(as.string(BUTTON_CHOOSE_COLOR), CMD_CHOOSE_BACKGROUND_COLOR);
+			propDef.setActionButton(DeepaMehtaMessages.getString("ApplicationService.ChooseColor"), CMD_CHOOSE_BACKGROUND_COLOR);
 		} else {
 			LiveTopic.buttonCommand(propDef, as, session);
 		}

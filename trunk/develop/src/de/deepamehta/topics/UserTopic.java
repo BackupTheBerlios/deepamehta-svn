@@ -3,6 +3,7 @@ package de.deepamehta.topics;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.Commands;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.TopicInitException;
 import de.deepamehta.service.Session;
@@ -128,7 +129,7 @@ public class UserTopic extends PersonTopic {
 		BaseTopic standardWorkspace = as.getRelatedTopic(userID, SEMANTIC_PREFERENCE, TOPICTYPE_WORKSPACE, 2, true);	// emptyAllowed=true
 		//
 		commands.addSeparator();
-		Commands workspacesGroup = commands.addCommandGroup(as.string(ITEM_SET_WORKSPACE),
+		Commands workspacesGroup = commands.addCommandGroup(DeepaMehtaMessages.getString("UserTopic.SetWorkspace"),
 			FILESERVER_ICONS_PATH, "workgroup.gif");
 		// CMD_ASSIGN_TOPIC is handled by LiveTopic, 3 parameters are required, the 3rd is added by addTopicCommands()
 		String command = CMD_ASSIGN_TOPIC + ":" + SEMANTIC_PREFERENCE + ":" + CARDINALITY_ONE;

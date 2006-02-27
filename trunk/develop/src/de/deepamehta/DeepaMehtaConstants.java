@@ -244,118 +244,122 @@ public interface DeepaMehtaConstants {
 	// text editor controls
 	static final String[] TEXT_EDITOR_IMAGES = {"bold.gif", "italic.gif", "underline.gif"};
 
+	// 
+	// Note: All strings marked with MOV have moved to the external resource file.
+	// NIU means "not in use" - these strings require further investigation. 
+	//	
 	static final String[][] strings = {
 		// --- Commands ---
-		{"Create", "Erzeugen"},
-		{"Create Topic Type ...", "Topictyp erzeugen ..."},
-		{"Create Association Type ...", "Assoziationstyp erzeugen ..."},
-		{"Create \\1", "\\1 erzeugen"},
-		{"Delete", "Löschen"},
-		{"Delete", "Löschen"},
-		{"Remove", "Entfernen"},
-		{"Remove", "Entfernen"},
-		{"Hide", "Ausblenden"},
-		{"Hide", "Ausblenden"},
-		{"Hide all", "Alle ausblenden"},
-		{"Close", "Schließen"},
-		{"Publish to", "Freigeben für"},
-		{"Import Topic Map ...", "Topic Map importieren ..."},
-		{"Export", "Exportieren"},
-		{"Export Format", "Export-Format"},
-		{"What's related?", "Assoziationen anzeigen"},
-		{"by Topic Type", "Topictypen"},
-		{"by Association Type", "Assoziationstypen"},
-		{"Search", "Suchen"},
-		{"Search", "Suchen"},
-		{"Rename", "Umbenennen"},
-		{"Name It", "Benennen"},
-		{"Retype", "Umtypen"},
-		{"Retype", "Umtypen"},
-		{"Set \\1", "\\1 setzen"},
-		{"Edit \\1", "\\1 bearbeiten"},
-		{"Show \\1", "\\1 anzeigen"},
-		{"Choose \\1", "\\1 auswählen"},
-		{"Assign \\1", "\\1 zuordnen"},
-		{"Create \\1", "\\1 erzeugen"},
-		{"What is a \"\\1\"?", "Hilfe zu \"\\1\""},
-		{"Show Result", "Ergebnis anzeigen"},
-		{"Group by", "Gruppieren nach"},
-		{"Import Corporate Memory ...", "Corporate Memory importieren ..."},
-		{"Export Corporate Memory", "Corporate Memory exportieren"},
-		{"Google \"\\1\"", "Google \"\\1\""},
+		{"MOV Create", "Erzeugen"},
+		{"MOV Create Topic Type ...", "Topictyp erzeugen ..."},
+		{"MOV Create Association Type ...", "Assoziationstyp erzeugen ..."},
+		{"MOV Create \\1", "\\1 erzeugen"},
+		{"MOV Delete", "Löschen"},
+		{"MOV Delete", "Löschen"},
+		{"MOV Remove", "Entfernen"},
+		{"MOV Remove", "Entfernen"},
+		{"MOV Hide", "Ausblenden"},
+		{"MOV Hide", "Ausblenden"},
+		{"MOV Hide all", "Alle ausblenden"},
+		{"MOV Close", "Schließen"},
+		{"MOV Publish to", "Freigeben für"},
+		{"MOV Import Topic Map ...", "Topic Map importieren ..."},
+		{"MOV Export", "Exportieren"},
+		{"MOV Export Format", "Export-Format"},
+		{"MOV What's related?", "Assoziationen anzeigen"},
+		{"MOV by Topic Type", "Topictypen"},
+		{"MOV by Association Type", "Assoziationstypen"},
+		{"MOV Search", "Suchen"},
+		{"NIU Search", "Suchen"},
+		{"NIU Rename", "Umbenennen"},
+		{"NIU Name It", "Benennen"},
+		{"MOV Retype", "Umtypen"},
+		{"MOV Retype", "Umtypen"},
+		{"MOV Set \\1", "\\1 setzen"},
+		{"MOV Edit \\1", "\\1 bearbeiten"},
+		{"MOV Show \\1", "\\1 anzeigen"},
+		{"NIU Choose \\1", "\\1 auswählen"},
+		{"MOV Assign \\1", "\\1 zuordnen"},
+		{"MOV Create \\1", "\\1 erzeugen"},
+		{"MOV What is a \"\\1\"?", "Hilfe zu \"\\1\""},
+		{"MOV Show Result", "Ergebnis anzeigen"},
+		{"MOV Group by", "Gruppieren nach"},
+		{"MOV Import Corporate Memory ...", "Corporate Memory importieren ..."},
+		{"MOV Export Corporate Memory", "Corporate Memory exportieren"},
+		{"MOV Google \"\\1\"", "Google \"\\1\""},
 		// --- GUI ---
-		{"Username", "Benutzer"},
-		{"Password", "Passwort"},
-		{"Type", "Typ"},
-		{"Type", "Typ"},
-		{"Use", "Inhalt"},
-		{"Build", "Struktur"},
-		{"Messages", "Mitteilungen"},
-		{"Choose ...", "Auswählen ..."},
+		{"MOV Username", "Benutzer"},
+		{"MOV Password", "Passwort"},
+		{"MOV Type", "Typ"},
+		{"MOV Type", "Typ"},
+		{"NIU Use", "Inhalt"},
+		{"NIU Build", "Struktur"},
+		{"NIU Messages", "Mitteilungen"},
+		{"MOV Choose ...", "Auswählen ..."},
 		// --- "Workspace" commands ---
-		{"Join", "Beitreten"},
-		{"Leave", "Austreten"},
-		{"Assign Topic Type", "Topictyp zuordnen"},
-		{"Assign Association Type", "Assoziationstyp zuordnen"},
+		{"MOV Join", "Beitreten"},
+		{"MOV Leave", "Austreten"},
+		{"MOV Assign Topic Type", "Topictyp zuordnen"},
+		{"MOV Assign Association Type", "Assoziationstyp zuordnen"},
 		// --- "User" commands ---
-		{"Set Standard Workspace", "Standard Workspace setzen"},
-		{"Choose ...", "Auswählen ..."},
+		{"MOV Set Standard Workspace", "Standard Workspace setzen"},
+		{"MOV Choose ...", "Auswählen ..."},
 	};
 
-	static final int ITEM_NEW_TOPIC    = 0;
-	static final int ITEM_NEW_TOPIC_TYPE = 1;
-	static final int ITEM_NEW_ASSOC_TYPE = 2;
-	static final int ITEM_CREATE_IN_WORKSPACE = 3;
-	static final int ITEM_DELETE_TOPIC = 4;
-	static final int ITEM_DELETE_ASSOC = 5;
-	static final int ITEM_REMOVE_TOPIC = 6;
-	static final int ITEM_REMOVE_ASSOC = 7;
-	static final int ITEM_HIDE_TOPIC = 8;
-	static final int ITEM_HIDE_ASSOC   = 9;
-	static final int ITEM_HIDE_ALL     = 10;
-	static final int ITEM_CLOSE_VIEW   = 11;
-	static final int ITEM_PUBLISH = 12;
-	static final int ITEM_IMPORT_TOPICMAP = 13;
-	static final int ITEM_EXPORT_TOPICMAP = 14;
-	static final int ITEM_PREFERENCES_EXPORT = 15;
-	static final int ITEM_NAVIGATION = 16;
-	static final int ITEM_NAVIGATION_BY_TOPIC = 17;
-	static final int ITEM_NAVIGATION_BY_ASSOCIATION = 18;
-	static final int ITEM_SEARCH_BY_TOPICTYPE = 19;
-	static final int ITEM_SEARCH_BY_PROPERTY = 20;
-	static final int ITEM_CHANGE_TOPIC_NAME = 21;
-	static final int ITEM_SET_TOPIC_NAME = 22;
-	static final int ITEM_CHANGE_TOPIC_TYPE = 23;
-	static final int ITEM_CHANGE_ASSOC_TYPE = 24;
-	static final int ITEM_SET_PROPERTY = 25;
-	static final int ITEM_EDIT_PROPERTY = 26;
-	static final int ITEM_VIEW_PROPERTY = 27;
-	static final int ITEM_CHOOSE_FILE_PROPERTY = 28;
-	static final int ITEM_ASSIGN_TOPIC = 29;
-	static final int ITEM_ASSIGN_NEW_TOPIC = 30;
-	static final int ITEM_SHOW_HELP = 31;
-	static final int ITEM_SHOW_CONTENT = 32;
-	static final int ITEM_GROUP_BY = 33;
-	static final int ITEM_IMPORT_CM = 34;
-	static final int ITEM_EXPORT_CM = 35;
-	static final int ITEM_SEARCH_INTERNET = 36;
+	// MOV static final int ITEM_NEW_TOPIC    = 0;
+	// MOV static final int ITEM_NEW_TOPIC_TYPE = 1;
+	// MOV static final int ITEM_NEW_ASSOC_TYPE = 2;
+	// MOV static final int ITEM_CREATE_IN_WORKSPACE = 3;
+	// MOV static final int ITEM_DELETE_TOPIC = 4;
+	// MOV static final int ITEM_DELETE_ASSOC = 5;
+	// MOV static final int ITEM_REMOVE_TOPIC = 6;
+	// MOV static final int ITEM_REMOVE_ASSOC = 7;
+	// MOV static final int ITEM_HIDE_TOPIC = 8;
+	// MOV static final int ITEM_HIDE_ASSOC   = 9;
+	// MOV static final int ITEM_HIDE_ALL     = 10;
+	// MOV static final int ITEM_CLOSE_VIEW   = 11;
+	// MOV static final int ITEM_PUBLISH = 12;
+	// MOV static final int ITEM_IMPORT_TOPICMAP = 13;
+	// MOV static final int ITEM_EXPORT_TOPICMAP = 14;
+	// MOV static final int ITEM_PREFERENCES_EXPORT = 15;
+	// MOV static final int ITEM_NAVIGATION = 16;
+	// MOV static final int ITEM_NAVIGATION_BY_TOPIC = 17;
+	// MOV static final int ITEM_NAVIGATION_BY_ASSOCIATION = 18;
+	// MOV static final int ITEM_SEARCH_BY_TOPICTYPE = 19;
+	static final int ITEM_SEARCH_BY_PROPERTY = 20;     // FIXME Not in use?
+	static final int ITEM_CHANGE_TOPIC_NAME = 21;      // FIXME Not in use?
+	static final int ITEM_SET_TOPIC_NAME = 22;         // FIXME Not in use?
+	// MOV static final int ITEM_CHANGE_TOPIC_TYPE = 23;
+	// MOV static final int ITEM_CHANGE_ASSOC_TYPE = 24;
+	// MOV static final int ITEM_SET_PROPERTY = 25;
+	// MOV static final int ITEM_EDIT_PROPERTY = 26;
+	// MOV static final int ITEM_VIEW_PROPERTY = 27;
+	static final int ITEM_CHOOSE_FILE_PROPERTY = 28;   // FIXME Not in use?
+	// MOV static final int ITEM_ASSIGN_TOPIC = 29;
+	// MOV static final int ITEM_ASSIGN_NEW_TOPIC = 30;
+	// MOV static final int ITEM_SHOW_HELP = 31;
+	// MOV static final int ITEM_SHOW_CONTENT = 32;
+	// MOV static final int ITEM_GROUP_BY = 33;
+	// MOV static final int ITEM_IMPORT_CM = 34;
+	// MOV static final int ITEM_EXPORT_CM = 35;
+	// MOV static final int ITEM_SEARCH_INTERNET = 36;
 	// --- GUI ---
-	static final int LABEL_USERNAME = 37;
-	static final int LABEL_PASSWORD = 38;
-	static final int LABEL_TOPIC_TYPE = 39;
-	static final int LABEL_ASSOC_TYPE = 40;
-	static final int VIEWMODE_USE_LABEL = 41;
-	static final int VIEWMODE_BUILD_LABEL = 42;
-	static final int MESSAGE_LABEL = 43;
-	static final int BUTTON_ASSIGN_FILE = 44;
-	static final int BUTTON_CHOOSE_COLOR = 50;
+	// MOV static final int LABEL_USERNAME = 37;
+	// MOV static final int LABEL_PASSWORD = 38;
+	// MOV static final int LABEL_TOPIC_TYPE = 39;
+	// MOV static final int LABEL_ASSOC_TYPE = 40;
+	static final int VIEWMODE_USE_LABEL = 41;          // FIXME Not in use?
+	static final int VIEWMODE_BUILD_LABEL = 42;        // FIXME Not in use?
+	static final int MESSAGE_LABEL = 43;               // FIXME Not in use?
+	// MOV static final int BUTTON_ASSIGN_FILE = 44;
+	// MOV static final int BUTTON_CHOOSE_COLOR = 50;
 	// --- "Workspace" commands ---
-	static final int ITEM_JOIN_WORKSPACE = 45;
-	static final int ITEM_LEAVE_WORKSPACE = 46;
-	static final int ITEM_ASSIGN_TOPIC_TYPE = 47;
-	static final int ITEM_ASSIGN_ASSOC_TYPE = 48;
+	// MOC static final int ITEM_JOIN_WORKSPACE = 45;
+	// MOV static final int ITEM_LEAVE_WORKSPACE = 46;
+	// MOV static final int ITEM_ASSIGN_TOPIC_TYPE = 47;
+	// MOV static final int ITEM_ASSIGN_ASSOC_TYPE = 48;
 	// --- "User" commands ---
-	static final int ITEM_SET_WORKSPACE = 49;
+	// MOV static final int ITEM_SET_WORKSPACE = 49;
 	//
 	static final String ICON_CHANGE_ASSOC_TYPE = "changing.gif";
 	static final String ICON_NEW_ASSOC_TYPE = "create.gif";

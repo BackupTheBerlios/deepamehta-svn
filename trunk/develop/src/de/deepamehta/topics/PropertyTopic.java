@@ -1,6 +1,7 @@
 package de.deepamehta.topics;
 
 import de.deepamehta.BaseTopic;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PropertyDefinition;
@@ -133,7 +134,7 @@ public class PropertyTopic extends LiveTopic {
 	public static void buttonCommand(PropertyDefinition propDef, ApplicationService as, Session session) {
 		String propName = propDef.getPropertyName();
 		if (propName.equals(PROPERTY_EDIT_PROPERTY_ICON)) {
-			propDef.setActionButton(as.string(BUTTON_ASSIGN_FILE), CMD_ASSIGN_EDIT_ICON);
+			propDef.setActionButton(DeepaMehtaMessages.getString("ApplicationService.ChooseFile"), CMD_ASSIGN_EDIT_ICON);
 		}
 	}
 

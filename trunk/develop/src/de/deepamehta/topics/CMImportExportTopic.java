@@ -4,6 +4,7 @@ import de.deepamehta.Association;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.FileServer;
 import de.deepamehta.service.Session;
 import de.deepamehta.service.CorporateCommands;
@@ -94,8 +95,8 @@ public class CMImportExportTopic extends LiveTopic {
 								Session session, CorporateDirectives directives) {
 		CorporateCommands commands = new CorporateCommands(as);
 		// --- export/import ---
-		commands.addCommand(as.string(ITEM_EXPORT_CM), CMD_EXPORT_CM);
-		commands.addCommand(as.string(ITEM_IMPORT_CM), CMD_IMPORT_CM);
+		commands.addCommand(DeepaMehtaMessages.getString("ApplicationService.ExportCorporateMemory"), CMD_EXPORT_CM);
+		commands.addCommand(DeepaMehtaMessages.getString("ApplicationService.ImportCorporateMemory"), CMD_IMPORT_CM);
 		// --- generic topic commands ---
 		commands.add(super.contextCommands(topicmapID, viewmode, session, directives));
 		//

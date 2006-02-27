@@ -5,6 +5,7 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.Topic;
 import de.deepamehta.Type;
@@ -200,13 +201,13 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			JPanel panel = new JPanel();
 			panel.setBackground(COLOR_PROPERTY_PANEL);
 			panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-			panel.add(new JLabel(controler.string(LABEL_TOPIC_TYPE)));
+			panel.add(new JLabel(DeepaMehtaMessages.getString("PropertyPanel.TopicType")));
 			panel.add(topicTypeChoice);
 			// --- "Selected Association" panel ---
 			JPanel panel2 = new JPanel();
 			panel2.setBackground(COLOR_PROPERTY_PANEL);
 			panel2.setLayout(new BoxLayout(panel2, BoxLayout.Y_AXIS));
-			panel2.add(new JLabel(controler.string(LABEL_ASSOC_TYPE)));
+			panel2.add(new JLabel(DeepaMehtaMessages.getString("PropertyPanel.AssociationType")));
 			panel2.add(assocTypeChoice);
 			//
 			characteristicsCardPanel.setLayout(characteristicsCardLayout);

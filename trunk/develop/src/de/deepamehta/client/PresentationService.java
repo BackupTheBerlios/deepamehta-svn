@@ -5,6 +5,7 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.Detail;
 import de.deepamehta.Directive;
@@ -2877,11 +2878,11 @@ public final class PresentationService implements DeepaMehtaConstants,
 	 */
 	public Component createLoginGUI() {
 		JPanel p1 = new JPanel();
-		p1.add(new JLabel(string(LABEL_USERNAME)));
+		p1.add(new JLabel(DeepaMehtaMessages.getString("PresentationService.LoginUser")));
 		p1.add(usernameField);
 		//
 		JPanel p2 = new JPanel();
-		p2.add(new JLabel(string(LABEL_PASSWORD)));
+		p2.add(new JLabel(DeepaMehtaMessages.getString("PresentationService.LoginPassword")));
 		p2.add(passwordField);
 		//
 		JPanel p3 = new JPanel();

@@ -2,6 +2,7 @@ package de.deepamehta.topics;
 
 import de.deepamehta.Association;
 import de.deepamehta.AmbiguousSemanticException;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.TopicInitException;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.Commands;
@@ -205,20 +206,20 @@ public class WorkspaceTopic extends LiveTopic {
 		boolean isMember = as.isMemberOf(session.getUserID(), getID());
 		int joinState = isPublic && !isMember && !session.isDemo() ? COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
 		int leaveState = isMember ? COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
-		commands.addCommand(as.string(ITEM_JOIN_WORKSPACE), CMD_JOIN_WORKSPACE,
+		commands.addCommand(DeepaMehtaMessages.getString("WorkspaceTopic.Join"), CMD_JOIN_WORKSPACE,
 			FILESERVER_IMAGES_PATH, ICON_JOIN_WORKSPACE, joinState);
-		commands.addCommand(as.string(ITEM_LEAVE_WORKSPACE), CMD_LEAVE_WORKSPACE,
+		commands.addCommand(DeepaMehtaMessages.getString("WorkspaceTopic.Leave"), CMD_LEAVE_WORKSPACE,
 			FILESERVER_IMAGES_PATH, ICON_LEAVE_WORKSPACE, leaveState);
 		commands.addSeparator();
 		// --- "Assign Topic Type" / "Assign Association Type" ---
-		Commands topicTypesGroup = commands.addCommandGroup(as.string(ITEM_ASSIGN_TOPIC_TYPE),
+		Commands topicTypesGroup = commands.addCommandGroup(DeepaMehtaMessages.getString("WorkspaceTopic.AssignTopicType"),
 			FILESERVER_IMAGES_PATH, ICON_ASSIGN_TOPIC_TYPE);
 		if (!session.isDemo()) {
 			commands.addTopicTypeCommands(topicTypesGroup, CMD_ASSIGN_TOPIC_TYPE,
 				PERMISSION_CREATE, false, session, directives);
 		}
 		//
-		Commands assocTypesGroup = commands.addCommandGroup(as.string(ITEM_ASSIGN_ASSOC_TYPE),
+		Commands assocTypesGroup = commands.addCommandGroup(DeepaMehtaMessages.getString("WorkspaceTopic.AssignAssociationType"),
 			FILESERVER_IMAGES_PATH, ICON_ASSIGN_ASSOC_TYPE);
 		if (!session.isDemo()) {
 			commands.addAssocTypeCommands(assocTypesGroup, CMD_ASSIGN_ASSOC_TYPE,

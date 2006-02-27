@@ -6,6 +6,7 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.Commands;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PropertyDefinition;
@@ -69,7 +70,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 * @see		de.deepamehta.topics.TopicMapTopic#viewCommands
 	 */
 	public void addCreateCommands(String viewmode, Session session, CorporateDirectives directives) {
-		Commands createGroup = addCommandGroup(as.string(ITEM_NEW_TOPIC), FILESERVER_IMAGES_PATH, ICON_NEW_TOPIC);
+		Commands createGroup = addCommandGroup(DeepaMehtaMessages.getString("ApplicationService.CreateTopic"), FILESERVER_IMAGES_PATH, ICON_NEW_TOPIC);
 		if (!session.isDemo()) {
 			addTopicTypeCommands(createGroup, CMD_CREATE_TOPIC, PERMISSION_CREATE, false, session, directives);
 		}
@@ -86,7 +87,8 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 */
 	public void addSearchByTopictypeCommand(String viewmode, Session session,
 													CorporateDirectives directives) {
-		Commands showGroup = addCommandGroup(as.string(ITEM_SEARCH_BY_TOPICTYPE), FILESERVER_IMAGES_PATH, ICON_SEARCH_BY_TOPICTYPE);
+		Commands showGroup = addCommandGroup(DeepaMehtaMessages.getString("ApplicationService.SearchByType"), 
+				FILESERVER_IMAGES_PATH, ICON_SEARCH_BY_TOPICTYPE);
 		addTopicTypeCommands(showGroup, CMD_SEARCH_BY_TOPICTYPE, PERMISSION_VIEW, false, session, directives);
 	}
 
@@ -105,7 +107,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 * @see		de.deepamehta.topics.TopicMapTopic#viewCommands
 	 */
 	public void addHideAllCommands(String topicmapID, String viewmode, Session session) {
-		Commands hideGroup = addCommandGroup(as.string(ITEM_HIDE_ALL),
+		Commands hideGroup = addCommandGroup(DeepaMehtaMessages.getString("ApplicationService.HideAll"),
 			FILESERVER_IMAGES_PATH, ICON_HIDE_ALL);
 		Hashtable types = as.cm.getTopicTypes(topicmapID, 1, viewmode);
 		addTypeCommands(hideGroup, types, CMD_HIDE_ALL, null);	// heading=null
@@ -118,7 +120,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 */
 	public void addCloseCommand(Session session) {
 		int state = session.isDemo() ? COMMAND_STATE_DISABLED : COMMAND_STATE_DEFAULT;
-		addCommand(as.string(ITEM_CLOSE_VIEW), CMD_CLOSE_VIEW, FILESERVER_IMAGES_PATH, ICON_CLOSE_VIEW, state);
+		addCommand(DeepaMehtaMessages.getString("ApplicationService.CloseTopicmap"), CMD_CLOSE_VIEW, FILESERVER_IMAGES_PATH, ICON_CLOSE_VIEW, state);
 	}
 
 	/**
@@ -132,7 +134,8 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	public void addPublishCommand(String topicmapID, Session session, CorporateDirectives directives) {
 		String userID = session.getUserID();
 		String workgroupID;
-		Commands commandGroup = addCommandGroup(as.string(ITEM_PUBLISH), FILESERVER_IMAGES_PATH, ICON_PUBLISH);
+		Commands commandGroup = addCommandGroup(DeepaMehtaMessages.getString("ApplicationService.PublishTopic"), 
+				FILESERVER_IMAGES_PATH, ICON_PUBLISH);
 		BaseTopic workgroup = as.getOriginWorkgroup(topicmapID);
 		if (workgroup == null) {
 			// this topicmap has been created in the users personal workspace originally -- it was never
@@ -172,8 +175,8 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	}
 
 	public void addImportCommand(Session session) {
-		addCommand(as.string(ITEM_IMPORT_TOPICMAP), CMD_IMPORT_TOPICMAP,
-			FILESERVER_IMAGES_PATH, ICON_IMPORT_TOPICMAP);
+		addCommand(DeepaMehtaMessages.getString("ApplicationService.ImportTopicmap"), 
+				CMD_IMPORT_TOPICMAP, FILESERVER_IMAGES_PATH, ICON_IMPORT_TOPICMAP);
 	}
 
 	/**
@@ -185,10 +188,11 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	public void addExportCommand(Session session, CorporateDirectives directives) {
 		// --- export command ---
 		int state = session.isDemo() ? COMMAND_STATE_DISABLED : COMMAND_STATE_DEFAULT;
-		addCommand(as.string(ITEM_EXPORT_TOPICMAP), CMD_EXPORT_TOPICMAP,
-			FILESERVER_IMAGES_PATH, ICON_EXPORT_TOPICMAP, state);
+		addCommand(DeepaMehtaMessages.getString("ApplicationService.ExportTopicmap"), 
+				CMD_EXPORT_TOPICMAP, FILESERVER_IMAGES_PATH, ICON_EXPORT_TOPICMAP, state);
 		// --- preferences submenu ---
-		Commands prefsGroup = addCommandGroup(as.string(ITEM_PREFERENCES_EXPORT), FILESERVER_ICONS_PATH, ICON_PREFERENCES);
+		Commands prefsGroup = addCommandGroup(DeepaMehtaMessages.getString("ApplicationService.ExportTopicmap"), 
+				FILESERVER_ICONS_PATH, ICON_PREFERENCES);
 		if (!session.isDemo()) {
 			BaseTopic exportFormat = null;
 			try {
@@ -213,18 +217,19 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 */
 	public void addNavigationCommands(BaseTopic topic, int editorContext, Session session) {
 		if (editorContext == EDITOR_CONTEXT_VIEW) {
-			Commands navGroup = addCommandGroup(as.string(ITEM_NAVIGATION),
+			Commands navGroup = addCommandGroup(DeepaMehtaMessages.getString("ApplicationService.Navigate"),
 				FILESERVER_IMAGES_PATH, ICON_NAVIGATION);
 			//
 			// --- by topic type ---
 			Hashtable topicTypes = as.revealTopicTypes(topic.getID(), 1);		// ### version
-			if (!addTypeCommands(navGroup, topicTypes, CMD_NAVIGATION_BY_TOPIC, as.string(ITEM_NAVIGATION_BY_TOPIC))) {
+			if (!addTypeCommands(navGroup, topicTypes, CMD_NAVIGATION_BY_TOPIC, 
+					DeepaMehtaMessages.getString("ApplicationService.NavigateByTopic"))) {
 				return;
 			}
 			// --- by association type ---
 			Hashtable assocTypes = as.revealAssociationTypes(topic.getID(), 1);	// ### version
 			addTypeCommands(navGroup, assocTypes, CMD_NAVIGATION_BY_ASSOCIATION,
-				as.string(ITEM_NAVIGATION_BY_ASSOCIATION));
+				DeepaMehtaMessages.getString("ApplicationService.NavigateByAssociation"));
 		}
 	}
 
@@ -279,7 +284,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 * @see		#addStandardCommands
 	 */
 	public void addRetypeTopicCommand(BaseTopic topic, Session session, CorporateDirectives directives) {
-		Commands changeGroup = addCommandGroup(as.string(ITEM_CHANGE_TOPIC_TYPE),
+		Commands changeGroup = addCommandGroup(DeepaMehtaMessages.getString("ApplicationService.ChangeTopicType"),
 			FILESERVER_IMAGES_PATH, ICON_CHANGE_TOPIC_TYPE);
 		//
 		if (as.retypeTopicIsAllowed(topic.getID(), topic.getVersion(), session)) {
@@ -287,8 +292,8 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			//
 			changeGroup.addSeparator();
 			// "Create Topic Type ..."
-			changeGroup.addCommand(as.string(ITEM_NEW_TOPIC_TYPE), CMD_NEW_TOPIC_TYPE,
-				FILESERVER_IMAGES_PATH, ICON_NEW_TOPIC_TYPE);
+			changeGroup.addCommand(DeepaMehtaMessages.getString("ApplicationService.CreateTopicType"), 
+					CMD_NEW_TOPIC_TYPE,	FILESERVER_IMAGES_PATH, ICON_NEW_TOPIC_TYPE);
 		}
 	}
 
@@ -300,7 +305,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 * @see		de.deepamehta.assocs.LiveAssociation#contextCommands
 	 */
 	public void addRetypeAssociationCommand(BaseAssociation assoc, Session session, CorporateDirectives directives) {
-		Commands changeGroup = addCommandGroup(as.string(ITEM_CHANGE_ASSOC_TYPE),
+		Commands changeGroup = addCommandGroup(DeepaMehtaMessages.getString("ApplicationService.ChangeAssociationType"),
 			FILESERVER_IMAGES_PATH, ICON_CHANGE_ASSOC_TYPE);
 		//
 		if (as.retypeAssociationIsAllowed(assoc.getID(), assoc.getVersion(), session)) {
@@ -308,8 +313,8 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			//
 			changeGroup.addSeparator();
 			// "Create Association Type ..."
-			changeGroup.addCommand(as.string(ITEM_NEW_ASSOC_TYPE), CMD_NEW_ASSOC_TYPE,
-				FILESERVER_IMAGES_PATH, ICON_NEW_ASSOC_TYPE);
+			changeGroup.addCommand(DeepaMehtaMessages.getString("ApplicationService.CreateAssociationType"), 
+					CMD_NEW_ASSOC_TYPE,	FILESERVER_IMAGES_PATH, ICON_NEW_ASSOC_TYPE);
 		}
 	}
 
@@ -324,7 +329,8 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 * @see		#addStandardCommands
 	 */
 	public void addHideTopicCommand(Session session) {
-		addCommand(as.string(ITEM_HIDE_TOPIC), CMD_HIDE_TOPIC, FILESERVER_IMAGES_PATH, ICON_HIDE_TOPIC);
+		addCommand(DeepaMehtaMessages.getString("ApplicationService.HideTopic"), 
+				CMD_HIDE_TOPIC, FILESERVER_IMAGES_PATH, ICON_HIDE_TOPIC);
 	}
 
 	/**
@@ -335,7 +341,8 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 * @see		de.deepamehta.assocs.LiveAssociation#contextCommands
 	 */
 	public void addHideAssociationCommand(Session session) {
-		addCommand(as.string(ITEM_HIDE_ASSOC), CMD_HIDE_ASSOC, FILESERVER_IMAGES_PATH, ICON_HIDE_ASSOC);
+		addCommand(DeepaMehtaMessages.getString("ApplicationService.HideAssociation"), 
+				CMD_HIDE_ASSOC, FILESERVER_IMAGES_PATH, ICON_HIDE_ASSOC);
 	}
 
 	// --- addDeleteTopicCommand (4 forms) ---
@@ -353,7 +360,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	}
 
 	public void addDeleteTopicCommand(Session session, int state) {
-		addDeleteTopicCommand(as.string(ITEM_DELETE_TOPIC), state);
+		addDeleteTopicCommand(DeepaMehtaMessages.getString("ApplicationService.DeleteTopic"), state);
 	}
 
 	public void addDeleteTopicCommand(String label, int state) {
@@ -380,7 +387,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 */
 	public void addDeleteAssociationCommand(BaseAssociation assoc, Session session) {
 		int state = as.deleteAssociationIsAllowed(assoc, session) ? COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
-		addDeleteAssociationCommand(as.string(ITEM_DELETE_ASSOC), state);
+		addDeleteAssociationCommand(DeepaMehtaMessages.getString("ApplicationService.DeleteAssociation"), state);
 	}
 
 	public void addDeleteAssociationCommand(String label, int state) {
@@ -434,7 +441,8 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			throw new DeepaMehtaException("unexpected cardinality: \"" + cardinality + "\"");
 		}
 		// --- create submenu and put all instances of the related topic type
-		Commands topicGroup = addCommandGroup(as.string(ITEM_ASSIGN_TOPIC, !relName.equals("") ? relName : label),
+		Commands topicGroup = addCommandGroup(DeepaMehtaMessages.getString("ApplicationService.AssignTopic", 
+				!relName.equals("") ? relName : label),
 			FILESERVER_ICONS_PATH, relTopicType.getIconfile());
 		if (!session.isDemo()) {
 			if (rel.webForm.equals(WEB_FORM_TOPIC_SELECTOR)) {
@@ -450,7 +458,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 				}
 			}
 			// add additional "Create ..." command
-			String item = as.string(ITEM_ASSIGN_NEW_TOPIC, relTopicType.getName());
+			String item = DeepaMehtaMessages.getString("ApplicationService.AssignNewTopic", relTopicType.getName());
 			String cmd = CMD_ASSIGN_NEW_TOPIC + ":" + relTopicTypeID + ":" + assocTypeID + ":" + cardinality;
 			topicGroup.addCommand(item, cmd, FILESERVER_IMAGES_PATH, ICON_NEW_TOPIC);
 		}
@@ -466,7 +474,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 		}
 		String query = type.getProperty(PROPERTY_TYPE_DESCRIPTION_QUERY);
 		if (query.equals("")) {
-			query = as.string(ITEM_SHOW_HELP, typeName);
+			query = DeepaMehtaMessages.getString("ApplicationService.ShowHelp", typeName);
 		}
 		addCommand(query, CMD_SHOW_HELP + ":" + type.getID(), FILESERVER_IMAGES_PATH, ICON_SHOW_HELP);	// ### encapsulate title
 	}
@@ -479,7 +487,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 		}
 		String query = type.getProperty(PROPERTY_TYPE_DESCRIPTION_QUERY);
 		if (query.equals("")) {
-			query = as.string(ITEM_SHOW_HELP, typeName);
+			query = DeepaMehtaMessages.getString("ApplicationService.ShowHelp", typeName);
 		}
 		addCommand(query, CMD_SHOW_HELP + ":" + type.getID(), FILESERVER_IMAGES_PATH, ICON_SHOW_HELP);	// ### encapsulate title
 	}
@@ -487,14 +495,14 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	// ---
 
 	public void addSearchInternetCommand(LiveTopic topic, Session session) {
-		addCommand(as.string(ITEM_SEARCH_INTERNET, topic.getName()), CMD_SEARCH_INTERNET, FILESERVER_IMAGES_PATH, ICON_SEARCH_INTERNET);	// ### encapsulate title
+		addCommand(DeepaMehtaMessages.getString("ApplicationService.GoogleFor", topic.getName()), CMD_SEARCH_INTERNET, FILESERVER_IMAGES_PATH, ICON_SEARCH_INTERNET);	// ### encapsulate title
 	}
 
 	// ---
 
 	public void addOptionsMenuCommands(String propName, String propLabel, String iconfile,
 														String propValue, Vector options, Session session) {
-		Commands cmdGroup = addCommandGroup(as.string(ITEM_SET_PROPERTY, propLabel),
+		Commands cmdGroup = addCommandGroup(DeepaMehtaMessages.getString("ApplicationService.SetProperty", propLabel),
 			FILESERVER_IMAGES_PATH, iconfile);
 		Enumeration e = options.elements();
 		PresentableTopic option;
@@ -515,7 +523,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	public void addSwitchCommand(String propName, String propLabel, String iconfile,
 																	String propValue, Session session) {
 		// Note: a switch is represented as 2 radiobuttons
-		Commands cmdGroup = addCommandGroup(as.string(ITEM_SET_PROPERTY, propLabel),
+		Commands cmdGroup = addCommandGroup(DeepaMehtaMessages.getString("ApplicationService.SetProperty", propLabel),
 			FILESERVER_IMAGES_PATH, iconfile);
 		String cmd;
 		int cmdState;
@@ -876,10 +884,10 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 */
 	private void addAssociationPropertyCommand(String propName, String iconfile,
 									boolean editable, boolean styled, boolean multiline, Session session) {
-		int item = editable ? ITEM_EDIT_PROPERTY : ITEM_VIEW_PROPERTY;
+		String item = editable ? "ApplicationService.EditProperty" : "ApplicationService.ViewProperty";
 		String cmd = editable ? CMD_EDIT_ASSOC_PROPERTY : CMD_VIEW_ASSOC_PROPERTY;
 		String param = ":" + propName + ":" + styled + ":" + multiline;
-		addCommand(as.string(item, propName), cmd + param, FILESERVER_IMAGES_PATH, iconfile);
+		addCommand(DeepaMehtaMessages.getString(item, propName), cmd + param, FILESERVER_IMAGES_PATH, iconfile);
 	}
 
 	// ---

@@ -4,6 +4,7 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.Commands;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.Detail;
 import de.deepamehta.PresentableTopic;
@@ -228,7 +229,8 @@ public abstract class ContainerTopic extends LiveTopic {
 		// Note: super.contextCommands() isn't called here because a container has no standard commands
 		CorporateCommands commands = new CorporateCommands(as);
 		// "Show Result"
-		Commands cmdGroup = commands.addCommandGroup(as.string(ITEM_SHOW_CONTENT), FILESERVER_IMAGES_PATH, ICON_SHOW_RESULT);
+		Commands cmdGroup = commands.addCommandGroup(DeepaMehtaMessages.getString("ApplicationService.ShowResult"), 
+				FILESERVER_IMAGES_PATH, ICON_SHOW_RESULT);
 		if (getContentSize() <= MAX_LISTING) {
 			Enumeration e = getContent().elements();
 			while (e.hasMoreElements()) {
@@ -240,14 +242,15 @@ public abstract class ContainerTopic extends LiveTopic {
 		// "Group by"
 		String[] groupingProps = getGroupingProperties();
 		if (groupingProps != null) {
-			cmdGroup = commands.addCommandGroup(as.string(ITEM_GROUP_BY), FILESERVER_IMAGES_PATH, ICON_GROUP_BY);
+			cmdGroup = commands.addCommandGroup(DeepaMehtaMessages.getString("ApplicationService.GroupResultsBy"), 
+					FILESERVER_IMAGES_PATH, ICON_GROUP_BY);
 			for (int i = 0; i < groupingProps.length; i++) {
 				cmdGroup.addCommand(groupingProps[i], CMD_GROUP_BY + ":" + groupingProps[i]);
 			}
 		}
 		// "Remove"
 		commands.addSeparator();
-		commands.addDeleteTopicCommand(as.string(ITEM_REMOVE_TOPIC), FILESERVER_IMAGES_PATH, ICON_HIDE_TOPIC);
+		commands.addDeleteTopicCommand(DeepaMehtaMessages.getString("ApplicationService.RemoveTopic"), FILESERVER_IMAGES_PATH, ICON_HIDE_TOPIC);
 		//
 		return commands;
 	}
