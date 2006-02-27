@@ -125,6 +125,8 @@ public class LaunchPad {
         cmd.add("-jar");
         cmd.add(config.getExecutableArchive());
 
+        // FIXME We need a way to start the instance in "debugging mode". 
+        
 //        cmd.add("-l");
 //        cmd.add("../../log4j.properties");
         
@@ -206,7 +208,7 @@ public class LaunchPad {
 		if (app != null) {
 			logger.debug("Installing application " + app + " into instance " + id + "...");
 			ActionList actions = new ActionList();
-			actions.prepareApplicationInstallation(config, env.getApplications().getApplication(app));
+			actions.prepareApplicationInstallation(config, env.getApplication(app));
 			if (actions.execute()) {
 				// show status message
 				JOptionPane.showMessageDialog(mw, "The application " + app + " was installed into the instance " + id + ".", 

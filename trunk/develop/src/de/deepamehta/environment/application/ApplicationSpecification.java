@@ -18,8 +18,6 @@ public class ApplicationSpecification {
 	private Vector implementations; // contains ClassSpecification instances pointing to the JARs to load
 	private Vector dataFiles, contentFiles;
 	
-	// FIXME handle installation data, too
-	
 	public ApplicationSpecification() {
 		implementations = new Vector();
 		dataFiles = new Vector();
@@ -90,14 +88,13 @@ public class ApplicationSpecification {
 			try {
 				String source = element.getClassSource();
 				if (!source.equals("core")) {
-					if (source.startsWith(Environment.getFileSeparator())) {
+					if (!source.startsWith(Environment.getFileSeparator())) {
 						// TODO How about Windoze?
 						source = getSourcePath() + Environment.getFileSeparator() + source;
 					}
 					Environment.getEnvironment().loadExternalJAR(source);
 				}
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
 				logger.error("Unable to load JAR " + element.getClassSource(), e);
 			}
 		}

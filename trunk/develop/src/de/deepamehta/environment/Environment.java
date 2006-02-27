@@ -13,6 +13,8 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.ListModel;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -62,26 +64,28 @@ public class Environment implements DeepaMehtaConstants {
     
     
     /**
-     * This is the internal constructor to initialize the one and only singleton 
+     * This is the internal constructor to create the one and only singleton 
      * instance of the Environment class. 
-     * @param args command line arguments
      * @param type the instance type to startup
-     * @throws EnvironmentException 
      */
-    private Environment(EnvironmentType type) throws EnvironmentException {
-        
+    private Environment(EnvironmentType type) {
         this.envType = type;
-        
     }
     
-    private void initialize(String[] args) throws EnvironmentException {
+    /**
+     * This method is supposed to be called right after the constructor to initialize
+     * the components of the environment.
+     * @param arguments The command line arguments.
+     * @throws EnvironmentException
+     */
+    private void initialize(String[] arguments) throws EnvironmentException {
     	
         this.workingDirectory = System.getProperty("user.dir");
         this.homeDirectory = System.getProperty("de.deepamehta.home");
         if (this.homeDirectory == null)
         	this.homeDirectory = this.workingDirectory;
 
-        parseOptions(args);
+        parseOptions(arguments);
         initializeLogger();
         
         logger.info("DeepaMehta starting...");
@@ -103,8 +107,8 @@ public class Environment implements DeepaMehtaConstants {
         	loader = ClassLoader.getSystemClassLoader();
         	        	
             this.plugins.loadFromFile(this.pluginFile);
-            String appPath = this.getHomeDirectory() + this.getFileSeparator() + 
-            				 "bin" + this.getFileSeparator() + "apps"; 
+            String appPath = this.getHomeDirectory() + Environment.getFileSeparator() + 
+            				 "bin" + Environment.getFileSeparator() + "apps"; 
             this.applications.scanApplicationPath(appPath);
             
 			// FIXME this is definitely the wrong time to load all the applications - MOVE THIS!
@@ -246,6 +250,7 @@ public class Environment implements DeepaMehtaConstants {
      * the associated components. This method is supposed to be called exactly once during 
      * the initialization of the process.
      * @param args The command line arguments.
+     * @param type The type of environment to create.
      * @return Returns the singleton instance of the environment. 
      */
     public static Environment getEnvironment(String[] args, EnvironmentType type) {
@@ -306,14 +311,18 @@ public class Environment implements DeepaMehtaConstants {
     }
 
     /**
-     * @return Returns the current working directory.
+     * @return Returns the current working directory. For an instance running its
+     * own application service, the working directory is the data directory of the
+     * instance, for any other scenario (e. g. the Launch Pad) it is the DeepaMehta 
+     * home.
      */
     public String getWorkingDirectory() {
         return this.workingDirectory;
     }
     
     /**
-     * @return Returns the home directory of the DeepaMehta installation.
+     * @return Returns the home directory of the DeepaMehta installation. This is the 
+     * path DeepaMehta was installed to. 
      */
     public String getHomeDirectory() {
         return this.homeDirectory;
@@ -331,20 +340,6 @@ public class Environment implements DeepaMehtaConstants {
      */
     public String getPluginFile() {
         return this.pluginFile;
-    }
-    
-    /**
-     * @return Returns the instance of the plugin manager.
-     */
-    public PluginManager getPlugins() {
-        return this.plugins;
-    }
-    
-    /**
-     * @return Returns the instance of the application manager.
-     */
-    public ApplicationManager getApplications() {
-    	return this.applications;
     }
     
     /**
@@ -434,16 +429,12 @@ public class Environment implements DeepaMehtaConstants {
         return getInstance(guessInstanceName());
     }
 
-
-
 	/**
 	 * @return Returns the environment type.
 	 */
 	public EnvironmentType getEnvironmentType() {
 		return this.envType;
 	}
-
-
 
 	/* (non-Javadoc)
 	 * @see de.deepamehta.environment.instance.InstanceManager#add(de.deepamehta.environment.instance.InstanceConfiguration)
@@ -452,16 +443,12 @@ public class Environment implements DeepaMehtaConstants {
 		instances.add(instance);
 	}
 
-
-
 	/* (non-Javadoc)
 	 * @see de.deepamehta.environment.instance.InstanceManager#get(int)
 	 */
 	public InstanceConfiguration getInstance(int pos) throws UnknownInstanceException {
 		return instances.get(pos);
 	}
-
-
 
 	/* (non-Javadoc)
 	 * @see de.deepamehta.environment.instance.InstanceManager#get(java.lang.String)
@@ -470,16 +457,12 @@ public class Environment implements DeepaMehtaConstants {
 		return instances.get(id);
 	}
 
-
-
 	/* (non-Javadoc)
 	 * @see de.deepamehta.environment.instance.InstanceManager#getModel()
 	 */
 	public InstanceTableModel getInstanceModel() {
 		return instances.getModel();
 	}
-
-
 
 	/* (non-Javadoc)
 	 * @see de.deepamehta.environment.instance.InstanceManager#size()
@@ -488,10 +471,19 @@ public class Environment implements DeepaMehtaConstants {
 		return instances.size();
 	}
 	
+	public ApplicationSpecification getApplication(String id) {
+		return this.applications.getApplication(id);
+	}
+	
+	public ListModel getApplicationModel() {
+		return this.applications;
+	}
+	
 	/**
-	 * MISSDOC No documentation for method loadExternalJAR of type Environment
-	 * @param absPath
-	 * @throws MalformedURLException
+	 * Adds an external JAR file to the class loader used by the environment.
+	 * @param absPath The absolute path to the JAR file
+	 * @throws MalformedURLException 
+	 * @see Environment#loadClass(String)
 	 */
 	public void loadExternalJAR(String absPath) throws MalformedURLException {
 		if (!externalJARs.contains(absPath)) {
@@ -504,9 +496,11 @@ public class Environment implements DeepaMehtaConstants {
 	}
 	
 	/**
-	 * MISSDOC No documentation for method loadClass of type Environment
-	 * @param name
-	 * @return
+	 * Similar to <code>Class.forName</code>, but uses the class loader prepared by
+	 * <code>loadExternalJar()</code> so that the environment is able to integrate 
+	 * external JAR files.
+	 * @param name The name of the class to load.
+	 * @return Returns an instance of the specified class.
 	 * @throws ClassNotFoundException
 	 */
 	public static Class loadClass(String name) throws ClassNotFoundException {

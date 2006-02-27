@@ -102,7 +102,8 @@ public class PluginManager {
             logger.debug("Loading plugin " + specification.getName() + "...");
             try {
             	// TODO Load preload and postload classes too.
-            	env.loadExternalJAR(specification.getMainClass().getClassSource());
+            	if (!specification.getMainClass().getClassSource().equals("core"))
+            		env.loadExternalJAR(specification.getMainClass().getClassSource());
                 Environment.loadClass(specification.getMainClass().getClassName());
                 this.plugins.put(specification.getMainClass().getClassName(), specification);
             } catch (ClassNotFoundException e) {

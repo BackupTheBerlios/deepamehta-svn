@@ -56,7 +56,7 @@ class ApplicationSelectionDialog extends JDialog {
 		env = Environment.getEnvironment();
 		this.setSize(300, 200);
 		this.setContentPane(getJContentPane());
-		getListApplications().setModel(env.getApplications());
+		getListApplications().setModel(env.getApplicationModel());
 		getListApplications().setSelectedIndex(0);
 	}
 
