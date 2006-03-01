@@ -528,6 +528,8 @@ public interface DeepaMehtaConstants {
 	static final String ASSOCTYPE_NAVIGATION = "at-navigation";
 	static final String ASSOCTYPE_PREFERENCE = "at-preference";
 	static final String ASSOCTYPE_GOOGLE_RESULT = "at-googleresult";
+	static final String ASSOCTYPE_RECIPIENT = "at-recipient";
+	static final String ASSOCTYPE_SENDER = "at-sender";
 
 
 
