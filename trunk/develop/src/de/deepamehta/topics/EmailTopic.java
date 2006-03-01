@@ -80,8 +80,9 @@ public class EmailTopic extends LiveTopic {
 		if (author != null) {
 			setTopicData(PROPERTY_FROM, author);
 		}
-		String assocID = as.cm.getNewAssociationID();
-		cm.createAssociation(assocID, 1, ASSOCTYPE_ASSOCIATION, 1, getID(), 1, session.getUserID(), 1);
+		String emailID = getID();
+		String assocID = as.getNewAssociationID();
+		as.createLiveAssociation(assocID, ASSOCTYPE_SENDER, emailID, session.getUserID());
 		return cd;
 	}
 
