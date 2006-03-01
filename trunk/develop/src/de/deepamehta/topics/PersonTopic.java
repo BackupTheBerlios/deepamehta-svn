@@ -1,8 +1,12 @@
 package de.deepamehta.topics;
 
 import de.deepamehta.BaseTopic;
+import de.deepamehta.PresentableAssociation;
+import de.deepamehta.PresentableTopic;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.service.ApplicationService;
+import de.deepamehta.service.CorporateCommands;
+import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
 //
 import java.util.*;
@@ -19,6 +23,12 @@ public class PersonTopic extends LiveTopic {
 
 
 
+	private static final String ITEM_SEND_TO_PERSON = "Send Email";
+	private static final String ICON_SEND_TO_PERSON = "sendmail.gif";
+	private static final String CMD_SEND_TO_PERSON = "createNewMail";
+	
+	
+	
 	// *******************
 	// *** Constructor ***
 	// *******************
@@ -36,7 +46,57 @@ public class PersonTopic extends LiveTopic {
 	// **********************
 
 
+	// --------------------------
+	// --- Providing Commands ---
+	// --------------------------
 
+	
+	
+	public CorporateCommands contextCommands(String topicmapID, String viewmode,
+			Session session, CorporateDirectives directives){
+		CorporateCommands commands = new CorporateCommands(as);
+		int editorContext = as.editorContext(topicmapID);
+		commands.addNavigationCommands(this, editorContext, session);
+		commands.addSeparator();
+		commands.addCommand(ITEM_SEND_TO_PERSON, CMD_SEND_TO_PERSON, FILESERVER_ICONS_PATH, ICON_SEND_TO_PERSON);
+		commands.addStandardCommands(this, editorContext, viewmode, session, directives);
+		return commands;
+	}
+	
+	
+	
+	// --------------------------
+	// --- Executing Commands ---
+	// --------------------------
+	
+	
+	
+	public CorporateDirectives executeCommand(String command, Session session, String topicmapID, String viewmode){
+		if (command.equals(CMD_SEND_TO_PERSON)){
+			CorporateDirectives directives= new CorporateDirectives();
+			String emailID = as.getNewTopicID();
+			String assocID = as.getNewAssociationID();
+			String personID = getID();
+			PresentableTopic email = new PresentableTopic(emailID, 1, TOPICTYPE_EMAIL, 1, "", personID);
+			String emailAdress = as.getEmailAddress(personID);
+			if (emailAdress != null){
+				Hashtable props = new Hashtable();
+				props.put(PROPERTY_TO, emailAdress);
+				email.setProperties(props);
+			}
+			directives.add(DIRECTIVE_SHOW_TOPIC, email, Boolean.TRUE);
+			PresentableAssociation assoc = new PresentableAssociation(assocID, 1, ASSOCTYPE_RECIPIENT, 1, "", emailID, 1, personID, 1 );
+			directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, Boolean.TRUE);
+			directives.add(DIRECTIVE_SELECT_TOPIC, emailID);
+			return directives;
+		}
+		else {
+			return super.executeCommand(command, session, topicmapID, viewmode);
+		}		
+	}
+	
+	
+	
 	// ---------------------------
 	// --- Handling Properties ---
 	// ---------------------------
