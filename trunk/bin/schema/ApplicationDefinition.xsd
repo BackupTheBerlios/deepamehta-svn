@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.deepamehta.de/schema/InstanceDefinition.xsd"
+	xmlns="http://www.deepamehta.de/schema/InstanceDefinition.xsd"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+		
+	<xsd:element name="applications">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="application" minOccurs="1" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="implementation" minOccurs="0" maxOccurs="unbounded">
+								<xsd:complexType>
+									<xsd:attribute name="class" type="xsd:string" use="required"/>
+									<xsd:attribute name="loadFrom" type="xsd:string" use="required"/>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="datafiles" minOccurs="0" maxOccurs="unbounded">
+								<xsd:complexType>
+									<xsd:attribute name="source" type="xsd:string" use="required"/>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="contentfiles" minOccurs="0" maxOccurs="unbounded">
+								<xsd:complexType>
+									<xsd:attribute name="source" type="xsd:string" use="required"/>
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+						<xsd:attribute name="id" type="xsd:string" use="required"/>
+						<xsd:attribute name="description" type="xsd:string" use="required"/>
+					</xsd:complexType>					
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+				
+</xsd:schema>
