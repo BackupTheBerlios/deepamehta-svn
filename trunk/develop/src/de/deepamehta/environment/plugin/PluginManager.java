@@ -50,8 +50,9 @@ public class PluginManager {
 
         Digester digester = new Digester();
         digester.setNamespaceAware(true);
-        digester.setValidating(true);         
-        
+        digester.setValidating(true);
+        digester.setSchema(env.getHomeDirectory() + "/bin/schema/PluginDefinition.xsd"); // TODO Remove hard-coded path.
+
         digester.addObjectCreate("plugins", Vector.class );
         digester.addObjectCreate("plugins/plugin", PluginSpecification.class);
         digester.addSetProperties("plugins/plugin/", "name", "name");

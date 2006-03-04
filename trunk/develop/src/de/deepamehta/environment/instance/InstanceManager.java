@@ -72,7 +72,8 @@ public class InstanceManager {
 
         Digester digester = new Digester();
         digester.setNamespaceAware(true);
-        digester.setValidating(true); 
+        digester.setValidating(true);
+        digester.setSchema(env.getHomeDirectory() + "/bin/schema/InstanceDefinitions.xsd"); // TODO Remove hard-coded path.
         
         digester.addObjectCreate("instances", Vector.class );
         digester.addObjectCreate("instances/instance", InstanceConfiguration.class);

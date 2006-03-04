@@ -64,8 +64,8 @@ public class ApplicationManager implements ListModel {
 
         Digester digester = new Digester();
         digester.setNamespaceAware(true);
-        //digester.setValidating(true);
-        // FIXME Enable XML validation - need to provide a schema file first!
+        digester.setValidating(true);
+        digester.setSchema(env.getHomeDirectory() + "/bin/schema/ApplicationDefinition.xsd"); // TODO Remove hard-coded path.
         
         digester.addObjectCreate("applications", Vector.class );
         
