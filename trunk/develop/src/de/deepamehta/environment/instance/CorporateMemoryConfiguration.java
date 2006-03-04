@@ -9,12 +9,15 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Set;
 
+import javax.swing.table.AbstractTableModel;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.Environment;
 import de.deepamehta.service.CorporateMemory;
 
@@ -26,7 +29,7 @@ import de.deepamehta.service.CorporateMemory;
  * using a property-value-based approach.  
  * @author vwegert
  */
-public class CorporateMemoryConfiguration {
+public class CorporateMemoryConfiguration extends AbstractTableModel {
 
     private static Log logger = LogFactory.getLog(CorporateMemoryConfiguration.class);
     private String implementingClass;
@@ -184,5 +187,54 @@ public class CorporateMemoryConfiguration {
         }
         return me;
     }
+
+	/**
+	 * MISSDOC No documentation for method getRowCount of type CorporateMemoryConfiguration
+	 * @return
+	 */
+	public int getRowCount() {
+		return numProperties();
+	}
+
+	/**
+	 * MISSDOC No documentation for method getColumnCount of type CorporateMemoryConfiguration
+	 * @return
+	 */
+	public int getColumnCount() {
+		return 2; // name, value
+	}
+
+	/**
+	 * MISSDOC No documentation for method getValueAt of type CorporateMemoryConfiguration
+	 * @param rowIndex
+	 * @param columnIndex
+	 * @return
+	 */
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		String key = (String)getProperties().toArray()[rowIndex];
+		switch(columnIndex) {
+		case 0: return key;
+		case 1: return getProperty(key);
+		default: return null;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
+	 */
+	public String getColumnName(int column) {
+        switch(column) {
+        case 0: return DeepaMehtaMessages.getString("CorporateMemoryConfiguration.ColumnTitleName"); //$NON-NLS-1$
+        case 1: return DeepaMehtaMessages.getString("CorporateMemoryConfiguration.ColumnTitleValue"); //$NON-NLS-1$
+        default: return super.getColumnName(column);
+        }
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
+	 */
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		return (columnIndex == 1);
+	}
 
 }
