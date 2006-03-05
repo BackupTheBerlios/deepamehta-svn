@@ -235,6 +235,7 @@
 		<!-- client --> 
 		<jar jarfile="${bin}/DeepaMehtaClient.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
+			<include name="de/deepamehta/*.properties"/>
 			<include name="de/deepamehta/client/*.class"/>
 			<include name="de/deepamehta/environment/**/*.class"/>
 			<manifest>
@@ -245,6 +246,7 @@
 		<!-- server -->
 		<jar jarfile="${bin}/DeepaMehtaService.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
+			<include name="de/deepamehta/*.properties"/>
 			<include name="de/deepamehta/service/**/*.class"/>
 			<include name="de/deepamehta/environment/**/*.class"/>
 			<manifest>
