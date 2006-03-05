@@ -176,16 +176,13 @@ public class LaunchPad {
 	 * @param id The instance ID.
 	 */
 	public void editInstance(String id) {
-		// FIXME properties window is still missing
-//		PropertiesWindow pw;
-//		try {
-//            pw = new PropertiesWindow(this.mw);
-//    		pw.show(this.env.getInstances().get(id));
-//        } catch (EnvironmentException e) {
-//            logger.error("Unable to open properties dialog.", e);
-//        } catch (UnknownInstanceException e) {
-//            logger.error("Trying to open properties dialog for non-existing instance - WTF?", e);
-//        }		
+		try {
+			InstanceConfiguration config = this.env.getInstance(id);
+			InstancePropertiesDialog props = new InstancePropertiesDialog(this.mw);
+			props.show(config);
+		} catch (UnknownInstanceException e) {
+          logger.error("Trying to open properties dialog for non-existing instance - WTF?", e);
+		}
 	}
 	
 	/**

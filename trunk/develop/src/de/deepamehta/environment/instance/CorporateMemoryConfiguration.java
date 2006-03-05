@@ -33,7 +33,7 @@ public class CorporateMemoryConfiguration extends AbstractTableModel {
 
     private static Log logger = LogFactory.getLog(CorporateMemoryConfiguration.class);
     private String implementingClass;
-    private Hashtable properties;
+    private Hashtable properties, backupProperties;
     
     
     /**
@@ -42,6 +42,7 @@ public class CorporateMemoryConfiguration extends AbstractTableModel {
      */
     public CorporateMemoryConfiguration() {
         this.properties = new Hashtable();
+        this.backupProperties = null;
         this.implementingClass = null;
     }
     
@@ -188,6 +189,23 @@ public class CorporateMemoryConfiguration extends AbstractTableModel {
         return me;
     }
 
+    /**
+     * MISSDOC No documentation for method backupProperties of type CorporateMemoryConfiguration
+     */
+    public void backupProperties() {
+    	this.backupProperties = new Hashtable(this.properties);
+    }
+    
+    /**
+     * MISSDOC No documentation for method restoreProperties of type CorporateMemoryConfiguration
+     */
+    public void restoreProperties() {
+    	if (this.backupProperties != null) {
+    		this.properties = this.backupProperties;
+    		this.backupProperties = null;
+    	}
+    }
+    
 	/**
 	 * MISSDOC No documentation for method getRowCount of type CorporateMemoryConfiguration
 	 * @return

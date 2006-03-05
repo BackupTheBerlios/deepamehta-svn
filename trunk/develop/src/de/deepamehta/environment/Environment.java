@@ -471,6 +471,13 @@ public class Environment implements DeepaMehtaConstants {
 		return instances.size();
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.deepamehta.environment.instance.InstanceManager#saveToFile(java.lang.String)
+	 */
+	public void saveInstances() {
+		instances.saveToFile(this.instanceFile);
+	}
+
 	public ApplicationSpecification getApplication(String id) {
 		return this.applications.getApplication(id);
 	}
@@ -510,5 +517,5 @@ public class Environment implements DeepaMehtaConstants {
         	return Class.forName(name, true, singleton.loader);
         }
 	}
-	
+
 }

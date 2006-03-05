@@ -127,6 +127,10 @@ public class InstanceConfiguration {
 	 */
 	public void setInstanceTypeMonolithic() {
 	    this.instanceType = InstanceType.MONOLITHIC;
+	    this.serverInterface = null;
+	    this.serverPort = 0;
+	    this.clientHost = null;
+	    this.clientPort = 0;
 	}
 	
 	/**
@@ -134,6 +138,8 @@ public class InstanceConfiguration {
 	 */
 	public void setInstanceTypeServer() {
 	    this.instanceType = InstanceType.SERVER;
+	    this.clientHost = null;
+	    this.clientPort = 0;
 	}
 	
 	/**
@@ -141,6 +147,8 @@ public class InstanceConfiguration {
 	 */
 	public void setInstanceTypeClient() {
 	    this.instanceType = InstanceType.CLIENT;
+	    this.serverInterface = null;
+	    this.serverPort = 0;
 	}
 	
 	/**

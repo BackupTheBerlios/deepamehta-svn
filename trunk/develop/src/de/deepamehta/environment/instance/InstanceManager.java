@@ -182,6 +182,8 @@ public class InstanceManager {
             logger.error("Unable to transform output file.", e1);
         }
          
+        model.fireTableDataChanged();
+
     }
     
     /**
@@ -237,7 +239,6 @@ public class InstanceManager {
      */
     public void add(InstanceConfiguration instance) {
         addInstance(instance);
-        model.fireTableDataChanged();
         // TODO check for duplicate IDs before adding
         saveToFile(this.env.getInstanceFile());
         
