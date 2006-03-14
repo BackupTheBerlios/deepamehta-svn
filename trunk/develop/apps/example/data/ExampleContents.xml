@@ -44,6 +44,9 @@
 		<property name="Ordinal Number" value="100"/>
 	</association>
 
-	
+	<!-- create counter for servlet demo -->
+	<topic id="t-ex-webcounter" name="Web Counter" type="tt-ex-counter">
+		<property name="Name" value="Web Counter"/>
+	</topic>
 		
 </dmc:contents>

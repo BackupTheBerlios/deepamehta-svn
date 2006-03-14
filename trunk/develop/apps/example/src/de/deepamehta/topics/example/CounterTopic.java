@@ -56,20 +56,41 @@ public class CounterTopic extends LiveTopic {
 	 */
 	public CorporateDirectives executeCommand(String command, Session session, String topicmapID, String viewmode) {
 		CorporateDirectives directives = new CorporateDirectives();
+		Hashtable props = new Hashtable();
 		if (command.equals(CMD_INCREASE_COUNTER)) {
-			int current;
-			try {
-				current = Integer.parseInt(getProperty(PROPERTY_VALUE));
-			} catch (NumberFormatException e) {
-				current = 0;
-			}
-			setTopicData(PROPERTY_VALUE, Integer.toString(current + 1), session, topicmapID, viewmode);
+			int value = increaseCounter();
+			props.put(PROPERTY_VALUE, Integer.toString(value));
+			directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, getID(), props, new Integer(1));
 		} else if (command.equals(CMD_RESET_COUNTER)) {
-			setTopicData(PROPERTY_VALUE, "0", session, topicmapID, viewmode);
+			resetCounter();
+			props.put(PROPERTY_VALUE, "0");
+			directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, getID(), props, new Integer(1));
 		} else {
 			return super.executeCommand(command, session, topicmapID, viewmode);
 		}
 		return directives;
 	}
+
+	/**
+	 * MISSDOC No documentation for method increaseCounter of type CounterTopic
+	 */
+	public int increaseCounter() {
+		int current;
+		try {
+			current = Integer.parseInt(getProperty(PROPERTY_VALUE));
+		} catch (NumberFormatException e) {
+			current = 0;
+		}
+		current = current + 1;
+		cm.setTopicData(getID(), 1, PROPERTY_VALUE, Integer.toString(current));
+		return current;
+	}
 	
+	/**
+	 * MISSDOC No documentation for method resetCounter of type CounterTopic
+	 */
+	public void resetCounter() {
+		cm.setTopicData(getID(), 1, PROPERTY_VALUE, "0");
+	}
 }
+

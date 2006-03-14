@@ -4,11 +4,13 @@
 		DeepaMehta Example Application
 	</description>
 
-	<property name="appname" value="example"/>
+	<property name="appname"  value="example"/>
 	
-	<property name="build" value="build/"/>
-	<property name="sources" value="src/"/>
-	<property name="target" value="../../../bin/apps/${appname}"/>
+	<property name="build"    value="build/"/>
+	<property name="sources"  value="src/"/>
+	<property name="target"   value="../../../bin/apps/${appname}"/>
+	<property name="jarfile"  value="${appname}.jar"/>
+	<property name="warfile"  value="${appname}.war"/>
 	
 
 	<target name="init" description="create build directory">
@@ -23,18 +25,28 @@
 
 	<target name="build" depends="compile" description="build distribution files">
 		<!-- jar file containing compiled classes -->
-		<jar jarfile="${appname}.jar" basedir="${build}">
+		<jar jarfile="${jarfile}" basedir="${build}">
 			<include name="de/deepamehta/topics/example/*.class"/>
 			<include name="de/deepamehta/topics/example/*.properties"/>
 		</jar> 
 		<!-- data file for instance bootstrapping -->
 		<zip destfile="${appname}-data.zip" basedir="data"/> 
+		<!-- war file for web application deployment -->
+		<war warfile="${warfile}" webxml="config/web.xml">
+			<classes dir="${build}">
+				<include name="de/deepamehta/topics/example/*.class"/>
+				<include name="de/deepamehta/topics/example/*.properties"/>
+			</classes>
+			<fileset dir=".">
+            	<include name="pages/*"/>
+			</fileset> 
+		</war>
 	</target>
 
 	<target name="deploy" depends="build" description="copy distribution files to target directory">
 		<mkdir dir="${target}"/>
 		<copy file="application.xml" todir="${target}"/>
-		<copy file="${appname}.jar" todir="${target}"/>
+		<copy file="${jarfile}" todir="${target}"/>
 		<copy file="${appname}-data.zip" todir="${target}"/>
 	</target>
 
