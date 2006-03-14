@@ -34,7 +34,6 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import de.deepamehta.environment.Environment;
-import de.deepamehta.environment.EnvironmentType;
 
 /**
  * This class is responsible for managing the instance configuration data at runtime. Its
@@ -43,6 +42,9 @@ import de.deepamehta.environment.EnvironmentType;
  */
 public class InstanceManager {
     
+    public static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+    public static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+	
     private static Log logger = LogFactory.getLog(InstanceManager.class);
     private Environment env;
     private Hashtable instances;
@@ -50,11 +52,11 @@ public class InstanceManager {
     
     /**
      * The default constructor to create a new instance manager. 
-     * @param envi The parent environment.
+     * @param parent The parent environment.
      */
-    public InstanceManager(Environment envi) {
+    public InstanceManager(Environment parent) {
         super();
-        this.env = envi;
+        this.env = parent;
         this.instances = new Hashtable();
         this.model = new InstanceTableModel(this);
     }
@@ -80,8 +82,8 @@ public class InstanceManager {
         digester.addSetProperties("instances/instance/", "id", "id");
         digester.addSetProperties("instances/instance/", "description", "description");
 
-    	// do not attempt to parse CM configuration during client startup
-        if (this.env.getEnvironmentType() == EnvironmentType.FAT) {
+//    	TODO do not attempt to parse CM configuration during client startup
+//        if (this.env.getEnvironmentType() == EnvironmentType.FAT) {
         	digester.addCallMethod("instances/instance/monolithic", "setInstanceTypeMonolithic");
         	digester.addObjectCreate("instances/instance/monolithic/cm", CorporateMemoryConfiguration.class);
         	digester.addSetProperties("instances/instance/monolithic/cm/", "class", "implementingClassName");
@@ -99,7 +101,7 @@ public class InstanceManager {
         	digester.addCallParam("instances/instance/server/cm/property", 0, "name");
         	digester.addCallParam("instances/instance/server/cm/property", 1, "value");
         	digester.addSetNext("instances/instance/server/cm", "setCMConfig");
-        }
+//        }
 
         digester.addCallMethod("instances/instance/client", "setInstanceTypeClient");
         digester.addSetProperties("instances/instance/client/", "host", "clientHost");
@@ -120,7 +122,7 @@ public class InstanceManager {
         if (fileContents != null) 
         {
             for (int i = 0; i < fileContents.size(); i++) {
-                addInstance((InstanceConfiguration) fileContents.get(i));
+                add((InstanceConfiguration) fileContents.get(i));
             }
         }
         
@@ -137,7 +139,7 @@ public class InstanceManager {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(true);
 		factory.setNamespaceAware(true);
-		factory.setAttribute(Environment.JAXP_SCHEMA_LANGUAGE, Environment.W3C_XML_SCHEMA);
+		factory.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
 
         DocumentBuilder builder;
         try {
@@ -187,11 +189,10 @@ public class InstanceManager {
     }
     
     /**
-     * Add a new instance configuration to the current set. Note: for internal use only,
-     * external components please use <code>add</code>. 
+     * Add a new instance configuration to the current set. 
      * @param configuration The configuration to add.
      */
-    private void addInstance(InstanceConfiguration configuration) {
+    public void add(InstanceConfiguration configuration) {
         if (!this.instances.containsKey(configuration.getId())) {
             logger.debug("Registering instance " + configuration.getId() + "...");
             this.instances.put(configuration.getId(), configuration);
@@ -216,14 +217,19 @@ public class InstanceManager {
     }
 
     /**
-     * Retrieves an instance configuration by its position.
+     * Retrieves an instance configuration by its position as specified by the
+     * table model.
      * @param pos
      * @return
-     * @throws UnknownInstanceException 
      */
-    public InstanceConfiguration get(int pos) throws UnknownInstanceException {
-    	// FIXME using this method is dangerous - remove ASAP
-    	return get((String)this.instances.keySet().toArray()[pos]);
+    public InstanceConfiguration get(int pos) {
+    	try {
+			return get((String)this.instances.keySet().toArray()[pos]);
+		} catch (UnknownInstanceException e) {
+			// This should never happen.
+			logger.error("Failed to read an instance configuration specified in the key set.", e);
+			return null;
+		}
     }
  
     /**
@@ -234,20 +240,16 @@ public class InstanceManager {
     }
 
     /**
-     * Adds an instance configurat to the current set and saves the set to the configuration file. 
-     * @param instance The instance configuration to add.
-     */
-    public void add(InstanceConfiguration instance) {
-        addInstance(instance);
-        // TODO check for duplicate IDs before adding
-        saveToFile(this.env.getInstanceFile());
-        
-    }
-
-    /**
      * @return Returns the model.
      */
     public InstanceTableModel getModel() {
     	return this.model;
     }
+
+	/* (non-Javadoc)
+	 * @see java.util.Hashtable#keys()
+	 */
+	public Enumeration keys() {
+		return instances.keys();
+	}
 }

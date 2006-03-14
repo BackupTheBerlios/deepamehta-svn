@@ -1,50 +1,58 @@
 package de.deepamehta.service.web;
 
-import de.deepamehta.BaseTopic;
-import de.deepamehta.BaseAssociation;
-import de.deepamehta.DeepaMehtaConstants;
-import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.PropertyDefinition;
-import de.deepamehta.Relation;
-import de.deepamehta.Type;
-import de.deepamehta.service.ApplicationService;
-import de.deepamehta.service.ApplicationServiceHost;
-import de.deepamehta.service.ApplicationServiceInstance;
-import de.deepamehta.service.CorporateDirectives;
-import de.deepamehta.service.CorporateMemory;
-import de.deepamehta.service.Session;
-import de.deepamehta.topics.LiveTopic;
-import de.deepamehta.topics.TypeTopic;
-//
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Locale;
+import java.util.Vector;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-//
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
-//
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-//
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-//
-import java.io.*;
-import java.util.*;
+
+import de.deepamehta.BaseAssociation;
+import de.deepamehta.BaseTopic;
+import de.deepamehta.DeepaMehtaConstants;
+import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.DeepaMehtaUtils;
+import de.deepamehta.PropertyDefinition;
+import de.deepamehta.Relation;
+import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentException;
+import de.deepamehta.environment.EnvironmentFactory;
+import de.deepamehta.environment.instance.UnknownInstanceException;
+import de.deepamehta.service.ApplicationService;
+import de.deepamehta.service.ApplicationServiceHost;
+import de.deepamehta.service.ApplicationServiceInstance;
+import de.deepamehta.service.CorporateDirectives;
+import de.deepamehta.service.CorporateMemory;
+import de.deepamehta.service.Session;
+import de.deepamehta.topics.TypeTopic;
 
 
 
@@ -58,6 +66,9 @@ import java.util.*;
  */
 public class DeepaMehtaServlet extends HttpServlet implements ApplicationServiceHost, DeepaMehtaConstants {
 
+	private static Log logger = LogFactory.getLog(DeepaMehtaServlet.class);
+	
+	protected Environment env;
 	protected ServletContext sc;
 	private String generatorMethod;			// HTML_GENERATOR_JSP or HTML_GENERATOR_XSLT
 	//
@@ -73,7 +84,16 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 
 
 	public void init() {
+		
+		// get context and initialize environment
 		sc = getServletContext();
+		try {
+			env = EnvironmentFactory.getServletEnvironment(sc);
+		} catch (EnvironmentException e1) {
+			logger.error("Unable to initialize environment.", e1);
+			throw new DeepaMehtaException("Unable to initialize environment.", e1);
+		}
+		
 		generatorMethod = sc.getInitParameter("generator");
 		// set default
 		if (generatorMethod == null) {
@@ -99,18 +119,21 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 				"\" -- expected values are \"jsp\" (default) and \"xslt\"");
 		}
 		// --- create application service ---
-		String home = sc.getInitParameter("home");
-		String service = sc.getInitParameter("service");
-		// Note: the current working directory is the directory from where tomcat was started
-		ApplicationServiceInstance instance = ApplicationServiceInstance.lookup(
-			service != null ? service : "default", home != null ? home + "/install/client/dms.rc" : "dms.rc");
-		as = ApplicationService.create(this, instance);		// throws DME ### servlet is not properly inited
-		cm = as.cm;
+//		String home = sc.getInitParameter("home");
+//		String service = sc.getInitParameter("service");
+//		// Note: the current working directory is the directory from where tomcat was started
+//		ApplicationServiceInstance instance = ApplicationServiceInstance.lookup(
+//			service != null ? service : "default", home != null ? home + "/install/client/dms.rc" : "dms.rc");
+//		as = ApplicationService.create(this, instance);		// throws DME ### servlet is not properly inited
 		// --- create external connection ---
 		try {
-			new ExternalConnection("localhost", instance.port, as);		// ### host and port should be context parameter
+			as = ApplicationService.create(this, env.getInstanceConfiguration());
+			cm = as.cm;
+			new ExternalConnection("localhost", env.getInstanceConfiguration().getServerPort(), as);		// ### host and port should be context parameter
 		} catch (IOException e) {
 			System.out.println(">>> type synchronization NOT available (" + e + ")");
+		} catch (UnknownInstanceException e) {
+			logger.error("Unable to read instance configuration.", e);
 		}
 		//
 		System.out.println(">>> HTML generator method: \"" + generatorMethod + "\"");

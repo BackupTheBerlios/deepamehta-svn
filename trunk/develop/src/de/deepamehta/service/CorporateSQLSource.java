@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentFactory;
 
 
 
@@ -33,7 +34,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 	// *** Field ***
 	// *************
 
-
+	private Environment env;
 
 	/**
 	 * The connection to the database.
@@ -52,10 +53,11 @@ public class CorporateSQLSource implements CorporateDatasource {
 	 * @see		de.deepamehta.topics.DataSourceTopic#openCorporateDatasource
 	 */
 	public CorporateSQLSource(String url, String driver) throws Exception {
+		env = EnvironmentFactory.getEnvironment();
 		// create database connection
 		System.out.println(">>> CorporateSQLSource(): connecting to database ... ");
 		System.out.println(">    URL: \"" + url + "\"\n>    driver: \"" + driver + "\"");
-		Environment.loadClass(driver);
+		env.loadClass(driver);
 		con = DriverManager.getConnection(url);
 		System.out.println(">>> connected.");
 	}

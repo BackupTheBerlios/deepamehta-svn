@@ -14,6 +14,7 @@ import org.w3c.dom.Node;
 
 import de.deepamehta.environment.Environment;
 import de.deepamehta.environment.EnvironmentException;
+import de.deepamehta.environment.EnvironmentFactory;
 
 /**
  * This class represents a single entry of the configuration file - that is 
@@ -26,6 +27,8 @@ public class InstanceConfiguration {
 	
 	private static Log logger = LogFactory.getLog(InstanceConfiguration.class);
 	
+	private Environment env;
+	
 	private String id, description;
 	private InstanceType instanceType = null;
 
@@ -37,10 +40,13 @@ public class InstanceConfiguration {
 	
 	private CorporateMemoryConfiguration cmConfig = null;
 
+	public InstanceConfiguration() {
+		env = EnvironmentFactory.getEnvironment();
+	}
+	
 	/**
 	 * @return Returns the ID.
 	 */
-	
 	public String getId() {
 		return this.id;
 	}
@@ -192,8 +198,8 @@ public class InstanceConfiguration {
 	 * @return The full path to the executable JAR.
 	 */
 	public String getExecutableArchive() {
-	    String base = Environment.getEnvironment().getHomeDirectory();
-	    String sep  = Environment.getEnvironment().getFileSeparator();
+	    String base = env.getHomeDirectory();
+	    String sep  = env.getFileSeparator();
 	    base = base + sep;		    
 	    if (this.instanceType.isMonolithic())
 		    return base + "bin" + sep + "DeepaMehta.jar"; 
@@ -280,11 +286,10 @@ public class InstanceConfiguration {
     	if (getInstanceType().isClient())
     	{
     		// FIXME will run into trouble with icons some day
-    		return Environment.getEnvironment().getWorkingDirectory();
+    		return env.getWorkingDirectory();
     	} else {
-    		String base = Environment.getEnvironment().getHomeDirectory();
-    		String sep = Environment.getEnvironment().getFileSeparator();
-    		return base + sep + "data" + sep + getId() + sep;
+    		String sep = env.getFileSeparator();
+    		return env.getHomeDirectory() + sep + "data" + sep + getId() + sep;
     	}
     }
     

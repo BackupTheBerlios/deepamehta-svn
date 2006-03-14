@@ -46,6 +46,7 @@ import de.deepamehta.TopicInitException;
 import de.deepamehta.assocs.LiveAssociation;
 import de.deepamehta.environment.Environment;
 import de.deepamehta.environment.EnvironmentException;
+import de.deepamehta.environment.EnvironmentFactory;
 import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 import de.deepamehta.service.web.DeepaMehtaServlet;
@@ -85,6 +86,8 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 
 	private static Log logger = LogFactory.getLog(ApplicationService.class);
 
+	private Environment env;
+	
 	private ApplicationServiceHost host;
 
 	/**
@@ -155,6 +158,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	 * @see		#create
 	 */
 	private ApplicationService(ApplicationServiceHost host, CorporateMemory cm) {
+		env = EnvironmentFactory.getEnvironment();
 		// >>> compare to PresentationService.initialize()
 		try {
 			this.hostAddress = InetAddress.getLocalHost().getHostAddress();
@@ -5094,7 +5098,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 						String errorText, CorporateDirectives directives) throws DeepaMehtaException {
 		try {
 			// create constructor
-			Constructor cons = Environment.loadClass(implementingClass).getConstructor(argClasses);
+			Constructor cons = env.loadClass(implementingClass).getConstructor(argClasses);
 			// create instance
 			Object obj = cons.newInstance(argObjects);
 			//
@@ -5136,7 +5140,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	public Object triggerStaticHook(String className, String hookName, Class[] paramTypes, Object[] paramValues,
 															boolean throwIfNoSuchHookExists) throws DeepaMehtaException {
 		try {
-			Class typeClass = Environment.loadClass(className);							// throws ClassNotFoundException
+			Class typeClass = env.loadClass(className);							// throws ClassNotFoundException
 			Method hook = typeClass.getDeclaredMethod(hookName, paramTypes);	// throws NoSuchMethodException
 			return hook.invoke(null, paramValues);								// throws IllegalAccessException
 																				// throws InvocationTargetException

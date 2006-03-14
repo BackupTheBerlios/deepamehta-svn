@@ -18,7 +18,8 @@ import org.apache.commons.logging.LogFactory;
 
 import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.Environment;
-import de.deepamehta.environment.EnvironmentType;
+import de.deepamehta.environment.EnvironmentException;
+import de.deepamehta.environment.EnvironmentFactory;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 import de.deepamehta.environment.instance.UnknownInstanceException;
 import de.deepamehta.launchpad.setup.ActionList;
@@ -52,7 +53,12 @@ public class LaunchPad {
 	 * @return 0 if the launch pad was started successfully.
 	 */
 	public Integer start(String[] args) {
-        this.env = Environment.getEnvironment(args, EnvironmentType.FAT);
+        try {
+			this.env = EnvironmentFactory.getLaunchPadEnvironment(args);
+		} catch (EnvironmentException e) {
+			logger.error("An error occurred during initialization of the environment.", e);
+			return new Integer(2);
+		}
         try {
         	this.runInteractive();
         } catch (HeadlessException he) {
@@ -83,7 +89,7 @@ public class LaunchPad {
 	 */
 	private void runInteractive() throws HeadlessException {
 		this.mw = new MainWindow(this);
-		if (this.env.numInstances() == 0) {
+		if (this.env.getInstanceTableModel().getRowCount() == 0) {
 		    if (JOptionPane.showConfirmDialog(this.mw, 
 		            DeepaMehtaMessages.getString("LaunchPad.CreateFirstInstanceQuestion"), //$NON-NLS-1$
 		            DeepaMehtaMessages.getString("LaunchPad.CreateFirstInstanceTitle"),  //$NON-NLS-1$ 

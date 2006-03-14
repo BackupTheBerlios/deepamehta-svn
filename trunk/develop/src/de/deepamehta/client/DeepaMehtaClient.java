@@ -12,15 +12,15 @@ import org.apache.commons.logging.LogFactory;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.environment.Environment;
-import de.deepamehta.environment.EnvironmentType;
+import de.deepamehta.environment.EnvironmentException;
+import de.deepamehta.environment.EnvironmentFactory;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 import de.deepamehta.environment.instance.UnknownInstanceException;
 
 
 
 /**
- * The DeepaMehta client.<BR>
- * The client can run as applet as well as application.
+ * The DeepaMehta client (standalone application).
  * <P>
  * <HR>
  * Last functional change: 2.4.2004 (2.0b3-pre2)<BR>
@@ -28,7 +28,7 @@ import de.deepamehta.environment.instance.UnknownInstanceException;
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
  */
-public class DeepaMehtaClient extends JApplet implements DeepaMehtaConstants {
+public class DeepaMehtaClient implements DeepaMehtaConstants {
 
 
 
@@ -78,11 +78,11 @@ public class DeepaMehtaClient extends JApplet implements DeepaMehtaConstants {
 
 	    try {
             // initialize environment
-            this.env = Environment.getEnvironment(args, EnvironmentType.THIN);
+            this.env = EnvironmentFactory.getClientEnvironment(args);
             logger.info("Running as client only.");
             
             // find out which instance to start
-            this.instanceConfig = this.env.guessInstance();
+            this.instanceConfig = this.env.getInstanceConfiguration();
             logger.info("Starting instance " + this.instanceConfig.getId() + "...");
             
             // create presentation service 
@@ -113,6 +113,8 @@ public class DeepaMehtaClient extends JApplet implements DeepaMehtaConstants {
             this.ps.mainWindow.setTitle(this.ps.getClientName());
             
             
+	    } catch (EnvironmentException e) {
+	    	logger.error("An error occurred during initialization of the environment.", e);
         } catch (UnknownInstanceException e) {
             logger.error("Unable to load the instance specified.", e);
         } catch (DeepaMehtaException e) {
@@ -135,77 +137,4 @@ public class DeepaMehtaClient extends JApplet implements DeepaMehtaConstants {
 		}
 	}
 
-
-
-	// ----------------------
-	// --- Applet methods ---
-	// ----------------------
-
-
-
-	/**
-	 * Applet specific initialization.
-	 */
-	public void init() {
-		// ### compare to initApplication()
-		// ### compare to DeepaMehta.init()
-		// --- create presentation service ---
-		this.ps = new PresentationService();
-		// reporting
-		System.out.println("\n--- DeepaMehtaClient " + CLIENT_VERSION + " runs as " +
-			"applet on \"" + ps.hostAddress + "\" (" + ps.platform + ") ---");
-		//
-		ps.initialize();
-		//
-		Container cp = getContentPane();
-		String host = getCodeBase().getHost();
-		int port = DEFAULT_PORT;
-		String p = getParameter("PORT");
-		if (p != null) {
-			port = Integer.parseInt(p);
-		}
-		//
-		try {
-			String demoMapID = getParameter("DEMO_MAP");
-			ps.setDemoMap(demoMapID);
-			ps.setApplet(this);
-			ps.setService(new SocketService(host, port, ps));	// throws DME, IO
-			if (demoMapID != null) {
-				cp.add(ps.createStartDemoGUI());
-			} else {
-				cp.add(ps.createLoginGUI());
-			}
-		} catch (DeepaMehtaException e) {
-			System.out.println("*** " + errText + " (" + e.getMessage() + ")");
-			cp.add(ps.createErrorGUI(e, host, port));
-		} catch (IOException e) {
-			System.out.println("*** " + errText + " (" + e + ")");
-			cp.add(ps.createErrorGUI(e, host, port));
-		}
-	}
-
-	/* ### public void start() {
-		System.out.println(">>> applet started");
-	}
-
-	public void stop() {
-		System.out.println(">>> applet stopped");
-	} */
-
-	public void destroy() {
-		System.out.println(">>> applet destroyed");
-		//
-		ps.close();
-		// ### ps.mainWindow.dispose(); ??
-	}
-
-	// ---
-
-	public void paint(Graphics g) {
-		super.paint(g);
-		if (firstPaint) {
-			ps.focusUsername();
-			firstPaint = false;
-		}
-	}
 }

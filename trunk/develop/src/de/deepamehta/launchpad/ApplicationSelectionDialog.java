@@ -5,7 +5,6 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
-import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -15,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentFactory;
 
 class ApplicationSelectionDialog extends JDialog {
 
@@ -53,10 +53,10 @@ class ApplicationSelectionDialog extends JDialog {
 	 * @return void
 	 */
 	private void initialize() {
-		env = Environment.getEnvironment();
+		env = EnvironmentFactory.getEnvironment();
 		this.setSize(300, 200);
 		this.setContentPane(getJContentPane());
-		getListApplications().setModel(env.getApplicationModel());
+		getListApplications().setModel(env.getApplicationListModel());
 		getListApplications().setSelectedIndex(0);
 	}
 

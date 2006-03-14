@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.Environment;
 import de.deepamehta.environment.EnvironmentException;
+import de.deepamehta.environment.EnvironmentFactory;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 
 /**
@@ -89,7 +90,7 @@ public class InstancePropertiesDialog extends JDialog {
 	 */
 	public InstancePropertiesDialog(JFrame parent) {
 		super(parent);
-		env = Environment.getEnvironment();
+		env = EnvironmentFactory.getEnvironment();
 		initialize();
 	}
 

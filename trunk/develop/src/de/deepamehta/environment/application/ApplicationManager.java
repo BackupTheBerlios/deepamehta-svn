@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.ListModel;
+import javax.swing.event.EventListenerList;
 import javax.swing.event.ListDataListener;
 
 import org.apache.commons.digester.Digester;
@@ -25,6 +26,7 @@ public class ApplicationManager implements ListModel {
     private static Log logger = LogFactory.getLog(InstanceManager.class);
     private Environment env;
     private Hashtable applications;
+    private EventListenerList listenerList = new EventListenerList();
 
 	public ApplicationManager(Environment parent) {
 		super();
@@ -116,10 +118,10 @@ public class ApplicationManager implements ListModel {
 	}
 
 	/* (non-Javadoc)
-	 * @see java.util.Hashtable#elements()
+	 * @see java.util.Hashtable#keys()
 	 */
-	public Enumeration getApplications() {
-		return applications.elements();
+	public Enumeration keys() {
+		return applications.keys();
 	}
 
 	/* (non-Javadoc)
@@ -155,13 +157,11 @@ public class ApplicationManager implements ListModel {
 	}
 
 	public void addListDataListener(ListDataListener l) {
-		// TODO Auto-generated method stub
-		
+		listenerList.add(ListDataListener.class, l);				
 	}
 
 	public void removeListDataListener(ListDataListener l) {
-		// TODO Auto-generated method stub
-		
+		listenerList.remove(ListDataListener.class, l);
 	}
 
 }

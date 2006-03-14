@@ -24,6 +24,7 @@ import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableType;
 import de.deepamehta.assocs.LiveAssociation;
 import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentFactory;
 import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
 import de.deepamehta.topics.LiveTopic;
 
@@ -58,6 +59,7 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
 	// *** Fields ***
 	// **************
 
+	private Environment env;
 
 
 	/**
@@ -80,6 +82,7 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
 		// default constructor does nothing - well, almost nothing
 		con = null;
 		dbmsHint = "";
+		env = EnvironmentFactory.getEnvironment();
 	}
 
 	/**
@@ -87,7 +90,8 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
 	 */
 	RelationalCorporateMemory(String jdbcDriverClass, String jdbcURL) throws Exception {
 		// FIXME remove this code ASAP - it is being replaced by startup()
-		Environment.loadClass(jdbcDriverClass);
+		this();
+		env.loadClass(jdbcDriverClass);
 		this.con = DriverManager.getConnection(jdbcURL);
 		this.dbmsHint = jdbcDriverClass.indexOf(DBMS_HINT_ORACLE) != -1 ?
 			DBMS_HINT_ORACLE : DBMS_HINT_SQL92;
@@ -454,7 +458,7 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
         this.config = cmConfig;
         try {
             String jdbcDriverClass = cmConfig.getProperty("driver");
-            Environment.loadClass(jdbcDriverClass);
+            env.loadClass(jdbcDriverClass);
             this.con = DriverManager.getConnection(getConnectionString(this.config));
             this.dbmsHint = jdbcDriverClass.indexOf(DBMS_HINT_ORACLE) != -1 ?
                     DBMS_HINT_ORACLE : DBMS_HINT_SQL92;

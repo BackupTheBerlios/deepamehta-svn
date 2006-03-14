@@ -106,9 +106,9 @@ class InstallApplicationContentsAction extends AbstractSetupAction {
         // import contents
         for (Iterator iter = app.getContentFileIterator(); iter.hasNext();) {
 			String filename = (String) iter.next();
-			if (!filename.startsWith(Environment.getFileSeparator())) {
+			if (!filename.startsWith(env.getFileSeparator())) {
 				// TODO What about Windoze?
-				filename = this.workingDir + Environment.getFileSeparator() + filename;
+				filename = this.workingDir + env.getFileSeparator() + filename;
 			}
 			ContentsLoader loader = new ContentsLoader(this.cm);
 			try {

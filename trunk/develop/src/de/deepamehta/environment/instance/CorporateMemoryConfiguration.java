@@ -19,6 +19,7 @@ import org.w3c.dom.Node;
 
 import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentFactory;
 import de.deepamehta.service.CorporateMemory;
 
 /**
@@ -32,6 +33,9 @@ import de.deepamehta.service.CorporateMemory;
 public class CorporateMemoryConfiguration extends AbstractTableModel {
 
     private static Log logger = LogFactory.getLog(CorporateMemoryConfiguration.class);
+    
+    private Environment env;
+    
     private String implementingClass;
     private Hashtable properties, backupProperties;
     
@@ -41,6 +45,7 @@ public class CorporateMemoryConfiguration extends AbstractTableModel {
      * will not work properly without the implementing class set.
      */
     public CorporateMemoryConfiguration() {
+    	this.env = EnvironmentFactory.getEnvironment();
         this.properties = new Hashtable();
         this.backupProperties = null;
         this.implementingClass = null;
@@ -79,7 +84,7 @@ public class CorporateMemoryConfiguration extends AbstractTableModel {
     public Class getImplementingClass() {
     	if (this.implementingClass != null) {
     		try {
-    			return Environment.loadClass(this.implementingClass);
+    			return env.loadClass(this.implementingClass);
     		} catch (ClassNotFoundException e) {
     			logger.error("Unable to find CM implementation " + this.implementingClass);
     			return null;

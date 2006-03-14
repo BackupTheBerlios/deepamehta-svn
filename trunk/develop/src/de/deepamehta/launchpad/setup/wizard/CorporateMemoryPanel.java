@@ -207,7 +207,7 @@ public class CorporateMemoryPanel extends AbstractWizardPanel {
         logger.debug("Adjusting low-level driver selection...");
         
         try {
-            CorporateMemory im = (CorporateMemory) Environment.loadClass(className).newInstance();
+            CorporateMemory im = (CorporateMemory) env.loadClass(className).newInstance();
             drivers = im.getSupportedPropertyValues("driver");
         } catch (ClassNotFoundException e) {
             logger.error("Unable to load CM implementation class " + className, e);

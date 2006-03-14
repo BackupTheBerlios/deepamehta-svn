@@ -251,7 +251,7 @@ public class InstanceNamePanel extends AbstractWizardPanel {
 				InstanceConfiguration inst;
 				// check whether ID already exists
 				try {
-					inst = Environment.getEnvironment().getInstance(id);
+					inst = env.getInstance(id);
 				} catch (UnknownInstanceException e) {
 					inst = null;
 				}

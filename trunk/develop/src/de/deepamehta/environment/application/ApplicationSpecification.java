@@ -1,6 +1,7 @@
 package de.deepamehta.environment.application;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -9,16 +10,20 @@ import org.apache.commons.logging.LogFactory;
 
 import de.deepamehta.environment.ClassSpecification;
 import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentFactory;
 
 public class ApplicationSpecification {
 
 	private static Log logger = LogFactory.getLog(ApplicationSpecification.class);
+	
+	private Environment env;
 	
 	private String id, description, sourcePath;
 	private Vector implementations; // contains ClassSpecification instances pointing to the JARs to load
 	private Vector dataFiles, contentFiles;
 	
 	public ApplicationSpecification() {
+		env = EnvironmentFactory.getEnvironment();
 		implementations = new Vector();
 		dataFiles = new Vector();
 		contentFiles = new Vector();
@@ -88,11 +93,11 @@ public class ApplicationSpecification {
 			try {
 				String source = element.getClassSource();
 				if (!source.equals("core")) {
-					if (!source.startsWith(Environment.getFileSeparator())) {
+					if (!source.startsWith(env.getFileSeparator())) {
 						// TODO How about Windoze?
-						source = getSourcePath() + Environment.getFileSeparator() + source;
+						source = getSourcePath() + env.getFileSeparator() + source;
 					}
-					Environment.getEnvironment().loadExternalJAR(source);
+					env.loadExternalJAR(new URL("file://" + source)); // TODO URL assembly?
 				}
 			} catch (MalformedURLException e) {
 				logger.error("Unable to load JAR " + element.getClassSource(), e);

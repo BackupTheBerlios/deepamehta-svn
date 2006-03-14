@@ -232,17 +232,28 @@
 				<attribute name="Class-Path" value="${jarclasspath-srv} DeepaMehtaTopics.jar"/>
 			</manifest>
 		</jar>
-		<!-- client --> 
+		<!-- standalone client --> 
 		<jar jarfile="${bin}/DeepaMehtaClient.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
 			<include name="de/deepamehta/*.properties"/>
 			<include name="de/deepamehta/client/*.class"/>
 			<include name="de/deepamehta/environment/**/*.class"/>
+			<include name="de/deepamehta/service/CorporateMemory.class"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.client.DeepaMehtaClient"/>
 				<attribute name="Class-Path" value="${jarclasspath-cli}"/>
 			</manifest>
 		</jar>
+		<!-- applet --> 
+		<jar jarfile="${bin}/DeepaMehtaApplet.jar" basedir="${build}">
+			<include name="de/deepamehta/*.class"/>
+			<include name="de/deepamehta/*.properties"/>
+			<include name="de/deepamehta/client/*.class"/>
+			<include name="de/deepamehta/environment/**/*.class"/> <!-- TODO refine this selection -->
+			<zipfileset src="${libpath}/commons-logging-api-1.0.4.jar" includes="org/apache/**/*"/>
+		</jar>
+		<!-- We need a signed JAR because we won't be able to read the message files otherwise. :-( -->
+		<signjar jar="${bin}/DeepaMehtaApplet.jar" alias="tomcat" storepass="kspw01" keypass="kspw01"/>
 		<!-- server -->
 		<jar jarfile="${bin}/DeepaMehtaService.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
@@ -276,12 +287,7 @@
 		<zip destfile="${bin}/instance-data.zip" basedir="develop/data"/>
 	</target>
 
-	<target name="sign" depends="build" description="sign client">
-		<signjar jar="${client}/DeepaMehtaClient.jar" alias="tomcat"
-			storepass="kspw01" keypass="kspw01" signedjar="${client}/sDeepaMehtaClient.jar"/>
-	</target>
-
-	<target name="release" depends="sign">
+	<target name="release" depends="build">
 		<echo message="You are about to build the release file '${build.name}'."/>
 		<echo message="If you want use another name, type 'n' and edit config.xml (section 'Build Support')"/>
 		<echo message="or use a command line option -Dbuild.name=..."/>

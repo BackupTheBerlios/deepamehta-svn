@@ -8,6 +8,8 @@ package de.deepamehta.launchpad.setup.wizard;
 import java.util.List;
 
 import jwf.WizardPanel;
+import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentFactory;
 
 /**
  * This is the base class for all wizard panels. It provides sensible default implementations
@@ -17,12 +19,14 @@ import jwf.WizardPanel;
 public abstract class AbstractWizardPanel extends WizardPanel {
 
     protected SetupWizard wizard;
+    protected Environment env;
     
     /**
      * The default constructor stores the reference to the parent wizard.
      * @param parent
      */
     public AbstractWizardPanel(SetupWizard parent) {
+    	this.env = EnvironmentFactory.getEnvironment(); 
         this.wizard = parent;
     }
     

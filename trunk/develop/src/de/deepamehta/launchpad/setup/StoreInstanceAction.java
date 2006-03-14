@@ -58,7 +58,8 @@ class StoreInstanceAction extends AbstractSetupAction {
                 this.config.getCMConfig().removeProperty("dba_password");
             }
             // save instance configuration
-            Environment.getEnvironment().addInstance(this.config);
+            env.addInstance(this.config);
+            env.saveInstances();
         } catch (EnvironmentException e) {
             addErrorMessage("Unable to save new instance.", e);
             return false;

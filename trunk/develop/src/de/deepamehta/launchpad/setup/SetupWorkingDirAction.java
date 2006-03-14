@@ -38,7 +38,6 @@ class SetupWorkingDirAction extends AbstractSetupAction {
      */
     public SetupWorkingDirAction(InstanceConfiguration config) {
     	super(config);
-    	this.env = Environment.getEnvironment();
     	this.workingDir = config.getWorkingDirectory();
         this.target = new File(this.workingDir);
     }
@@ -76,7 +75,9 @@ class SetupWorkingDirAction extends AbstractSetupAction {
                 addErrorMessage("Unable to create working directory " + this.workingDir);
                 return false;
             } else {
-            	return extractZipFile(this.env.getInstanceDataSourceFile(), this.workingDir);
+            	return extractZipFile(env.getHomeDirectory() + env.getFileSeparator() + "bin" 
+                		+ env.getFileSeparator() + "instance-data.zip", this.workingDir);
+            	// TODO Remove hard-coded ZIP file path.
             }
         }
     }

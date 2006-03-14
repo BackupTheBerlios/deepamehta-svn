@@ -28,6 +28,11 @@ import de.deepamehta.environment.instance.CorporateMemoryConfiguration;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 import de.deepamehta.service.CorporateMemory;
 
+// FIXME Problem with default instance data: 
+//*** RelationalCorporateMemory.update(): java.sql.SQLException: Duplicate entry 'a-128-1' for key 1 -- INSERT, UPDATE or DELETE statement failed
+//INSERT INTO Association (ID, Version, TypeID, TypeVersion, TopicID1, TopicVersion1, TopicID2, TopicVersion2) VALUES ('a-128', 1, 'at-derivation', 1, 'tt-topiccontainer', 1, 'tt-whoistopiccontainer', 1)
+
+
 /**
  * This class is responsible for populating a new and empty Corporate Memory with the initial
  * contents required by the DeepaMehta core.

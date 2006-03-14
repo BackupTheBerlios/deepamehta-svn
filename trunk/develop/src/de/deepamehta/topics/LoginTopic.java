@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 
 import de.deepamehta.BaseTopic;
 import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentFactory;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.LoginCheck;
 
@@ -21,10 +22,12 @@ import de.deepamehta.service.LoginCheck;
 public class LoginTopic extends LiveTopic {
 
 	private static final String SERVER_PACKAGE = "de.deepamehta.service";
+	private Environment env;
 	private LoginCheck loginCheck;
 
 	public LoginTopic(BaseTopic topic, ApplicationService as) {
 		super(topic, as);
+		env = EnvironmentFactory.getEnvironment();
 	}
 
 	/**
@@ -63,7 +66,7 @@ public class LoginTopic extends LiveTopic {
 	private LoginCheck createLoginCheck() {
 		String loginClassName = SERVER_PACKAGE + "." + as.typeName(this);
 		try {
-			Constructor cons = Environment.loadClass(loginClassName).getConstructor(
+			Constructor cons = env.loadClass(loginClassName).getConstructor(
 				new Class[] {LiveTopic.class});
 			return (LoginCheck) cons.newInstance(new Object[] {this});
 		} catch (Exception e) {

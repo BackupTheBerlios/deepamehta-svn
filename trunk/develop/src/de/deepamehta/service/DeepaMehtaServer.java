@@ -18,7 +18,8 @@ import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.environment.Environment;
-import de.deepamehta.environment.EnvironmentType;
+import de.deepamehta.environment.EnvironmentException;
+import de.deepamehta.environment.EnvironmentFactory;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 import de.deepamehta.environment.instance.UnknownInstanceException;
 
@@ -130,7 +131,7 @@ final class DeepaMehtaServer implements ApplicationServiceHost, DeepaMehtaConsta
 		
 		try {
 			// initialize environment
-			this.env = Environment.getEnvironment(args, EnvironmentType.FAT);
+			this.env = EnvironmentFactory.getServerEnvironment(args);
 			logger.info("Running as standalone server.");
 			
 			// say hello
@@ -139,11 +140,11 @@ final class DeepaMehtaServer implements ApplicationServiceHost, DeepaMehtaConsta
 			}
 			
 			// retrieve instance configuration
-			this.instanceConfig = this.env.guessInstance();
+			this.instanceConfig = this.env.getInstanceConfiguration();
 			logger.info("Starting instance " + this.instanceConfig.getId() + "...");
 			
 			// initialize server socket
-			// TODO use server interface too
+			// TODO use server interface setting too
 			this.socket = new ServerSocket(this.instanceConfig.getServerPort());
 			
 			// initialize application service
@@ -160,6 +161,9 @@ final class DeepaMehtaServer implements ApplicationServiceHost, DeepaMehtaConsta
 			}
 			
 			return true;
+		} catch (EnvironmentException e) {
+			logger.error("An error occurred during initialization of the environment.", e);
+			return false;
 		} catch (UnknownInstanceException e) {
 			logger.error("Unable to load the instance specified.", e);
 			return false;

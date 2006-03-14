@@ -40,7 +40,6 @@ class InstallApplicationFilesAction extends AbstractSetupAction {
      */
     public InstallApplicationFilesAction(InstanceConfiguration config, ApplicationSpecification application) {
     	super(config);
-    	this.env = Environment.getEnvironment();
     	this.workingDir = config.getWorkingDirectory();
     	this.app = application;
     }
@@ -70,9 +69,9 @@ class InstallApplicationFilesAction extends AbstractSetupAction {
 
     	for (Iterator iter = app.getDataFileIterator(); iter.hasNext();) {
 			String filename = (String) iter.next();
-			if (!filename.startsWith(Environment.getFileSeparator())) {
+			if (!filename.startsWith(env.getFileSeparator())) {
 				// TODO What about Windoze?
-				filename = app.getSourcePath() + Environment.getFileSeparator() + filename;
+				filename = app.getSourcePath() + env.getFileSeparator() + filename;
 			}
 			if (!extractZipFile(filename, this.workingDir))
 				return false;

@@ -34,7 +34,8 @@ import org.apache.commons.logging.LogFactory;
 
 import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.Environment;
-import de.deepamehta.environment.instance.UnknownInstanceException;
+import de.deepamehta.environment.EnvironmentFactory;
+import de.deepamehta.environment.instance.InstanceTableModel;
 
 /**
  * This class represents the main window of the instance manager. It contains
@@ -72,14 +73,14 @@ public class MainWindow extends JFrame implements WindowListener, ActionListener
 		
 		super(DeepaMehtaMessages.getString("LaunchPad.MainWindow.Title")); //$NON-NLS-1$
 		this.manager = manager;
-		this.env = Environment.getEnvironment();
+		this.env = EnvironmentFactory.getEnvironment();
 		
 		addWindowListener(this);
 		setupMenu();
 		this.selModel = new DefaultListSelectionModel();
 		this.selModel.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
 		this.selModel.addListSelectionListener(this);
-		this.instanceTable = new JTable(env.getInstanceModel(), null, this.selModel);
+		this.instanceTable = new JTable(env.getInstanceTableModel(), null, this.selModel);
 		initialize();
 		
 		setLocation(50, 50);
@@ -268,22 +269,18 @@ public class MainWindow extends JFrame implements WindowListener, ActionListener
 		if (index < 0) {
 			id = "";
 		} else {
-			try {
-                id = this.env.getInstance(index).getId();
-            } catch (UnknownInstanceException e) {
-                id = "";
-            }
+			id = this.env.getInstance(index).getId();
 		}
 		logger.debug("Action " + command + " issued on instance " + id + ".");
 		
 		
 		/* view changes are handled by the main window itself */
 		if (command.equals(CMD_VIEW_SIMPLE)) {
-			this.env.getInstanceModel().setDetailedView(false);
+			((InstanceTableModel)this.env.getInstanceTableModel()).setDetailedView(false);
 			return; 
 		}
 		if (command.equals(CMD_VIEW_DETAILED)) {
-		    this.env.getInstanceModel().setDetailedView(true);
+		    ((InstanceTableModel)this.env.getInstanceTableModel()).setDetailedView(true);
 			return; 
 		}
 		

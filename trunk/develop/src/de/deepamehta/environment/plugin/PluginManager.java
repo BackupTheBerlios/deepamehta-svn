@@ -7,8 +7,15 @@ package de.deepamehta.environment.plugin;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
+import javax.swing.event.EventListenerList;
+import javax.swing.event.ListDataListener;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.Log;
@@ -23,18 +30,19 @@ import de.deepamehta.environment.Environment;
  * It is responsible for both parsing the plugin configuration file and loading the plugins.  
  * @author vwegert
  */
-public class PluginManager {
+public class PluginManager implements ListModel {
 
-    private static Log logger = LogFactory.getLog(PluginManager.class);;
+    private static Log logger = LogFactory.getLog(PluginManager.class);
     private Environment env;
     private Hashtable plugins;
+    private EventListenerList listenerList = new EventListenerList();
     
     /**
      * The default constructor to create a new plugin manager. 
      */
-    public PluginManager() {
+    public PluginManager(Environment parent) {
         super();
-        env = Environment.getEnvironment();
+        this.env = parent;
         this.plugins = new Hashtable();
     }
     
@@ -103,19 +111,58 @@ public class PluginManager {
             logger.debug("Loading plugin " + specification.getName() + "...");
             try {
             	// TODO Load preload and postload classes too.
-            	if (!specification.getMainClass().getClassSource().equals("core"))
-            		env.loadExternalJAR(specification.getMainClass().getClassSource());
-                Environment.loadClass(specification.getMainClass().getClassName());
+
+    			try {
+    				String source = specification.getMainClass().getClassSource();
+    				if (!source.equals("core")) {
+    					if (!source.startsWith(env.getFileSeparator())) {
+    						// TODO How about Windoze?
+    						source = env.getHomeDirectory() + env.getFileSeparator() + source;
+    					}
+    					env.loadExternalJAR(new URL("file://" + source)); // TODO URL assembly?
+    				}
+    			} catch (MalformedURLException e) {
+    				logger.error("Unable to load JAR " + specification.getMainClass().getClassSource(), e);
+    			}
+                env.loadClass(specification.getMainClass().getClassName());
                 this.plugins.put(specification.getMainClass().getClassName(), specification);
             } catch (ClassNotFoundException e) {
                 logger.error("Unable to load plugin " + specification.getName(), e);
-            } catch (MalformedURLException e) {
-				logger.error("The plugin source is invalid.", e);
 			}
         } else {
             logger.debug("Plugin " + specification.getName() + " already loaded.");
         }
     }
+
+	/* (non-Javadoc)
+	 * @see java.util.Hashtable#get(java.lang.Object)
+	 */
+	public PluginSpecification getPlugin(String key) {
+		return (PluginSpecification) plugins.get(key);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.util.Hashtable#keys()
+	 */
+	public Enumeration keys() {
+		return plugins.keys();
+	}
+
+	public int getSize() {
+		return plugins.size();
+	}
+
+	public Object getElementAt(int index) {
+	  	return this.plugins.keySet().toArray()[index];
+	}
+
+	public void addListDataListener(ListDataListener l) {
+		listenerList.add(ListDataListener.class, l);		
+	}
+
+	public void removeListDataListener(ListDataListener l) {
+		listenerList.remove(ListDataListener.class, l);		
+	}
     
     
 }

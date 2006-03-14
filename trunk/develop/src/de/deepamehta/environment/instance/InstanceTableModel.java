@@ -59,12 +59,7 @@ public class InstanceTableModel extends AbstractTableModel {
 	public Object getValueAt(int row, int column) {
 
 		InstanceConfiguration config;
-        try {
-            config = this.manager.get(row);
-        } catch (UnknownInstanceException e) {
-            logger.error("Attempt to read non-existing line - this should never happen!", e);
-            config = null;
-        }
+		config = this.manager.get(row);
         
         if (this.detailedView) {
 			switch(column) {

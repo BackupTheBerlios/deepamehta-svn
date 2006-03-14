@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import de.deepamehta.environment.Environment;
+import de.deepamehta.environment.EnvironmentFactory;
 import de.deepamehta.environment.instance.InstanceConfiguration;
 
 public abstract class AbstractSetupAction implements SetupAction {
@@ -30,7 +31,7 @@ public abstract class AbstractSetupAction implements SetupAction {
 	 * @param conf
 	 */
 	public AbstractSetupAction(InstanceConfiguration conf) {
-		this.env = Environment.getEnvironment();
+		this.env = EnvironmentFactory.getEnvironment();
 		this.config = conf;
 		this.messages = new ArrayList();
 	}
