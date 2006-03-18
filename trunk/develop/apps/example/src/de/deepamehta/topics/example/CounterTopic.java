@@ -29,28 +29,34 @@ public class CounterTopic extends LiveTopic {
 		super(topic, as);
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.deepamehta.topics.LiveTopic#disabledProperties(de.deepamehta.service.Session)
-	 */
-	public Vector disabledProperties(Session session) {
-		Vector properties = new Vector();
-		properties.addElement(PROPERTY_VALUE);
-		return properties;
-	}
-
+	
+	// **********************
+	// *** Defining Hooks ***
+	// **********************
+	
+	// --------------------------
+	// --- Providing Commands ---
+	// --------------------------
+	
 	/* (non-Javadoc)
 	 * @see de.deepamehta.topics.LiveTopic#contextCommands(java.lang.String, java.lang.String, de.deepamehta.service.Session, de.deepamehta.service.CorporateDirectives)
 	 */
 	public CorporateCommands contextCommands(String topicmapID, String viewmode, Session session, CorporateDirectives directives) {
-		CorporateCommands commands = super.contextCommands(topicmapID, viewmode, session, directives);
+		CorporateCommands commands = new CorporateCommands(as);
+		commands.addNavigationCommands(this, as.editorContext(topicmapID), session);
 		commands.addSeparator();
 		commands.addCommand(Messages.getString("CounterTopic.increase"), CMD_INCREASE_COUNTER, //$NON-NLS-1$
 				FILESERVER_ICONS_PATH, ICON_INCREASE_COUNTER);
 		commands.addCommand(Messages.getString("CounterTopic.reset"), CMD_RESET_COUNTER,       //$NON-NLS-1$
 				FILESERVER_ICONS_PATH, ICON_RESET_COUNTER);
+		commands.addStandardCommands(this, as.editorContext(topicmapID), viewmode, session, directives);
 		return commands;
 	}
-
+	
+	// --------------------------
+	// --- Executing Commands ---
+	// --------------------------
+	
 	/* (non-Javadoc)
 	 * @see de.deepamehta.topics.LiveTopic#executeCommand(java.lang.String, de.deepamehta.service.Session, java.lang.String, java.lang.String)
 	 */
@@ -70,6 +76,23 @@ public class CounterTopic extends LiveTopic {
 		}
 		return directives;
 	}
+	
+	// ---------------------------
+	// --- Handling Properties ---
+	// ---------------------------
+	
+	/* (non-Javadoc)
+	 * @see de.deepamehta.topics.LiveTopic#disabledProperties(de.deepamehta.service.Session)
+	 */
+	public Vector disabledProperties(Session session) {
+		Vector properties = new Vector();
+		properties.addElement(PROPERTY_VALUE);
+		return properties;
+	}
+	
+	// *******************
+	// *** API Methods ***
+	// *******************
 
 	/**
 	 * MISSDOC No documentation for method increaseCounter of type CounterTopic
@@ -92,5 +115,10 @@ public class CounterTopic extends LiveTopic {
 	public void resetCounter() {
 		cm.setTopicData(getID(), 1, PROPERTY_VALUE, "0");
 	}
+	
+	// ***********************
+	// *** Private Methods ***
+	// ***********************
+	
 }
 
