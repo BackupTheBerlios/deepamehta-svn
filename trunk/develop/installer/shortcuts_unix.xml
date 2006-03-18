@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<shortcuts>
+
+  <programGroup defaultName="DeepaMehta" location="applications"/>
+
+    <shortcut
+     name="DeepaMehta Launch Pad"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="$INSTALL_PATH/DeepaMehta.sh"
+     commandLine=""
+     workingDirectory="$INSTALL_PATH"
+     description="DeepaMehta Launch Pad and Instance Setup Tool"
+     iconFile="$INSTALL_PATH/bin/DeepaMehta.png"
+     iconIndex="0"
+     type="Application"
+     encoding="UTF-8"
+     terminal="true"
+     KdeSubstUID="false"
+     initialState="normal">   
+     <createForPack name="DeepaMehta Application"/>     
+   </shortcut> 
+
+	<!-- maybe create shortcuts for the documentation later 
+   <shortcut
+     name="IzPack@ver@ XHtml Documentation"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="$INSTALL_PATH/bin/start.sh"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/doc/izpack/xhtml/index.html"
+     initialState="noShow"
+     iconFile="help"
+     iconIndex="0" 
+     url="$INSTALL_PATH/doc/izpack/xhtml/index.html"                                
+     type="Application"
+     encoding="UTF-8" 
+     createForAll="true"  
+     description="This opens a WebBrowser to look into the IzPack @build.number@ (HTML) user documentation">
+     <createForPack name="XHTML Documentation"/>
+   </shortcut> 
+  
+     <shortcut
+     name="IzPack@ver@ Java Documentation"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="$INSTALL_PATH/bin/start.sh"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/doc/izpack/javadoc/index.html"
+     initialState="noShow"
+     iconFile="help"
+     iconIndex="0" 
+     url="$INSTALL_PATH/doc/izpack/javadoc/index.html"                                
+     type="Application"
+     encoding="UTF-8" 
+     createForAll="true"  
+     description="This opens a WebBrowser to look into the IzPack @build.number@ (HTML) Java documentation">
+     <createForPack name="Java Documentation"/>
+   </shortcut>
+  
+   <shortcut
+     name="NanoXML Documentation"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="acroread"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/doc/nanoxml/NanoXML-Java.pdf"
+     initialState="noShow"
+     iconFile="acroread"
+     iconIndex="0"                                      
+     type="Application"
+     encoding="UTF-8"   
+     createForAll="true"
+     description="This opens Adobe (Acrobat) Reader (if available) to look into or print the NanoXML (PDF) user documentation">
+     <createForPack name="NanoXML Documentation"/>
+   </shortcut>
+
+   <shortcut
+     name="IzPack@ver@ PDF Documentation"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="acroread"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/doc/izpack/pdf/izpack-doc.pdf"
+     initialState="noShow"
+     iconFile="acroread"
+     iconIndex="0"                                   
+     type="Application"
+     encoding="UTF-8"   
+     createForAll="true"
+     description="This opens Adobe (Acrobat) Reader (if available) to look into or print the IzPack @build.number@ (PDF) user documentation">
+     
+     <createForPack name="PDF Documentation"/>
+   </shortcut>
+   --> 
+      
+   <shortcut
+     name="DeepaMehta Uninstaller"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="no"
+     startup="no"
+     target="java"
+     commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
+     initialState="noShow"
+     iconFile="trashcan_full"
+     iconIndex="0" 
+     workingDirectory=""
+     type="Application"
+     encoding="UTF-8"
+     createForAll="false"
+     description="This uninstalls DeepaMehta">
+     <createForPack name="DeepaMehta Application" />
+   </shortcut> 
+   
+   
+</shortcuts>
