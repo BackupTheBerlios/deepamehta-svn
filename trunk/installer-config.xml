@@ -2,7 +2,7 @@
 	
 	<info>
 		<appname>DeepaMehta</appname>
-		<appversion>2.0b6</appversion>
+		<appversion>trunk</appversion>
 		<authors>
 			<author name="Joerg Richter" email="jri@freenet.de"/>
 			<author name="Volker Wegert" email="deepamehta@volker-wegert.de"/>
@@ -11,7 +11,11 @@
 		<webdir>http://www.deepamehta.de/webinstall</webdir>
 	</info>
 	
-	<guiprefs width="640" height="480" resizable="no"/>
+	<guiprefs width="800" height="550" resizable="no">
+		<laf name="looks">
+			<os family="unix"/>
+		</laf>
+	</guiprefs>
 	
 	<locale>
 		<langpack iso3="eng"/>
@@ -19,7 +23,9 @@
 	
 	<resources>
 		<res id="HTMLLicencePanel.licence" src="docs/license.html"/>
-		<res id="HTMLInfoPanel.info" src="docs/readme.html"/>
+		<res id="HTMLInfoPanel.info"       src="docs/readme.html"/>
+        <res id="shortcutSpec.xml"         src="develop/installer/shortcuts_windows.xml"/>
+        <res id="Unix_shortcutSpec.xml"    src="develop/installer/shortcuts_unix.xml"/>
 	</resources>
 	
 	<panels>
@@ -29,8 +35,13 @@
 		<panel classname="TargetPanel"/>
 		<panel classname="PacksPanel"/>
 		<panel classname="InstallPanel"/>
+        <panel classname="ShortcutPanel" />
 		<panel classname="SimpleFinishPanel"/>
 	</panels>
+	
+	<listeners>
+		<listener installer="DeepaMehtaInstallerListener"/>
+	</listeners>
 	
 	<packs>
 		<pack name="DeepaMehta Application" required="yes">
@@ -43,14 +54,7 @@
 				<include name="data"/>
 				<include name="docs/license.html"/>
 				<include name="docs/readme.html"/>
-			</fileset>
-			<file targetdir="$INSTALL_PATH" src="DeepaMehta.sh">
-				<os family="unix"/>
-			</file>
-			<executable targetfile="$INSTALL_PATH/DeepaMehta.sh" stage="never">
-				<os family="unix"/>
-			</executable>
-				
+			</fileset>				
 		</pack>
 		
 		<pack name="Libraries" required="no" preselected="yes">
@@ -65,6 +69,7 @@
 			<description>The sources of the DeepaMehta framework.</description>
 			<fileset dir="" targetdir="$INSTALL_PATH">
 				<include name="develop/src/**/*"/>
+				<include name="develop/apps/**/*"/>
 				<include name="build.xml"/>
 				<include name="config.xml"/>
 				<include name="build-installer.xml"/>
@@ -81,5 +86,7 @@
 		</pack>
 		
 	</packs>
-	
+
+    <native type="izpack" name="ShellLink.dll" />
+
 </installation>

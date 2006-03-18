@@ -11,13 +11,28 @@
 	</description>
 
 	<!-- location of izPack installation -->
-	<property name="izpack" value="develop/libs/izPack/"/>
+	<property name="izpack"       value="develop/libs/izPack"/>
+	
+	<!-- parameters of custom installer listener -->
+	<property name="custom.base"  value="develop/installer"/>
+	<property name="custom.src"   value="${custom.base}/src"/>
+	<property name="custom.build" value="${custom.base}/build"/>
+	<property name="custom.jar"   value="${custom.build}/DeepaMehtaInstallerListener.jar"/>
 
 	<taskdef name="izpack" 
 		classpath="${izpack}/lib/compiler.jar" 
 		classname="com.izforge.izpack.ant.IzPackTask"/>
 	
-	<target name="installer">
+	<target name="actions">
+		<javac srcdir="${custom.src}" destdir="${custom.build}" listfiles="yes"/>
+		<jar jarfile="${custom.jar}" basedir="${custom.build}">
+			<include name="de/deepamehta/installer/*.class"/>
+			<zipfileset src="${izpack}/lib/izevent.jar"/>
+		</jar>
+		<copy file="${custom.jar}" todir="${izpack}/bin/customActions"/>
+	</target>
+	
+	<target name="installer" depends="actions">
 		<mkdir dir="install/monolithic"/>
 		<izpack 
 			input="installer-config.xml"
