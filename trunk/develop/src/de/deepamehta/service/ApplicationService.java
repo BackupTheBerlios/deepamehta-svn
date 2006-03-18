@@ -5145,19 +5145,15 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 			return hook.invoke(null, paramValues);								// throws IllegalAccessException
 																				// throws InvocationTargetException
 		} catch (ClassNotFoundException e) {
-			System.out.println("*** ApplicationService.triggerStaticHook(): className=\"" + className +
-				"\" hookName=\"" + hookName + "\" --> " + e);
+			logger.error("Unable to instantiate custom implementation " + className, e);
 		} catch (NoSuchMethodException e) {
 			if (throwIfNoSuchHookExists) {
 				throw new DeepaMehtaException("class \"" + className + "\" has no static \"" + hookName + "\" hook");
 			}
 		} catch (IllegalAccessException e) {
-			System.out.println("*** ApplicationService.triggerStaticHook(): className=\"" + className +
-				"\" hookName=\"" + hookName + "\" --> " + e);
+			logger.error("Access to custom implementation " + className + " denied", e);
 		} catch (InvocationTargetException e) {
-			System.out.println("*** ApplicationService.triggerStaticHook(): className=\"" + className +
-				"\" hookName=\"" + hookName + "\" --> " + e);
-			e.printStackTrace();
+			logger.error("Exception occurred during execution of hook " + hookName + " of custom implementation " + className, e);
 		}
 		return null;
 	}
