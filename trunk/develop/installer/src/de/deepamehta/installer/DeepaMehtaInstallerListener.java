@@ -76,7 +76,7 @@ public class DeepaMehtaInstallerListener extends SimpleInstallerListener {
 	 */
 	private void createWindowsScript(AutomatedInstallData idata, AbstractUIProgressHandler handler) throws FileNotFoundException {
 		// try to locate the JRE
-		File jre = new File(idata.getVariable("JAVA_HOME") + "\\bin\\java");
+		File jre = new File(idata.getVariable("JAVA_HOME") + "\\bin\\java.exe");
 		if (!jre.exists()) {
 			handler.emitError("DeepaMehta Installer", "Unable to locate JRE.");
 		} else {
