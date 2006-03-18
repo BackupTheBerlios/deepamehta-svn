@@ -51,7 +51,7 @@ public abstract class AbstractEnvironment implements Environment {
 	// ----------------------------
 
 	public String getClassPath() {
-        return System.getProperty("java.class.path").replaceAll(getWorkingDirectory() + "/", "");
+        return System.getProperty("java.class.path");
 	}
 
 	public String getEndorsedPath() {
