@@ -36,14 +36,26 @@ public final class InstanceType {
 		}
     }
     
+    /**
+     * MISSDOC No documentation for method isMonolithic of type InstanceType
+     * @return
+     */
     public boolean isMonolithic() {
         return this.equals(MONOLITHIC);
     }
     
+    /**
+     * MISSDOC No documentation for method isServer of type InstanceType
+     * @return
+     */
     public boolean isServer() {
         return this.equals(SERVER);
     }
     
+    /**
+     * MISSDOC No documentation for method isClient of type InstanceType
+     * @return
+     */
     public boolean isClient() {
         return this.equals(CLIENT);
     }

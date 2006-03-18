@@ -39,6 +39,7 @@ public class PluginManager implements ListModel {
     
     /**
      * The default constructor to create a new plugin manager. 
+     * @param parent The parent environment.
      */
     public PluginManager(Environment parent) {
         super();
@@ -134,35 +135,51 @@ public class PluginManager implements ListModel {
         }
     }
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method getPlugin of type PluginManager
+	 * @param key
+	 * @return
 	 * @see java.util.Hashtable#get(java.lang.Object)
 	 */
 	public PluginSpecification getPlugin(String key) {
 		return (PluginSpecification) plugins.get(key);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method keys of type PluginManager
+	 * @return
 	 * @see java.util.Hashtable#keys()
 	 */
 	public Enumeration keys() {
 		return plugins.keys();
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.ListModel#getSize()
+	 */
 	public int getSize() {
 		return plugins.size();
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.ListModel#getElementAt(int)
+	 */
 	public Object getElementAt(int index) {
 	  	return this.plugins.keySet().toArray()[index];
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.ListModel#addListDataListener(javax.swing.event.ListDataListener)
+	 */
 	public void addListDataListener(ListDataListener l) {
 		listenerList.add(ListDataListener.class, l);		
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.ListModel#removeListDataListener(javax.swing.event.ListDataListener)
+	 */
 	public void removeListDataListener(ListDataListener l) {
 		listenerList.remove(ListDataListener.class, l);		
-	}
-    
+	}    
     
 }

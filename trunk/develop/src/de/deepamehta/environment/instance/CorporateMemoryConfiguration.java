@@ -32,7 +32,9 @@ import de.deepamehta.service.CorporateMemory;
  */
 public class CorporateMemoryConfiguration extends AbstractTableModel {
 
-    private static Log logger = LogFactory.getLog(CorporateMemoryConfiguration.class);
+	private static final long serialVersionUID = 1876639243224753360L;
+
+	private static Log logger = LogFactory.getLog(CorporateMemoryConfiguration.class);
     
     private Environment env;
     

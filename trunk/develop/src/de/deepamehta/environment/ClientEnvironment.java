@@ -73,7 +73,6 @@ public class ClientEnvironment extends AbstractEnvironment {
      * method may cause the entire program to exit either if the command line parsing went wrong
      * or if the usage description is requested. This is the main reason why the environment 
      * should be initialized before any other component.
-     * @param cmdLineArguments The command line arguments to process.
      */
     private void parseOptions() {
        

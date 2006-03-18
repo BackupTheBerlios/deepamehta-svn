@@ -12,6 +12,11 @@ import de.deepamehta.environment.ClassSpecification;
 import de.deepamehta.environment.Environment;
 import de.deepamehta.environment.EnvironmentFactory;
 
+/**
+ * MISSDOC No documentation for type ApplicationSpecification
+ * @author vwegert
+ *
+ */
 public class ApplicationSpecification {
 
 	private static Log logger = LogFactory.getLog(ApplicationSpecification.class);
@@ -22,6 +27,9 @@ public class ApplicationSpecification {
 	private Vector implementations; // contains ClassSpecification instances pointing to the JARs to load
 	private Vector dataFiles, contentFiles;
 	
+	/**
+	 * MISSDOC No documentation for constructor of ApplicationSpecification
+	 */
 	public ApplicationSpecification() {
 		env = EnvironmentFactory.getEnvironment();
 		implementations = new Vector();
@@ -57,34 +65,47 @@ public class ApplicationSpecification {
 		this.id = id;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method addImplementation of type ApplicationSpecification
+	 * @param spec
+	 * @return
 	 * @see java.util.Vector#add(java.lang.Object)
 	 */
 	public boolean addImplementation(ClassSpecification spec) {
 		return implementations.add(spec);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method getImplementation of type ApplicationSpecification
+	 * @param index
+	 * @return
 	 * @see java.util.Vector#get(int)
 	 */
 	public ClassSpecification getImplementation(int index) {
 		return (ClassSpecification) implementations.get(index);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method getImplementationIterator of type ApplicationSpecification
+	 * @return
 	 * @see java.util.AbstractList#iterator()
 	 */
 	public Iterator getImplementationIterator() {
 		return implementations.iterator();
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method numImplementations of type ApplicationSpecification
+	 * @return
 	 * @see java.util.Vector#size()
 	 */
 	public int numImplementations() {
 		return implementations.size();
 	}
 
+	/**
+	 * MISSDOC No documentation for method loadImplementations of type ApplicationSpecification
+	 */
 	public void loadImplementations() {
 		
 		// load all JARs
@@ -105,56 +126,76 @@ public class ApplicationSpecification {
 		}
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method addDataFile of type ApplicationSpecification
+	 * @param filename
+	 * @return
 	 * @see java.util.Vector#add(java.lang.Object)
 	 */
 	public boolean addDataFile(String filename) {
 		return dataFiles.add(filename);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method getDataFile of type ApplicationSpecification
+	 * @param index
+	 * @return
 	 * @see java.util.Vector#get(int)
 	 */
 	public String getDataFile(int index) {
 		return (String) dataFiles.get(index);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method getDataFileIterator of type ApplicationSpecification
+	 * @return
 	 * @see java.util.AbstractList#iterator()
 	 */
 	public Iterator getDataFileIterator() {
 		return dataFiles.iterator();
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method numDataFiles of type ApplicationSpecification
+	 * @return
 	 * @see java.util.Vector#size()
 	 */
 	public int numDataFiles() {
 		return dataFiles.size();
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method addContentFile of type ApplicationSpecification
+	 * @param filename
+	 * @return
 	 * @see java.util.Vector#add(java.lang.Object)
 	 */
 	public boolean addContentFile(String filename) {
 		return contentFiles.add(filename);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method getContentFile of type ApplicationSpecification
+	 * @param index
+	 * @return
 	 * @see java.util.Vector#get(int)
 	 */
 	public String getContentFile(int index) {
 		return (String) contentFiles.get(index);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method getContentFileIterator of type ApplicationSpecification
+	 * @return
 	 * @see java.util.AbstractList#iterator()
 	 */
 	public Iterator getContentFileIterator() {
 		return contentFiles.iterator();
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method numContentFiles of type ApplicationSpecification
+	 * @return
 	 * @see java.util.Vector#size()
 	 */
 	public int numContentFiles() {

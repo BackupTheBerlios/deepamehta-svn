@@ -1752,6 +1752,7 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
 
     /**
      * @see		ApplicationServiceInstance#createCorporateMemory
+     * @see 	ApplicationService#create(ApplicationServiceHost, InstanceConfiguration)
      */
 	public int getModelVersion() throws DeepaMehtaException {
 		String query = "SELECT NextKey FROM KeyGenerator WHERE Relation = 'DB-Model Version'";

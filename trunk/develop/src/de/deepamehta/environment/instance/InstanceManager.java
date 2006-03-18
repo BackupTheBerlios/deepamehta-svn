@@ -246,7 +246,9 @@ public class InstanceManager {
     	return this.model;
     }
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method keys of type InstanceManager
+	 * @return
 	 * @see java.util.Hashtable#keys()
 	 */
 	public Enumeration keys() {

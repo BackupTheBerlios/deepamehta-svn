@@ -40,6 +40,9 @@ public class InstanceConfiguration {
 	
 	private CorporateMemoryConfiguration cmConfig = null;
 
+	/**
+	 * Default constructor.
+	 */
 	public InstanceConfiguration() {
 		env = EnvironmentFactory.getEnvironment();
 	}

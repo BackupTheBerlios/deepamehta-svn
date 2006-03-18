@@ -10,6 +10,8 @@ package de.deepamehta.environment;
  */
 public class UnsupportedFunctionException extends RuntimeException {
 
+	private static final long serialVersionUID = 2389771211543028268L;
+
 	/**
 	 * MISSDOC No documentation for constructor of UnsupportedFunctionException
 	 */

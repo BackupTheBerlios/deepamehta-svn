@@ -21,6 +21,11 @@ import de.deepamehta.environment.Environment;
 import de.deepamehta.environment.EnvironmentException;
 import de.deepamehta.environment.instance.InstanceManager;
 
+/**
+ * MISSDOC No documentation for type ApplicationManager
+ * @author vwegert
+ *
+ */
 public class ApplicationManager implements ListModel {
 
     private static Log logger = LogFactory.getLog(InstanceManager.class);
@@ -28,12 +33,21 @@ public class ApplicationManager implements ListModel {
     private Hashtable applications;
     private EventListenerList listenerList = new EventListenerList();
 
+	/**
+	 * MISSDOC No documentation for constructor of ApplicationManager
+	 * @param parent
+	 */
 	public ApplicationManager(Environment parent) {
 		super();
 		this.env = parent;
 		this.applications = new Hashtable();
 	}
 
+	/**
+	 * MISSDOC No documentation for method scanApplicationPath of type ApplicationManager
+	 * @param appPath
+	 * @throws EnvironmentException
+	 */
 	public void scanApplicationPath(String appPath) throws EnvironmentException {
 		
 		logger.debug("Loading applications from " + appPath + "...");
@@ -110,35 +124,47 @@ public class ApplicationManager implements ListModel {
         }
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method isApplicationPresent of type ApplicationManager
+	 * @param key
+	 * @return
 	 * @see java.util.Hashtable#containsKey(java.lang.Object)
 	 */
 	public boolean isApplicationPresent(Object key) {
 		return applications.containsKey(key);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method keys of type ApplicationManager
+	 * @return
 	 * @see java.util.Hashtable#keys()
 	 */
 	public Enumeration keys() {
 		return applications.keys();
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method getApplication of type ApplicationManager
+	 * @param id
+	 * @return
 	 * @see java.util.Hashtable#get(java.lang.Object)
 	 */
 	public ApplicationSpecification getApplication(String id) {
 		return (ApplicationSpecification) applications.get(id);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method isEmpty of type ApplicationManager
+	 * @return
 	 * @see java.util.Hashtable#isEmpty()
 	 */
 	public boolean isEmpty() {
 		return applications.isEmpty();
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * MISSDOC No documentation for method getIDs of type ApplicationManager
+	 * @return
 	 * @see java.util.Hashtable#keys()
 	 */
 	public Enumeration getIDs() {
