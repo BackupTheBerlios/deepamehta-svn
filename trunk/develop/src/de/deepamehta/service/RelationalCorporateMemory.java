@@ -77,7 +77,6 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
 	// *** Constructor ***
 	// *******************
 
-
 	public RelationalCorporateMemory() {
 		// default constructor does nothing - well, almost nothing
 		con = null;
@@ -85,21 +84,7 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
 		env = EnvironmentFactory.getEnvironment();
 	}
 
-	/**
-	 * @see		ApplicationServiceInstance#createCorporateMemory
-	 */
-	RelationalCorporateMemory(String jdbcDriverClass, String jdbcURL) throws Exception {
-		// FIXME remove this code ASAP - it is being replaced by startup()
-		this();
-		env.loadClass(jdbcDriverClass);
-		this.con = DriverManager.getConnection(jdbcURL);
-		this.dbmsHint = jdbcDriverClass.indexOf(DBMS_HINT_ORACLE) != -1 ?
-			DBMS_HINT_ORACLE : DBMS_HINT_SQL92;
-		System.out.println(">    DBMS hint: \"" + dbmsHint + "\"");
-	}
-
-
-
+	
 	// *************************************************************************
 	// *** Implementation of Interface de.deepamehta.service.CorporateMemory ***
 	// *************************************************************************
@@ -1751,7 +1736,6 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
 	// --- Getting version info ---
 
     /**
-     * @see		ApplicationServiceInstance#createCorporateMemory
      * @see 	ApplicationService#create(ApplicationServiceHost, InstanceConfiguration)
      */
 	public int getModelVersion() throws DeepaMehtaException {

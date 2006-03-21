@@ -48,7 +48,6 @@ import de.deepamehta.environment.EnvironmentFactory;
 import de.deepamehta.environment.instance.UnknownInstanceException;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.ApplicationServiceHost;
-import de.deepamehta.service.ApplicationServiceInstance;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.CorporateMemory;
 import de.deepamehta.service.Session;

@@ -204,45 +204,17 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	// *** Methods ***
 	// ***************
 
-
-
 	/**
-	 * References checked: 28.11.2004 (2.0b4)
-	 *
-	 * @throws	DeepaMehtaException	if an error accurrs while establishing access to corporate memory
-	 *
-	 * @see		DeepaMehtaServer#main
-	 * @see		DeepaMehtaServlet#init
-	 * @see		DeepaMehta#initApplication
-	 * @see		DeepaMehta#init
+	 * This static factory method creates a new application service and starts the corporate
+	 * memory implementation specified.
+	 * @param host The application service host to use.
+	 * @param config The corporate memory implementation to use.
+	 * @return Returns the new application service.
+	 * @throws DeepaMehtaException if an error accurrs while establishing access to corporate memory
+	 * @see DeepaMehtaServlet#init()
+	 * @see DeepaMehta#initApplication(String[])
+	 * @see DeepaMehtaServer#initApplication(String[])
 	 */
-	public static ApplicationService create(ApplicationServiceHost host, ApplicationServiceInstance instance)
-																			throws DeepaMehtaException {
-		// ### compare to client.DeepaMehta.createApplicationService()
-		// ### compare to service.DeepaMehtaServer.main()
-		System.out.println("> DeepaMehta Application Service");
-		System.out.println(">    version: " + SERVER_VERSION);
-		System.out.println(">    standard topics version: " + LiveTopic.kernelTopicsVersion);
-		System.out.println(">    communication: " + host.getCommInfo());
-		System.out.println(">    service name: \"" + instance.name + "\"");
-		System.out.println("> Corporate Memory");
-		System.out.println(">    implementation: \"" + instance.cmClass + "\"");
-		System.out.println(">    URL: \"" + instance.cmURL + "\"");
-		System.out.println(">    driver: \"" + instance.cmDriverClass + "\"");
-		// establish access to corporate memory
-		CorporateMemory cm = instance.createCorporateMemory();	// throws DME
-		// create application service
-		ApplicationService as = new ApplicationService(host, cm);
-		// set authorisation source
-		as.setAuthentificationSourceTopic();
-		// start statictics thread, basically to keep the CM connection alive,
-		// compare to DataSourceTopic.startIdleThread()
-		as.statisticsThread = new Thread(as);
-		as.statisticsThread.start();
-		//
-		return as;
-	}
-
 	public static ApplicationService create(ApplicationServiceHost host, InstanceConfiguration config) throws DeepaMehtaException {
 		
 		CorporateMemoryConfiguration cmConfig;
