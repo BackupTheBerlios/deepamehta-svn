@@ -3,11 +3,13 @@
  */
 package de.deepamehta.environment;
 
+import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 
 import javax.swing.ListModel;
 import javax.swing.table.TableModel;
@@ -101,36 +103,17 @@ public abstract class AbstractEnvironment implements Environment {
 	}
 
 	public Class loadClass(String name) throws ClassNotFoundException {
-		return Class.forName(name, true, externalClassLoader);
-		
-		
-		
-//		Class clazz = null;
-//		if (externalClassLoader != null) {
-//			try {	
-//				clazz = externalClassLoader.loadClass(name);
-//			} catch (ClassNotFoundException e) {
-//				clazz = null;
-//			}
-//		}
-//		
-//		if (clazz == null) {
-//			clazz = Class.forName(name);
-//		}
-//		
-//		return clazz;
-//		
-		
-//		if (externalClassLoader == null) {
-//			return Class.forName(name);
-//		} else {
-//			// TODO Ugly method to reverse the class loading order. Rewrite this someday.
-////			try {
-////				return Class.forName(name, true, externalClassLoader);
-////			} catch (Exception e) {
-//				return Class.forName(name);
-////			}
-//		}
+		try {
+			return Class.forName(name, true, externalClassLoader);
+		} catch (ClassNotFoundException e) {
+			logger.error("Unable to load class " + name, e);
+			logger.debug("The environment class loader is currently using the following sources:");
+			for (Iterator iter = this.externalClassSources.iterator(); iter.hasNext();) {
+				URL url = (URL) iter.next();
+				logger.debug(url);
+			}
+			throw e;
+		}
 	}
 
 	// -------------------------

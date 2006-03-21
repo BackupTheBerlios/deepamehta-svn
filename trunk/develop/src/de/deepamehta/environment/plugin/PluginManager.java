@@ -5,6 +5,7 @@
  */
 package de.deepamehta.environment.plugin;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,7 +13,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.ListDataListener;
@@ -115,16 +115,23 @@ public class PluginManager implements ListModel {
 
     			try {
     				String source = specification.getMainClass().getClassSource();
-    				if (!source.equals("core")) {
+    				if (source.equals("core")) {
+    					// if the classes can be loaded from the core, there is nothing left to do
+    				} else {
     					if (!source.startsWith(env.getFileSeparator())) {
-    						// TODO How about Windoze?
     						source = env.getHomeDirectory() + env.getFileSeparator() + source;
     					}
-    					env.loadExternalJAR(new URL("file://" + source)); // TODO URL assembly?
+    					File sourceFile = new File(source);
+    					if (!sourceFile.exists()) {
+    						logger.error("The class file " + source + " doesn't exist.");
+    					} else {
+    						env.loadExternalJAR(sourceFile.toURL()); 
+    					}
     				}
     			} catch (MalformedURLException e) {
     				logger.error("Unable to load JAR " + specification.getMainClass().getClassSource(), e);
     			}
+    			
                 env.loadClass(specification.getMainClass().getClassName());
                 this.plugins.put(specification.getMainClass().getClassName(), specification);
             } catch (ClassNotFoundException e) {

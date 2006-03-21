@@ -1,5 +1,6 @@
 package de.deepamehta.environment.application;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
@@ -113,12 +114,18 @@ public class ApplicationSpecification {
 			ClassSpecification element = (ClassSpecification) iter.next();
 			try {
 				String source = element.getClassSource();
-				if (!source.equals("core")) {
+				if (source.equals("core")) {
+					// if the classes can be loaded from the core, there is nothing left to do
+				} else {
 					if (!source.startsWith(env.getFileSeparator())) {
-						// TODO How about Windoze?
 						source = getSourcePath() + env.getFileSeparator() + source;
 					}
-					env.loadExternalJAR(new URL("file://" + source)); // TODO URL assembly?
+					File sourceFile = new File(source);
+					if (!sourceFile.exists()) {
+						logger.error("The class file " + source + " doesn't exist.");
+					} else {
+						env.loadExternalJAR(sourceFile.toURL()); 
+					}
 				}
 			} catch (MalformedURLException e) {
 				logger.error("Unable to load JAR " + element.getClassSource(), e);
