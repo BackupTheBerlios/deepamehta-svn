@@ -13,6 +13,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.Environment;
 import de.deepamehta.environment.EnvironmentFactory;
 
@@ -94,7 +95,7 @@ class ApplicationSelectionDialog extends JDialog {
 			gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			gridBagConstraints.gridy = 0;
 			labelExplanation = new JLabel();
-			labelExplanation.setText("Please select an application to install.");
+			labelExplanation.setText(DeepaMehtaMessages.getString("ApplicationSelectionDialog.SelectApplicationLabel")); //$NON-NLS-1$
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new GridBagLayout());
 			jContentPane.add(labelExplanation, gridBagConstraints);
@@ -127,7 +128,7 @@ class ApplicationSelectionDialog extends JDialog {
 	private JButton getBtnInstall() {
 		if (btnInstall == null) {
 			btnInstall = new JButton();
-			btnInstall.setText("Install");
+			btnInstall.setText(DeepaMehtaMessages.getString("ApplicationSelectionDialog.InstallButton")); //$NON-NLS-1$
 			btnInstall.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					selectedApplication = (String) getListApplications().getSelectedValue();
@@ -146,7 +147,7 @@ class ApplicationSelectionDialog extends JDialog {
 	private JButton getBtnCancel() {
 		if (btnCancel == null) {
 			btnCancel = new JButton();
-			btnCancel.setText("Cancel");
+			btnCancel.setText(DeepaMehtaMessages.getString("ApplicationSelectionDialog.CancelButton")); //$NON-NLS-1$
 			btnCancel.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					selectedApplication = null;

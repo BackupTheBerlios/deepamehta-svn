@@ -205,7 +205,7 @@ public class LaunchPad {
             return;
         }
 		
-		ApplicationSelectionDialog sel = new ApplicationSelectionDialog(mw, "Install Application...", true);
+		ApplicationSelectionDialog sel = new ApplicationSelectionDialog(mw, DeepaMehtaMessages.getString("LaunchPad.ApplicationSelectionTitle"), true); //$NON-NLS-1$
 		sel.show();
 		String app = sel.getSelectedApplication();
 		if (app != null) {
@@ -214,12 +214,12 @@ public class LaunchPad {
 			actions.prepareApplicationInstallation(config, env.getApplication(app));
 			if (actions.execute()) {
 				// show status message
-				JOptionPane.showMessageDialog(mw, "The application " + app + " was installed into the instance " + id + ".", 
-						DeepaMehtaMessages.getString("LaunchPad.Title"), JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(mw, DeepaMehtaMessages.getString("LaunchPad.ApplicationInstallationSuccessMessage", app, id), //$NON-NLS-1$
+						DeepaMehtaMessages.getString("LaunchPad.Title"), JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
 			} else {
 				// show error message
 				JOptionPane.showMessageDialog(mw, actions.getMessages(), 
-						DeepaMehtaMessages.getString("LaunchPad.Title"), JOptionPane.ERROR_MESSAGE);
+						DeepaMehtaMessages.getString("LaunchPad.Title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 			}
 		}
 		
