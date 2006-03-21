@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.environment.Environment;
 import de.deepamehta.environment.EnvironmentFactory;
-import de.deepamehta.environment.instance.InstanceTableModel;
+import de.deepamehta.environment.instance.InstanceManager;
 
 /**
  * This class represents the main window of the instance manager. It contains
@@ -77,14 +77,16 @@ public class MainWindow extends JFrame implements WindowListener, ActionListener
 		
 		addWindowListener(this);
 		setupMenu();
+		
 		this.selModel = new DefaultListSelectionModel();
 		this.selModel.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
 		this.selModel.addListSelectionListener(this);
 		this.instanceTable = new JTable(env.getInstanceTableModel(), null, this.selModel);
+		this.instanceTable.setRowHeight(36);
 		initialize();
 		
 		setLocation(50, 50);
-		setSize(400, 300);
+		setSize(500, 400);
 		setVisible(true);		
 	}
 	
@@ -275,12 +277,13 @@ public class MainWindow extends JFrame implements WindowListener, ActionListener
 		
 		
 		/* view changes are handled by the main window itself */
+		// TODO Very nasty casts from TableModel to InstanceManager - valid in this case, but should be removed.
 		if (command.equals(CMD_VIEW_SIMPLE)) {
-			((InstanceTableModel)this.env.getInstanceTableModel()).setDetailedView(false);
+			((InstanceManager)this.env.getInstanceTableModel()).setDetailedView(false);
 			return; 
 		}
 		if (command.equals(CMD_VIEW_DETAILED)) {
-		    ((InstanceTableModel)this.env.getInstanceTableModel()).setDetailedView(true);
+		    ((InstanceManager)this.env.getInstanceTableModel()).setDetailedView(true);
 			return; 
 		}
 		

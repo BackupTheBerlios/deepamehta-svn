@@ -183,7 +183,7 @@ public class LaunchPadEnvironment extends AbstractEnvironment {
 	}
 
 	public TableModel getInstanceTableModel() {
-		return this.instances.getModel();
+		return this.instances;
 	}
 
 	public void saveInstances() {

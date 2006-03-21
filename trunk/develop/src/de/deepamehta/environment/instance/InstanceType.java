@@ -5,6 +5,8 @@
  */
 package de.deepamehta.environment.instance;
 
+import javax.swing.ImageIcon;
+
 import de.deepamehta.DeepaMehtaMessages;
 
 /**
@@ -15,8 +17,12 @@ import de.deepamehta.DeepaMehtaMessages;
 public final class InstanceType {
 
     public static final InstanceType MONOLITHIC = new InstanceType(1);
-    public static final InstanceType SERVER = new InstanceType(2);
-    public static final InstanceType CLIENT = new InstanceType(3);
+    public static final InstanceType SERVER     = new InstanceType(2);
+    public static final InstanceType CLIENT     = new InstanceType(3);
+    
+    private static ImageIcon clientIcon     = new ImageIcon(ClassLoader.getSystemResource("de/deepamehta/environment/instance/client.png"));
+    private static ImageIcon serverIcon     = new ImageIcon(ClassLoader.getSystemResource("de/deepamehta/environment/instance/server.png"));
+    private static ImageIcon monolithicIcon = new ImageIcon(ClassLoader.getSystemResource("de/deepamehta/environment/instance/monolithic.png"));
     
     private int type;
     
@@ -28,12 +34,21 @@ public final class InstanceType {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-		switch(this.type) {
-		case 1: return DeepaMehtaMessages.getString("Instance.TypeMonolithic"); //$NON-NLS-1$
-		case 2: return DeepaMehtaMessages.getString("Instance.TypeServer"); //$NON-NLS-1$
-		case 3: return DeepaMehtaMessages.getString("Instance.TypeClient"); //$NON-NLS-1$
-		default: return ""; // should never be reached
-		}
+    	switch(this.type) {
+    	case 1: return DeepaMehtaMessages.getString("Instance.TypeMonolithic"); //$NON-NLS-1$
+    	case 2: return DeepaMehtaMessages.getString("Instance.TypeServer"); //$NON-NLS-1$
+    	case 3: return DeepaMehtaMessages.getString("Instance.TypeClient"); //$NON-NLS-1$
+    	default: return ""; // should never be reached
+    	}
+    }
+    
+    public ImageIcon getIcon() {
+    	switch(this.type) {
+    	case 1: return monolithicIcon;
+    	case 2: return serverIcon;
+    	case 3: return clientIcon;
+    	default: return null; // should never be reached.
+    	}
     }
     
     /**

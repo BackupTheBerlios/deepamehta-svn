@@ -227,6 +227,7 @@
 			<exclude name="de/deepamehta/service/DeepaMehtaServer.class"/>
 			<exclude name="de/deepamehta/service/DeepaMehtaServer$Connection.class"/>
 			<include name="de/deepamehta/environment/**/*.class"/>
+			<include name="de/deepamehta/environment/**/*.png"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehta"/>
 				<attribute name="Class-Path" value="${jarclasspath-srv} DeepaMehtaTopics.jar"/>
@@ -238,6 +239,7 @@
 			<include name="de/deepamehta/*.properties"/>
 			<include name="de/deepamehta/client/*.class"/>
 			<include name="de/deepamehta/environment/**/*.class"/>
+			<include name="de/deepamehta/environment/**/*.png"/>
 			<include name="de/deepamehta/service/CorporateMemory.class"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.client.DeepaMehtaClient"/>
@@ -250,6 +252,7 @@
 			<include name="de/deepamehta/*.properties"/>
 			<include name="de/deepamehta/client/*.class"/>
 			<include name="de/deepamehta/environment/**/*.class"/> <!-- TODO refine this selection -->
+			<include name="de/deepamehta/environment/**/*.png"/>
 			<zipfileset src="${libpath}/commons-logging-api-1.0.4.jar" includes="org/apache/**/*"/>
 		</jar>
 		<!-- We need a signed JAR because we won't be able to read the message files otherwise. :-( -->
@@ -260,6 +263,7 @@
 			<include name="de/deepamehta/*.properties"/>
 			<include name="de/deepamehta/service/**/*.class"/>
 			<include name="de/deepamehta/environment/**/*.class"/>
+			<include name="de/deepamehta/environment/**/*.png"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehtaServer"/>
 				<attribute name="Class-Path" value="${jarclasspath-srv} DeepaMehtaTopics.jar"/>
@@ -275,6 +279,7 @@
 			<include name="de/deepamehta/launchpad/**/*.class"/>
 			<include name="de/deepamehta/launchpad/**/*.properties"/>
 			<include name="de/deepamehta/environment/**/*.class"/>
+			<include name="de/deepamehta/environment/**/*.png"/>
 			<include name="de/deepamehta/service/*.class"/>
 			<include name="de/deepamehta/*.class"/>
 			<include name="de/deepamehta/*.properties"/>
