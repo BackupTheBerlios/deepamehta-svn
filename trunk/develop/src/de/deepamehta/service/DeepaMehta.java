@@ -18,9 +18,7 @@ import de.deepamehta.environment.instance.InstanceConfiguration;
 
 
 /**
- * The DeepaMehta client as monolithic applet/application (the server is integrated).
- * <P>
- * ### Not yet functional
+ * DeepaMehta as monolithic application (the server is integrated).
  * <P>
  * <HR>
  * Last functional change: 5.8.2002 (2.0a15-pre11)<BR>
@@ -28,7 +26,7 @@ import de.deepamehta.environment.instance.InstanceConfiguration;
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
  */
-public class DeepaMehta extends JApplet implements ApplicationServiceHost, DeepaMehtaConstants {
+public class DeepaMehta implements ApplicationServiceHost, DeepaMehtaConstants {
 
 
 
@@ -126,55 +124,6 @@ public class DeepaMehta extends JApplet implements ApplicationServiceHost, Deepa
 			logger.error("Caught unhandled DeepaMehta exception at top level.", e);
 		} catch (Throwable e) {
 			logger.error("Caught other unhandled exception at top level.", e);
-		}
-	}
-
-
-
-	// ***********************
-	// *** Applet specific ***
-	// ***********************
-
-
-
-	/**
-	 * Applet specific initialization.
-	 */
-	public void init() {
-		// >>> compare to initApplication()
-		// >>> compare to DeepaMehtaClient.init()
-		//
-		Container cp = getContentPane();
-		//
-		try {
-			// --- create presentation service ---
-			this.ps = new PresentationService();
-			// reporting
-			System.out.println("\n--- DeepaMehta " + CLIENT_VERSION + " runs as " +
-				"applet on \"" + ps.hostAddress + "\" (" + ps.platform + ") ---");
-			//
-			ps.initialize();
-			// --- create application service ---
-			String serviceName = getParameter("SERVICE_NAME");
-			String demoMapID = getParameter("DEMO_MAP");
-			ApplicationServiceInstance instance = ApplicationServiceInstance.lookup(serviceName);
-			ApplicationService as = ApplicationService.create(this, instance);	// throws DME
-			as.setGraphicsContext(this);
-			ps.installationProps = as.getInstallationProps();
-			// --- create session ---
-			Session session = as.createSession(as.getNewSessionID(), "localhost", ps.hostAddress);
-			//
-			ps.setDemoMap(demoMapID);
-			ps.setApplet(this);
-			ps.setService(new EmbeddedService(null, as, ps));	// ### null
-			if (demoMapID != null) {
-				cp.add(ps.createStartDemoGUI());
-			} else {
-				cp.add(ps.createLoginGUI());
-			}
-		} catch (DeepaMehtaException e) {
-			System.out.println("*** " + errText + " (" + e.getMessage() + ")");
-			cp.add(ps.createErrorGUI(e));
 		}
 	}
 }
