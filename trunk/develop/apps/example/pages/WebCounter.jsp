@@ -7,12 +7,10 @@
 <%@ page import="de.deepamehta.topics.example.CounterTopic" %>
 <%
   String counterName = (String) session.getAttribute("counterName");
-  CounterTopic counter = (CounterTopic) session.getAttribute("counter");
-  int newValue = counter.increaseCounter();
+  int newValue = (int) session.getAttribute("newValue");
 
   out.println("<p>The current value of the counter <i>" + counterName + 
               "</i> is now " + newValue + ".");
 %>    
-    
   </body>
 </html>

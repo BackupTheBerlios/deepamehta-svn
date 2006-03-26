@@ -30,6 +30,7 @@ public class CounterServlet extends DeepaMehtaServlet {
 	 */
 	public void init() {
 		super.init();
+		// retrieve the web counter topic
 		this.counterID = sc.getInitParameter("counter");
 		if (this.counterID == null) this.counterID = "t-ex-webcounter";
 		this.counter = (CounterTopic) as.getLiveTopic(this.counterID, 1);
@@ -41,9 +42,11 @@ public class CounterServlet extends DeepaMehtaServlet {
 	 * @see de.deepamehta.service.web.DeepaMehtaServlet#performAction(java.lang.String, de.deepamehta.service.web.RequestParameter, de.deepamehta.service.Session)
 	 */
 	protected String performAction(String action, RequestParameter params, Session session) throws ServletException {
-		session.setAttribute("counter", this.counter);
+		// only one action provided
+		counter.increaseCounter().updateCorporateMemory(this.as, session, null, null);
 		session.setAttribute("counterName", this.counterName);
+		session.setAttribute("newValue", new Integer(counter.getValue()));
 		return "WebCounter";
 	}
-
+	
 }

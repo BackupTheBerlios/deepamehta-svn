@@ -62,15 +62,10 @@ public class CounterTopic extends LiveTopic {
 	 */
 	public CorporateDirectives executeCommand(String command, Session session, String topicmapID, String viewmode) {
 		CorporateDirectives directives = new CorporateDirectives();
-		Hashtable props = new Hashtable();
 		if (command.equals(CMD_INCREASE_COUNTER)) {
-			int value = increaseCounter();
-			props.put(PROPERTY_VALUE, Integer.toString(value));
-			directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, getID(), props, new Integer(1));
+			directives.add(increaseCounter());
 		} else if (command.equals(CMD_RESET_COUNTER)) {
-			resetCounter();
-			props.put(PROPERTY_VALUE, "0");
-			directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, getID(), props, new Integer(1));
+			directives.add(resetCounter());
 		} else {
 			return super.executeCommand(command, session, topicmapID, viewmode);
 		}
@@ -95,25 +90,33 @@ public class CounterTopic extends LiveTopic {
 	// *******************
 
 	/**
-	 * MISSDOC No documentation for method increaseCounter of type CounterTopic
+	 * @return Returns the current value of the counter.
 	 */
-	public int increaseCounter() {
+	public int getValue() {
 		int current;
 		try {
 			current = Integer.parseInt(getProperty(PROPERTY_VALUE));
 		} catch (NumberFormatException e) {
 			current = 0;
 		}
-		current = current + 1;
-		cm.setTopicData(getID(), 1, PROPERTY_VALUE, Integer.toString(current));
-		return current;
+		return current; 
 	}
 	
 	/**
-	 * MISSDOC No documentation for method resetCounter of type CounterTopic
+	 * Increases the counter by one.
+	 * @return Returns the directives that result from the action.
 	 */
-	public void resetCounter() {
-		cm.setTopicData(getID(), 1, PROPERTY_VALUE, "0");
+	public CorporateDirectives increaseCounter() {
+		int current = getValue() + 1;
+		return setTopicData(PROPERTY_VALUE, Integer.toString(current), null, null);
+	}
+	
+	/**
+	 * Resets the counter to zero.
+	 * @return Returns the directives that result from the action.
+	 */
+	public CorporateDirectives resetCounter() {
+		return setTopicData(PROPERTY_VALUE, "0", null, null);
 	}
 	
 	// ***********************
