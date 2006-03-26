@@ -2,7 +2,7 @@
 	
 	<!-- In order to build the installation packages, you need to download and install 
 		 the izPack installer from http://www.izforge.com/izpack/. The default configuration
-		 assumes that the package was installed into develop/libs/izpack. Once you'Ve got
+		 assumes that the package was installed into develop/libs/izPack. Once you've got
 		 the installer in place, simply run 'ant -f build-installer.xml' to create the 
 		 installation packages. -->
 	
@@ -24,7 +24,12 @@
 		classname="com.izforge.izpack.ant.IzPackTask"/>
 	
 	<target name="actions">
-		<javac srcdir="${custom.src}" destdir="${custom.build}" listfiles="yes"/>
+		<mkdir dir="${custom.build}"/>
+		<javac srcdir="${custom.src}" destdir="${custom.build}" listfiles="yes">
+			<classpath path="${izpack}/lib/compiler.jar"/>
+			<classpath path="${izpack}/lib/installer.jar"/>
+			<classpath path="${izpack}/lib/izevent.jar"/>
+		</javac>
 		<jar jarfile="${custom.jar}" basedir="${custom.build}">
 			<include name="de/deepamehta/installer/*.class"/>
 			<zipfileset src="${izpack}/lib/izevent.jar"/>

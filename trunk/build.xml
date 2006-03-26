@@ -197,7 +197,7 @@
 
 	<target name="compile" depends="init" description="compile sources">
 		<javac srcdir="${sources}" destdir="${build}" debug="on" listfiles="yes" encoding="MacRoman">
-			<classpath refid="javalibs"/>
+			<classpath refid="javalibs-compile"/>
 		</javac>
 	</target>
 

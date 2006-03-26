@@ -81,8 +81,35 @@
 	<pathelement location="${libpath}/jwf-1.0.1.jar"/>
 	<pathelement location="${libpath}/log4j-1.2.13.jar"/>
 </path>
-	
-	
+
+<!-- 3rd Party Libraries required for compilation -->	
+<path id="javalibs-compile">
+	<pathelement location="${libpath}/mysql-3.1.7.jar"/>
+	<pathelement location="${libpath}/servlet.jar"/>
+	<pathelement location="${libpath}/mail.jar"/>
+	<pathelement location="${libpath}/activation.jar"/>
+	<pathelement location="${libpath}/jndi.jar"/>
+	<pathelement location="${libpath}/batik.jar"/>
+	<pathelement location="${libpath}/fop.jar"/>
+	<pathelement location="${libpath}/xml4j.jar"/>
+	<pathelement location="${libpath}/jimi-1.0.jar"/>
+	<pathelement location="${libpath}/avalon-framework.jar"/>
+	<pathelement location="${libpath}/commons-fileupload-1.0.jar"/>
+	<pathelement location="${libpath}/googleapi.jar"/>
+	<pathelement location="${libpath}/commons-beanutils-1.7.0.jar"/>
+	<pathelement location="${libpath}/commons-beanutils-core-1.7.0.jar"/>
+	<pathelement location="${libpath}/commons-cli-1.0.jar"/>
+	<pathelement location="${libpath}/commons-collections-3.1.jar"/>
+	<pathelement location="${libpath}/commons-digester-1.7.jar"/>
+	<pathelement location="${libpath}/commons-logging-1.0.4.jar"/>
+	<pathelement location="${libpath}/commons-logging-api-1.0.4.jar"/>
+	<pathelement location="${libpath}/jwf-1.0.1.jar"/>
+	<pathelement location="${libpath}/log4j-1.2.13.jar"/>
+	<pathelement location="${libpath}/endorsed/xalan-2.1.0.jar"/>
+	<pathelement location="${libpath}/endorsed/xerces_2_3_0.jar"/>
+	<pathelement location="${libpath}/endorsed/xml-apis.jar"/>
+</path>
+		
 <!-- The classpath inside the .JAR archive is always interpreted relative to the location
      of the archive itself. Thus, if the archive resides in bin/somename.jar and
      the libs reside in libs/, the JRE has to look in ../libs/. The following option
