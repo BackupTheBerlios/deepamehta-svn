@@ -1921,15 +1921,21 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		try {
 			// --- trigger contextCommands() hook ---
 			CorporateCommands commands = topic.contextCommands(topicmapID, viewmode, session, directives);
-			//
 			commands.addSeparator();
+			
+			// "Show Type of" command
+			if (isMemberOf(session.getUserID(), WORKSPACE_TOPIC_BUILDER)) {
+				commands.addShowTypeOfCommand(topic, session);
+			}
+			
 			// google search
 			if (editorContext(topicmapID) == EDITOR_CONTEXT_VIEW && !type(topic).isSearchType()) {
 				commands.addSearchInternetCommand(topic, session);
 			}
+			
 			// help
 			commands.addHelpCommand(topic, session);
-			//
+			
 			directives.add(DIRECTIVE_SHOW_MENU, MENU_TOPIC, commands, new Point(x, y));
 		} catch (DeepaMehtaException e) {
 			System.out.println("*** ApplicationService.showTopicMenu(): " + e + " -- topic commands not available");
@@ -1948,12 +1954,17 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		LiveAssociation assoc = getLiveAssociation(assocID, version);
 		try {
 			// --- trigger contextCommands() hook ---
-			CorporateCommands commands = assoc.contextCommands(topicmapID, viewmode, session, directives);
-			//
-			// for every topic its type can be explained
+			CorporateCommands commands = assoc.contextCommands(topicmapID, viewmode, session, directives);			
 			commands.addSeparator();
+			
+			// "Show Type of" command
+			if (isMemberOf(session.getUserID(), WORKSPACE_TOPIC_BUILDER)) {
+				commands.addShowTypeOfCommand(assoc, session);
+			}
+			
+			// for every topic its type can be explained
 			commands.addHelpCommand(assoc, session);
-			//
+			
 			directives.add(DIRECTIVE_SHOW_MENU, MENU_ASSOC, commands, new Point(x, y));
 		} catch (DeepaMehtaException e) {
 			System.out.println("*** ApplicationService.showAssociationMenu(): " + e + " -- association commands not available");

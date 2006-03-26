@@ -539,6 +539,8 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 			showTypeHelp(typeID, session, directives);
 		} else if (cmd.equals(CMD_SEARCH_INTERNET)) {
 			as.performGoogleSearch(getName(), getID(), topicmapID, viewmode, session, directives);
+		} else if (cmd.equals(CMD_SHOW_TYPE)) {
+			showTopicType(directives, topicmapID);
 		} else if (cmd.equals(CMD_SUBMIT_FORM)) {
 			// Note: there is no standard behavoir for "submitForm" command -- do nothing
 			// just avoid "no command handler implemented" exception ### props could be saved
@@ -1603,6 +1605,20 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	}
 
 	// ---
+	
+	/**
+	 * Shows the topic type of the current topic next to the topic without creating any association.
+	 * @param directives
+	 * @param topicmapID
+	 */
+	private void showTopicType(CorporateDirectives directives, String topicmapID)
+	{
+		PresentableTopic type = as.createPresentableTopic(cm.getTopic(getType(), 1), getID(), topicmapID);
+		directives.add(DIRECTIVE_SHOW_TOPIC, type);
+		directives.add(DIRECTIVE_SELECT_TOPIC, getType());
+	}
+
+	// ---	
 
 	private void showTypeHelp(String typeID, Session session, CorporateDirectives directives) {
 		Detail detail = createTopicHelp(typeID);

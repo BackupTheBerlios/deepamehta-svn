@@ -497,6 +497,26 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	public void addSearchInternetCommand(LiveTopic topic, Session session) {
 		addCommand(DeepaMehtaMessages.getString("ApplicationService.GoogleFor", topic.getName()), CMD_SEARCH_INTERNET, FILESERVER_IMAGES_PATH, ICON_SEARCH_INTERNET);	// ### encapsulate title
 	}
+	
+	public void addShowTypeOfCommand(LiveTopic topic, Session session) {
+		String text;
+		if (topic.getName().equals("")) {
+			text = DeepaMehtaMessages.getString("ApplicationService.ShowTopicType");
+		} else {
+			text = DeepaMehtaMessages.getString("ApplicationService.ShowTypeOf", topic.getName());
+		}
+		addCommand(text, CMD_SHOW_TYPE, FILESERVER_IMAGES_PATH, ICON_SHOW_TOPIC_TYPE);
+	}
+
+	public void addShowTypeOfCommand(LiveAssociation assoc, Session session) {
+		String text;
+		if (assoc.getName().equals("")) {
+			text = DeepaMehtaMessages.getString("ApplicationService.ShowAssocType");
+		} else {
+			text = DeepaMehtaMessages.getString("ApplicationService.ShowTypeOf", assoc.getName());
+		}
+		addCommand(text, CMD_SHOW_TYPE, FILESERVER_IMAGES_PATH, ICON_SHOW_ASSOC_TYPE);		
+	}
 
 	// ---
 

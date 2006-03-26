@@ -1,20 +1,25 @@
 package de.deepamehta.assocs;
 
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaMessages;
 import de.deepamehta.Detail;
+import de.deepamehta.PresentableAssociation;
+import de.deepamehta.PresentableTopic;
 import de.deepamehta.PropertyDefinition;
-import de.deepamehta.service.Session;
+import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDetail;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.CorporateMemory;
-import de.deepamehta.service.ApplicationService;
+import de.deepamehta.service.Session;
+import de.deepamehta.topics.TopicMapTopic;
 import de.deepamehta.topics.TypeTopic;
-//
-import java.util.*;
 
 
 
@@ -255,6 +260,8 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 		} else if (cmd.equals(CMD_SHOW_HELP)) {
 			String typeID = st.nextToken();
 			showTypeHelp(typeID, session, directives);
+		} else if (cmd.equals(CMD_SHOW_TYPE)) {
+			showAssociationType(directives, topicmapID);
 		} else if (cmd.equals(CMD_SUBMIT_FORM)) {
 			// Note: there is no standard behavoir for "submitForm" command -- do nothing
 			// just avoid "no command handler implemented" exception
@@ -454,6 +461,20 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
             	getAssociationData(propName), new Boolean(multiline), title, command);
 		}
 		directives.add(DIRECTIVE_SHOW_DETAIL, getID(), detail);
+	}
+
+	// ---
+	
+	/**
+	 * Shows the topic type of the current topic next to the topic without creating any association.
+	 * @param directives
+	 * @param topicmapID
+	 */
+	private void showAssociationType(CorporateDirectives directives, String topicmapID)
+	{
+		PresentableTopic type = as.createPresentableTopic(cm.getTopic(getType(), 1), getID(), topicmapID);
+		directives.add(DIRECTIVE_SHOW_TOPIC, type);
+		directives.add(DIRECTIVE_SELECT_TOPIC, getType());
 	}
 
 	// ---

@@ -382,6 +382,8 @@ public interface DeepaMehtaConstants {
 	static final String ICON_DELETE_TOPIC = "trash.gif";
 	static final String ICON_SHOW_HELP = "viewhilfe.gif";
 	static final String ICON_SEARCH_INTERNET = "google.gif";
+	static final String ICON_SHOW_TOPIC_TYPE = "topictype.gif";
+	static final String ICON_SHOW_ASSOC_TYPE = "associationtype.gif";
 	static final String ICON_SHOW_RESULT = "show.gif";
 	static final String ICON_GROUP_BY = "show.gif";
 
@@ -411,6 +413,7 @@ public interface DeepaMehtaConstants {
 	static final String CMD_IMPORT_CM = "importCM";
 	static final String CMD_EXPORT_CM = "exportCM";
 	static final String CMD_SEARCH_INTERNET = "searchInternet";
+	static final String CMD_SHOW_TYPE = "showType";
 	static final String CMD_SUBMIT_FORM = "submitForm";
 	static final String CMD_ASSIGN_ICON = "assignIcon";
 	static final String CMD_ASSIGN_FILE = "assignFile";
@@ -530,6 +533,14 @@ public interface DeepaMehtaConstants {
 	static final String ASSOCTYPE_GOOGLE_RESULT = "at-googleresult";
 	static final String ASSOCTYPE_RECIPIENT = "at-recipient";
 	static final String ASSOCTYPE_SENDER = "at-sender";
+
+	
+	
+	// ------------------
+	// --- Workspaces ---
+	// ------------------
+	
+	static final String WORKSPACE_TOPIC_BUILDER = "t-constructionworkspace";
 
 
 
