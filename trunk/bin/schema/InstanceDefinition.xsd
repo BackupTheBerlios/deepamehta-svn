@@ -46,6 +46,8 @@
 		</xsd:choice>
 		<xsd:attribute name="id" type="xsd:ID" use="required"/>
 		<xsd:attribute name="description" type="xsd:string"/>
+		<xsd:attribute name="logConfig" type="xsd:string"/>
+		<xsd:attribute name="logWindow" type="xsd:bool" default="false"/>
 	</xsd:complexType>
 	
 	<xsd:element name="instances">

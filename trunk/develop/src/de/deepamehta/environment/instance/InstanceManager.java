@@ -88,6 +88,8 @@ public class InstanceManager implements TableModel {
         digester.addObjectCreate("instances/instance", InstanceConfiguration.class);
         digester.addSetProperties("instances/instance/", "id", "id");
         digester.addSetProperties("instances/instance/", "description", "description");
+        digester.addSetProperties("instances/instance/", "logConfig", "logConfig");
+        digester.addSetProperties("instances/instance/", "logWindow", "logWindow");
 
 //    	TODO do not attempt to parse CM configuration during client startup
 //        if (this.env.getEnvironmentType() == EnvironmentType.FAT) {

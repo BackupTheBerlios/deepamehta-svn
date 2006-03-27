@@ -5,11 +5,14 @@ package de.deepamehta.launchpad;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.io.File;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -66,25 +69,26 @@ public class InstancePropertiesDialog extends JDialog {
 	private JPanel buttonPanel = null;
 	private JButton okButton = null;
 	private JButton cancelButton = null;
-
-	private ButtonGroup instanceTypeButtonGroup = null;
+	private JButton addPropertyButton = null;
+	private JButton removePropertyButton = null;
+	private JLabel typeLabel = null;
+	private JLabel idLabel = null;
+	private JLabel descriptionLabel = null;
+	private JTextField idEdit = null;
+	private JTextField descriptionEdit = null;
+	private JPanel miscellaneousPanel = null;
+	private JCheckBox logWindowCheckbox = null;
+	private JLabel logSettingsLabel = null;
+	private JLabel logWindowLabel = null;
+	private JCheckBox logConfigCheckbox = null;
+	private JLabel logConfigLabel = null;
+	private JTextField logConfigEdit = null;
+	private JButton logConfigSelectButton = null;
+	private JPanel miscFillerPanel = null;
 	
+	private ButtonGroup instanceTypeButtonGroup = null;
 	private InstanceConfiguration config = null;
 
-	private JButton addPropertyButton = null;
-
-	private JButton removePropertyButton = null;
-
-	private JLabel typeLabel = null;
-
-	private JLabel idLabel = null;
-
-	private JLabel descriptionLabel = null;
-
-	private JTextField idEdit = null;
-
-	private JTextField descriptionEdit = null;
-	
 	/**
 	 * This is the default constructor
 	 */
@@ -108,6 +112,14 @@ public class InstancePropertiesDialog extends JDialog {
 		
 		getIdEdit().setText(config.getId());
 		getDescriptionEdit().setText(config.getDescription());
+		getLogWindowCheckbox().setSelected(config.getLogWindow());
+		if (config.getLogConfig() == null) {
+			getLogConfigCheckbox().setSelected(false);
+			getLogConfigEdit().setText("");
+		} else {
+			getLogConfigCheckbox().setSelected(true);
+			getLogConfigEdit().setText(config.getLogConfig());
+		}
 		
 		if (config.getInstanceType().isMonolithic()) {
 			getMonolithicRadioButton().setSelected(true);
@@ -136,6 +148,7 @@ public class InstancePropertiesDialog extends JDialog {
 		}
 		
 		adjustTypeDependentFields();
+		adjustLogConfigFields();
 	}
 	
 	
@@ -145,6 +158,12 @@ public class InstancePropertiesDialog extends JDialog {
 	 */
 	private void saveInstanceData() {
 		config.setDescription(getDescriptionEdit().getText());
+		config.setLogWindow(getLogWindowCheckbox().isSelected());
+		if (getLogConfigCheckbox().isEnabled()) {
+			config.setLogConfig(getLogConfigEdit().getText());
+		} else {
+			config.setLogConfig(null);
+		}
 		
 		if (getMonolithicRadioButton().isSelected()) {
 			config.setInstanceTypeMonolithic();	
@@ -233,6 +252,7 @@ public class InstancePropertiesDialog extends JDialog {
 		if (tabbedPane == null) {
 			tabbedPane = new JTabbedPane();
 			tabbedPane.addTab(DeepaMehtaMessages.getString("InstancePropertiesDialog.InstanceSettingsTabTitle"), null, getInstanceSettingsPanel(), null); //$NON-NLS-1$
+			tabbedPane.addTab(DeepaMehtaMessages.getString("InstancePropertiesDialog.MiscellaneousSettingsTabTitle"), null, getMiscellaneousPanel(), null); //$NON-NLS-1$
 			tabbedPane.addTab(DeepaMehtaMessages.getString("InstancePropertiesDialog.CorporateMemorySettingsTabTitle"), null, getCorporateMemorySettingsPanel(), null); //$NON-NLS-1$
 		}
 		return tabbedPane;
@@ -512,6 +532,31 @@ public class InstancePropertiesDialog extends JDialog {
 	}
 
 	/**
+	 * MISSDOC No documentation for method adjustLogConfigFields of type InstancePropertiesDialog
+	 */
+	protected void adjustLogConfigFields() {
+		if (getLogConfigCheckbox().isSelected()) {
+			getLogConfigEdit().setEnabled(true);
+			getLogConfigSelectButton().setEnabled(true);
+		} else {
+			getLogConfigEdit().setEnabled(false);
+			getLogConfigSelectButton().setEnabled(false);
+		}
+	}
+	
+	/**
+	 * MISSDOC No documentation for method selectLogConfig of type InstancePropertiesDialog
+	 */
+	protected void selectLogConfig() {
+	    JFileChooser chooser = new JFileChooser();
+	    chooser.setCurrentDirectory(new File(env.getHomeDirectory()));
+	    int returnVal = chooser.showOpenDialog(this);
+	    if(returnVal == JFileChooser.APPROVE_OPTION) {
+	    	getLogConfigEdit().setText(chooser.getSelectedFile().getAbsolutePath());
+	    }
+	}
+	
+	/**
 	 * This method initializes jRadioButton1	
 	 * 	
 	 * @return javax.swing.JRadioButton	
@@ -767,6 +812,141 @@ public class InstancePropertiesDialog extends JDialog {
 			descriptionEdit = new JTextField();
 		}
 		return descriptionEdit;
+	}
+
+	/**
+	 * This method initializes jPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getMiscellaneousPanel() {
+		if (miscellaneousPanel == null) {
+			GridBagConstraints gridBagConstraints34 = new GridBagConstraints();
+			gridBagConstraints34.gridx = 0;
+			gridBagConstraints34.weighty = 1.0D;
+			gridBagConstraints34.gridy = 2;
+			GridBagConstraints gridBagConstraints33 = new GridBagConstraints();
+			gridBagConstraints33.gridx = 4;
+			gridBagConstraints33.insets = new java.awt.Insets(2,2,2,2);
+			gridBagConstraints33.gridy = 1;
+			GridBagConstraints gridBagConstraints32 = new GridBagConstraints();
+			gridBagConstraints32.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			gridBagConstraints32.gridy = 1;
+			gridBagConstraints32.weightx = 1.0;
+			gridBagConstraints32.insets = new java.awt.Insets(2,2,2,2);
+			gridBagConstraints32.gridx = 3;
+			GridBagConstraints gridBagConstraints30 = new GridBagConstraints();
+			gridBagConstraints30.gridx = 2;
+			gridBagConstraints30.anchor = java.awt.GridBagConstraints.WEST;
+			gridBagConstraints30.insets = new java.awt.Insets(2,2,2,2);
+			gridBagConstraints30.gridy = 1;
+			logConfigLabel = new JLabel();
+			logConfigLabel.setText(DeepaMehtaMessages.getString("InstancePropertiesDialog.CustomLoggingConfigLabel")); //$NON-NLS-1$
+			GridBagConstraints gridBagConstraints29 = new GridBagConstraints();
+			gridBagConstraints29.gridx = 1;
+			gridBagConstraints29.insets = new java.awt.Insets(2,2,2,2);
+			gridBagConstraints29.gridy = 1;
+			GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
+			gridBagConstraints28.gridx = 2;
+			gridBagConstraints28.anchor = java.awt.GridBagConstraints.WEST;
+			gridBagConstraints28.insets = new java.awt.Insets(2,2,2,2);
+			gridBagConstraints28.gridy = 0;
+			logWindowLabel = new JLabel();
+			logWindowLabel.setText(DeepaMehtaMessages.getString("InstancePropertiesDialog.LoggingWindowLabel")); //$NON-NLS-1$
+			GridBagConstraints gridBagConstraints27 = new GridBagConstraints();
+			gridBagConstraints27.gridx = 0;
+			gridBagConstraints27.insets = new java.awt.Insets(2,2,2,2);
+			gridBagConstraints27.anchor = java.awt.GridBagConstraints.WEST;
+			gridBagConstraints27.gridy = 0;
+			logSettingsLabel = new JLabel();
+			logSettingsLabel.setText(DeepaMehtaMessages.getString("InstancePropertiesDialog.LoggingSettingsLabel")); //$NON-NLS-1$
+			GridBagConstraints gridBagConstraints26 = new GridBagConstraints();
+			gridBagConstraints26.gridx = 1;
+			gridBagConstraints26.insets = new java.awt.Insets(2,2,2,2);
+			gridBagConstraints26.gridy = 0;
+			miscellaneousPanel = new JPanel();
+			miscellaneousPanel.setLayout(new GridBagLayout());
+			miscellaneousPanel.add(getLogWindowCheckbox(), gridBagConstraints26);
+			miscellaneousPanel.add(logSettingsLabel, gridBagConstraints27);
+			miscellaneousPanel.add(logWindowLabel, gridBagConstraints28);
+			miscellaneousPanel.add(getLogConfigCheckbox(), gridBagConstraints29);
+			miscellaneousPanel.add(logConfigLabel, gridBagConstraints30);
+			miscellaneousPanel.add(getLogConfigEdit(), gridBagConstraints32);
+			miscellaneousPanel.add(getLogConfigSelectButton(), gridBagConstraints33);
+			miscellaneousPanel.add(getMiscFillerPanel(), gridBagConstraints34);
+		}
+		return miscellaneousPanel;
+	}
+
+	/**
+	 * This method initializes jCheckBox	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */
+	private JCheckBox getLogWindowCheckbox() {
+		if (logWindowCheckbox == null) {
+			logWindowCheckbox = new JCheckBox();
+		}
+		return logWindowCheckbox;
+	}
+
+	/**
+	 * This method initializes jCheckBox1	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */
+	private JCheckBox getLogConfigCheckbox() {
+		if (logConfigCheckbox == null) {
+			logConfigCheckbox = new JCheckBox();
+			logConfigCheckbox.addChangeListener(new javax.swing.event.ChangeListener() {
+				public void stateChanged(javax.swing.event.ChangeEvent e) {
+					adjustLogConfigFields();
+				}
+			});
+		}
+		return logConfigCheckbox;
+	}
+
+	/**
+	 * This method initializes jTextField	
+	 * 	
+	 * @return javax.swing.JTextField	
+	 */
+	private JTextField getLogConfigEdit() {
+		if (logConfigEdit == null) {
+			logConfigEdit = new JTextField();
+		}
+		return logConfigEdit;
+	}
+
+	/**
+	 * This method initializes jButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getLogConfigSelectButton() {
+		if (logConfigSelectButton == null) {
+			logConfigSelectButton = new JButton();
+			logConfigSelectButton.setText("...");
+			logConfigSelectButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					selectLogConfig();
+				}
+			});
+		}
+		return logConfigSelectButton;
+	}
+
+	/**
+	 * This method initializes jPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getMiscFillerPanel() {
+		if (miscFillerPanel == null) {
+			miscFillerPanel = new JPanel();
+		}
+		return miscFillerPanel;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"

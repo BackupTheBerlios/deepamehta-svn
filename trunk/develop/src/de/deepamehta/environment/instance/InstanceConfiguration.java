@@ -39,6 +39,9 @@ public class InstanceConfiguration {
 	private int serverPort;
 	
 	private CorporateMemoryConfiguration cmConfig = null;
+	
+	private String logConfig;
+	private boolean logWindow;
 
 	/**
 	 * Default constructor.
@@ -249,6 +252,10 @@ public class InstanceConfiguration {
         Node me = doc.createElement("instance");
         ((Element) me).setAttribute("id", getId());
         ((Element) me).setAttribute("description", getDescription());
+        if (logWindow)
+        	((Element) me).setAttribute("logWindow", "true");
+        if (logConfig != null)
+        	((Element) me).setAttribute("logConfig", logConfig);
         
         if (getInstanceType().isMonolithic()) {
             Node monolithic = doc.createElement("monolithic");
@@ -288,13 +295,41 @@ public class InstanceConfiguration {
     public String getWorkingDirectory() {
     	if (getInstanceType().isClient())
     	{
-    		// FIXME will run into trouble with icons some day
+    		// FIXME The standalone client needs icons, too!
     		return env.getWorkingDirectory();
     	} else {
     		String sep = env.getFileSeparator();
     		return env.getHomeDirectory() + sep + "data" + sep + getId() + sep;
     	}
     }
+
+	/**
+	 * @return Returns the logConfig.
+	 */
+	public String getLogConfig() {
+		return logConfig;
+	}
+
+	/**
+	 * @param logConfig The logConfig to set.
+	 */
+	public void setLogConfig(String logConfig) {
+		this.logConfig = logConfig;
+	}
+
+	/**
+	 * @return Returns the logWindow.
+	 */
+	public boolean getLogWindow() {
+		return logWindow;
+	}
+
+	/**
+	 * @param logWindow The logWindow to set.
+	 */
+	public void setLogWindow(boolean logWindow) {
+		this.logWindow = logWindow;
+	}
     
 
 }

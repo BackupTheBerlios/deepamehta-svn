@@ -117,8 +117,7 @@ public class LaunchPad {
          *   java -Djava.endorsed.dirs=<path> -jar <jarfile> <args> <id>
          * 
          * <jarfile> is determined according to the instance type.
-         * <args> contains --instances <full_path_to_instances.xml> and
-         *                 --plugins   <full_path_to_plugin_xml>
+         * <args> contains --logger-config <config_file> (if specified)
          * 
          * The instance is started with the working directory data/<id>/.
          */
@@ -130,19 +129,11 @@ public class LaunchPad {
         cmd.add("-Dde.deepamehta.home=" + this.env.getHomeDirectory());
         cmd.add("-jar");
         cmd.add(config.getExecutableArchive());
-
-        // FIXME We need a way to start the instance in "debugging mode". 
-        
-//        cmd.add("-l");
-//        cmd.add("../../log4j.properties");
-        
-//        cmd.add("--instances");
-//        cmd.add(this.env.getWorkingDirectory() + this.env.getFileSeparator() + this.env.getInstanceFile());
-//        cmd.add("--plugins");
-//        cmd.add(this.env.getWorkingDirectory() + this.env.getFileSeparator() + this.env.getPluginFile());
+        if (config.getLogConfig() != null) {
+        	cmd.add("-l");
+        	cmd.add(config.getLogConfig());
+        }        
         cmd.add(config.getId());
-        
-        // TODO WTF did I use an ArrayList here?
         
         // assemble command line
         String cmdline = "";
@@ -153,10 +144,10 @@ public class LaunchPad {
         logger.debug("Trying to start new process using " + cmdline);
         
         // spawn process
-        Process p;
+        Process process;
         try {
-        	p = Runtime.getRuntime().exec(cmdline, null, new File(config.getWorkingDirectory())); 
-        	new ProcessWatcher(p).start();
+        	process = Runtime.getRuntime().exec(cmdline, null, new File(config.getWorkingDirectory())); 
+        	new ProcessWatcher(config, process).start();
         } catch (IOException e) {
         	logger.error("I/O error while trying to spawn task", e);
         }
