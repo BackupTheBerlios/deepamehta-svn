@@ -50,6 +50,7 @@
 				<include name="plugins.xml"/>
 				<include name="bin/*"/>
 				<include name="bin/apps/**/*"/>
+				<include name="bin/content/*"/>
 				<include name="bin/schema/*"/>
 				<include name="data"/>
 				<include name="docs/license.html"/>

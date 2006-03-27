@@ -75,9 +75,7 @@ class SetupWorkingDirAction extends AbstractSetupAction {
                 addErrorMessage("Unable to create working directory " + this.workingDir);
                 return false;
             } else {
-            	return extractZipFile(env.getHomeDirectory() + env.getFileSeparator() + "bin" 
-                		+ env.getFileSeparator() + "instance-data.zip", this.workingDir);
-            	// TODO Remove hard-coded ZIP file path.
+            	return extractZipFile(env.getContentDirectory() + env.getFileSeparator() + "instance-data.zip", this.workingDir);
             }
         }
     }

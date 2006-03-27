@@ -83,6 +83,10 @@ public abstract class AbstractEnvironment implements Environment {
 			 hd = System.getProperty("user.dir");
 		return hd;
 	}
+	
+	public String getContentDirectory() {
+		return getHomeDirectory() + getFileSeparator() + "bin" + getFileSeparator() + "content";
+	}
 
 	public String getFileSeparator() {
         return System.getProperty("file.separator");

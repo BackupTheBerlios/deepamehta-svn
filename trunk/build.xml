@@ -208,6 +208,7 @@
 		<!-- ensure target path exists -->
 		<mkdir dir="${bin}"/>
 		<mkdir dir="${bin}/apps"/>
+		<mkdir dir="${bin}/content"/>
 		<!-- monolith -->
 		<jar jarfile="${bin}/DeepaMehta.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
@@ -292,7 +293,11 @@
 			</manifest>
 		</jar>
 		<!-- data file for instance bootstrapping -->
-		<zip destfile="${bin}/instance-data.zip" basedir="develop/data"/>
+		<zip destfile="${bin}/content/instance-data.zip" basedir="develop/data"/>
+		<!-- XML files containing instance data -->
+		<copy todir="${bin}/content/">
+			<fileset dir="develop/content" includes="*.xml"/>
+		</copy>
 	</target>
 
 	<target name="release" depends="build">

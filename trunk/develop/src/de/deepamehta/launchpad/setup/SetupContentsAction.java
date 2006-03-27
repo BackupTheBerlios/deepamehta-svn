@@ -106,8 +106,7 @@ class SetupContentsAction extends AbstractSetupAction {
         }
             
         // load basic instance data from file 
-        String filename = this.workingDir + this.env.getFileSeparator() + "DefaultContents.xml";
-        // FIXME Is there any way to load the XML file directory from the zipped distribution?
+        String filename = env.getContentDirectory() + env.getFileSeparator() + "DefaultContents.xml";
         ContentsLoader loader = new ContentsLoader(this.cm);
         try {
 			loader.loadFromFile(filename);

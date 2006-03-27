@@ -79,6 +79,12 @@ public interface Environment {
     public String getHomeDirectory();
 
     /**
+     * @return Returns the directory that contains the core contents (the XMLS and ZIP 
+     * files used during instance bootstrapping).
+     */
+    public String getContentDirectory();   
+    
+    /**
      * @return Returns the path separator for the current platform.
      */
     public String getFileSeparator();
