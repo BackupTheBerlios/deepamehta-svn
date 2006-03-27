@@ -216,7 +216,7 @@ public class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaCon
             return true;
         } catch (Exception e) {
             // something went wrong
-            logger.debug("Problem with storage area.", e);
+            logger.debug("Problem with storage area: " + e.getLocalizedMessage());
             return false;
         }
     }
