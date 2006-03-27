@@ -199,6 +199,9 @@
 		<javac srcdir="${sources}" destdir="${build}" debug="on" listfiles="yes" encoding="MacRoman">
 			<classpath refid="javalibs-compile"/>
 		</javac>
+		<copy todir="${build}">
+			<fileset dir="${sources}" includes="de/deepamehta/**/*.properties"/>
+		</copy>
 	</target>
 
 	<target name="build" depends="compile" description="build jar files">
