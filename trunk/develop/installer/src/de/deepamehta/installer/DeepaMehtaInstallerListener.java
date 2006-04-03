@@ -26,7 +26,7 @@ public class DeepaMehtaInstallerListener extends SimpleInstallerListener {
 	 */
 	public void afterPacks(AutomatedInstallData idata, AbstractUIProgressHandler handler) throws Exception {
 		// determine the target platform
-		if (OsVersion.IS_LINUX) {
+		if (OsVersion.IS_LINUX || OsVersion.IS_OSX) {
 			createLinuxScript(idata, handler);	
 		} else if (OsVersion.IS_WINDOWS) {
 			createWindowsScript(idata, handler);
