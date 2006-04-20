@@ -9,8 +9,8 @@ URL: http://www.deepamehta.de
 Distribution: SuSE 10.0 (i586)
 Source0: http://www.deepamehta.de/deepamehta-2.0b7.tar.bz2
 Source1: instances.xml
+Source2: dms.rc
 Patch0: deepamehta.patch
-Patch1: deepamehta-root.patch
 BuildRequires: java
 BuildRequires: ant
 BuildRequires: jaf
@@ -36,9 +36,8 @@ This package contains the DeepaMehta Semantic Desktop, based on Topic Maps.
 
 %prep
 %setup -q -n %{name}
-%patch0
-%patch1
-cp %{S:1} $RPM_BUILD_DIR/%{name}
+%patch0 -p1
+cp %{S:1} %{S:2} $RPM_BUILD_DIR/%{name}
 
 %build
 ant build
@@ -50,7 +49,7 @@ mkdir -p $RPM_BUILD_ROOT/%{installpath}/libs
 mkdir -p $RPM_BUILD_ROOT/%{installpath}/{backgrounds,icons,images,sounds,stylesheets}
 mkdir -p $RPM_BUILD_ROOT/%{installpath}/install/db
 cp bin/*.jar $RPM_BUILD_ROOT/%{installpath}
-cp build.xml config.xml instances.xml plugins.xml $RPM_BUILD_ROOT/%{installpath}
+cp build.xml config.xml instances.xml plugins.xml dms.rc $RPM_BUILD_ROOT/%{installpath}
 cp libs/commons-cli-1.0.jar $RPM_BUILD_ROOT/%{installpath}/libs
 cp libs/googleapi.jar $RPM_BUILD_ROOT/%{installpath}/libs
 cp libs/jimi-1.0.jar $RPM_BUILD_ROOT/%{installpath}/libs
@@ -61,7 +60,7 @@ cp develop/data/icons/*.gif $RPM_BUILD_ROOT/%{installpath}/icons
 cp develop/data/images/*.gif $RPM_BUILD_ROOT/%{installpath}/images
 cp develop/data/sounds/*.au $RPM_BUILD_ROOT/%{installpath}/sounds
 cp develop/data/stylesheets/*.xsl $RPM_BUILD_ROOT/%{installpath}/stylesheets
-cp develop/data/DefaultContents.xml $RPM_BUILD_ROOT/%{installpath}
+cp develop/content/DefaultContents.xml $RPM_BUILD_ROOT/%{installpath}
 cp install/db/*.sql $RPM_BUILD_ROOT/%{installpath}/install/db
 
 %post
