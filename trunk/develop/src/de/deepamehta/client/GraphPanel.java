@@ -1,15 +1,11 @@
 package de.deepamehta.client;
 
-import de.deepamehta.BaseTopic;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.Detail;
-import de.deepamehta.Topic;
 //
 import javax.swing.*;
-// ### import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -27,7 +23,7 @@ import java.util.*;
  * An edge class must implement the {@link GraphEdge} interface.
  * <P>
  * <HR>
- * Last functional change: 24.9.2004 (2.0b3)<BR>
+ * Last functional change: 23.8.2006 (2.0b8)<BR>
  * Last documentation update: 25.6.2001 (2.0a11-pre6)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -190,6 +186,7 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 			private void paintNodes(Graphics g) {
 				Enumeration e = nodes.elements();
 				GraphNode node = null;
+				// ### System.out.println(">>> paintNodes():");
 				while (e.hasMoreElements()) {
 					try {
 						node = (GraphNode) e.nextElement();
@@ -514,57 +511,35 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 
 
 	private void paintNode(GraphNode node, Graphics g) throws DeepaMehtaException {
-		String id = node.getID();
-		String typeID = node.getType();
 		Point p = node.getGeometry();
-		// error check 1
+		// error check
 		if (p == null) {
 			throw new DeepaMehtaException("topic has no geometry");
 		}
-		// Note: topics and type topics have different appearance logic.
-		// - type topics have always an image
-		// - the image of type topics may be dynamically created
-		PresentationType type;
-		try {
-			if (typeID.equals(TOPICTYPE_TOPICTYPE)) {
-				type = nodeType(id);
-			} else if (typeID.equals(TOPICTYPE_ASSOCTYPE)) {
-				type = edgeType(id);
-			} else {
-				type = type(node);		// throws DME ### not nice
-			}
-		} catch (DeepaMehtaException e) {
-			// ignore -- Note: type is null
-			type = null;
-		}
+		//
 		// --- paint icon ---
-		Image icon = node.getImage();	// individual icon
-		if (icon == null && type != null) {
-			// error check 2
-			if (!type.hasImage()) {
-				throw new DeepaMehtaException("type has no icon");
-			}
-			// Note: if type is null icon remains null
-			icon = type.getImage();
-		}
-		int iconSize = IMAGE_SIZE;	// ### type.getImageSize();
-		int is2 = iconSize / 2;
-		g.drawImage(icon, p.x - is2, p.y - is2, this);
+		Image icon = getIcon(node);
+		int iconWidth = icon.getWidth(this);
+		int iconHeight = icon.getHeight(this);
+		// ### System.out.println("  > size=" + iconWidth + "x" + iconHeight + " pixel");	// ###
+		int iw2 = iconWidth / 2;
+		int ih2 = iconHeight / 2;
+		g.drawImage(icon, p.x - iw2, p.y - ih2, this);
 		// --- paint selection ---
 		if (node == selection.topic) {
 			g.setColor(Color.red);
-			g.drawRect(p.x - is2 - 2, p.y - is2 - 2, iconSize + 3, iconSize + 3);
-			g.drawRect(p.x - is2 - 3, p.y - is2 - 3, iconSize + 5, iconSize + 5);
+			g.drawRect(p.x - iw2 - 2, p.y - ih2 - 2, iconWidth + 3, iconHeight + 3);
+			g.drawRect(p.x - iw2 - 3, p.y - ih2 - 3, iconWidth + 5, iconHeight + 5);
 		}
 		// --- paint name ---
-		if (type == null || !type(node).getHiddenTopicNames()) {
+		if (getAppearanceType(node) == null || !type(node).getHiddenTopicNames()) {
 			g.setFont(font);
 			g.setColor(TEXT_COLOR);
-			g.drawString(node.getName(), p.x - is2, p.y + is2 + font.getSize() + 1);
+			g.drawString(node.getName(), p.x - iw2, p.y - ih2 + iconHeight + font.getSize() + 2);
 		}
 		// --- paint label ---
 		if (node.getLabel() != null) {
-			g.drawString(node.getLabel(), p.x - is2, p.y - is2 - 4);
+			g.drawString(node.getLabel(), p.x - iw2, p.y - ih2 - 4);
 		}
 	}
 
@@ -1044,6 +1019,10 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 		return currentBunch.size() > 0 ? (FoundNode) currentBunch.elementAt(currentBunchIndex) : null;
 	}
 
+	/**
+	 * @see		#getToolTipText
+	 * @see		#findNode
+	 */
 	private Vector findAllNodes(int x, int y) {
 		x -= translation.x;
 		y -= translation.y;
@@ -1053,15 +1032,19 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 		while (e.hasMoreElements()) {
 			GraphNode node = (GraphNode) e.nextElement();
 			Point p = node.getGeometry();
-			int d = IMAGE_SIZE / 2;		// ### type.getImageSize() / 2;
+			Image icon = getIcon(node);
+			int iconWidth = icon.getWidth(this);
+			int iconHeight = icon.getHeight(this);
+			int iw2 = iconWidth / 2;
+			int ih2 = iconHeight / 2;
 			// check if inside icon
-			if (Math.abs(x - p.x) <= d && Math.abs(y - p.y) <= d) {
+			if (Math.abs(x - p.x) <= iw2 && Math.abs(y - p.y) <= ih2) {
 				foundNodes.addElement(new FoundNode(node, CLICKED_ON_ICON));
 			}
 			// check if inside name
 			if (!type(node).getHiddenTopicNames() &&
-				x >= p.x - d && x <= p.x - d + metrics.stringWidth(node.getName()) &&
-				y >= p.y + d && y <= p.y + d + font.getSize() + 1) {
+				x >= p.x - iw2 && x <= p.x - iw2 + metrics.stringWidth(node.getName()) &&
+				y >= p.y - ih2 + iconHeight + 2 && y <= p.y - ih2 + iconHeight + font.getSize() + 2) {
 				foundNodes.addElement(new FoundNode(node, CLICKED_ON_NAME));
 				// Note: there is no break here -- the search is continued because
 				// the found node could be dominated by a CLICKED_ON_ICON node
@@ -1195,6 +1178,62 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 	// ----------------------
 
 
+
+	/**
+	 * Returns the icon that is actually used to paint the specified node.
+	 *
+	 * @return	the icon, or <code>null</code> if it can't be determinded due to an error.
+	 *
+	 * @see		paintNode
+	 * @see		findAllNodes
+	 */
+	private Image getIcon(GraphNode node) {
+		Image icon = node.getImage();	// individual icon
+		if (icon == null) {
+			PresentationType type = getAppearanceType(node);
+			// Note: if type is null icon remains null
+			if (type != null) {
+				// error check
+				if (!type.hasImage()) {
+					throw new DeepaMehtaException("type has no icon");
+				}
+				icon = type.getImage();
+			}
+		}
+		return icon;
+	}
+
+	/**
+	 * Returns the type that is determining the appearance of the specified node.
+	 * <p>
+	 * Note: topics and type topics have different appearance logic.
+	 * - type topics have always an image
+	 * - the image of type topics may be dynamically created
+	 *
+	 * @return	the type, or <code>null</code> if the type can't be retrieved due to an error.
+	 *
+	 * @see		paintNode
+	 * @see		getIcon
+	 */
+	private PresentationType getAppearanceType(GraphNode node) {
+		PresentationType type;
+		//
+		String id = node.getID();
+		String typeID = node.getType();
+		try {
+			if (typeID.equals(TOPICTYPE_TOPICTYPE)) {
+				type = nodeType(id);
+			} else if (typeID.equals(TOPICTYPE_ASSOCTYPE)) {
+				type = edgeType(id);
+			} else {
+				type = type(node);		// throws DME ### not nice
+			}
+		} catch (DeepaMehtaException e) {
+			// ignore -- Note: type is null
+			type = null;
+		}
+		return type;
+	}
 
 	// --- type (2 forms) ---
 
