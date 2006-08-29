@@ -50,7 +50,7 @@ import java.util.*;
  * <IMG SRC="../../../../../images/3-tier-lcm.gif">
  * <P>
  * <HR>
- * Last functional change: 7.6.2006 (2.0b7)<BR>
+ * Last functional change: 24.8.2006 (2.0b8)<BR>
  * Last documentation update: 30.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -2845,32 +2845,43 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	 * @see		de.deepamehta.topics.LiveTopic#executeCommand
 	 */
 	public int editorContext(String topicmapID) {
-		// ### CORPORATE? -- actually not needed to be differentiated
-		BaseTopic owner = workspaceOwner(topicmapID);
-		if (owner == null) {
+		BaseTopic deployer = getWorkspaceTopimapDeployer(topicmapID);
+		if (deployer == null) {
 			return EDITOR_CONTEXT_VIEW;
-		} else if (owner.getType().equals(TOPICTYPE_USER)) {
+		} else if (deployer.getType().equals(TOPICTYPE_USER)) {
 			return EDITOR_CONTEXT_PERSONAL;
-		} else if (owner.getType().equals(TOPICTYPE_WORKSPACE)) {
+		} else if (deployer.getType().equals(TOPICTYPE_WORKSPACE)) {
 			return EDITOR_CONTEXT_WORKGROUP;
 		} else {
-			throw new DeepaMehtaException("workspace " + this + " has unexpected owner: " + owner);
+			throw new DeepaMehtaException("topicmap \"" + topicmapID + "\" has unexpected deployer: " + deployer);
 		}
 	}
 
 	/**
+	 * Returns the owner of the specified topicmap. The specified topicmap is expected to exist either
+	 * in a personal workspace or in a shared workspace. Otherwise <CODE>null</CODE> is returned.
+	 * <p>
+	 * References checked: 24.8.2006 (2.0b8)
+	 *
+	 * @param	topicmapID	the ID of the topicmap. Note: this method works also for non-topicmap
+	 *						topics existing in a workspace (e.g. "CorporateWeb Settings") but is
+	 *						not used in this fashion.
+	 *
+	 * @return	The user resp. workspace as {@link de.deepamehta.BaseTopic}
+	 *			(type <CODE>tt-user</CODE> resp. <CODE>tt-workspace</CODE>)
+	 *
 	 * @see		de.deepamehta.topics.ChatTopic#initWorkspace
 	 * @see		de.deepamehta.topics.TopicMapTopic#updateOwnership
 	 */
-	public BaseTopic owner(String topicID) throws DeepaMehtaException {
+	public BaseTopic getTopicmapOwner(String topicmapID) throws DeepaMehtaException {
 		BaseTopic owner = null;
 		//
-		Enumeration e = cm.getViews(topicID, 1, VIEWMODE_USE).elements();
+		Enumeration e = cm.getViews(topicmapID, 1, VIEWMODE_USE).elements();
 		while (e.hasMoreElements()) {
-			BaseTopic workspace = (BaseTopic) e.nextElement();
-			BaseTopic o = workspaceOwner(workspace.getID());
+			BaseTopic workspaceTopicmap = (BaseTopic) e.nextElement();
+			BaseTopic o = getWorkspaceTopimapDeployer(workspaceTopicmap.getID());
 			if (o == null) {
-				// not a workspace
+				// not a workspace topicmap
 				continue;
 			}
 			//
@@ -2895,23 +2906,28 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	}
 
 	/**
-	 * Returns the user resp. group who deploys the specified workspace
+	 * Returns the user resp. workspace who deploys the specified workspace topicmap
 	 * (type <CODE>tt-topicmap</CODE>) resp. <CODE>null</CODE> if the specified
-	 * topicmap doesn't represent a workspace.
+	 * topicmap doesn't represent a workspace topicmap.
+	 * <p>
+	 * References checked: 24.8.2006 (2.0b8)
+	 *
+	 * @return	The the user resp. workspace as {@link de.deepamehta.BaseTopic}
+	 *			(type <CODE>tt-user</CODE> resp. <CODE>tt-workspace</CODE>)
 	 *
 	 * @see		#editorContext
-	 * @see		#owner
+	 * @see		#getTopicmapOwner
 	 */
-	public BaseTopic workspaceOwner(String topicmapID) {
-		Vector owners = cm.getRelatedTopics(topicmapID, SEMANTIC_WORKSPACE_OWNER, 1);
-		if (owners.size() == 0) {
+	public BaseTopic getWorkspaceTopimapDeployer(String topicmapID) {
+		Vector deployers = cm.getRelatedTopics(topicmapID, SEMANTIC_WORKSPACE_TOPICMAP_DEPLOYER, 1);
+		if (deployers.size() == 0) {
 			return null;
 		}
-		if (owners.size() > 1) {
-			throw new DeepaMehtaException("*** ApplicationService.workspaceOwner(): \"" +
-				topicmapID + "\" has " + owners.size() + " owners (expected is 1)");
+		if (deployers.size() > 1) {
+			throw new DeepaMehtaException("*** ApplicationService.getWorkspaceTopimapDeployer(): workspace topicmap \"" +
+				topicmapID + "\" has " + deployers.size() + " deployers (expected is 1)");
 		}
-		return (BaseTopic) owners.firstElement();
+		return (BaseTopic) deployers.firstElement();
 	}
 
 	// ---
@@ -3233,28 +3249,28 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	// ---
 
 	/**
-	 * Returns the workgroup from which the specified topicmap was opened or
-	 * <CODE>null</CODE> if the specified topicmap is a personal topic map.
+	 * Returns the workspace from which the specified topicmap was opened or
+	 * <CODE>null</CODE> if the specified topicmap was never published.
+	 * <p>
+	 * References checked: 24.8.2008 (2.0b8)
 	 *
-	 * @return	the workgroup as a {@link de.deepamehta.BaseTopic}
-	 *			(type <CODE>tt-workspace</CODE>)
+	 * @return	the workspace as a {@link de.deepamehta.BaseTopic} (type <CODE>tt-workspace</CODE>)
 	 *
 	 * @see		CorporateCommands#addPublishCommand
-	 * @see		de.deepamehta.topics.TopicMapTopic#evoke
 	 * @see		de.deepamehta.topics.TopicMapTopic#publish
 	 */
-	public BaseTopic getOriginWorkgroup(String topicmapID) {
-		Vector groupmaps = cm.getRelatedTopics(topicmapID, SEMANTIC_ORIGIN_GROUP, 2);
-		if (groupmaps.size() == 0) {
+	public BaseTopic getOriginWorkspace(String topicmapID) {
+		Vector workspaces = cm.getRelatedTopics(topicmapID, SEMANTIC_ORIGIN_WORKSPACE, 2);
+		if (workspaces.size() == 0) {
 			return null;
 		}
-		BaseTopic topic = (BaseTopic) groupmaps.firstElement();
-		if (groupmaps.size() > 1) {
-			System.out.println("*** ApplicationService.getOriginWorkgroup():" +
-				" topicmap \"" + topicmapID + "\" has " + groupmaps.size() +
-				" SEMANTIC_ORIGIN_GROUP associations -- considering only " + topic);
+		BaseTopic workspace = (BaseTopic) workspaces.firstElement();
+		if (workspaces.size() > 1) {
+			System.out.println("*** ApplicationService.getOriginWorkspace():" +
+				" topicmap \"" + topicmapID + "\" has " + workspaces.size() +
+				" SEMANTIC_ORIGIN_WORKSPACE associations -- considering only " + workspace);
 		}
-		return topic;
+		return workspace;
 	}
 
 	/**
@@ -3878,7 +3894,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		session.setUserID(userID);
 		session.setUserName(userTopic.getName());
 		// ### session.setUserPreferences(prefs);
-		session.setEmailChecker(new EmailChecker(userID, 1, this));
+		// ### session.setEmailChecker(new EmailChecker(userID, 1, this));	// ### threads are not stopped / creates to many threads on the server
 		// --- report on server console ---
 		updateServerConsole();
 		// --- let client create the initial  GUI ---

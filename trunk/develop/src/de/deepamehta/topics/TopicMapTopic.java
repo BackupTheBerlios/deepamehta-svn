@@ -72,7 +72,7 @@ import java.io.*;
  *     ({@link #importFromFile})</LI>
  * </OL>
  * <HR>
- * Last functional change: 25.6.2006 (2.0b7)<BR>
+ * Last functional change: 24.8.2006 (2.0b8)<BR>
  * Last documentation update: 11.12.2001 (2.0a14-pre4)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -708,7 +708,7 @@ public class TopicMapTopic extends LiveTopic {
 	 * @see		#getOwner
 	 */
 	private void updateOwnership() throws DeepaMehtaException {
-		this.owner = as.owner(getID());		// throws DME
+		this.owner = as.getTopicmapOwner(getID());		// throws DME
 	}
 
 	// ---
@@ -827,7 +827,7 @@ public class TopicMapTopic extends LiveTopic {
 			// ### create 2 associations to identify the original topicmap and the origin owner
 			// ### directly in corpoaret memory
 			cm.createAssociation(as.getNewAssociationID(), 1, SEMANTIC_ORIGIN_MAP, 1, getID(), 1, personalViewID, 1);
-			cm.createAssociation(as.getNewAssociationID(), 1, SEMANTIC_ORIGIN_GROUP, 1, personalViewID, 1, workspaceID, 1);
+			cm.createAssociation(as.getNewAssociationID(), 1, SEMANTIC_ORIGIN_WORKSPACE, 1, personalViewID, 1, workspaceID, 1);
 			// --- show personal view topic and open the view ---
 			// ### personalViewMetadata.setProperties(getProperties());						// ### copy properties
 			// Note: order is crucial. The personal view topic must be added _before_
@@ -883,7 +883,7 @@ public class TopicMapTopic extends LiveTopic {
 		addPublishDirectives(directives);
 		// --- publish this map ---
 		CorporateDirectives notify = new CorporateDirectives();
-		boolean isFirstPublishing = as.getOriginWorkgroup(getID()) == null;
+		boolean isFirstPublishing = as.getOriginWorkspace(getID()) == null;
 		publishTo(workspaceID, isFirstPublishing, notify);
 		// --- close view ---
 		if (as.isViewOpen(getID(), session.getUserID())) {

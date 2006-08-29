@@ -17,7 +17,7 @@ import java.util.*;
  * A chat between logged users which are members of the same workspace.
  * <P>
  * <HR>
- * Last functional change: 23.11.2004 (2.0b4)<BR>
+ * Last functional change: 24.8.2006 (2.0b8)<BR>
  * Last documentation update: 27.5.2001 (2.0a11-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -230,7 +230,7 @@ public class ChatTopic extends LiveTopic {
 	 * @see		#init
 	 */
 	private void initWorkspace(CorporateDirectives directives) throws TopicInitException {
-		BaseTopic owner = as.owner(getChatBoard().getID());
+		BaseTopic owner = as.getTopicmapOwner(getChatBoard().getID());
 		// ### error check
 		if (!owner.getType().equals(TOPICTYPE_WORKSPACE)) {
 			throw new TopicInitException("a chat baord is not functional in personal workspace");

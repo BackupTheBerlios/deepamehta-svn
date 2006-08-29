@@ -6,8 +6,8 @@ import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.topics.LiveTopic;
 //
-import com.sun.jimi.core.Jimi;
-import java.awt.Image;
+import javax.imageio.ImageIO;
+import java.awt.image.RenderedImage;
 import java.util.*;
 import java.sql.*;
 import java.io.*;
@@ -17,7 +17,7 @@ import java.io.*;
 /**
  * <P>
  * <HR>
- * Last functional change: 18.2.2004 (2.0b3-pre1)<BR>
+ * Last functional change: 26.8.2006 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -33,37 +33,19 @@ public class DeepaMehtaServiceUtils implements DeepaMehtaConstants {
 
 
 	/**
-	 * References checked: 20.10.2003 (2.0b2)
-	 *
-	 * @throws	DeepaMehtaException	if an error occurrs
-	 *
-	 * @see		de.deepamehta.topics.TypeTopic#createIconfile
-	 */
-	/* ### public static void createGIFFile(Image image, File file) throws DeepaMehtaException {
-		try {
-			// ### Jimi.putImage(image, file.getPath());	// ### cannot find encoder
-			OutputStream out = new BufferedOutputStream(new FileOutputStream(file), FILE_BUFFER_SIZE);
-			new GifEncoder(image, out).encode();
-			out.close();	// Note: close() is needed to flush the buffer
-		} catch (Throwable e) {
-			file.delete();	// ### return value?
-			throw new DeepaMehtaException(e.getMessage());
-		}
-	} */
-
-	/**
-	 * Saves an image to disk. Supported are JPG and PNG formats.
+	 * Saves an image to disk. Supported are all formats available to the Java Image I/O API.
 	 * The used format depends on the file extension.
 	 *
 	 * @param	image	the image
-	 * @param	file	the file reference. Should end with ".jpg" or ".png".
+	 * @param	file	the file reference. Should end with ".jpg", ".png"...
 	 */
-	public static void createImageFile(Image image, File file) throws DeepaMehtaException {
+	public static void createImageFile(RenderedImage image, File file) throws DeepaMehtaException {
 		try {
-			Jimi.putImage(image, file.getPath());
+			String format = file.getPath().substring(file.getPath().lastIndexOf('.') + 1);
+			ImageIO.write(image, format, file);
 		} catch (Throwable e) {
 			System.out.println("*** DeepaMehtaServiceUtils.createImageFile(): " + e);			
-			throw new DeepaMehtaException(e.getMessage());
+			throw new DeepaMehtaException("error while writing an image file (" + e + ")");
 		}
 	}
 

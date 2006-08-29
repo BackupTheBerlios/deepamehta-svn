@@ -24,7 +24,7 @@ import java.util.*;
  * Utility class for building {@link de.deepamehta.Commands topic commands / association commands}.
  * <P>
  * <HR>
- * Last functional change: 17.2.2005 (2.0b5)<BR>
+ * Last functional change: 24.8.2006 (2.0b8)<BR>
  * Last documentation update: 9.10.2001 (2.0a12)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -128,7 +128,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 		String userID = session.getUserID();
 		String workgroupID;
 		Commands commandGroup = addCommandGroup(as.string(ITEM_PUBLISH), FILESERVER_IMAGES_PATH, ICON_PUBLISH);
-		BaseTopic workgroup = as.getOriginWorkgroup(topicmapID);
+		BaseTopic workgroup = as.getOriginWorkspace(topicmapID);
 		if (workgroup == null) {
 			// this topicmap has been created in the users personal workspace originally -- it was never
 			// published. Publishing policy is as follows: it can be published to all worspaces the user
@@ -540,20 +540,27 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	public void addTopicCommands(Commands cmdGroup, Vector topics, String command,
 								int commandState, String selectedTopicID, String title,
 								Session session, CorporateDirectives directives) {
-		Vector selectedTopicIDs = new Vector();
+		Vector selectedTopicIDs = null;
 		if (selectedTopicID != null) {
+			selectedTopicIDs = new Vector();
 			selectedTopicIDs.addElement(selectedTopicID);
 		}
 		addTopicCommands(cmdGroup, topics, command, commandState, selectedTopicIDs, title, session, directives);
 	}
 
-	/**
-	 * @param	topics				vector of topics (BaseTopic) resp. topic IDs (String)
-	 * @param	selectedTopicIDs	IDs of currently selected topics,
-	 *								may be empty but not <CODE>null</CODE>
-	 */
 	public void addTopicCommands(Commands cmdGroup, Vector topics, String command,
 								int commandState, Vector selectedTopicIDs, String title,
+								Session session, CorporateDirectives directives) {
+		addTopicCommands(cmdGroup, topics, command, commandState, selectedTopicIDs, null, title, session, directives);
+	}
+
+	/**
+	 * @param	topics				vector of topics (BaseTopic) resp. topic IDs (String)
+	 * @param	selectedTopicIDs	IDs of currently selected topics, may be <CODE>null</CODE>
+	 * @param	disabledTopicIDs	IDs of currently disabled topics, may be <CODE>null</CODE>
+	 */
+	public void addTopicCommands(Commands cmdGroup, Vector topics, String command,
+								int commandState, Vector selectedTopicIDs, Vector disabledTopicIDs, String title,
 								Session session, CorporateDirectives directives) {
 		if (title != null) {
 			cmdGroup.addCommand(title, "dummy", "", "", COMMAND_STATE_DISABLED);
@@ -565,13 +572,12 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			String topicID = o instanceof String ? (String) o : ((BaseTopic) o).getID();
 			LiveTopic topic = as.getLiveTopic(topicID, 1, session, directives);
 			String topicName = topic.getName();
-			boolean isSelected = selectedTopicIDs.contains(topicID);
-			// ### Note: a radio button that is selected can't be selected once again, it is disabled
-			// ### boolean disable = commandState == COMMAND_STATE_RADIOBUTTON && isSelected;
-			int cmdState = commandState + (isSelected ? COMMAND_STATE_SELECTED : 0);
+			boolean isSelected = selectedTopicIDs != null && selectedTopicIDs.contains(topicID);
+			boolean isDisabled = disabledTopicIDs != null && disabledTopicIDs.contains(topicID);
+			int cmdState = commandState + (isSelected ? COMMAND_STATE_SELECTED : 0)
+										+ (isDisabled ? COMMAND_STATE_DISABLED : 0);
 			// add command
-			cmdGroup.addCommand(topicName, command + ":" + topicID, FILESERVER_ICONS_PATH, topic.getIconfile(),
-				cmdState);
+			cmdGroup.addCommand(topicName, command + ":" + topicID, FILESERVER_ICONS_PATH, topic.getIconfile(), cmdState);
 		}
 	}
 

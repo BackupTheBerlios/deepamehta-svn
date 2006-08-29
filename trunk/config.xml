@@ -30,7 +30,6 @@
 	<pathelement location="${libpath}/batik.jar"/>
 	<pathelement location="${libpath}/fop.jar"/>
 	<pathelement location="${libpath}/xml4j.jar"/>
-	<pathelement location="${libpath}/jimi-1.0.jar"/>
 	<pathelement location="${libpath}/avalon-framework.jar"/>
 	<pathelement location="${libpath}/commons-fileupload-1.0.jar"/>
 	<pathelement location="${libpath}/googleapi.jar"/>

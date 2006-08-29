@@ -26,7 +26,7 @@ import java.util.Vector;
  * </OL>
  * <P>
  * <HR>
- * Last functional change: 13.6.2006 (2.0b7)<BR>
+ * Last functional change: 24.8.2006 (2.0b8)<BR>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -551,7 +551,7 @@ public interface DeepaMehtaConstants {
 	static final String SEMANTIC_ORIGIN_MAP = ASSOCTYPE_DERIVATION;
 
 	// direction is from personal view to workgroup
-	static final String SEMANTIC_ORIGIN_GROUP = ASSOCTYPE_PUBLISHING;
+	static final String SEMANTIC_ORIGIN_WORKSPACE = ASSOCTYPE_PUBLISHING;
 
 	// *** User --> Workgroup, Workspace, Configuration Map ***
 
@@ -573,10 +573,10 @@ public interface DeepaMehtaConstants {
 	// direction is from user resp. workgroup to workspace
 	static final String SEMANTIC_WORKSPACE = ASSOCTYPE_AGGREGATION;
 
-	// *** Workspace --> Owner (User resp. Workgroup) ***
+	// *** Deployer (User resp. Workspace) --> Workspace Topicmap ***
 
-	// direction is from user resp. workgroup to workspace
-	static final String SEMANTIC_WORKSPACE_OWNER = ASSOCTYPE_AGGREGATION;
+	// direction is from user resp. workspace to workspace topicmap
+	static final String SEMANTIC_WORKSPACE_TOPICMAP_DEPLOYER = ASSOCTYPE_AGGREGATION;
 
 	// *** Workgroup resp. User --> Type ***
 
@@ -1042,10 +1042,10 @@ public interface DeepaMehtaConstants {
 
 
 
-	static final int EDITOR_CONTEXT_PERSONAL = 1;	// personal workspace
-	static final int EDITOR_CONTEXT_WORKGROUP = 2;	// group workspace
-	static final int EDITOR_CONTEXT_CORPORATE = 3;	// corporate workspace
-	static final int EDITOR_CONTEXT_VIEW = 4;		// view
+	static final int EDITOR_CONTEXT_PERSONAL = 1;	// personal workspace topicmap 
+	static final int EDITOR_CONTEXT_WORKGROUP = 2;	// workspace topicmap
+	// ### static final int EDITOR_CONTEXT_CORPORATE = 3;	// corporate workspace ### not needed anymore
+	static final int EDITOR_CONTEXT_VIEW = 4;		// topicmap
 
 
 

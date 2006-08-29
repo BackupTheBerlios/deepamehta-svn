@@ -213,11 +213,15 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 	// --- parseHexColor (3 forms) ---
 
 	public static Color parseHexColor(String color) {
+		return parseHexColor(color, 255);
+	}
+
+	public static Color parseHexColor(String color, int alpha) {
 		try {
 			int r = Integer.parseInt(color.substring(1, 3), 16);
 			int g = Integer.parseInt(color.substring(3, 5), 16);
 			int b = Integer.parseInt(color.substring(5, 7), 16);
-			return new Color(r, g, b);
+			return new Color(r, g, b, alpha);
 		} catch (RuntimeException e) {
 			throw new DeepaMehtaException("invalid color specification: \"" + color +
 				"\", expected format is \"#rrggbb\"");
