@@ -291,4 +291,5 @@ public interface CorporateMemory {
 
 	int getModelVersion();
 	int getContentVersion();
+	void checkPoint();
 }

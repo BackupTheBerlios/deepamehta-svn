@@ -250,6 +250,7 @@ final class InteractionConnection implements DeepaMehtaConstants, Runnable {
 	// ---
 
 	private void logout() throws IOException {
+		as.cm.checkPoint();
 		log("REQUEST_LOGOUT");
 	}
 

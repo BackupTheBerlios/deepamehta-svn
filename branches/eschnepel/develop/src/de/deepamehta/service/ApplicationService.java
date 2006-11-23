@@ -166,6 +166,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		while (true) {
 			try {
 				Thread.sleep(5 * 60 * 1000);	// interval is 5 min.
+				cm.checkPoint();
 				System.out.println(DeepaMehtaUtils.getDate() + " " + DeepaMehtaUtils.getTime() + " statistics: " +
 					cm.getTopicCount() + " topics, " + cm.getAssociationCount() + " associations");
 			} catch (InterruptedException e) {

@@ -573,7 +573,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 * @see		LiveTopic#revealTopicTypes
 	 */
 	public Hashtable getTopicTypes(String topicID) {
-		String query = "SELECT Topic.TypeID, Count(*) AS Count FROM Topic, Association " +
+		String query = "SELECT Topic.TypeID, Count(*) AS \"Count\" FROM Topic, Association " +
 			"WHERE " +
 		"(Association.TopicID1='" + topicID + "' AND Association.TopicID2=Topic.ID) OR " +
 		"(Association.TopicID2='" + topicID + "' AND Association.TopicID1=Topic.ID) " +
@@ -582,7 +582,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	}
 
 	public Hashtable getTopicTypes(String topicmapID, int version, String viewmode) {
-		String query = "SELECT TypeID, Count(*) AS Count FROM Topic, ViewTopic " +
+		String query = "SELECT TypeID, Count(*) AS \"Count\" FROM Topic, ViewTopic " +
 			"WHERE " +
 			"ViewTopic.ViewTopicID='" + topicmapID + "' AND " +
 			"ViewTopic.ViewTopicVersion=" + version + " AND " +
@@ -605,7 +605,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	}
 
 	public Hashtable getAssociationTypes(String topicID) {
-		String query = "SELECT TypeID, Count(*) AS Count FROM Association WHERE " +
+		String query = "SELECT TypeID, Count(*) AS \"Count\" FROM Association WHERE " +
 					   "(Association.TopicID1='" + topicID + "' OR " +
 						"Association.TopicID2='" + topicID + "') GROUP BY TypeID";
 		return queryHashtable(query, "TypeID", "Count");
@@ -646,9 +646,9 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		update("INSERT INTO Association (" +
 			"ID, Version, TypeID, TypeVersion, " +
 			"TopicID1, TopicVersion1, " +
-			"TopicID2, TopicVersion2) VALUES ('" +
+			"TopicID2, TopicVersion2, Name) VALUES ('" +
 			id + "', " + version + ", '" + typeID + "', " + typeVersion + ", '" +
-			topicID1 + "', " + topicVersion1 + ", '" + topicID2 + "', " + topicVersion2 + ")");
+			topicID1 + "', " + topicVersion1 + ", '" + topicID2 + "', " + topicVersion2 + ",'')");
 	}
 
 	// ---
@@ -1336,11 +1336,11 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	// --- Counting Topics / Associations ---
 
 	public int getTopicCount() {
-		return queryCount("SELECT COUNT(ID) AS Count FROM Topic");
+		return queryCount("SELECT COUNT(ID) AS \"Count\" FROM Topic");
 	}
 
 	public int getAssociationCount() {
-		return queryCount("SELECT COUNT(ID) AS Count FROM Association");
+		return queryCount("SELECT COUNT(ID) AS \"Count\" FROM Association");
 	}
 
 	// --- Getting version info ---
@@ -2248,4 +2248,20 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	private String quote(String str) {
 		return DeepaMehtaUtils.replace(str, '\'', "\\'");
 	}
+
+
+	public void checkPoint() {
+		try {
+			Statement stmt = con.createStatement();
+			stmt.execute("COMMIT");
+			stmt.close();
+			stmt = con.createStatement();
+			stmt.execute("CHECKPOINT");
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+
 }

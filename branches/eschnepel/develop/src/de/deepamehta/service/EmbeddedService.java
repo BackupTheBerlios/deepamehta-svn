@@ -101,6 +101,7 @@ public final class EmbeddedService implements de.deepamehta.client.ApplicationSe
 	}
 
 	public void logout() {
+		as.cm.checkPoint();
 		// >>> compare to service.InteractionConnection.logout()
 		if (LOG_REQUESTS) {
 			System.out.println("[" + session.getUserName() + "] REQUEST_LOGOUT");
