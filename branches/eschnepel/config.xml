@@ -22,7 +22,7 @@
 
 <!-- 3rd Party Libraries -->
 <path id="javalibs">
-	<pathelement location="${libpath}/mysql-3.1.7.jar"/>
+	<pathelement location="${libpath}/hsqldb.jar"/>
 	<pathelement location="${libpath}/servlet.jar"/>
 	<pathelement location="${libpath}/mail.jar"/>
 	<pathelement location="${libpath}/activation.jar"/>
@@ -63,14 +63,14 @@
 
 <!-- Database -->
 <property name="db.name" value="DeepaMehta"/>						<!-- configure this -->
-<property name="db.userid" value="dm"/>								<!-- configure this -->
-<property name="db.password" value="dm"/>							<!-- configure this -->
-<property name="db.driver" value="org.gjt.mm.mysql.Driver"/>		<!-- configure this -->
+<property name="db.userid" value="sa"/>								<!-- configure this -->
+<property name="db.password" value=""/>							<!-- configure this -->
+<property name="db.driver" value="org.hsqldb.jdbcDriver"/>		<!-- configure this -->
 <property name="db.host" value="127.0.0.1"/>						<!-- configure this -->
 
-<property name="db.tables" value="${db}/db_tables_mysql.sql"/>
-<property name="db.sysname" value="mysql"/>
-<property name="db.sysuser" value="root"/>
-<property name="db.url"    value="jdbc:mysql://${db.host}/${db.name}?useUnicode=true&amp;characterEncoding=latin1"/>
-<property name="db.sysurl" value="jdbc:mysql://${db.host}/${db.sysname}"/>
+<property name="db.tables" value="db_tables_hsqldb.sql"/>
+<property name="db.sysname" value="sa"/>
+<property name="db.sysuser" value=""/>
+<property name="db.url"    value="jdbc:hsqldb:${db.name}"/>
+<property name="db.sysurl" value="jdbc:hsqldb:${db.name}"/>
 </project>

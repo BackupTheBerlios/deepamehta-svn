@@ -64,12 +64,14 @@
 	</target>
 
 	<target name="createdb">
+<!-- MYSQL Only
 		<input message="Enter MySQL root user password: " addproperty="db.rootpw"/>
 		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.rootpw}" classpathref="javalibs">
 			CREATE DATABASE ${db.name};
 			GRANT ALL PRIVILEGES ON ${db.name}.* TO ${db.userid}@localhost IDENTIFIED BY '${db.password}' WITH GRANT OPTION;
 			GRANT ALL PRIVILEGES ON ${db.name}.* TO ${db.userid}@"%"       IDENTIFIED BY '${db.password}' WITH GRANT OPTION;
 		</sql>
+-->
 	</target>
 
 	<target name="dropdb">
@@ -91,8 +93,13 @@
 	</target>
 
 	<target name="createtables">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" src="${db.tables}">
-			<classpath refid="javalibs"/>
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" classpathref="javalibs">
+			<fileset dir="${db}">
+				<include name="${db.tables}"/>
+			</fileset>
+			<fileset dir="${db}">
+				<include name="COMMIT_SHUTDOWN.sql"/>
+			</fileset>
 		</sql>
 	</target>
 
@@ -115,6 +122,9 @@
 			<fileset dir="${db}/patches">
 				<include name="names.sql"/>
 				<include name="help.sql"/>
+			</fileset>
+			<fileset dir="${db}">
+				<include name="COMMIT_SHUTDOWN.sql"/>
 			</fileset>
 		</sql>
 	</target>
@@ -203,6 +213,7 @@
 
 	<target name="build" depends="compile" description="build jar files">
 		<!-- monolith -->
+		<mkdir dir="${client}"/>
 		<jar jarfile="${client}/DeepaMehta.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
 			<include name="de/deepamehta/client/*.class"/>
@@ -237,6 +248,7 @@
 			</manifest>
 		</jar>
 		<!-- server -->
+		<mkdir dir="${server}"/>
 		<jar jarfile="${server}/DeepaMehtaService.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
 			<include name="de/deepamehta/service/**/*.class"/>
