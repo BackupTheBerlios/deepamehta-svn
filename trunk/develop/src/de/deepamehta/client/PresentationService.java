@@ -35,7 +35,7 @@ import java.util.*;
  * Main controler of the graphical DeepaMehta frontend.
  * <P>
  * <HR>
- * Last functional change: 24.8.2006 (2.0b8)<BR>
+ * Last functional change: 6.12.2006 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -2397,6 +2397,12 @@ public final class PresentationService implements DeepaMehtaConstants,
 	 * @see		#processDirectives
 	 */
 	private void executeCommand(String command, String param) {
+		// ### hack for Mac OS X: the application is ignored, the file is opened with "open" instead.
+		// ### I don't know how to start Mac OS X applications with Runtime.exec().
+		if (platform.equals(PLATFORM_MACOSX)) {
+			command = "open";
+		}
+		//
 		String[] cmd = {command, FILESERVER_DOCUMENTS_PATH + param};
 		String cmdStr = "\"" + cmd[0] + " " + cmd[1] + "\"";	// just for reporting
 		try {
