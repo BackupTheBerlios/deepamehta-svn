@@ -15,7 +15,7 @@ import java.util.*;
  * The message panel the client uses to notify the user about certain circumstances.
  * <P>
  * <HR>
- * Last functional change: 3.5.2003 (2.0a18-pre10)<BR>
+ * Last functional change: 10.12.2006 (2.0b8)<BR>
  * Last documentation update: 10.11.2000 (2.0a7-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -78,12 +78,12 @@ class MessagePanel extends JPanel implements Runnable, DeepaMehtaConstants {
 			System.out.print("> MessagePanel: loading icons and sounds ... ");
 			// Note: +1 counts the "empty" icon
 			for (int i = 0; i <= NOTIFICATION_COUNT; i++) {
-				infoIcons[i] = new ImageIcon(ps.applet.getImage(ps.applet.getDocumentBase(),
+				infoIcons[i] = new ImageIcon(ps.applet.getImage(ps.applet.getCodeBase(),
 					FILESERVER_IMAGES_PATH + NOTIFICATION_ICONS[i]));
 			}
 			if (PLAY_SOUNDS) {
 				for (int i = 1; i <= NOTIFICATION_COUNT; i++) {
-					newMessageClip[i] = ps.applet.getAudioClip(ps.applet.getDocumentBase(),
+					newMessageClip[i] = ps.applet.getAudioClip(ps.applet.getCodeBase(),
 						FILESERVER_SOUNDS_PATH + NOTIFICATION_SOUNDS[i]);
 				}
 			}

@@ -35,7 +35,7 @@ import java.util.*;
  * Main controler of the graphical DeepaMehta frontend.
  * <P>
  * <HR>
- * Last functional change: 6.12.2006 (2.0b8)<BR>
+ * Last functional change: 10.12.2006 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -2262,7 +2262,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 			if (runsAsApplet) {
 				System.out.println("> PresentationService.playSound(): \"" +
 					soundfile + "\"");
-				applet.play(applet.getDocumentBase(), FILESERVER_SOUNDS_PATH + soundfile);
+				applet.play(applet.getCodeBase(), FILESERVER_SOUNDS_PATH + soundfile);
 			} else {
 				// ###
 				showMessage("Playing sounds not yet supported if running as application (" + soundfile +
@@ -2642,7 +2642,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	public Image getImage(String imagefile) {
 		// ### System.out.println(">>> PresentationService.getImage(): \"" + imagefile + "\"");
 		if (runsAsApplet) {
-			return applet.getImage(applet.getDocumentBase(), imagefile);
+			return applet.getImage(applet.getCodeBase(), imagefile);
 		} else {
 			return Toolkit.getDefaultToolkit().createImage(imagefile);
 		}
