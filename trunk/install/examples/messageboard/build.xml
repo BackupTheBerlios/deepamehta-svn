@@ -1,0 +1,61 @@
+<project name="DeepaMehta MessageBoard Servlet" default="build" basedir=".">
+
+	<description>
+		DeepaMehta MessageBoard Servlet
+	</description>
+
+	<property name="project.name" value="messageboard"/>
+	<property name="jar" value="${project.name}.jar"/>
+	<property name="war" value="${project.name}.war"/>
+	<property name="build" location="build"/>
+
+	<import file="../../../config.xml"/>
+
+	<target name="init" description="create build directory">
+		<mkdir dir="${build}"/>
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
+			<classpath>
+				<pathelement location="${web.lib.dir}/DeepaMehtaService.jar"/>
+				<pathelement location="${web.lib.dir}/DeepaMehtaTopics.jar"/>
+				<pathelement location="${web.servlet.lib}"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar jarfile="${jar}" basedir="${build}">
+			<include name="de/deepamehta/messageboard/MessageBoard.class"/>
+			<include name="de/deepamehta/messageboard/topics/*.class"/>
+			<include name="de/deepamehta/messageboard/assocs/*.class"/>
+		</jar>
+	</target>
+
+	<target name="war" depends="jar">
+   	    <war warfile="${war}" webxml="config/web.xml">
+		    <classes dir="${build}">
+				<include name="de/deepamehta/messageboard/*.class" />
+            </classes>
+         	<fileset dir=".">
+            	<include name="pages/*"/>
+            	<include name="images/*"/>
+         	</fileset>
+		</war>
+	</target>
+
+	<target name="build" depends="war">
+		<antcall target="deploy"/>
+	</target>
+
+	<target name="deploy">
+        <copy file="${jar}" todir="${web.lib.dir}"/>
+        <copy file="${war}" todir="${web.deploy.dir}"/>
+	</target>
+
+	<target name="cleanup" description="remove build directory">
+		<delete dir="${build}"/>
+	</target>
+
+</project>
