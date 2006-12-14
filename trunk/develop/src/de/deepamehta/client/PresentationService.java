@@ -324,9 +324,12 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
+	 * References checked: 11.12.2006 (2.0b8)
+	 *
 	 * @param	applet		may be <CODE>null</CODE>
 	 *
 	 * @see		DeepeMehtaClient#init				(running as applet)
+	 * @see		de.deepamehta.service.DeepeMehta#init
 	 */
 	public void setApplet(Applet applet) {
 		if (applet != null) {
@@ -2875,8 +2878,12 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 
 	/**
+	 * References checked: 11.12.2006 (2.0b8)
+	 *
 	 * @see		DeepaMehtaClient#initApplication
 	 * @see		DeepaMehtaClient#init
+	 * @see		de.deepamehta.service.DeepeMehta#initApplication
+	 * @see		de.deepamehta.service.DeepeMehta#init
 	 */
 	public Component createLoginGUI() {
 		JPanel p1 = new JPanel();
@@ -2901,11 +2908,16 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
+	 * References checked: 11.12.2006 (2.0b8)
+	 *
 	 * @see		DeepaMehtaClient#init
+	 * @see		de.deepamehta.service.DeepeMehta#init
 	 */
 	public Component createStartDemoGUI() {
-		startDemoButton = new JButton(START_DEMO_LABEL);
-		startDemoButton.setBackground(COLOR_PROPERTY_PANEL);
+		String label = applet.getParameter("BUTTON_LABEL");
+		String color = applet.getParameter("BACKGROUND_COLOR");
+		startDemoButton = new JButton(label != null ? label : START_DEMO_LABEL);
+		startDemoButton.setBackground(DeepaMehtaUtils.parseHexColor(color, COLOR_PROPERTY_PANEL));
 		startDemoButton.setActionCommand("startdemo");
 		startDemoButton.addActionListener(this);
 		return startDemoButton;

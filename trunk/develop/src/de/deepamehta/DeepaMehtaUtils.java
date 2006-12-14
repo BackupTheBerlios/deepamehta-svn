@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * <P>
  * <HR>
- * Last functional change: 13.6.2006 (2.0b7)<BR>
+ * Last functional change: 11.12.2006 (2.0b8)<BR>
  * Last documentation update: 28.7.2001 (2.0a11)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -210,7 +210,7 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 
 
 
-	// --- parseHexColor (3 forms) ---
+	// --- parseHexColor (4 forms) ---
 
 	public static Color parseHexColor(String color) {
 		return parseHexColor(color, 255);
@@ -228,17 +228,16 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		}
 	}
 
-	// ### to be dropped
 	public static Color parseHexColor(String color, String defaultColor) {
 		return parseHexColor(color, parseHexColor(defaultColor, Color.white));
 	}
 
-	// ### to be dropped
+	/**
+	 * @param	color	a string of format #rrggbb, may be <code>null</code> or empty.
+	 */
 	public static Color parseHexColor(String color, Color defaultColor) {
 		try {
-			if (color.length() == 0) {
-				System.out.println(">>> DeepaMehtaUtils.parseHexColor(): no " +
-					"color specified -- default color used");
+			if (color == null || color.length() == 0) {
 				return defaultColor;
 			}
 			//
@@ -482,7 +481,7 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		return xml.toString();
 	}
 
-	// ---
+	// --- quoteHTML (2 forms) ---
 
 	static public String quoteHTML(String text) {
 		return quoteHTML(text, false);
@@ -510,6 +509,8 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		}
 		return quotedText.toString();
 	}
+
+	// ---
 
 	static private String getWord(StringBuffer str, int fromIndex) {
 		int i = fromIndex;
