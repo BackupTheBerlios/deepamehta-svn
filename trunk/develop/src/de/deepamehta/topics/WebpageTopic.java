@@ -68,7 +68,7 @@ import javax.swing.text.html.parser.*;
  * changes on webpages).
  * <P>
  * <HR>
- * Last functional change: 5.4.2005 (2.0b6)<BR>
+ * Last functional change: 14.12.2006 (2.0b8)<BR>
  * Last documentation update: 21.3.2001<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -131,23 +131,24 @@ public class WebpageTopic extends LiveTopic {
 		if (command.equals(CMD_DEFAULT)) { // when double-clicked
 			// it is necessary to handle correctly downloaded pages
 			String urlProperty = getProperty(PROPERTY_URL);
-			try {
+			// ### try {
 				String urlString;
-				if (as.localFileExists(new URL(urlProperty))) {
-					urlString = as.getCorporateWebBaseURL() + urlProperty.substring(7);
-					// ### 7
-					System.out.println(">>> Webpage \"" + urlProperty + "\" exists " +
-						"locally -- URL transformed to \"" + urlString + "\"");
-				} else {
+				// ### accessing local pages is disabled
+				// ###
+				// ### if (as.localFileExists(new URL(urlProperty))) {
+				// ###	urlString = as.getCorporateWebBaseURL() + urlProperty.substring(7);		// ### 7
+				// ###	System.out.println(">>> Webpage \"" + urlProperty + "\" exists " +
+				// ###		"locally -- URL transformed to \"" + urlString + "\"");
+				// ### } else {
 					urlString = urlProperty;
 					//
-					System.out.println(">>> Webpage \"" + urlProperty + "\" does NOT " +
-						"exists locally -- online connection required");
-				}
+				// ###	System.out.println(">>> Webpage \"" + urlProperty + "\" does NOT " +
+				// ###		"exists locally -- online connection required");
+				// ### }
 				directives.add(DIRECTIVE_OPEN_URL, urlString);
-			} catch (MalformedURLException e) {
-				throw new DeepaMehtaException("URL is invalid: \"" + urlProperty + "\"");
-			}
+			// ### } catch (MalformedURLException e) {
+			// ###	throw new DeepaMehtaException("URL is invalid: \"" + urlProperty + "\"");
+			// ### }
 		} else if (command.equals(CMD_DOWNLOAD_WEBPAGE)) {
 			download(topicmapID, viewmode, session, directives);
 		} else {
