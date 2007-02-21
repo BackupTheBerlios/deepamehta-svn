@@ -29,6 +29,7 @@
 	<pathelement location="${libpath}/jndi.jar"/>
 	<pathelement location="${libpath}/batik.jar"/>
 	<pathelement location="${libpath}/fop.jar"/>
+	<pathelement location="${libpath}/jimi-1.0.jar"/>
 	<pathelement location="${libpath}/xml4j.jar"/>
 	<pathelement location="${libpath}/avalon-framework.jar"/>
 	<pathelement location="${libpath}/commons-fileupload-1.0.jar"/>
@@ -54,7 +55,7 @@
 	<pathelement location="${examples}/artfacts/ArtfactsTopics.jar"/>							<!-- configure this -->
 	<pathelement location="${examples}/messageboard/messageboard.jar"/>							<!-- configure this -->
 	<pathelement location="${examples}/kompetenzstern/kompetenzstern.jar"/>						<!-- configure this -->
-	<pathelement location="${appspath}/Kiez-Atlas/kiezatlas.jar"/>								<!-- configure this -->
+	<pathelement location="${appspath}/Kiezatlas/trunk/kiezatlas.jar"/>								<!-- configure this -->
 	<pathelement location="${appspath}/TeenKom/teenkom.jar"/>									<!-- configure this -->
 	<pathelement location="${appspath}/OLAP/olap.jar"/>											<!-- configure this -->
 	<pathelement location="${appspath}/Importer/importer.jar"/>									<!-- configure this -->

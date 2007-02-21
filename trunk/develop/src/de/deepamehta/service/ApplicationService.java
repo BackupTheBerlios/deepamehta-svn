@@ -3882,44 +3882,31 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	 */
 	public void startSession(BaseTopic userTopic, Session session, CorporateDirectives directives) {
 		String userID = userTopic.getID();
-		/* ### --- create user preferences ---
-		BaseTopic userPrefs = getUserPreferences(userID, "tt-preferences", directives);	// DME
-		boolean splitScreen = getTopicProperty(userPrefs, PROPERTY_SPLIT_SCREEN).equals(SWITCH_ON);
-		boolean showSidebar = getTopicProperty(userPrefs, PROPERTY_SHOW_SIDEBAR).equals(SWITCH_ON);
-		boolean showBuildPanel = getTopicProperty(userPrefs, PROPERTY_SHOW_BUILD_PANEL).equals(SWITCH_ON);
-		UserPreferences prefs = new UserPreferences(splitScreen, showSidebar, showBuildPanel); */
 		// --- initialize session ---
 		session.setDemo(false);
 		session.setLoggedIn(true);
 		session.setUserID(userID);
 		session.setUserName(userTopic.getName());
-		// ### session.setUserPreferences(prefs);
-		// ### session.setEmailChecker(new EmailChecker(userID, 1, this));	// ### threads are not stopped / creates to many threads on the server
+		// ### email checking is disabled. ### threads are not stopped / creates to many threads on the server
+		// ### session.setEmailChecker(new EmailChecker(userID, 1, this));
 		// --- report on server console ---
 		updateServerConsole();
 		// --- let client create the initial  GUI ---
 		addPersonalWorkspace(session, directives);	// adding workspaces
 		addGroupWorkspaces(session, directives);	// ### workspace order required
-		// ### addCorporateSpace(session, directives);		// ### separate handling required?
 		addViewsInUse(session, directives);			// open views from previous session
-		//
-		// ### return prefs;
 	}
 
 	/**
 	 * @see		InteractionConnection#login
 	 */
 	public void startDemo(String demoMapID, Session session, CorporateDirectives directives) {
-		// --- create user preferences ---
-		// ### Note: the user preferences of a demo user are set to default values
-		// ### UserPreferences prefs = new UserPreferences(false, true, true);		// splitScreen, showSidebar, showBuildPanel
 		// --- initialize session ---
 		String userName = "Guest " + session.getSessionID();
 		session.setDemo(true);
 		session.setLoggedIn(true);
 		// Note: a demo user has no ID (there is no tt-user topic for a demo user)
 		session.setUserName(userName);
-		// ### session.setUserPreferences(prefs);
 		// --- report on server console ---
 		updateServerConsole();
 		//
@@ -3936,8 +3923,6 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 			directives.add(DIRECTIVE_SHOW_MESSAGE, "The demo is not available (" + dme.getMessage() + ")",
 				new Integer(NOTIFICATION_ERROR));
 		}
-		//
-		// ### return prefs;
 	}
 
 	// ---

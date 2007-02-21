@@ -165,7 +165,7 @@ public interface DeepaMehtaConstants {
 	static final String DATE_SEPARATOR = "/";
 	static final String TIME_SEPARATOR = ":";
 	static final String[] monthNames = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-	static final int YEAR_MIN = 1900;
+	static final int YEAR_MIN = 1850;
 	static final int YEAR_MAX = 2010;
 	static final String PARAM_SEPARATOR = "_";	// ### was "." clashed with "Course No."
 	static final String LEVEL_SEPARATOR = ":";

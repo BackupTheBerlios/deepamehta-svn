@@ -1085,7 +1085,8 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		}
 		if (text != null) {
 			text = DeepaMehtaUtils.replace(text, '\r', "<br>");		// needed for "Multiline Input Field"
-			text = DeepaMehtaUtils.quoteHTML(text);
+			// text = DeepaMehtaUtils.quoteHTML(text);	// ### must be enabled for "Messageboard" ("<no subject>")
+													// ### must be disabled for "Stolpersteine" (Description) ###
 			html.append((bold ? "<b>" : "") + text + (bold ? "</b>" : ""));
 		}
 		if (action != null) {

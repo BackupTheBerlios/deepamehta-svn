@@ -89,11 +89,6 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 	 */
 	// ### private String userName;
 
-	/**
-	 * Accessed by {@link #getUserPreferences}
-	 */
-	// ### private UserPreferences userPrefs;
-
 	// ---
 
 	/**
@@ -192,10 +187,6 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 		return null;	// ###
 	}
 
-	/* ### public UserPreferences getUserPreferences() {
-		return null;	// ###
-	} */
-
 	/**
 	 * @see		ApplicationService#importTopicmap
 	 * @see		ApplicationService#importCM
@@ -251,13 +242,6 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 	public void setUserName(String userName) {
 		// ### this.userName = userName;
 	}
-
-	/**
-	 * @see		ApplicationService#startSession
-	 */
-	/* ### public void setUserPreferences(UserPreferences userPrefs) {
-		// ### this.userPrefs = userPrefs;
-	} */
 
 	/**
 	 * @see		ApplicationService#addPersonalWorkspace

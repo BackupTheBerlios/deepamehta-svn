@@ -86,11 +86,6 @@ public final class DeepaMehtaSession implements Session, DeepaMehtaConstants {
 	 */
 	private String userName;
 
-	/**
-	 * Accessed by {@link #getUserPreferences}
-	 */
-	// ### private UserPreferences userPrefs;
-
 	private EmailChecker emailChecker;
 
 	// ---
@@ -194,10 +189,6 @@ public final class DeepaMehtaSession implements Session, DeepaMehtaConstants {
 		return userName;
 	}
 
-	/* ### public UserPreferences getUserPreferences() {
-		return userPrefs;
-	} */
-
 	/**
 	 * @see		ApplicationService#importTopicmap
 	 * @see		ApplicationService#importCM
@@ -257,13 +248,6 @@ public final class DeepaMehtaSession implements Session, DeepaMehtaConstants {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-
-	/**
-	 * @see		ApplicationService#startSession
-	 */
-	/* ### public void setUserPreferences(UserPreferences userPrefs) {
-		this.userPrefs = userPrefs;
-	} */
 
 	/**
 	 * @see		ApplicationService#addPersonalWorkspace

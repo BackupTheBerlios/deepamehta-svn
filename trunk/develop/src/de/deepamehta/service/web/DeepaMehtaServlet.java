@@ -51,7 +51,7 @@ import java.util.*;
 /**
  * <P>
  * <HR>
- * Last functional change: 13.6.2006 (2.0b7)<BR>
+ * Last functional change: 19.2.2007 (2.0b8)<BR>
  * Last documentation update: 28.9.2002 (2.0a16-pre4)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -259,71 +259,6 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 		return getUser(session).getID();
 	}
 
-	// ---
-
-	/**
-	 * Converts the specified request parameters (originating from a topic/association form)
-	 * into topic/association properties.
-	 */
-	protected final Hashtable getProperties(Hashtable params, String typeID) {
-		Hashtable props = new Hashtable();
-		Hashtable compProps = new Hashtable();
-		//
-		Enumeration e = params.keys();
-		while (e.hasMoreElements()) {
-			String propName = (String) e.nextElement();
-			String propValue = ((String[]) params.get(propName))[0];
-			// ### skip "action", "button", "id", "typeID" properties
-			// ### as well as properties with empty value
-			if (propValue.equals("") || propName.equals("action") || propName.equals("button") ||
-				propName.equals("id") || propName.equals("typeID")) {
-				continue;
-			}
-			int pos = propName.indexOf(PARAM_SEPARATOR);
-			if (pos != -1) {
-				String propertyName = propName.substring(0, pos);
-				if (propertyName.equals(PARAM_RELATION)) {
-					// value is part of relation
-					continue;
-				}
-				// value is part of composed date/time value
-				int partNumber = Integer.parseInt(propName.substring(pos + 1));
-				String[] compProp = (String[]) compProps.get(propertyName);
-				if (compProp == null) {
-					compProp = new String[3];
-					compProps.put(propertyName, compProp);
-				}
-				compProp[partNumber] = propValue;
-			} else {
-				// value is simple property value
-				PropertyDefinition propDef = as.type(typeID, 1).getPropertyDefinition(propName);
-				// ### System.out.println(">>> DeepaMehtaServlet.getProperties(): typeID=\"" + typeID + "\" propName=\"" + propName + "\" propDef=" + propDef);
-				if (propDef.getVisualization().equals(VISUAL_TEXT_EDITOR)) {
-					propValue = DeepaMehtaUtils.replace(propValue, '\r', "<br>");		// ### was <br/>
-					propValue = "<html><body><p>" + propValue + "</p></body></html>";	// ### <html>
-				}
-				props.put(propName, propValue);
-			}
-		}
-		//
-		e = compProps.keys();
-		while (e.hasMoreElements()) {
-			String propName = (String) e.nextElement();
-			String[] compProp = (String[]) compProps.get(propName);
-			String propValue;
-			if (compProp[2] != null) {
-				// date property
-				propValue = compProp[0] + DATE_SEPARATOR + compProp[1] + DATE_SEPARATOR + compProp[2];
-			} else {
-				// time property
-				propValue = compProp[0] + TIME_SEPARATOR + compProp[1];
-			}
-			props.put(propName, propValue);
-		}		
-		//
-		return props;
-	}
-
 	// --- getTopicTree (5 forms) ---
 
 	protected final TopicTree getTopicTree(String topicID) {
@@ -419,11 +354,12 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 	// --- processForm (2 forms) ---
 
 	/**
-	 * Processes a topic form.
+	 * Processes a topic form. Called recusively to process embedded forms.
 	 * <P>
 	 * Used for both: "create topic" (<CODE>doCreate=true</CODE>) and
 	 * "update topic" (<CODE>doCreate=false</CODE>) actions.
 	 *
+	 * @param	typeID		the topic type of the form resp. embedded form
 	 * @param	topicID		the ID of the topic to be created resp. updated
 	 * @param	params		all request parameters as hashtable
 	 *
@@ -449,7 +385,7 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 		directives.add(as.setTopicProperties(topicID, 1, props, topicmapID, true, session));	// triggerPropertiesChangedHook=true
 		directives.updateCorporateMemory(as, session, topicmapID, viewmode);
 		// weak relations
-		updateWeakRelations(topicID, typeID, getWeakRelationParameters(params));
+		updateWeakRelations(typeID, topicID, getWeakRelationParameters(params));
 		// strong relations
 		updateStrongRelations(typeID, topicID, getStrongRelationParameters(params), doCreate, session);
 	}
@@ -705,17 +641,17 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 	/**
 	 * @see		#processForm
 	 */
-	private void updateWeakRelations(String topicID, String typeID, Hashtable relParams) {
+	private void updateWeakRelations(String typeID, String topicID, Hashtable params) {
 		// ### System.out.println(">>> update relations of topic \"" + topicID + "\"");
 		TypeTopic type = as.type(typeID, 1);	// ### version=1
-		Enumeration e = relParams.keys();
+		Enumeration e = params.keys();
 		while (e.hasMoreElements()) {
 			String relID = (String) e.nextElement();
 			Relation rel = type.getRelation(relID);
 			// remove existing assignments
 			removeAssignments(topicID, rel);
 			// create new assignments
-			String[] values = (String[]) relParams.get(relID);
+			String[] values = (String[]) params.get(relID);
 			createAssignments(topicID, rel, values);
 		}
 	}
@@ -809,6 +745,85 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 	// ---
 
 	/**
+	 * ### Converts the specified request parameters (originating from a topic/association form)
+	 * into topic/association properties. Basically two conversions are performed:
+	 * <ol>
+	 *	<li>Composed properties are merged into one property. Composed properties are such that results from more than
+	 *		one form field, e.g. date and time selectors</li>
+	 *	<li>Properties of related topics are filtered out.</li>
+	 * </ol>
+	 *
+	 * @see		#processForm
+	 */
+	private final Hashtable getProperties(Hashtable params, String typeID) {
+		Hashtable props = new Hashtable();		// return object
+		Hashtable compProps = new Hashtable();	// intermediate table to compile the single values of composed properties
+		//
+		Enumeration e = params.keys();
+		while (e.hasMoreElements()) {
+			String propName = (String) e.nextElement();
+			String propValue = ((String[]) params.get(propName))[0];
+			// ### skip "action", "button", "id", "typeID" properties
+			// ### as well as properties with empty value
+			if (propValue.equals("") || propName.equals("action") || propName.equals("button") ||
+				propName.equals("id") || propName.equals("typeID")) {
+				// Note: the internally used parameter "action" must be removed here to not confuse getWeakRelationParameters()
+				if (propValue.equals("") || propName.equals("action")) {
+					params.remove(propName);
+				}
+				//
+				continue;
+			}
+			int pos = propName.indexOf(PARAM_SEPARATOR);
+			if (pos != -1) {
+				String propertyName = propName.substring(0, pos);
+				if (propertyName.equals(PARAM_RELATION)) {
+					// value is part of relation
+					continue;
+				}
+				// value is part of composed date/time value
+				int partNumber = Integer.parseInt(propName.substring(pos + 1));
+				String[] compProp = (String[]) compProps.get(propertyName);
+				if (compProp == null) {
+					compProp = new String[3];
+					compProps.put(propertyName, compProp);
+				}
+				compProp[partNumber] = propValue;
+			} else {
+				// value is simple property value
+				PropertyDefinition propDef = as.type(typeID, 1).getPropertyDefinition(propName);
+				// ### System.out.println(">>> DeepaMehtaServlet.getProperties(): typeID=\"" + typeID + "\" propName=\"" + propName + "\" propDef=" + propDef);
+				if (propDef.getVisualization().equals(VISUAL_TEXT_EDITOR)) {
+					propValue = DeepaMehtaUtils.replace(propValue, '\r', "<br>");		// ### was <br/>
+					propValue = "<html><body><p>" + propValue + "</p></body></html>";	// ### <html>
+				}
+				props.put(propName, propValue);
+			}
+			// remove processed parameter
+			if (params.remove(propName) == null) {
+				throw new DeepaMehtaException("parameter \"" + propName + "\" not found");
+			}
+		}
+		// assemble composed properties from compiled single values
+		e = compProps.keys();
+		while (e.hasMoreElements()) {
+			String propName = (String) e.nextElement();
+			String[] compProp = (String[]) compProps.get(propName);
+			String propValue;
+			if (compProp[2] != null) {
+				// date property
+				propValue = compProp[0] + DATE_SEPARATOR + compProp[1] + DATE_SEPARATOR + compProp[2];
+			} else {
+				// time property
+				propValue = compProp[0] + TIME_SEPARATOR + compProp[1];
+			}
+			props.put(propName, propValue);
+		}		
+		//
+		return props;
+	}
+
+	/**
 	 * @param	params		### all request parameters as hashtable
 	 *
 	 * @return	the parameter values for weak relations (weak means: non-strong) as hashtable,<BR>
@@ -823,12 +838,27 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 		Enumeration e = params.keys();
 		while (e.hasMoreElements()) {
 			String propName = (String) e.nextElement();
+			// ### skip "id" parameter
+			if (propName.equals("id")) {
+				continue;
+			}
+			// only level 0 is processed here.
+			// deeper levels are processed via recursion.
+			if (propName.indexOf(LEVEL_SEPARATOR) >= 0) {
+				continue;
+			}
 			int pos = propName.indexOf(PARAM_SEPARATOR);
-			if (pos != -1 && propName.substring(0, pos).equals(PARAM_RELATION) &&
-							 propName.indexOf(LEVEL_SEPARATOR, pos + 1) == -1) {
-				String relID = propName.substring(pos + 1);
-				String[] values = (String[]) params.get(propName);
-				relParams.put(relID, values);
+			// error check
+			if (pos == -1) {
+				throw new DeepaMehtaException("no PARAM_SEPARATOR \"" + PARAM_SEPARATOR + "\" found in \"" + propName + "\"");
+			}
+			//
+			String relID = propName.substring(pos + 1);
+			String[] values = (String[]) params.get(propName);
+			relParams.put(relID, values);
+			// remove processed parameter
+			if (params.remove(propName) == null) {
+				throw new DeepaMehtaException("parameter \"" + propName + "\" not found");
 			}
 		}
 		//
@@ -851,28 +881,37 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 		//
 		Enumeration e = params.keys();
 		while (e.hasMoreElements()) {
-			String propName = (String) e.nextElement();
-			int pos = propName.indexOf(PARAM_SEPARATOR);
-			if (pos != -1 && propName.substring(0, pos).equals(PARAM_RELATION)) {
-				int pos2 = propName.indexOf(LEVEL_SEPARATOR, pos + 1);
-				if (pos2 != -1) {
-					// error check
-					if (propName.indexOf(LEVEL_SEPARATOR, pos2 + 1) != -1) {
-						throw new DeepaMehtaException("too many relation levels -- property \"" +
-							propName + " will be omitted");
-					}
-					//
-					String relID = propName.substring(pos + 1, pos2);
-					Hashtable props = (Hashtable) relParams.get(relID);
-					if (props == null) {
-						props = new Hashtable();
-						relParams.put(relID, props);
-					}
-					String name = propName.substring(pos2 + 1);
-					String[] values = (String[]) params.get(propName);
-					props.put(name, values);
-				}
+			String paramName = (String) e.nextElement();
+			// ### skip "id" parameter
+			if (paramName.equals("id")) {
+				continue;
 			}
+			//
+			int pos = paramName.indexOf(PARAM_SEPARATOR);
+			// error check 1
+			if (pos == -1) {
+				throw new DeepaMehtaException("no PARAM_SEPARATOR \"" + PARAM_SEPARATOR + "\" found in \"" + paramName + "\"");
+			}
+			// error check 2
+			if (!paramName.substring(0, pos).equals(PARAM_RELATION)) {
+				throw new DeepaMehtaException("no PARAM_RELATION \"" + PARAM_RELATION + "\" found at beginning of \"" + paramName + "\"");
+			}
+			//
+			int pos2 = paramName.indexOf(LEVEL_SEPARATOR, pos + 1);
+			// error check 3
+			if (pos2 == -1) {
+				throw new DeepaMehtaException("no LEVEL_SEPARATOR \"" + LEVEL_SEPARATOR + "\" found in \"" + paramName + "\"");
+			}
+			//
+			String relID = paramName.substring(pos + 1, pos2);
+			Hashtable nextLevelParams = (Hashtable) relParams.get(relID);
+			if (nextLevelParams == null) {
+				nextLevelParams = new Hashtable();
+				relParams.put(relID, nextLevelParams);
+			}
+			String nextLevelParamName = paramName.substring(pos2 + 1);	// strip relation ID
+			String[] values = (String[]) params.get(paramName);
+			nextLevelParams.put(nextLevelParamName, values);
 		}
 		//
 		return relParams;
