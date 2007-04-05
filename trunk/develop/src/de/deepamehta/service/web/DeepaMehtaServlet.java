@@ -51,7 +51,7 @@ import java.util.*;
 /**
  * <P>
  * <HR>
- * Last functional change: 19.2.2007 (2.0b8)<BR>
+ * Last functional change: 21.2.2007 (2.0b8)<BR>
  * Last documentation update: 28.9.2002 (2.0a16-pre4)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -767,8 +767,9 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 			// ### as well as properties with empty value
 			if (propValue.equals("") || propName.equals("action") || propName.equals("button") ||
 				propName.equals("id") || propName.equals("typeID")) {
-				// Note: the internally used parameter "action" must be removed here to not confuse getWeakRelationParameters()
-				if (propValue.equals("") || propName.equals("action")) {
+				// Note: the internally used parameters "action" and "button" must be removed here
+				// to not confuse getWeakRelationParameters()
+				if (propValue.equals("") || propName.equals("action") || propName.equals("button")) {
 					params.remove(propName);
 				}
 				//
@@ -795,7 +796,9 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 				// ### System.out.println(">>> DeepaMehtaServlet.getProperties(): typeID=\"" + typeID + "\" propName=\"" + propName + "\" propDef=" + propDef);
 				if (propDef.getVisualization().equals(VISUAL_TEXT_EDITOR)) {
 					propValue = DeepaMehtaUtils.replace(propValue, '\r', "<br>");		// ### was <br/>
-					propValue = "<html><body><p>" + propValue + "</p></body></html>";	// ### <html>
+					if (!propValue.startsWith("<html>")) {	// ### must ignore case. <HTML> used in help texts?
+						propValue = "<html><body><p>" + propValue + "</p></body></html>";	// ### <html>
+					}
 				}
 				props.put(propName, propValue);
 			}
