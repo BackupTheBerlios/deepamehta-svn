@@ -570,8 +570,8 @@ public interface DeepaMehtaConstants {
 	// direction is from authentification source to login topic
 	static final String SEMANTIC_AUTHENTIFICATION_SOURCE = ASSOCTYPE_ASSOCIATION;
 
-	// direction is from user resp. workgroup to workspace
-	static final String SEMANTIC_WORKSPACE = ASSOCTYPE_AGGREGATION;
+	// direction is from user resp. workspace to workspace topicmap
+	static final String SEMANTIC_WORKSPACE_TOPICMAP = ASSOCTYPE_AGGREGATION;
 
 	// *** Deployer (User resp. Workspace) --> Workspace Topicmap ***
 

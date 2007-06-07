@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * <P>
  * <HR>
- * Last functional change: 11.12.2006 (2.0b8)<BR>
+ * Last functional change: 7.4.2007 (2.0b8)<BR>
  * Last documentation update: 28.7.2001 (2.0a11)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -292,6 +292,41 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 	// ----------------
 
 
+
+	// ---
+
+	public static Rectangle getBounds(PresentableTopicMap topicmap) {
+		return initBounds(topicmap, null);
+	}
+
+	public static Rectangle initBounds(PresentableTopicMap topicmap, Rectangle returnObject) {
+		int xMin = Integer.MAX_VALUE;
+		int yMin = Integer.MAX_VALUE;
+		int xMax = Integer.MIN_VALUE;
+		int yMax = Integer.MIN_VALUE;
+		//
+		Enumeration e = topicmap.getTopics().elements();
+		while (e.hasMoreElements()) {
+			PresentableTopic topic = (PresentableTopic) e.nextElement();
+			Point p = topic.getGeometry();
+			if (p.x < xMin) xMin = p.x;
+			if (p.x > xMax) xMax = p.x;
+			if (p.y < yMin) yMin = p.y;
+			if (p.y > yMax) yMax = p.y;
+		}
+		//
+		if (returnObject == null) {
+			returnObject = new Rectangle();
+		}
+		returnObject.x = xMin;
+		returnObject.y = yMin;
+		returnObject.width = xMax - xMin;
+		returnObject.height = yMax - yMin;
+		//
+		return returnObject;
+	}
+
+	// ---
 
 	/**
 	 * References checked: 4.9.2001 (2.0a12-pre1)

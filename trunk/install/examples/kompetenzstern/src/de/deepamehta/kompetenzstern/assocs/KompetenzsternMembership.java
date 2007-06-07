@@ -70,7 +70,7 @@ public class KompetenzsternMembership extends LiveAssociation implements KS {
 			}
 			// ### DOESN'T WORK FOR MORE THAN ONE TEMPLATE BUILDER
 			/* String memberID = getTopicID1();
-			String workspaceID = as.getWorkspace(memberID, directives).getID();
+			String workspaceID = as.getWorkspaceTopicmap(memberID, directives).getID();
 			System.out.println(">>> role of user \"" + memberID + "\" changed, personal workspace is \"" + workspaceID + "\"");
 			if (memberID.equals(session.getUserID())) {
 				if (prop.equals(SWITCH_ON)) {

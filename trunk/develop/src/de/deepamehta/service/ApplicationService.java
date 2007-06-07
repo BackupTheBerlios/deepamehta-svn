@@ -50,7 +50,7 @@ import java.util.*;
  * <IMG SRC="../../../../../images/3-tier-lcm.gif">
  * <P>
  * <HR>
- * Last functional change: 24.8.2006 (2.0b8)<BR>
+ * Last functional change: 8.4.2007 (2.0b8)<BR>
  * Last documentation update: 30.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -1969,14 +1969,15 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	/**
 	 * Retrieves the specified view from corporate memory and creates
 	 * a {@link de.deepamehta.PresentableTopicMap} object from it.
+	 * <p>
+	 * References checked: 5.4.2007 (2.0b8)
 	 *
 	 * @param	topicmapID	the view
 	 * @param	version		the version of the view
-	 * @param	viewMode	the view mode ({@link #VIEWMODE_USE}, {@link #VIEWMODE_BUILD})
 	 *
-	 * @see		CorporateTopicMap#CorporateTopicMap		2x
+	 * @see		CorporateTopicMap#CorporateTopicMap
 	 */
-	PresentableTopicMap createUserView(String topicmapID, int version, String viewMode,
+	PresentableTopicMap createUserView(String topicmapID, int version,
 								String bgImage, String bgColor, String translation) {
 		// vector of PresentableTopic
 		// vector of PresentableAssociation
@@ -1987,7 +1988,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 
 	/**
 	 * Duplicates the specified viewmode of the specified view in corporate memory.
-	 * <P>
+	 * <p>
 	 * References checked: 17.2.2003 (2.0a18-pre2)
 	 *
 	 * @param	topicmap		view to duplicate
@@ -2652,186 +2653,191 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		return cm.associationExists(topicID1, topicID2, subtypes);
 	}
 
-	// --- getChat (2 forms) ---
+	// --- getChatboard (2 forms) ---
 
 	/**
-	 * @see		de.deepamehta.topics.WorkspaceTopic#init
+	 * Returns the chatboard (type <CODE>tt-chatboard</CODE>) of the specified workspace.
+	 * <p>
+	 * References checked: 8.4.2007 (2.0b8)
+	 *
+	 * @return	the chatboard or <code>null</code> if there is no chatboard.
+	 *
+	 * @see		#getChatboard(BaseTopic, CorporateDirectives)
 	 */
-	public BaseTopic getChat(String workgroupID) throws AmbiguousSemanticException {
-		BaseTopic workspace = getWorkspace(workgroupID);
-		Vector chatIDs = cm.getTopicIDs(TOPICTYPE_CHAT_BOARD, workspace.getID());
+	public BaseTopic getChatboard(String workspaceID) throws AmbiguousSemanticException {
+		BaseTopic topicmap = getWorkspaceTopicmap(workspaceID);
+		Vector chatboardIDs = cm.getTopicIDs(TOPICTYPE_CHAT_BOARD, topicmap.getID());
 		// error check 1
-		if (chatIDs.size() == 0) {
+		if (chatboardIDs.size() == 0) {
 			return null;
 		}
 		//
-		String chatID = (String) chatIDs.firstElement();
-		BaseTopic chatTopic = cm.getTopic(chatID, 1);	// ### version is set to 1
+		String chatboardID = (String) chatboardIDs.firstElement();
+		BaseTopic chatboard = cm.getTopic(chatboardID, 1);	// ### version is set to 1
 		// error check 2
-		if (chatIDs.size() > 1) {
-			throw new AmbiguousSemanticException("Workgroup \"" + workgroupID +
-				"\" has " + chatIDs.size() + " chats (expected is 1) -- " +
-				"considering only " + chatTopic, chatTopic);
+		if (chatboardIDs.size() > 1) {
+			throw new AmbiguousSemanticException("Workspace \"" + workspaceID + "\" has " + chatboardIDs.size() +
+				" chatboards (expected is 1) -- considering only " + chatboard, chatboard);
 		}
 		//
-		return chatTopic;
+		return chatboard;
 	}
 
 	/**
-	 * Convenience method as a wrapper for {@link #getChat(String workgroupID)} that
-	 * handles the exceptional cases by adding corresponding DIRECTIVE_SHOW_MESSAGE
+	 * Convenience method as a wrapper for {@link #getChatboard(String workspaceID)} that
+	 * handles the exceptional cases by adding corresponding <code>DIRECTIVE_SHOW_MESSAGE</code>
 	 * directives to the specified directives object.
+	 * <p>
+	 * References checked: 8.4.2007 (2.0b8)
 	 *
-	 * @param	workgroup	a workgroup topic
+	 * @param	workspace	a workspace topic
 	 *
-	 * @see		de.deepamehta.topics.WorkspaceTopic#init
 	 * @see		de.deepamehta.topics.WorkspaceTopic#nameChanged
 	 */
-	public BaseTopic getChat(BaseTopic workgroup, CorporateDirectives directives) {
+	public BaseTopic getChatboard(BaseTopic workspace, CorporateDirectives directives) {
 		try {
-			BaseTopic chat = getChat(workgroup.getID());
+			BaseTopic chatboard = getChatboard(workspace.getID());
 			// error check
-			if (chat == null) {
-				System.out.println("*** ApplicationService.getChat(2): " + this +
-					" has no chat");
-				directives.add(DIRECTIVE_SHOW_MESSAGE,
-					"Workgroup \"" + workgroup.getName() + "\" has no chat",
-					new Integer(NOTIFICATION_WARNING));
+			if (chatboard == null) {
+				String errText = "Workspace \"" + workspace.getName() + "\" has no chatboard";
+				System.out.println("*** ApplicationService.getChatboard(2): " + errText);
+				directives.add(DIRECTIVE_SHOW_MESSAGE, errText, new Integer(NOTIFICATION_WARNING));
 			}
-			return chat;
+			return chatboard;
 		} catch (AmbiguousSemanticException e) {
-			System.out.println("*** ApplicationService.getChat(2): " + e);
-			directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(),
-				new Integer(NOTIFICATION_WARNING));
-			return e.getDefaultTopic();
-		}
-	}
-
-	// --- getMessageBoard (2 forms) ---
-
-	/**
-	 * @see		de.deepamehta.topics.WorkspaceTopic#init
-	 */
-	public BaseTopic getMessageBoard(String workgroupID) throws AmbiguousSemanticException {
-		BaseTopic workspace = getWorkspace(workgroupID);
-		Vector boardIDs = cm.getTopicIDs(TOPICTYPE_MESSAGE_BOARD, workspace.getID());
-		// error check 1
-		if (boardIDs.size() == 0) {
-			return null;
-		}
-		//
-		String boardID = (String) boardIDs.firstElement();
-		BaseTopic messageBoard = cm.getTopic(boardID, 1);	// ### version is set to 1
-		// error check 2
-		if (boardIDs.size() > 1) {
-			// ### should not be an error
-			throw new AmbiguousSemanticException("Workgroup \"" + workgroupID +
-				"\" has " + boardIDs.size() + " message boards (expected is 1) -- " +
-				"considering only " + messageBoard, messageBoard);
-		}
-		//
-		return messageBoard;
-	}
-
-	/**
-	 * Convenience method as a wrapper for {@link #getMessageBoard(String workgroupID)} that
-	 * handles the exceptional cases by adding corresponding DIRECTIVE_SHOW_MESSAGE
-	 * directives to the specified directives object.
-	 *
-	 * @param	workgroup	a workgroup topic
-	 *
-	 * @see		de.deepamehta.topics.WorkspaceTopic#init
-	 * @see		de.deepamehta.topics.WorkspaceTopic#nameChanged
-	 */
-	public BaseTopic getMessageBoard(BaseTopic workgroup, CorporateDirectives directives) {
-		try {
-			BaseTopic messageBoard = getMessageBoard(workgroup.getID());
-			// error check
-			if (messageBoard == null) {
-				System.out.println("*** ApplicationService.getMessageBoard(2): " + this +
-					" has no message board");
-				directives.add(DIRECTIVE_SHOW_MESSAGE, "Workgroup \"" + workgroup.getName() +
-					"\" has no message board", new Integer(NOTIFICATION_WARNING));
-			}
-			return messageBoard;
-		} catch (AmbiguousSemanticException e) {
-			System.out.println("*** ApplicationService.getMessageBoard(2): " + e);
+			System.out.println("*** ApplicationService.getChatboard(2): " + e);
 			directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(), new Integer(NOTIFICATION_WARNING));
 			return e.getDefaultTopic();
 		}
 	}
 
-	// --- getWorkspace (2 forms) ---
+	// --- getMessageboard (2 forms) ---
 
 	/**
-	 * Returns the workspace (type <CODE>tt-topicmap</CODE>) of the specified user
-	 * resp. group or <CODE>null</CODE> if the specified user resp. group has no
-	 * workspace.
+	 * Returns the messageboard (type <CODE>tt-messageboard</CODE>) of the specified workspace.
+	 * <p>
+	 * References checked: 8.4.2007 (2.0b8)
 	 *
-	 * @param	id		The ID of a user (<CODE>type tt-user</CODE>) resp. group
-	 *					(type <CODE>tt-workspace</CODE>) topic
+	 * @return	the messageboard or <code>null</code> if there is no messageboard.
 	 *
-	 * @return	the topic representing the workspace (type <CODE>tt-topicmap</CODE>)
-	 *
-	 * @throws	DeepaMehtaException		if the specified user resp. group topic is not in
-	 *									ApplicationService resp. is not
-	 *									properly initialized (iconfile is unknown)
-	 * @see		#getChat
-	 * @see		#getWorkspace(String id, CorporateDirectives directives)
-	 * @see		#getCorporateSpace
-	 * @see		InteractionConnection#addPersonalMap
-	 * @see		InteractionConnection#addGroupMaps
-	 * @see		de.deepamehta.topics.TopicMapTopic#executeChainedCommand
-	 * @see		de.deepamehta.topics.UserTopic#nameChanged
-	 * @see		de.deepamehta.topics.WorkspaceTopic#nameChanged
+	 * @see		#getMessageboard(BaseTopic, CorporateDirectives)
 	 */
-	public PresentableTopic getWorkspace(String id) throws DeepaMehtaException,
-															AmbiguousSemanticException {
-		Vector workspaces = cm.getRelatedTopics(id, SEMANTIC_WORKSPACE, TOPICTYPE_TOPICMAP, 2);
-		if (workspaces.size() == 0) {
-			// Note: this is not an exceptional condition because getWorkspace() is
-			// also used for workspace existence check
+	public BaseTopic getMessageboard(String workspaceID) throws AmbiguousSemanticException {
+		BaseTopic topicmap = getWorkspaceTopicmap(workspaceID);
+		Vector messageboardIDs = cm.getTopicIDs(TOPICTYPE_MESSAGE_BOARD, topicmap.getID());
+		// error check 1
+		if (messageboardIDs.size() == 0) {
 			return null;
 		}
 		//
-		BaseTopic wsp = (BaseTopic) workspaces.firstElement();
-		PresentableTopic workspace = createPresentableTopic(wsp, id);	// may throw DME
-		// error check
-		if (workspaces.size() > 1) {
-			throw new AmbiguousSemanticException("User resp. workgroup \"" + id +
-				"\" has " + workspaces.size() + " workspaces (expected is 1) -- " +
-				"considering only " + workspace, workspace);
+		String messageboardID = (String) messageboardIDs.firstElement();
+		BaseTopic messageboard = cm.getTopic(messageboardID, 1);	// ### version is set to 1
+		// error check 2
+		if (messageboardIDs.size() > 1) {
+			throw new AmbiguousSemanticException("Workspace \"" + workspaceID + "\" has " + messageboardIDs.size() +
+				" messageboards (expected is 1) -- considering only " + messageboard, messageboard);
 		}
 		//
-		return workspace;
+		return messageboard;
 	}
 
 	/**
-	 * Convenience method as a wrapper for {@link #getWorkspace(String id)} that handles the exceptional cases by
-	 * adding corresponding DIRECTIVE_SHOW_MESSAGE directives to the specified directives object.
-	 * <P>
-	 * References checked: 29.3.2003 (2.0a18-pre8)
+	 * Convenience method as a wrapper for {@link #getMessageboard(String workspaceID)} that
+	 * handles the exceptional cases by adding corresponding <code>DIRECTIVE_SHOW_MESSAGE</code>
+	 * directives to the specified directives object.
+	 * <p>
+	 * References checked: 8.4.2007 (2.0b8)
 	 *
-	 * @param	id		ID of a user (<CODE>type tt-user</CODE>) resp. workspace (type <CODE>tt-workspace</CODE>) topic
+	 * @param	workspace	a workspace topic
+	 *
+	 * @see		de.deepamehta.topics.WorkspaceTopic#nameChanged
+	 */
+	public BaseTopic getMessageboard(BaseTopic workspace, CorporateDirectives directives) {
+		try {
+			BaseTopic messageboard = getMessageboard(workspace.getID());
+			// error check
+			if (messageboard == null) {
+				String errText = "Workspace \"" + workspace.getName() + "\" has no messageboard";
+				System.out.println("*** ApplicationService.getMessageboard(2): " + errText);
+				directives.add(DIRECTIVE_SHOW_MESSAGE, errText, new Integer(NOTIFICATION_WARNING));
+			}
+			return messageboard;
+		} catch (AmbiguousSemanticException e) {
+			System.out.println("*** ApplicationService.getMessageboard(2): " + e);
+			directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(), new Integer(NOTIFICATION_WARNING));
+			return e.getDefaultTopic();
+		}
+	}
+
+	// --- getWorkspaceTopicmap (2 forms) ---
+
+	/**
+	 * Returns the workspace topicmap (type <CODE>tt-topicmap</CODE>) of the specified user
+	 * resp. workspace or <CODE>null</CODE> if the specified user resp. workspace has no
+	 * workspace topicmap.
+	 * <p>
+	 * References checked: 8.4.2007 (2.0b8)
+	 *
+	 * @param	id		The ID of a user (<CODE>type tt-user</CODE>) resp. workspace (type <CODE>tt-workspace</CODE>)
+	 *
+	 * @return	the workspace topicmap (type <CODE>tt-topicmap</CODE>)
+	 *
+	 * @throws	DeepaMehtaException		if the specified user resp. workspace is not in ApplicationService resp.
+	 *									is not properly initialized (iconfile is unknown)
+	 * @see		#getChatboard
+	 * @see		#getMessageboard
+	 * @see		#getWorkspaceTopicmap(String id, CorporateDirectives directives)
+	 * @see		#addPersonalWorkspace
+	 * @see		#addGroupWorkspaces
+	 * @see		de.deepamehta.topics.TopicMapTopic#publishTo
+	 * @see		de.deepamehta.topics.UserTopic#propertiesChanged
+	 * @see		de.deepamehta.topics.UserTopic#createPersonalWorkspace
+	 * @see		de.deepamehta.topics.WorkspaceTopic#propertiesChanged
+	 */
+	public PresentableTopic getWorkspaceTopicmap(String id) throws DeepaMehtaException, AmbiguousSemanticException {
+		Vector topicmaps = cm.getRelatedTopics(id, SEMANTIC_WORKSPACE_TOPICMAP, TOPICTYPE_TOPICMAP, 2);
+		if (topicmaps.size() == 0) {
+			// Note: this is not an exceptional condition because getWorkspaceTopicmap() is
+			// also used for workspace topicmap existence check
+			return null;
+		}
+		//
+		PresentableTopic topicmap = createPresentableTopic((BaseTopic) topicmaps.firstElement(), id);	// may throw DME
+		// error check
+		if (topicmaps.size() > 1) {
+			throw new AmbiguousSemanticException("User resp. workspace \"" + id + "\" has " + topicmaps.size() +
+				" workspace topicmaps (expected is 1) -- considering only " + topicmap, topicmap);
+		}
+		//
+		return topicmap;
+	}
+
+	/**
+	 * Convenience method as a wrapper for {@link #getWorkspaceTopicmap(String id)} that handles the exceptional cases
+	 * by adding corresponding <code>DIRECTIVE_SHOW_MESSAGE</code> directives to the specified directives object.
+	 * <p>
+	 * References checked: 8.4.2007 (2.0b8)
+	 *
+	 * @param	id		The ID of a user (<CODE>type tt-user</CODE>) resp. workspace (type <CODE>tt-workspace</CODE>)
 	 *
 	 * @see		de.deepamehta.topics.UserTopic#nameChanged
 	 * @see		de.deepamehta.topics.WorkspaceTopic#nameChanged
 	 * @see		de.deepamehta.topics.WorkspaceTopic#joinUser
 	 * @see		de.deepamehta.topics.WorkspaceTopic#leaveUser
 	 */
-	public BaseTopic getWorkspace(String id, CorporateDirectives directives) {
+	public BaseTopic getWorkspaceTopicmap(String id, CorporateDirectives directives) {
 		try {
-			BaseTopic workspace = getWorkspace(id);	// may throw DME
+			BaseTopic topicmap = getWorkspaceTopicmap(id);	// may throw DME
 			// error check
-			if (workspace == null) {
-				String errText = "User resp. workgroup \"" + id + "\" has no workspace";
-				System.out.println("*** ApplicationService.getWorkspace(2): " + errText);
+			if (topicmap == null) {
+				String errText = "User resp. workspace \"" + id + "\" has no workspace topicmap";
+				System.out.println("*** ApplicationService.getWorkspaceTopicmap(2): " + errText);
 				directives.add(DIRECTIVE_SHOW_MESSAGE, errText, new Integer(NOTIFICATION_WARNING));
 			}
 			//
-			return workspace;
+			return topicmap;
 		} catch (AmbiguousSemanticException e) {
-			System.out.println("*** ApplicationService.getWorkspace(2): " + e);
+			System.out.println("*** ApplicationService.getWorkspaceTopicmap(2): " + e);
 			directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(), new Integer(NOTIFICATION_WARNING));
 			return e.getDefaultTopic();
 		}
@@ -3985,7 +3991,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		PresentableTopic personalWorkspace;
 		try {
 			String userID = session.getUserID();
-			personalWorkspace = getWorkspace(userID);
+			personalWorkspace = getWorkspaceTopicmap(userID);
 			// error check
 			if (personalWorkspace == null) {
 				System.out.println("*** InteractionConnection.addPersonalWorkspace(): " +
@@ -4023,7 +4029,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 			try {
 				BaseTopic workgroup = (BaseTopic) e.nextElement();
 				String workgroupID = workgroup.getID();
-				groupWorkspace = getWorkspace(workgroupID);
+				groupWorkspace = getWorkspaceTopicmap(workgroupID);
 				if (groupWorkspace == null) {
 					System.out.println("*** InteractionConnection.addGroupWorkspaces():" +
 						" workgroup \"" + workgroupID + "\" has no workspace");
@@ -4251,7 +4257,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	 *									ApplicationService resp. is not
 	 *									properly initialized (iconfile is unknown)
 	 *
-	 * @see		de.deepamehta.topics.TopicMapTopic#openPersonalView
+	 * @see		de.deepamehta.topics.TopicMapTopic#openPersonalTopicmap
 	 */
 	public PresentableTopic createPresentableTopic(BaseTopic topic) throws DeepaMehtaException {
 		return createPresentableTopic(topic, topic.getID());
@@ -4260,10 +4266,10 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	/**
 	 * @throws	DeepaMehtaException		if the specified topic is not loaded resp. not
 	 *									properly initialized (iconfile is unknown)
-	 * @see		#getWorkspace
+	 * @see		#getWorkspaceTopicmap
 	 * @see		#getCorporateSpace
 	 * @see		#createPresentableTopic(BaseTopic topic)	(above)
-	 * @see		de.deepamehta.topics.TopicMapTopic#openGroupView
+	 * @see		de.deepamehta.topics.TopicMapTopic#openSharedTopicmap
 	 */
 	public PresentableTopic createPresentableTopic(BaseTopic topic, String appTopicID)
 															throws DeepaMehtaException {

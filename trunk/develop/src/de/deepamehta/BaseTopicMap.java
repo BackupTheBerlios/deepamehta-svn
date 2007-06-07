@@ -143,17 +143,9 @@ public class BaseTopicMap implements TopicMap {
 	 * @see		de.deepamehta.service.ApplicationService#deleteLiveTopic
 	 */
 	public void deleteTopic(String topicID) {
-		/* ### error check
-		Topic topic = getTopic(topicID);
-		if (topic instanceof PresentationTopic) {
-			if (((PresentationTopic) topic).getEdges().hasMoreElements()) {
-				System.out.println("*** WARNING: " + topic + " with registered edges is deleted");
-			}
-		} */
 		if (topics.remove(topicID) == null) {
 			System.out.println("*** BaseTopicMap.deleteTopic(): \"" + topicID + "\" not found -- topic not deleted");
 		}
-		// ### System.out.println(">>> topic \"" + topicID + "\" deleted from topicmap (" + getClass() + ")");
 	}
 	
 	/**
@@ -163,7 +155,6 @@ public class BaseTopicMap implements TopicMap {
 		if (associations.remove(assocID) == null) {
 			System.out.println("*** BaseTopicMap.deleteAssociation(): \"" + assocID + "\" not found -- association not deleted");
 		}
-		// ### System.out.println(">>> association \"" + assocID + "\" deleted from topicmap (" + getClass() + ")");
 	}
 
 	// ---
@@ -247,9 +238,6 @@ public class BaseTopicMap implements TopicMap {
 	 */
 	protected final void addTopic(String id, Topic topic) {
 		Object o = topics.put(id, topic);
-		/* ### if (o != null) {
-			System.out.println(">>> " + topic + " added to topicmap (" + getClass() + ") OVERRIDDEN");
-		} */
 	}
 
 	/**
@@ -258,8 +246,5 @@ public class BaseTopicMap implements TopicMap {
 	 */
 	protected final void addAssociation(String id, Association association) {
 		Object o = associations.put(id, association);
-		/* ### if (o != null) {
-			System.out.println(">>> " + association + " added to topicmap (" + getClass() + ") OVERRIDDEN");
-		} */
 	}
 }

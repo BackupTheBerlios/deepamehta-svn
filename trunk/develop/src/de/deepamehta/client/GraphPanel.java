@@ -186,29 +186,24 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 			private void paintNodes(Graphics g) {
 				Enumeration e = nodes.elements();
 				GraphNode node = null;
-				// ### System.out.println(">>> paintNodes():");
 				while (e.hasMoreElements()) {
 					try {
 						node = (GraphNode) e.nextElement();
 						paintNode(node, g);
 					} catch (DeepaMehtaException e2) {
-						System.out.println("*** node " + node + " not painted (" +
-							e2.getMessage() + ")");
-						// ### e2.printStackTrace();
+						System.out.println("*** node " + node + " not painted (" + e2.getMessage() + ")");
 					}
 				}
 			}
 
 			private void paintEdges(Graphics g) {
 				Enumeration e = edges.elements();
-				GraphEdge edge;
-				Point p;
 				while (e.hasMoreElements()) {
-					edge = (GraphEdge) e.nextElement();
+					GraphEdge edge = (GraphEdge) e.nextElement();
 					paintEdge(edge, g);
 				}
 				if (edgeInProgress) {
-					p = selection.topic.getGeometry();
+					Point p = selection.topic.getGeometry();
 					g.setColor(EDGE_COLOR);
 					DeepaMehtaUtils.paintLine(g, p.x, p.y, ex - translation.x, ey - translation.y, true);
 				}

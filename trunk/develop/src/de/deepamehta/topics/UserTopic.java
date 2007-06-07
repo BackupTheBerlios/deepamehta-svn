@@ -24,7 +24,7 @@ import java.util.*;
  * is renamed.
  * <P>
  * <HR>
- * Last functional change: 3.8.2004 (2.0b3)<BR>
+ * Last functional change: 8.4.2007 (2.0b8)<BR>
  * Last documentation update: 29.11.2000 (2.0a7)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -98,7 +98,7 @@ public class UserTopic extends PersonTopic {
 		// change name of this user
 		CorporateDirectives directives = super.nameChanged(name, topicmapID, viewmode);
 		// change name of users personal workspace
-		BaseTopic workspace = as.getWorkspace(getID(), directives);
+		BaseTopic workspace = as.getWorkspaceTopicmap(getID(), directives);
 		if (workspace != null) {
 			directives.add(as.getLiveTopic(workspace).nameChanged(name, topicmapID, viewmode));
 		}
@@ -171,7 +171,7 @@ public class UserTopic extends PersonTopic {
 					// cause the client to show the changed icon
 					CorporateDirectives iconDirective = new CorporateDirectives();
 					iconDirective.add(DIRECTIVE_SET_EDITOR_ICON,
-						as.getWorkspace(getID()).getID(), newIcon);
+						as.getWorkspaceTopicmap(getID()).getID(), newIcon);
 					// Note: the DIRECTIVE_SET_TOPIC_ICON must be _queued_, because the
 					// icon upload must be completed _before_ the icon can be shown
 					directives.add(DIRECTIVE_QUEUE_DIRECTIVES, iconDirective);
@@ -214,7 +214,7 @@ public class UserTopic extends PersonTopic {
 	private String createPersonalWorkspace() {
 		// Note: this user might already have a workspace, because this
 		// topic might been of type tt-user before through retyping
-		if (as.getWorkspace(getID()) != null) {
+		if (as.getWorkspaceTopicmap(getID()) != null) {
 			System.out.println(">>> User \"" + getName() + "\" has already a workspace");
 			return null;
 		}
@@ -227,7 +227,7 @@ public class UserTopic extends PersonTopic {
 		cm.createTopic(mapID, 1, TOPICTYPE_TOPICMAP, 1, getName());		// ### create live topic instead 
 		// --- associate user with its personal workspace ---
 		String assocID = cm.getNewAssociationID();
-		cm.createAssociation(assocID, 1, SEMANTIC_WORKSPACE, 1, getID(), 1, mapID, 1);
+		cm.createAssociation(assocID, 1, SEMANTIC_WORKSPACE_TOPICMAP, 1, getID(), 1, mapID, 1);
 		//
 		return mapID;
 	}

@@ -10,12 +10,15 @@ import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.FileServer;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
+import de.deepamehta.PresentableTopicMap;
 import de.deepamehta.PropertyDefinition;
+import de.deepamehta.TopicGeometry;
 import de.deepamehta.TopicInitException;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.CorporateTopicMap;
+import de.deepamehta.service.DeepaMehtaServiceUtils;
 import de.deepamehta.service.Session;
 import de.deepamehta.topics.helper.ArchiveFileCollector;
 import de.deepamehta.topics.helper.TopicMapExporter;
@@ -23,7 +26,17 @@ import de.deepamehta.topics.helper.TopicMapExporter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 //
+import javax.swing.ImageIcon;
+//
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.io.*;
 
@@ -72,7 +85,7 @@ import java.io.*;
  *     ({@link #importFromFile})</LI>
  * </OL>
  * <HR>
- * Last functional change: 24.8.2006 (2.0b8)<BR>
+ * Last functional change: 7.4.2008 (2.0b8)<BR>
  * Last documentation update: 11.12.2001 (2.0a14-pre4)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -86,6 +99,12 @@ public class TopicMapTopic extends LiveTopic {
 	// **************
 
 
+
+	// padding for topicmap export as PNG
+	private final int PAD_TOP = 30;
+	private final int PAD_LEFT = 30;
+	private final int PAD_BOTTOM = 45;
+	private final int PAD_RIGHT = 120;
 
 	/**
 	 * ### If this topicmap is part of a shared workspace this variable holds the respective
@@ -518,9 +537,9 @@ public class TopicMapTopic extends LiveTopic {
 	public String openTopicmap(Session session, CorporateDirectives directives) throws DeepaMehtaException {
 		if (isShared()) {
 		 	// Note: this topicmap is about to be personalized
-			return openGroupView(session, directives, owner);
+			return openSharedTopicmap(session, directives, owner);
 		} else {
-			openPersonalView(session, directives);
+			openPersonalTopicmap(session, directives);
 			return getID();
 		}
 	}
@@ -622,6 +641,95 @@ public class TopicMapTopic extends LiveTopic {
 	 */
 	public String getExportFileBaseName() {
 		return "topicmap-" + getID() + "-" + getVersion();
+	}
+
+
+
+	// **********************
+	// *** Public Methods ***
+	// **********************
+
+
+
+	/**
+	 * Exports a visible redition of this topicmap as PNG image file.
+	 *
+	 * @return	Geometry data of the topics of this topicmap. Vector of {@link de.deepamehta.TopicGeometry}.
+	 */
+	public Vector exportToPNG() {
+		Vector geometryData = new Vector();
+		// --- retrieve topics and associations from corporate memory ---
+		PresentableTopicMap topicmap = new CorporateTopicMap(as, getID(), getVersion()).getTopicMap();
+		// --- create image ---
+		Rectangle bounds = DeepaMehtaUtils.getBounds(topicmap);
+		final int imageWidth = bounds.width + PAD_LEFT + PAD_RIGHT;
+		final int imageHeight = bounds.height + PAD_TOP + PAD_BOTTOM;
+		BufferedImage image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = image.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		//
+		// ### g.setColor(COLOR_VIEW_BGCOLOR);
+		g.setBackground(COLOR_VIEW_BGCOLOR);
+		g.clearRect(0, 0, imageWidth, imageHeight);	// ### Mac OS X, Java 1.4: fillRect() following drawing commands are ignored!
+		// ### g.setColor(DeepaMehtaUtils.parseHexColor(color));
+		// --- paint topicmap ---
+		g.translate(PAD_LEFT - bounds.x, PAD_TOP - bounds.y);
+		//
+		paintAssociations(topicmap.getAssociations().elements(), g, topicmap.getTopics());
+		paintTopics(topicmap.getTopics().elements(), g, geometryData, bounds);
+		// --- save image as PNG file ---
+		File file = new File(FILESERVER_DOCUMENTS_PATH + "topicmap-" + getID() + ".png");
+		DeepaMehtaServiceUtils.createImageFile(image, file);
+		//
+		return geometryData;
+	}
+
+	private void paintTopics(Enumeration topics, Graphics g, Vector geometryData, Rectangle bounds) {
+		// ### compare to GraphPanel.paintNode()
+		while (topics.hasMoreElements()) {
+			PresentableTopic topic = (PresentableTopic) topics.nextElement();
+			Point p = topic.getGeometry();
+			// --- paint icon ---
+			String iconfile = as.getLiveTopic(topic).getIconfile();
+			// Note 1: Toolkit.getImage() is used here instead of createImage() in order to utilize
+			// the Toolkits caching mechanism
+			// Note 2: ImageIcon is a kluge to make sure the image is fully loaded before we proceed
+			Image icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(FILESERVER_ICONS_PATH + iconfile)).getImage();
+			int iconWidth = icon.getWidth(null);
+			int iconHeight = icon.getHeight(null);
+			int iw2 = iconWidth / 2;
+			int ih2 = iconHeight / 2;
+			int x1 = p.x - iw2;
+			int y1 = p.y - ih2;
+			g.drawImage(icon, x1, y1, null);
+			// --- paint name ---
+			int x2 = x1 + iconWidth;
+			int y2 = y1 + iconHeight;
+			// ### g.setFont(font);
+			g.setColor(TEXT_COLOR);
+			g.drawString(topic.getName(), x1, y2 + 12 /* ### font.getSize() */ + 2);
+			// --- add geometry data ---
+			geometryData.addElement(new TopicGeometry(topic.getID(), x1 + PAD_LEFT - bounds.x, y1 + PAD_TOP - bounds.y,
+				x2 + PAD_LEFT - bounds.x, y2 + PAD_TOP - bounds.y));
+		}
+	}
+
+	private void paintAssociations(Enumeration assocs, Graphics g, Hashtable topics) {
+		// ### compare to GraphPanel.paintEdge()
+		while (assocs.hasMoreElements()) {
+			PresentableAssociation assoc = (PresentableAssociation) assocs.nextElement();
+			Point p1 = ((PresentableTopic) topics.get(assoc.getTopicID1())).getGeometry();
+			Point p2 = ((PresentableTopic) topics.get(assoc.getTopicID2())).getGeometry();
+			//
+			String assocTypeID = assoc.getType();
+			TypeTopic type = as.type(assocTypeID, 1);
+			Color color = DeepaMehtaUtils.parseHexColor(type.getAssocTypeColor());
+			boolean directed = !assocTypeID.equals("at-generic") &&			
+				!assocTypeID.equals("at-kompetenzstern");		// ### application specific
+			//
+			g.setColor(color);
+			DeepaMehtaUtils.paintLine(g, p1.x, p1.y, p2.x, p2.y, directed);
+		}
 	}
 
 
@@ -790,7 +898,7 @@ public class TopicMapTopic extends LiveTopic {
 	 *
 	 * @see		#openTopicmap
 	 */
-	private void openPersonalView(Session session, CorporateDirectives directives) throws DeepaMehtaException {
+	private void openPersonalTopicmap(Session session, CorporateDirectives directives) throws DeepaMehtaException {
 		PresentableTopic metadata = as.createPresentableTopic(this);
 		CorporateTopicMap topicmap = new CorporateTopicMap(as, getID(), getVersion());
 		directives.add(DIRECTIVE_SHOW_VIEW, metadata, topicmap);
@@ -805,7 +913,7 @@ public class TopicMapTopic extends LiveTopic {
 	 *
 	 * @see		#openTopicmap
 	 */
-	private String openGroupView(Session session, CorporateDirectives directives, BaseTopic owner)
+	private String openSharedTopicmap(Session session, CorporateDirectives directives, BaseTopic owner)
 																				throws DeepaMehtaException {
 		System.out.println(">>> topicmap " + this + " is about to be personalized");
 		// --- retrieve this topicmap from corporate memory ---
@@ -917,7 +1025,7 @@ public class TopicMapTopic extends LiveTopic {
 				"\" (first publishing of this map into this group)");
 			// adding DIRECTIVE_SHOW_TOPIC causes the client to creating a new topicmap topic in the shared workspace
 			PresentableTopic topic = new PresentableTopic(this);
-			directives.add(DIRECTIVE_SHOW_TOPIC, topic, Boolean.FALSE, as.getWorkspace(workspaceID).getID());
+			directives.add(DIRECTIVE_SHOW_TOPIC, topic, Boolean.FALSE, as.getWorkspaceTopicmap(workspaceID).getID());
 		} else {
 			BaseTopic originTopicmap = as.originTopicmap(getID());
 			String originTopicmapID = originTopicmap.getID();

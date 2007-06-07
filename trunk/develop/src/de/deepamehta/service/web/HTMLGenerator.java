@@ -25,7 +25,7 @@ import java.util.*;
 /**
  * <p>
  * <hr>
- * Last sourcecode change: 4.3.2007 (2.0b8)<br>
+ * Last sourcecode change: 9.5.2007 (2.0b8)<br>
  * Last documentation update: 16.9.2002 (2.0a16-pre3)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -929,6 +929,8 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		String propValue = (String) props.get(propName);
 		if (visual.equals(VISUAL_SWITCH)) {
 			propValue = SWITCH_ON.equals(propValue) ? SWITCH_ON : SWITCH_OFF;
+		} else if (visual.equals(VISUAL_PASSWORD_FIELD)) {
+			propValue = "&bull;&bull;&bull;";
 		}
 		//
 		if (layout == LAYOUT_COLS) {
@@ -1087,8 +1089,8 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		if (text != null) {
 			if (quoteHTML) {
 				text = DeepaMehtaUtils.quoteHTML(text);
+				text = DeepaMehtaUtils.replaceLF(text);		// needed for "Multiline Input Field"
 			}
-			text = DeepaMehtaUtils.replaceLF(text);		// needed for "Multiline Input Field"
 			html.append((bold ? "<b>" : "") + text + (bold ? "</b>" : ""));
 		}
 		if (action != null) {

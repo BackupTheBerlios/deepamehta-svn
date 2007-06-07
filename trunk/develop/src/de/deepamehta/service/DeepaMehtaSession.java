@@ -168,7 +168,7 @@ public final class DeepaMehtaSession implements Session, DeepaMehtaConstants {
 
 	/**
 	 * @see		CorporateDirectives#updateCorporateMemory
-	 * @see		de.deepamehta.topics.TopicMapTopic#openGroupView
+	 * @see		de.deepamehta.topics.TopicMapTopic#openSharedTopicmap
 	 */
 	public boolean isDemo() {
 		return isDemo;
@@ -193,7 +193,7 @@ public final class DeepaMehtaSession implements Session, DeepaMehtaConstants {
 	 * @see		ApplicationService#importTopicmap
 	 * @see		ApplicationService#importCM
 	 * @see		de.deepamehta.topics.TopicMapTopic#executeChainedCommand
-	 * @see		de.deepamehta.topics.TopicMapTopic#openGroupView
+	 * @see		de.deepamehta.topics.TopicMapTopic#openSharedTopicmap
 	 * @see		de.deepamehta.topics.TopicMapTopic#publish
 	 */
 	public BaseTopic getPersonalWorkspace() throws DeepaMehtaException {

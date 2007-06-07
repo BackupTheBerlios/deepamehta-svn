@@ -26,7 +26,7 @@ import java.util.*;
  * {@link PresentationTopic}'s, {@link PresentationAssociation}'s and {@link PresentationType}'s.
  * <P>
  * <HR>
- * Last functional change: 1.5.2003 (2.0a18-pre10)<BR>
+ * Last functional change: 7.4.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -103,7 +103,7 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 	/**
 	 * Part of reading DIRECTIVE_SHOW_WORKSPACE and DIRECTIVE_SHOW_VIEW.
 	 * <P>
-	 * References checked: 27.12.2001 (2.0a14-pre5)
+	 * References checked: 7.4.2007 (2.0b8)
 	 *
 	 * @see		PresentationDirectives#PresentationDirectives(Directives, PresentationService)
 	 */
@@ -125,7 +125,7 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 	 * <P>
 	 * Part of reading DIRECTIVE_SHOW_WORKSPACE and DIRECTIVE_SHOW_VIEW.
 	 * <P>
-	 * References checked: 27.12.2001 (2.0a14-pre5)
+	 * References checked: 7.4.2007 (2.0b8)
 	 *
 	 * @see		PresentationDirectives#PresentationDirectives(DataInputStream, PresentationService)
 	 */
@@ -312,7 +312,7 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 			this.bgImage = ps.getImage(FILESERVER_BACKGROUNDS_PATH + bgImagefile);
 		}
 		// background color
-		String defaultColor = viewMode == VIEWMODE_USE ? DEFAULT_VIEW_BGCOLOR : DEFAULT_BGCOLOR_DESIGN;
+		String defaultColor = DEFAULT_VIEW_BGCOLOR;
 		this.bgColor = DeepaMehtaUtils.parseHexColor(bgColorcode, defaultColor);
 		// translation
 		this.translation = DeepaMehtaUtils.parsePoint(translationCoord);	// translationCoord is defined in superclass

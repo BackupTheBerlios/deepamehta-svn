@@ -40,8 +40,6 @@ public class BaseAssociation implements Association {
 	protected String topicID2;
 	protected int topicVersion1;
 	protected int topicVersion2;
-	// ### private String roletype1;
-	// ### private String roletype2;
 
 
 
@@ -86,8 +84,6 @@ public class BaseAssociation implements Association {
 		this.topicVersion1 = in.readInt();
 		this.topicID2 = in.readUTF();
 		this.topicVersion2 = in.readInt();
-		// ### this.roletype1 = in.readUTF();
-		// ### this.roletype2 = in.readUTF();
 	}
 
 	/**
@@ -154,8 +150,6 @@ public class BaseAssociation implements Association {
 		out.writeInt(getTopicVersion1());
 		out.writeUTF(getTopicID2());
 		out.writeInt(getTopicVersion2());
-		// ### out.writeUTF(getRoletype1());
-		// ### out.writeUTF(getRoletype2());
 	}
 
 
@@ -207,14 +201,4 @@ public class BaseAssociation implements Association {
 	public void setTopicID2(String id){
 		this.topicID2 = id;
 	}
-
-	/* ### ---
-
-	public String getRoletype1() {
-		return roletype1;
-	}
-
-	public String getRoletype2() {
-		return roletype2;
-	} */
 }

@@ -51,7 +51,7 @@ public class BaseTopic implements Topic, Serializable {
 	 * Standard constructor.
 	 *
 	 * @see		de.deepamehta.service.RelationalCorporateMemory#queryBaseTopics(String query)
-	 * @see		de.deepamehta.topics.TopicMapTopic#openGroupView
+	 * @see		de.deepamehta.topics.TopicMapTopic#openSharedTopicmap
 	 */
 	public BaseTopic(String id, int version, String type, int typeVersion, String name) {
 		this.id = id;

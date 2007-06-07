@@ -10,21 +10,19 @@ import java.io.*;
 
 /**
  * A short-living representation of a topicmap that is ready for presentation at client side.
- * <P
- * A <CODE>CorporateTopicMap</CODE> is always (### optimization possible)
- * composed of 2 {@link de.deepamehta.PresentableTopicMap}s -- the "Use" map and
- * the "Build" map -- regardless weather the "Build" mode is displayed at client side.
+ * <p>
+ * A <CODE>CorporateTopicMap</CODE> holds a {@link de.deepamehta.PresentableTopicMap}.
  * A <CODE>CorporateTopicMap</CODE> is created at server side and send to the client
- * who builds 2 {@link de.deepamehta.client.PresentationTopicMap}s upon it.<BR>
- * Note: Once a View is send to the client this server-side representation is forgotten.
- * <P>
- * While constructing a <CODE>CorporateTopicMap</CODE> the specified view is retrieved
+ * who builds a {@link de.deepamehta.client.PresentationTopicMap} upon it.<BR>
+ * Note: Once a topicmap is send to the client this server-side representation is forgotten.
+ * <p>
+ * While constructing a <CODE>CorporateTopicMap</CODE> the specified topicmap is retrieved
  * from corporate memory.
- * <P>
- * <HR>
- * Last functional change: 29.10.2004 (2.0b3)<BR>
- * Last documentation update: 27.10.2001 (2.0a13-pre2)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 29.10.2004 (2.0b3)<br>
+ * Last documentation update: 5.4.2007 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class CorporateTopicMap implements DeepaMehtaConstants {
@@ -40,7 +38,7 @@ public class CorporateTopicMap implements DeepaMehtaConstants {
 	private ApplicationService as;
 	private String topicmapID;
 	//
-	private PresentableTopicMap useMap;
+	private PresentableTopicMap topicmap;
 
 
 
@@ -51,14 +49,16 @@ public class CorporateTopicMap implements DeepaMehtaConstants {
 
 
 	/**
-	 * @see		InteractionConnection#addPersonalWorkspace
-	 * @see		InteractionConnection#addGroupWorkspaces
-	 * @see		InteractionConnection#addCorporateSpace
-	 * @see		de.deepamehta.topics.TopicMapTopic#evoke
-	 * @see		de.deepamehta.topics.TopicMapTopic#openPersonalView
-	 * @see		de.deepamehta.topics.TopicMapTopic#openGroupView
-	 * @see		de.deepamehta.topics.TopicMapTopic#publish
-	 * @see		de.deepamehta.topics.TopicMapTopic#exportToFile
+	 * References checked: 5.4.2007 (2.0b8)
+	 *
+	 * @see		ApplicationService#addPersonalWorkspace
+	 * @see		ApplicationService#addGroupWorkspaces
+	 * @see		de.deepamehta.topics.TopicMapTopic#exportTopicmap
+	 * @see		de.deepamehta.topics.TopicMapTopic#addPublishDirectives
+	 * @see		de.deepamehta.topics.TopicMapTopic#openPersonalTopicmap
+	 * @see		de.deepamehta.topics.TopicMapTopic#openSharedTopicmap
+	 * @see		de.deepamehta.topics.UserTopic#createConfigurationMap
+	 * @see		de.deepamehta.topics.WorkspaceTopic#joinUser
 	 */
 	public CorporateTopicMap(ApplicationService as, String topicmapID, int version) {
 		this.as = as;
@@ -66,18 +66,18 @@ public class CorporateTopicMap implements DeepaMehtaConstants {
 		// --- backgroung image ---
 		String bgImage = as.getTopicProperty(topicmapID, version, PROPERTY_BACKGROUND_IMAGE);
 		// --- background color ---
-		String bgColorUse = as.getTopicProperty(topicmapID, version, PROPERTY_BACKGROUND_COLOR);
-		if (bgColorUse.equals("")) {
-			bgColorUse = DEFAULT_VIEW_BGCOLOR;
+		String bgColor = as.getTopicProperty(topicmapID, version, PROPERTY_BACKGROUND_COLOR);
+		if (bgColor.equals("")) {
+			bgColor = DEFAULT_VIEW_BGCOLOR;
 		}
 		//
 		// --- translation ---
-		String translationUse = as.getTopicProperty(topicmapID, version, PROPERTY_TRANSLATION_USE);
-		if (translationUse.equals("")) {
-			translationUse = "0:0";
+		String translation = as.getTopicProperty(topicmapID, version, PROPERTY_TRANSLATION_USE);
+		if (translation.equals("")) {
+			translation = "0:0";
 		}
 		// --- retrieve topicmaps ---
-		useMap  = as.createUserView(topicmapID, version, VIEWMODE_USE, bgImage, bgColorUse, translationUse);
+		topicmap  = as.createUserView(topicmapID, version, bgImage, bgColor, translation);
 	}
 
 
@@ -92,7 +92,7 @@ public class CorporateTopicMap implements DeepaMehtaConstants {
 	 * @see		de.deepamehta.topics.helper.TopicMapExporter#makeTopicmapXML
 	 */
 	public PresentableTopicMap getTopicMap() {
-		return useMap;
+		return topicmap;
 	}
 
 	// ---
@@ -114,14 +114,14 @@ public class CorporateTopicMap implements DeepaMehtaConstants {
 	 * @see		#createLiveTopicmap
 	 */
 	private void createLiveTopics(CorporateDirectives directives, Session session) throws TopicInitException {
-		as.createLiveTopics(useMap, directives, session);
+		as.createLiveTopics(topicmap, directives, session);
 	}
 
 	/**
 	 * @see		#createLiveTopicmap
 	 */
 	private void createLiveAssociations(Session session, CorporateDirectives directives) {
-		as.createLiveAssociations(useMap, session, directives);
+		as.createLiveAssociations(topicmap, session, directives);
 	}
 
 	/**
@@ -138,14 +138,14 @@ public class CorporateTopicMap implements DeepaMehtaConstants {
 	 * @see		#createLiveTopicmap
 	 */
 	private void setAppearance() {
-		as.setAppearance(useMap);
+		as.setAppearance(topicmap);
 	}
 
 	/**
 	 * @see		#createLiveTopicmap
 	 */
 	private void setTopicLabels() {
-		as.setTopicLabels(useMap);
+		as.setTopicLabels(topicmap);
 	}
 
 
@@ -162,7 +162,7 @@ public class CorporateTopicMap implements DeepaMehtaConstants {
 	 */
 	public void write(DataOutputStream out) throws IOException {
 		// ### compare to client.PresentationTopicMap
-		useMap.write(out);
+		topicmap.write(out);
 	}
 
 
@@ -174,25 +174,25 @@ public class CorporateTopicMap implements DeepaMehtaConstants {
 
 
 	/**
-	 * Duplicates this view in corporate memory (<CODE>ViewTopic</CODE>,
+	 * Duplicates this topicmap in corporate memory (<CODE>ViewTopic</CODE>,
 	 * <CODE>ViewAssociation</CODE> and <CODE>ViewGeometry</CODE> entries).
 	 * <P>
 	 * References checked: 2.4.2003 (2.0a18-pre8)
 	 *
-	 * @param	destTopicmapID	the destination view ID
+	 * @param	destTopicmapID	the destination topicmap ID
 	 *
 	 * @see		CorporateDirectives#updateCorporateMemory
 	 * @see		de.deepamehta.topics.UserTopic#createConfigurationMap
 	 */
 	public void personalize(String destTopicmapID) {
-		as.personalizeView(useMap, topicmapID, VIEWMODE_USE, destTopicmapID);
+		as.personalizeView(topicmap, topicmapID, VIEWMODE_USE, destTopicmapID);
 	}
 
 	/**
 	 * @see		de.deepamehta.topics.TopicMapTopic#publish
 	 */
 	public void addPublishDirectives(CorporateDirectives directives) {
-		as.addPublishDirectives(useMap, directives);
+		as.addPublishDirectives(topicmap, directives);
 	}
 
 
@@ -209,6 +209,6 @@ public class CorporateTopicMap implements DeepaMehtaConstants {
 	private void initUserView(int initLevel, CorporateDirectives directives,
 																Session session) {
 		// init topics
-		as.initTopics(useMap.getTopics().elements(), initLevel, directives, session);
+		as.initTopics(topicmap.getTopics().elements(), initLevel, directives, session);
 	}
 }
