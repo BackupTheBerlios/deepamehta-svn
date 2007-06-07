@@ -41,16 +41,14 @@ import java.util.*;
  * to the {@link CorporateMemory}.
  * <P>
  * The baseclass of the DeepaMehta Application Framework.
- * <P>
  * This class provides the hooks where application programmers "hook in" the application
  * specific behavoir.
- * <P>
- * The active topics making up the application may be build upon DeepaMehta's standard
+ * The custom implementations making up the application may be build upon DeepaMehta's standard
  * topics as building blocks, thus application programmers directly or indirectly derive
  * their topics from <CODE>LiveTopic</CODE>.
  * <P>
  * <HR>
- * Last sourcecode change: 26.5.2006 (2.0b6-post3)<BR>
+ * Last sourcecode change: 7.6.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -692,11 +690,16 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Applications can use this hook to disable certain properties of this live topics
-	 * type definition. Disabled properties are visible but not changable by the user.
+	 * type definition. Disabled properties are visible but not editable by the user.
 	 * <P>
-	 * ### The default implementation disables no properties.
+	 * This hook can be utilized to implement an access control mechanism.
+	 * The default implementation realizes the following rule: a topic is only editable
+	 * if the current user
+	 * 1) is the owner of the topic, or<br>
+	 * 2) is a DeepaMehta administrator, or<br>
+	 * 3) has the "Editor" role within a workspace the resp. topic type is assigned to.
 	 * <P>
-	 * This hook is triggered every time this live topic is selected.
+	 * This hook is triggered every time this topic is selected.
 	 *
 	 * @see			de.deepamehta.service.ApplicationService#disabledProperties
 	 *
@@ -706,7 +709,9 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		Vector disabledProps = new Vector();
 		//
 		TypeTopic type = as.type(this);
-		if (!type.isSearchType() && !as.isTopicOwner(getID(), session)) {
+		String userID = session.getUserID();
+		if (!type.isSearchType() && !as.isTopicOwner(getID(), session) &&
+									!as.isAdministrator(userID) && !as.hasEditorRole(userID, getType())) {
 			// disable all properties
 			Enumeration e = type.getTypeDefinition().elements();
 			while (e.hasMoreElements()) {
@@ -1753,7 +1758,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		Vector types = as.getTopicTypes(corpGroup.getID(), PERMISSION_CREATE_IN_WORKSPACE);
 		directives.add(handleWorkspaceCommand(command, types, session, topicmapID, viewmode)); */
 		// --- handle workgroup types ---
-		Enumeration e = as.getWorkgroups(userID).elements();
+		Enumeration e = as.getWorkspaces(userID).elements();
 		while (e.hasMoreElements()) {
 			String workgroupID = ((BaseTopic) e.nextElement()).getID();
 			/* ### if (workgroupID.equals(corpGroup.getID())) {

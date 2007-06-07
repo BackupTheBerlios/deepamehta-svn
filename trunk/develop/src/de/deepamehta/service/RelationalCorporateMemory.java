@@ -349,7 +349,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	/**
 	 * @return	vector of {@link de.deepamehta.BaseTopic}
 	 *
-	 * @see		ApplicationService#getWorkgroups
+	 * @see		ApplicationService#getWorkspaces
 	 * @see		ApplicationService#workgroupMembers
 	 */
 	public Vector getRelatedTopics(String topicID, Vector assocTypes, int relTopicPos) {

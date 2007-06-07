@@ -50,7 +50,7 @@ import java.util.*;
  * <IMG SRC="../../../../../images/3-tier-lcm.gif">
  * <P>
  * <HR>
- * Last functional change: 8.4.2007 (2.0b8)<BR>
+ * Last functional change: 7.6.2007 (2.0b8)<BR>
  * Last documentation update: 30.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -1128,14 +1128,23 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 
 	// ---
 
+	/**
+	 * @see		retypeTopicIsAllowed
+	 * @see		deleteTopicIsAllowed
+	 * @see		de.deepamehta.topics.LiveTopic#disabledProperties
+	 */
 	public boolean isTopicOwner(String topicID, Session session) {
 		String userID = session.getUserID();
-		return getTopicProperty(topicID, 1, PROPERTY_OWNER_ID).equals(userID) || isAdministrator(userID);
+		return getTopicProperty(topicID, 1, PROPERTY_OWNER_ID).equals(userID);
 	}
 
+	/**
+	 * @see		retypeAssociationIsAllowed
+	 * @see		deleteAssociationIsAllowed
+	 */
 	public boolean isAssocOwner(String assocID, Session session) {
 		String userID = session.getUserID();
-		return getAssocProperty(assocID, 1, PROPERTY_OWNER_ID).equals(userID) || isAdministrator(userID);
+		return getAssocProperty(assocID, 1, PROPERTY_OWNER_ID).equals(userID);
 	}
 
 	// ---
@@ -1150,12 +1159,14 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		TypeTopic type = type(getLiveTopic(topicID, version));
 		boolean isSearch = type.isSearchType();
 		boolean isTopicmap = type.hasSupertype(TOPICTYPE_TOPICMAP);
-		return !isSearch && !isTopicmap && isTopicOwner(topicID, session);
+		String userID = session.getUserID();
+		return !isSearch && !isTopicmap && (isTopicOwner(topicID, session) || isAdministrator(userID));
 	}
 
 	boolean retypeAssociationIsAllowed(String assocID, int version, Session session) {
 		boolean isSearch = type(getLiveAssociation(assocID, version)).isSearchType();
-		return !isSearch && isAssocOwner(assocID, session);
+		String userID = session.getUserID();
+		return !isSearch && (isAssocOwner(assocID, session) || isAdministrator(userID));
 	}
 
 	// ---
@@ -1164,14 +1175,16 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		// --- trigger deleteAllowed() hook ---
 		boolean allowed = getLiveTopic(topic).deleteAllowed(session);
 		//
-		return allowed && isTopicOwner(topic.getID(), session);
+		String userID = session.getUserID();
+		return allowed && (isTopicOwner(topic.getID(), session) || isAdministrator(userID));
 	}
 
 	boolean deleteAssociationIsAllowed(BaseAssociation assoc, Session session) {
 		// ### --- trigger deleteAllowed() hook ---
 		// ### boolean allowed = getLiveTopic(topic).deleteAllowed(session);
 		//
-		return isAssocOwner(assoc.getID(), session);
+		String userID = session.getUserID();
+		return isAssocOwner(assoc.getID(), session) || isAdministrator(userID);
 	}
 
 	// --- setTopicProperty (2 forms) ---
@@ -2370,7 +2383,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	/**
 	 * Returns all workspaces the specified user is a member of.
 	 * <P>
-	 * References checked: 15.2.2005 (2.0b5)
+	 * References checked: 7.6.2007 (2.0b8)
 	 *
 	 * @return	The workspaces as vector of {@link de.deepamehta.BaseTopic}s
 	 *			(type <CODE>tt-workspace</CODE>)
@@ -2383,8 +2396,9 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	 * @see		de.deepamehta.topics.LiveTopic#handleWorkspaceCommand
 	 * @see		de.deepamehta.topics.UserTopic#contextCommands
 	 * @see		de.deepamehta.browser.BrowserServlet#preparePage
+	 * @see		de.deepamehta.webfrontend.WebFrontendServlet#preparePage
 	 */
-	public Vector getWorkgroups(String userID) {
+	public Vector getWorkspaces(String userID) {
 		// Note: also subtypes of association type "at-membership" are respected
 		Vector subtypes = type(SEMANTIC_MEMBERSHIP, 1).getSubtypeIDs();
 		// ### System.out.println(">>> respect " + subtypes.size() + " association subtypes ...");
@@ -2435,7 +2449,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 			assocProp = PROPERTY_ACCESS_PERMISSION;
 			propValue = permissionMode;
 		}
-		return cm.getRelatedTopics(id, SEMANTIC_WORKGROUP_TYPES, TOPICTYPE_TOPICTYPE, 2, assocProp, propValue, true);
+		return cm.getRelatedTopics(id, SEMANTIC_WORKSPACE_TYPES, TOPICTYPE_TOPICTYPE, 2, assocProp, propValue, true);
 		// sortAssociations=true
 	}
 
@@ -2462,7 +2476,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 			assocProp = PROPERTY_ACCESS_PERMISSION;
 			propValue = permissionMode;
 		}
-		return cm.getRelatedTopics(id, SEMANTIC_WORKGROUP_TYPES, TOPICTYPE_ASSOCTYPE, 2, assocProp, propValue, true);
+		return cm.getRelatedTopics(id, SEMANTIC_WORKSPACE_TYPES, TOPICTYPE_ASSOCTYPE, 2, assocProp, propValue, true);
 		// sortAssociations=true
 	}
 
@@ -2641,6 +2655,18 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 			return false;
 		}
 		return cm.getAssociationData(assoc.getID(), assoc.getVersion(), rolename).equals(SWITCH_ON);
+	}
+
+	public boolean hasEditorRole(String userID, String typeID) {
+		Vector workspaces = cm.getRelatedTopics(typeID, SEMANTIC_WORKSPACE_TYPES, TOPICTYPE_WORKSPACE, 1);
+		Enumeration e = workspaces.elements();
+		while (e.hasMoreElements()) {
+			BaseTopic workspace = (BaseTopic) e.nextElement();
+			if (hasRole(userID, workspace.getID(), PROPERTY_ROLE_EDITOR)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public boolean isViewOpen(String viewID, String userID) {
@@ -4023,7 +4049,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	 * @see		#startSession
 	 */
 	private void addGroupWorkspaces(Session session, CorporateDirectives directives) {
-		Enumeration e = getWorkgroups(session.getUserID()).elements();
+		Enumeration e = getWorkspaces(session.getUserID()).elements();
 		while (e.hasMoreElements()) {
 			PresentableTopic groupWorkspace;
 			try {

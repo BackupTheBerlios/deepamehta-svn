@@ -24,7 +24,7 @@ import java.util.*;
  * Utility class for building {@link de.deepamehta.Commands topic commands / association commands}.
  * <P>
  * <HR>
- * Last functional change: 24.8.2006 (2.0b8)<BR>
+ * Last functional change: 7.6.2007 (2.0b8)<BR>
  * Last documentation update: 9.10.2001 (2.0a12)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -126,43 +126,50 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 */
 	public void addPublishCommand(String topicmapID, Session session, CorporateDirectives directives) {
 		String userID = session.getUserID();
-		String workgroupID;
+		String workspaceID;
+		int cmdState;
 		Commands commandGroup = addCommandGroup(as.string(ITEM_PUBLISH), FILESERVER_IMAGES_PATH, ICON_PUBLISH);
-		BaseTopic workgroup = as.getOriginWorkspace(topicmapID);
-		if (workgroup == null) {
+		BaseTopic workspace = as.getOriginWorkspace(topicmapID);
+		if (workspace == null) {
 			// this topicmap has been created in the users personal workspace originally -- it was never
-			// published. Publishing policy is as follows: it can be published to all worspaces the user
-			// has joined as well as to the default workspace if the user is an administrator
+			// published. Publishing policy is as follows: it can be published to all workspaces the user
+			// is a member of and has the "Publisher" role.
 			//
 			// enable publishing to users default workspace first
 			BaseTopic defaultWorkspace = as.getUsersDefaultWorkspace(userID, directives);
 			String defaultWorkspaceID = null;
 			if (defaultWorkspace != null) {
-				workgroupID = defaultWorkspace.getID();
-				defaultWorkspaceID = workgroupID;
-				commandGroup.addCommand(defaultWorkspace.getName(), CMD_PUBLISH + ":" + workgroupID,
-					FILESERVER_ICONS_PATH, as.getIconfile(defaultWorkspace));
+				workspaceID = defaultWorkspace.getID();
+				defaultWorkspaceID = workspaceID;
+				cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
+					COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
+				commandGroup.addCommand(defaultWorkspace.getName(), CMD_PUBLISH + ":" + workspaceID,
+					FILESERVER_ICONS_PATH, as.getIconfile(defaultWorkspace), cmdState);
 				commandGroup.addSeparator();	// ### conditional
 			}
 			// enable publishing to other workspaces the user is a member of
-			Vector workgroups = as.getWorkgroups(userID);
-			Enumeration e = workgroups.elements();
+			Vector workspaces = as.getWorkspaces(userID);
+			Enumeration e = workspaces.elements();
 			while (e.hasMoreElements()) {
-				BaseTopic workgroupTopic = (BaseTopic) e.nextElement();
-				workgroupID = workgroupTopic.getID();
+				BaseTopic workspaceTopic = (BaseTopic) e.nextElement();
+				workspaceID = workspaceTopic.getID();
 				// skip default workspace
-				if (workgroupID.equals(defaultWorkspaceID)) {
+				if (workspaceID.equals(defaultWorkspaceID)) {
 					continue;
 				}
-				commandGroup.addCommand(workgroupTopic.getName(), CMD_PUBLISH + ":" + workgroupID,
-					FILESERVER_ICONS_PATH, as.getIconfile(workgroupTopic));
+				cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
+					COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
+				commandGroup.addCommand(workspaceTopic.getName(), CMD_PUBLISH + ":" + workspaceID,
+					FILESERVER_ICONS_PATH, as.getIconfile(workspaceTopic), cmdState);
 			}
 		} else {
 			// this topicmap is a personalized view originating from a shared workspace -- it can be published
-			// "back" to its original workspace. Note: also the default workspace is a shared workspace.
-			workgroupID = workgroup.getID();
-			commandGroup.addCommand(workgroup.getName(), CMD_PUBLISH + ":" + workgroupID,
-				FILESERVER_ICONS_PATH, as.getIconfile(workgroup));
+			// "back" to its original workspace.
+			workspaceID = workspace.getID();
+			cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
+				COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
+			commandGroup.addCommand(workspace.getName(), CMD_PUBLISH + ":" + workspaceID,
+				FILESERVER_ICONS_PATH, as.getIconfile(workspace), cmdState);
 		}
 	}
 
@@ -616,18 +623,18 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			}
 			addTopicTypeCommands(commandsGroup, types, command, usePluralName);
 		}
-		// --- add workgroup types ---
-		Vector workgroups = as.getWorkgroups(userID);
-		Enumeration e = workgroups.elements();
+		// --- add workspace types ---
+		Vector workspaces = as.getWorkspaces(userID);
+		Enumeration e = workspaces.elements();
 		boolean first = true;
 		while (e.hasMoreElements()) {
-			BaseTopic workgroup = (BaseTopic) e.nextElement();
+			BaseTopic workspace = (BaseTopic) e.nextElement();
 			// skip default workspace
-			if (workgroup.getID().equals(defaultWorkspaceID)) {
+			if (workspace.getID().equals(defaultWorkspaceID)) {
 				continue;
 			}
 			//
-			types = as.getTopicTypes(workgroup.getID(), permissionMode);
+			types = as.getTopicTypes(workspace.getID(), permissionMode);
 			if (!types.isEmpty()) {
 				if (first) {
 					if (!commandsGroup.isEmpty()) {
@@ -636,8 +643,8 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 					first = false;
 				}
 				// create sub menu
-				Commands cmdGroup = commandsGroup.addCommandGroup(workgroup.getName(),
-					FILESERVER_ICONS_PATH, as.getLiveTopic(workgroup).getIconfile());
+				Commands cmdGroup = commandsGroup.addCommandGroup(workspace.getName(),
+					FILESERVER_ICONS_PATH, as.getLiveTopic(workspace).getIconfile());
 				addTopicTypeCommands(cmdGroup, types, command, usePluralName);
 			}
 		}
@@ -674,17 +681,17 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			// add association type commands
 			addAssocTypeCommands(commandsGroup, types, command, usePluralName);
 		}
-		// --- add workgroup types ---
-		Vector workgroups = as.getWorkgroups(userID);
-		Enumeration e = workgroups.elements();
+		// --- add workspace types ---
+		Vector workspaces = as.getWorkspaces(userID);
+		Enumeration e = workspaces.elements();
 		boolean first = true;
 		while (e.hasMoreElements()) {
-			BaseTopic workgroup = (BaseTopic) e.nextElement();
+			BaseTopic workspace = (BaseTopic) e.nextElement();
 			// skip default workspace
-			if (workgroup.getID().equals(defaultWorkspaceID)) {
+			if (workspace.getID().equals(defaultWorkspaceID)) {
 				continue;
 			}
-			types = as.getAssociationTypes(workgroup.getID(), permissionMode);
+			types = as.getAssociationTypes(workspace.getID(), permissionMode);
 			if (!types.isEmpty()) {
 				if (first) {
 					if (!commandsGroup.isEmpty()) {
@@ -693,8 +700,8 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 					first = false;
 				}
 				// create sub menu
-				Commands cmdGroup = commandsGroup.addCommandGroup(workgroup.getName(),
-					FILESERVER_ICONS_PATH, as.getLiveTopic(workgroup).getIconfile());
+				Commands cmdGroup = commandsGroup.addCommandGroup(workspace.getName(),
+					FILESERVER_ICONS_PATH, as.getLiveTopic(workspace).getIconfile());
 				addAssocTypeCommands(cmdGroup, types, command, usePluralName);
 			}
 		}
@@ -720,14 +727,14 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			types = as.getTopicTypes(defaultWorkspaceID, PERMISSION_CREATE_IN_WORKSPACE);
 			addWorkspaceTopicTypeCommands(types, session, directives);
 		}
-		// --- add workgroup types ---
-		Enumeration e = as.getWorkgroups(userID).elements();
+		// --- add workspace types ---
+		Enumeration e = as.getWorkspaces(userID).elements();
 		while (e.hasMoreElements()) {
-			String workgroupID = ((BaseTopic) e.nextElement()).getID();
-			if (workgroupID.equals(defaultWorkspaceID)) {
+			String workspaceID = ((BaseTopic) e.nextElement()).getID();
+			if (workspaceID.equals(defaultWorkspaceID)) {
 				continue;
 			}
-			types = as.getTopicTypes(workgroupID, PERMISSION_CREATE_IN_WORKSPACE);
+			types = as.getTopicTypes(workspaceID, PERMISSION_CREATE_IN_WORKSPACE);
 			addWorkspaceTopicTypeCommands(types, session, directives);
 		}
 		// --- add user types ---

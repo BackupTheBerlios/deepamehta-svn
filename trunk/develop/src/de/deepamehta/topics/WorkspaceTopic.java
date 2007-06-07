@@ -456,7 +456,7 @@ public class WorkspaceTopic extends LiveTopic {
 	private void assignType(String typeID, CorporateDirectives directives) {
 		PresentableTopic type = new PresentableTopic(as.getLiveTopic(typeID, 1), getID());
 		PresentableAssociation assoc = as.createPresentableAssociation(
-			SEMANTIC_WORKGROUP_TYPES, getID(), getVersion(), typeID, 1, false);
+			SEMANTIC_WORKSPACE_TYPES, getID(), getVersion(), typeID, 1, false);
 		directives.add(DIRECTIVE_SHOW_TOPIC, type);
 		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, Boolean.TRUE);
 	}

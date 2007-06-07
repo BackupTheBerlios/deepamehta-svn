@@ -67,7 +67,7 @@ public class BrowserServlet extends DeepaMehtaServlet implements Browser {
 
 	protected void preparePage(String page, RequestParameter params, Session session) {
 		if (page.equals(PAGE_HOME)) {
-			session.setAttribute("workspaces", as.getWorkgroups(getUserID(session)));
+			session.setAttribute("workspaces", as.getWorkspaces(getUserID(session)));
 		} else if (page.equals(PAGE_TOPIC_LIST)) {
 			String mode = getMode(session);
 			if (mode == MODE_BY_NAME) {

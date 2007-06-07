@@ -24,7 +24,7 @@ import java.util.*;
  * is renamed.
  * <P>
  * <HR>
- * Last functional change: 8.4.2007 (2.0b8)<BR>
+ * Last functional change: 7.6.2007 (2.0b8)<BR>
  * Last documentation update: 29.11.2000 (2.0a7)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -123,7 +123,7 @@ public class UserTopic extends PersonTopic {
 		//
 		// --- "Set Standard Workspace" ---
 		String userID = getID();
-		Vector workspaces = as.getWorkgroups(userID);
+		Vector workspaces = as.getWorkspaces(userID);
 		// ### compare to as.getUsersDefaultWorkspace()
 		BaseTopic standardWorkspace = as.getRelatedTopic(userID, SEMANTIC_PREFERENCE, TOPICTYPE_WORKSPACE, 2, true);	// emptyAllowed=true
 		//

@@ -69,7 +69,7 @@ public class WebFrontendServlet extends DeepaMehtaServlet implements WebFrontend
 		if (page.equals(PAGE_HOME)) {
 			session.setAttribute("baseURL", as.getCorporateWebBaseURL());
 			//
-			Vector workspaces = as.getWorkgroups(getUserID(session));
+			Vector workspaces = as.getWorkspaces(getUserID(session));
 			session.setAttribute("workspaces", createTopicBeans(workspaces));
 		} else if (page.equals(PAGE_TOPIC_LIST)) {
 			String mode = getMode(session);
