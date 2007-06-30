@@ -46,7 +46,6 @@ public class MenuScrollHelper implements ActionListener, MouseListener, MouseWhe
     public MenuScrollHelper(JPopupMenu jMenu, List elements) {
         this.jMenu = jMenu;
         this.elements = elements;
-        this.max = max;
         init();
     }
 
@@ -109,7 +108,7 @@ public class MenuScrollHelper implements ActionListener, MouseListener, MouseWhe
 
     public void mouseEntered(java.awt.event.MouseEvent me)  {
         // set scroll direction
-        if (me.getComponent().getName().equals(this.UID)){
+        if (me.getComponent().getName().equals(MenuScrollHelper.UID)){
             direction = UP;
         } else {
             direction = DOWN;
@@ -206,7 +205,7 @@ public class MenuScrollHelper implements ActionListener, MouseListener, MouseWhe
             while (direction != NEUTRAL){
                 try {
                     msh.scroll();
-                    this.sleep(MenuScrollHelper.SCROLL_DELAY);
+                    Thread.sleep(MenuScrollHelper.SCROLL_DELAY);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

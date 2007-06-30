@@ -54,6 +54,7 @@ final class DBFix {
 			System.out.println("> " + topics.size() + " HTML properties found");
 			System.out.println("> " + invCount + " invalid");
 			System.out.println("> " + fixCount + " fixed");
+			cm.release();
 		} catch (DeepaMehtaException e) {
 			System.out.println("*** " + e);
 			// ### e.printStackTrace();

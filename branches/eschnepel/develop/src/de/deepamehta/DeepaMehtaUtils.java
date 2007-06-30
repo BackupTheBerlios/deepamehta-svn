@@ -35,11 +35,11 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 	 */
 	public static String readFile(File file) throws IOException {
 		int len = (int) file.length();
-		byte buffer[] = new byte[len];
-		FileInputStream in = new FileInputStream(file);
-		int num = in.read(buffer);
+		char buffer[] = new char[len];
+		FileReader in = new FileReader(file);
+		in.read(buffer);
 		in.close();
-		return new String(buffer, 0);	// ### deprecated -- use a reader instead
+		return new String(buffer);
 	}
 
 	/* ### public static void copyFile(File srcFile, File dstFile) throws IOException {

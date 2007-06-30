@@ -4,7 +4,43 @@
 		DeepaMehta build file
 	</description>
 
-	<import file="config.xml"/>
+	<property file="build.properties"/>
+	<property file="${dm.instance.property-file}"/>
+	<property file="${dm.instance.build-property-file}"/>
+
+	<path id="javalibs">
+		<pathelement location="${db.lib}"/>
+		<pathelement location="${libpath}/servlet.jar"/>
+		<pathelement location="${libpath}/mail.jar"/>
+		<pathelement location="${libpath}/activation.jar"/>
+		<pathelement location="${libpath}/jndi.jar"/>
+		<pathelement location="${libpath}/batik.jar"/>
+		<pathelement location="${libpath}/fop.jar"/>
+		<pathelement location="${libpath}/xml4j.jar"/>
+		<pathelement location="${libpath}/avalon-framework.jar"/>
+		<pathelement location="${libpath}/commons-fileupload-1.0.jar"/>
+		<pathelement location="${libpath}/googleapi.jar"/>
+	</path>
+
+	<pathconvert property="jarclasspath" pathsep=" " refid="javalibs">
+		<!-- The classpath inside the .JAR archive is always interpreted relative to the location
+		     of the archive itself. Thus, if the archive resides in install/client/somename.jar and
+		     the libs reside in libs/, the JRE has to look in ../../libs/. The following option
+		     takes care of this. -->
+		<map from="${libpath}" to="../../libs"/>
+	</pathconvert>
+
+	<path id="dmapps">
+		<pathelement location="${examples}/movies/MoviesTopics.jar"/>								<!-- configure this -->
+		<pathelement location="${examples}/artfacts/ArtfactsTopics.jar"/>							<!-- configure this -->
+		<pathelement location="${examples}/messageboard/messageboard.jar"/>							<!-- configure this -->
+		<pathelement location="${examples}/kompetenzstern/kompetenzstern.jar"/>						<!-- configure this -->
+		<pathelement location="${appspath}/Kiez-Atlas/kiezatlas.jar"/>								<!-- configure this -->
+		<pathelement location="${appspath}/TeenKom/teenkom.jar"/>									<!-- configure this -->
+		<pathelement location="${appspath}/OLAP/olap.jar"/>											<!-- configure this -->
+		<pathelement location="${appspath}/Importer/importer.jar"/>									<!-- configure this -->
+		<pathelement location="${appspath}/DeepaMehta Coordination/coordination-platform.jar"/>		<!-- configure this -->
+	</path>
 
 	<!-- Install -->
 
@@ -28,7 +64,7 @@
 	</target>
 
 	<target name="installmovies">
-		<ant antfile="${examples}/movies/build.xml" dir="${examples}/movies" target="install"/>
+		<!--ant antfile="${examples}/movies/build.xml" dir="${examples}/movies" target="install"/-->
 	</target>
 
 	<target name="installweb">
@@ -55,7 +91,7 @@
 	</target>
 
 	<target name="deploy" depends="build">
-		<antcall target="deploylibs"/>
+		<!--antcall target="deploylibs"/-->
 	</target>
 
 	<target name="deploylibs">
@@ -98,7 +134,7 @@
 				<include name="${db.tables}"/>
 			</fileset>
 			<fileset dir="${db}">
-				<include name="COMMIT_SHUTDOWN.sql"/>
+				<include name="${db.close-session}"/>
 			</fileset>
 		</sql>
 	</target>
@@ -112,6 +148,7 @@
 				<include name="webcrawler.sql"/>
 				<include name="whois.sql"/>
 			</fileset>
+		<!--
 			<fileset dir="${examples}">
 				<include name="movies/movies.sql"/>
 				<include name="musicforum/music.sql"/>
@@ -119,19 +156,25 @@
 				<include name="kompetenzstern/kompetenzstern.sql"/>
 				<include name="kompetenzstern/businesscheck.sql"/>
 			</fileset>
+		-->
 			<fileset dir="${db}/patches">
 				<include name="names.sql"/>
 				<include name="help.sql"/>
 			</fileset>
 			<fileset dir="${db}">
-				<include name="COMMIT_SHUTDOWN.sql"/>
+				<include name="${db.close-session}"/>
 			</fileset>
 		</sql>
 	</target>
 
 	<target name="droptables">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" src="${db}/db_drop.sql">
-			<classpath refid="javalibs"/>
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" classpathref="javalibs">
+			<fileset dir="${db}">
+				<include name="${db.drop-tables}"/>
+			</fileset>
+			<fileset dir="${db}">
+				<include name="${db.close-session}"/>
+			</fileset>
 		</sql>
 	</target>
 
@@ -158,8 +201,13 @@
 			<equals arg1="${do.patch}" arg2="n"/>
 		</condition>
 		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] patchdb'"/>
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" src="${patch}">
-			<classpath refid="javalibs"/>
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" classpathref="javalibs">
+			<fileset>
+				<include name="${patch}"/>
+			</fileset>
+			<fileset dir="${db}">
+				<include name="${db.close-session}"/>
+			</fileset>
 		</sql>
 	</target>
 
@@ -218,6 +266,7 @@
 			<include name="de/deepamehta/*.class"/>
 			<include name="de/deepamehta/client/*.class"/>
 			<include name="de/deepamehta/service/*.class"/>
+			<include name="de/deepamehta/service/db/*.class"/>
 			<include name="de/deepamehta/topics/**/*.class"/>
 			<include name="de/deepamehta/assocs/**/*.class"/>
 			<exclude name="de/deepamehta/client/DeepaMehtaClient.class"/>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="develop/src"/>
+	<classpathentry kind="lib" path="libs/activation.jar"/>
+	<classpathentry kind="lib" path="libs/avalon-framework.jar"/>
+	<classpathentry kind="lib" path="libs/batik.jar"/>
+	<classpathentry kind="lib" path="libs/commons-fileupload-1.0.jar"/>
+	<classpathentry kind="lib" path="libs/endorsed/xalan-2.1.0.jar"/>
+	<classpathentry kind="lib" path="libs/endorsed/xerces_2_3_0.jar"/>
+	<classpathentry kind="lib" path="libs/endorsed/xml-apis.jar"/>
+	<classpathentry kind="lib" path="libs/fop.jar"/>
+	<classpathentry kind="lib" path="libs/googleapi.jar"/>
+	<classpathentry kind="lib" path="libs/jaas.jar"/>
+	<classpathentry kind="lib" path="libs/jndi.jar"/>
+	<classpathentry kind="lib" path="libs/ldap.jar"/>
+	<classpathentry kind="lib" path="libs/ldapbp.jar"/>
+	<classpathentry kind="lib" path="libs/mail.jar"/>
+	<classpathentry kind="lib" path="libs/providerutil.jar"/>
+	<classpathentry kind="lib" path="libs/servlet.jar"/>
+	<classpathentry kind="lib" path="libs/xml4j.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="develop/build"/>
+</classpath>

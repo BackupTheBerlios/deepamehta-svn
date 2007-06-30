@@ -47,7 +47,7 @@ public class DeepaMehta extends JApplet implements ApplicationServiceHost, Deepa
 
 
 	private PresentationService ps;
-	private ApplicationService as;
+	//private ApplicationService as;
 
 	private static final String commInfo = "direct method calls (embedded service)";
 	private static final String errText = "DeepaMehta can't run";

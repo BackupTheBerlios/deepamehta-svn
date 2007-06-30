@@ -10,6 +10,9 @@ import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableType;
 import de.deepamehta.Topic;
+import de.deepamehta.service.db.DatabaseProvider;
+import de.deepamehta.service.db.OracleDatabaseProvider;
+import de.deepamehta.service.db.DatabaseProvider.DbmsHint;
 //
 import java.sql.*;
 import java.util.*;
@@ -51,9 +54,9 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	/**
 	 * The connection to the database.
 	 */
-	private Connection con;
+	private DatabaseProvider provider;
 
-	private String dbmsHint;
+	private DbmsHint dbmsHint;
 
 
 
@@ -66,15 +69,11 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	/**
 	 * @see		ApplicationServiceInstance#createCorporateMemory
 	 */
-	RelationalCorporateMemory(String jdbcDriverClass, String jdbcURL) throws Exception {
-		Class.forName(jdbcDriverClass);
-		this.con = DriverManager.getConnection(jdbcURL);
-		this.dbmsHint = jdbcDriverClass.indexOf(DBMS_HINT_ORACLE) != -1 ?
-			DBMS_HINT_ORACLE : DBMS_HINT_SQL92;
-		System.out.println(">    DBMS hint: \"" + dbmsHint + "\"");
+	RelationalCorporateMemory(DatabaseProvider dbProvider) throws Exception {
+		provider=dbProvider;
+		this.dbmsHint = dbProvider.getDbmsHint();
+		System.out.println(">    DBMS hint: \"" + dbmsHint.getName() + "\"");
 	}
-
-
 
 	// *************************************************************************
 	// *** Implementation of Interface de.deepamehta.service.CorporateMemory ***
@@ -411,7 +410,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		// ### ORACLE: relTopicIDs not yet respected ==> DOESN'T WORK!!!
 		// ### ORACLE: descending not yet respected
 		String query;
-		if (dbmsHint.equals(DBMS_HINT_ORACLE)) {
+		if (OracleDatabaseProvider.DBMS_HINT_ORACLE == dbmsHint) {
 			query = "SELECT Topic.* FROM Topic, Association" +
 			(topicmapID != null ? ", ViewAssociation" : "") +
 			(assocProp != null || sortAssociations ? ", AssociationProp" : "") +
@@ -1879,7 +1878,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		/* if (stmt != null) {
 			stmt.close();
 		} */
-		return con.createStatement();
+		return provider.getStatement();
 	}
 
 	/**
@@ -2249,19 +2248,8 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		return DeepaMehtaUtils.replace(str, '\'', "\\'");
 	}
 
-
-	public void checkPoint() {
-		try {
-			Statement stmt = con.createStatement();
-			stmt.execute("COMMIT");
-			stmt.close();
-			stmt = con.createStatement();
-			stmt.execute("CHECKPOINT");
-			stmt.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public void release() {
+		provider.release();
 	}
-
 
 }
