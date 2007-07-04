@@ -331,6 +331,41 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 		return null;
 	}
 
+	/**
+	 * Applications can use this hook to disable certain properties of this association.
+	 * Disabled properties are visible but not editable by the user.
+	 * <P>
+	 * This hook can be utilized to implement an access control mechanism.
+	 * The default implementation realizes the following rule: an association is only editable
+	 * if the current user
+	 * 1) is the owner of the association, or<br>
+	 * 2) is a DeepaMehta administrator, or<br>
+	 * 3) has the "Editor" role within a workspace the resp. association type is assigned to.
+	 * <P>
+	 * This hook is triggered every time this association is selected.
+	 *
+	 * @see			de.deepamehta.service.ApplicationService#disabledProperties
+	 *
+	 * @return		A vector of property names (<CODE>String</CODE>s)
+	 */
+	public Vector disabledProperties(Session session) {
+		// ### almost identical to LiveTopic.disabledProperties()
+		Vector disabledProps = new Vector();
+		//
+		TypeTopic type = as.type(this);
+		String userID = session.getUserID();
+		if (!as.isAssocOwner(getID(), session) && !as.isAdministrator(userID) && !as.hasEditorRole(userID, getType())) {
+			// disable all properties
+			Enumeration e = type.getTypeDefinition().elements();
+			while (e.hasMoreElements()) {
+				PropertyDefinition propDef = (PropertyDefinition) e.nextElement();
+				disabledProps.addElement(propDef.getPropertyName());
+			}
+		}
+		//
+		return disabledProps;
+	}
+
 
 
 	// ------------------------------

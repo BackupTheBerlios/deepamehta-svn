@@ -32,7 +32,7 @@ import java.util.*;
  * <P>
  * There is one instance created (singleton).
  * <HR>
- * Last functional change: 5.2.2005 (2.0b5)<BR>
+ * Last functional change: 8.6.2007 (2.0b8)<BR>
  * Last documentation update: 10.6.2001 (2.0a11-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -371,7 +371,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	 * @see		PresentationService#selectTopic
 	 */
 	void topicSelected(BaseTopic topic, PresentationTopicMap topicmap, String viewmode,
-									Hashtable props, Hashtable baseURLs, Vector disabledProperties, boolean retypeIsAllowed) {
+							Hashtable props, Hashtable baseURLs, Vector disabledProperties, boolean retypeIsAllowed) {
 		setSelection(topic, topicmap, viewmode, props, baseURLs, disabledProperties, retypeIsAllowed);
 		updateTopic(topic);
 	}
@@ -379,9 +379,9 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	/**
 	 * @see		PresentationService#selectAssociation
 	 */
-	void assocSelected(BaseAssociation assoc, PresentationTopicMap topicmap,
-												String viewmode, Hashtable props, Hashtable baseURLs, boolean retypeIsAllowed) {
-		setSelection(assoc, topicmap, viewmode, props, baseURLs, retypeIsAllowed);
+	void assocSelected(BaseAssociation assoc, PresentationTopicMap topicmap, String viewmode,
+							Hashtable props, Hashtable baseURLs, Vector disabledProperties, boolean retypeIsAllowed) {
+		setSelection(assoc, topicmap, viewmode, props, baseURLs, disabledProperties, retypeIsAllowed);
 		updateAssoc(assoc);
 	}
 
@@ -533,8 +533,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	 * Updates the model to reflect the specified association is selected now.
 	 */
 	private void setSelection(BaseAssociation assoc, PresentationTopicMap topicmap,
-					String viewmode, Hashtable props, Hashtable baseURLs /* ###, Vector disabledProperties */, boolean retypeIsAllowed) {
-		Selection selection = new Selection(topicmap, assoc, props, baseURLs /* ###, disabledProperties */, retypeIsAllowed);
+					String viewmode, Hashtable props, Hashtable baseURLs, Vector disabledProperties, boolean retypeIsAllowed) {
+		Selection selection = new Selection(topicmap, assoc, props, baseURLs, disabledProperties, retypeIsAllowed);
 		currentSelection = topicmap.getID() + ":" + viewmode;
 		selections.put(currentSelection, selection);
 		selected = SELECTED_ASSOCIATION;
@@ -797,7 +797,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			checkPropertyFields(typeID);
 			selectDataPanel(typeID);
 			showProperties(getProperties(), getBaseURLs(), typeID, true);	// all=true
-			// ### disableProperties();
+			disableProperties();
 		} else if (selected == SELECTED_TOPICMAP) {
 			String typeID = getTopicmap().getEditor().getTopicmap().getType();
 			checkPropertyFields(typeID);
@@ -877,7 +877,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	 */
 	private void disableProperties() {
 		// --- get property fields ---
-		Vector propertyFields = getPropertyFields();		// ### assocs
+		Vector propertyFields = getPropertyFields();
 		// error check
 		if (propertyFields == null) {
 			System.out.println("*** PropertyPanel.disableProperties(): no property " +
@@ -885,15 +885,12 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			return;
 		}
 		// ---
-		Enumeration e = propertyFields.elements();
-		PropertyField propField;
-		String propName;
-		boolean enabled;
 		// go through all fields of the type definition		
+		Enumeration e = propertyFields.elements();
 		while (e.hasMoreElements()) {
-			propField = (PropertyField) e.nextElement();
-			propName = propField.getName();
-			enabled = !getDisabledProperties().contains(propName);
+			PropertyField propField = (PropertyField) e.nextElement();
+			String propName = propField.getName();
+			boolean enabled = !getDisabledProperties().contains(propName);
 			propField.setEnabled(enabled);
 		}
 	}
@@ -1706,12 +1703,12 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 		 * @see		PropertyPanel#setSelection(BaseAssociation assoc, PresentationTopicMap topicmap, String viewmode, Hashtable props)
 		 */
 		Selection(PresentationTopicMap topicmap, BaseAssociation assoc, Hashtable props, Hashtable baseURLs,
-																	/* ###, Vector disabledProps */ boolean retypeIsAllowed) {
+																			Vector disabledProps, boolean retypeIsAllowed) {
 			this.topicmap = topicmap;
 			this.assoc = assoc;
 			this.props = props;
 			this.baseURLs = baseURLs;
-			// ### this.disabledProps = disabledProps;
+			this.disabledProps = disabledProps;
 			this.retypeIsAllowed = retypeIsAllowed;
 			this.selected = SELECTED_ASSOCIATION;
 		}

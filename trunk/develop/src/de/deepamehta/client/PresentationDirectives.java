@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * <P>
  * <HR>
- * Last functional change: 6.2.2005 (2.0b5)<BR>
+ * Last functional change: 7.6.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -83,11 +83,8 @@ public class PresentationDirectives extends Directives {
 					directives.addElement(new Directive(type, param1, param3));
 					break;
 				case DIRECTIVE_SELECT_TOPIC:
-					directives.addElement(new Directive(type, param1, param2, param3, param4, param5));
-					break;
 				case DIRECTIVE_SELECT_ASSOCIATION:
-					// Note: param3 (disables properties) not yet implemented ###
-					directives.addElement(new Directive(type, param1, param2, param4, param5));
+					directives.addElement(new Directive(type, param1, param2, param3, param4, param5));
 					break;
 				case DIRECTIVE_SELECT_TOPICMAP:
 					// Note: param3 (retype allowed?) not yet implemented ###
@@ -287,20 +284,13 @@ public class PresentationDirectives extends Directives {
 					directives.addElement(new Directive(type, param1, param2));
 					break;
 				case DIRECTIVE_SELECT_TOPIC:
+				case DIRECTIVE_SELECT_ASSOCIATION:
 					param1 = in.readUTF();
 					param2 = DeepaMehtaUtils.readHashtable(in);
 					param3 = DeepaMehtaUtils.readStrings(in);
 					param4 = new Boolean(in.readBoolean());
 					param5 = DeepaMehtaUtils.readHashtable(in);
 					directives.addElement(new Directive(type, param1, param2, param3, param4, param5));
-					break;
-				case DIRECTIVE_SELECT_ASSOCIATION:
-					param1 = in.readUTF();
-					param2 = DeepaMehtaUtils.readHashtable(in);
-					// ### param3 = DeepaMehtaUtils.readStrings(in);
-					param4 = new Boolean(in.readBoolean());
-					param5 = DeepaMehtaUtils.readHashtable(in);
-					directives.addElement(new Directive(type, param1, param2, param4, param5));
 					break;
 				case DIRECTIVE_SELECT_TOPICMAP:
 					param1 = DeepaMehtaUtils.readHashtable(in);

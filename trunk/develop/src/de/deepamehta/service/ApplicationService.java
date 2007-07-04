@@ -1096,20 +1096,40 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 
 	/**
 	 * Returns the properties to be disabled for the specified topic.
-	 * <P>
+	 * <p>
 	 * Triggers the {@link de.deepamehta.topics.LiveTopic#disabledProperties disabledProperties() hook}
 	 * and returns the resulting property names.
-	 * <P>
+	 * <p>
 	 * Called for <CODE>DIRECTIVE_SELECT_TOPIC</CODE> and <CODE>DIRECTIVE_SELECT_TOPICMAP</CODE>.
+	 * <p>
+	 * References checked: 7.6.2007 (2.0b8)
 	 *
 	 * @return	A vector of property names (<CODE>String</CODE>s)
 	 *
 	 * @see		CorporateDirectives#updateCorporateMemory
-	 * @see		CorporateCommands#addTopicPropertyCommands
 	 */
-	Vector disabledProperties(String topicID, int version, Session session) {
+	Vector disabledTopicProperties(String topicID, int version, Session session) {
 		// --- trigger disabledProperties() hook ---
 		return getLiveTopic(topicID, version).disabledProperties(session);
+	}
+
+	/**
+	 * Returns the properties to be disabled for the specified association.
+	 * <p>
+	 * Triggers the {@link de.deepamehta.assocs.LiveAssociation#disabledProperties disabledProperties() hook}
+	 * and returns the resulting property names.
+	 * <p>
+	 * Called for <CODE>DIRECTIVE_SELECT_ASSOCIATION</CODE>.
+	 * <p>
+	 * References checked: 7.6.2007 (2.0b8)
+	 *
+	 * @return	A vector of property names (<CODE>String</CODE>s)
+	 *
+	 * @see		CorporateDirectives#updateCorporateMemory
+	 */
+	Vector disabledAssocProperties(String assocID, int version, Session session) {
+		// --- trigger disabledProperties() hook ---
+		return getLiveAssociation(assocID, version).disabledProperties(session);
 	}
 
 	// ---
@@ -2657,6 +2677,9 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		return cm.getAssociationData(assoc.getID(), assoc.getVersion(), rolename).equals(SWITCH_ON);
 	}
 
+	/**
+	 * @param	typeID		a topic type ID or an association type ID
+	 */
 	public boolean hasEditorRole(String userID, String typeID) {
 		Vector workspaces = cm.getRelatedTopics(typeID, SEMANTIC_WORKSPACE_TYPES, TOPICTYPE_WORKSPACE, 1);
 		Enumeration e = workspaces.elements();

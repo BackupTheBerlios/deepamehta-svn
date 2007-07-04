@@ -27,7 +27,7 @@ import java.util.*;
  * with every constructor call).
  * <P>
  * <HR>
- * Last functional change: 15.1.2006 (2.0b6-post3)<BR>
+ * Last functional change: 7.6.2007 (2.0b8)<BR>
  * Last documentation update: 17.11.2000 (2.0a7-pre3)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -285,7 +285,7 @@ public class CorporateDirectives extends Directives {
 					topicID = (String) param1;
 					// Note: param2 - param5 are set programatically
 					directive.param2 = as.getTopicProperties(topicID, 1);		// ### versions
-					directive.param3 = as.disabledProperties(topicID, 1, session);
+					directive.param3 = as.disabledTopicProperties(topicID, 1, session);
 					directive.param4 = new Boolean(as.retypeTopicIsAllowed(topicID, 1, session));
 					directive.param5 = as.getTopicPropertyBaseURLs(topicID, 1);
 					break;
@@ -293,14 +293,14 @@ public class CorporateDirectives extends Directives {
 					assocID = (String) param1;
 					// Note: param2 - param5 are set programatically
 					directive.param2 = as.getAssocProperties(assocID, 1);		// ### versions
-					// ### directive.param3 = as.disabledProperties(assocID, 1);
+					directive.param3 = as.disabledAssocProperties(assocID, 1, session);
 					directive.param4 = new Boolean(as.retypeAssociationIsAllowed(assocID, 1, session));
 					directive.param5 = as.getAssocPropertyBaseURLs(assocID, 1);
 					break;
 				case DIRECTIVE_SELECT_TOPICMAP:
 					// Note: param1 - param4 are set programatically
 					directive.param1 = as.getTopicProperties(topicMapID, 1);	// ### versions
-					directive.param2 = as.disabledProperties(topicMapID, 1, session);
+					directive.param2 = as.disabledTopicProperties(topicMapID, 1, session);
 					// ### directive.param3 = new Boolean(as.retypeIsAllowed(topicMapID, 1, session));
 					directive.param4 = as.getTopicPropertyBaseURLs(topicMapID, 1);
 					break;
@@ -413,7 +413,7 @@ public class CorporateDirectives extends Directives {
 				System.out.println("*** CorporateDirectives.updateCorporateMemory(): " + e2 + " (directive type: " + dirType + ")");
 				add(DIRECTIVE_SHOW_MESSAGE, "Server error while updating the corporate memory according to a directive " +
 					"of type " + dirType + " (" + e2.getMessage() + ")", new Integer(NOTIFICATION_ERROR));
-				// ### e2.printStackTrace();
+				e2.printStackTrace();
 			} catch (TopicInitException e2) {
 				// Note: may happen e.g. when a map containing a failed-to-open datasource is re-opened
 				System.out.println("*** CorporateDirectives.updateCorporateMemory(): " + e2 + " (directive type: " + dirType + ")");
@@ -486,16 +486,10 @@ public class CorporateDirectives extends Directives {
 					out.writeUTF((String) param3);					// topicmap ID
 					break;
 				case DIRECTIVE_SELECT_TOPIC:
-					out.writeUTF((String) param1);								// topic ID
-					DeepaMehtaUtils.writeHashtable((Hashtable) param2, out);	// topic properties
-					DeepaMehtaUtils.writeStrings((Vector) param3, out);			// disabled properties
-					out.writeBoolean(((Boolean) param4).booleanValue());		// retype allowed?
-					DeepaMehtaUtils.writeHashtable((Hashtable) param5, out);	// base URLs
-					break;
 				case DIRECTIVE_SELECT_ASSOCIATION:
-					out.writeUTF((String) param1);								// association ID
-					DeepaMehtaUtils.writeHashtable((Hashtable) param2, out);	// association properties
-					// ### DeepaMehtaUtils.writeStrings((Vector) param3, out);	// disabled properties
+					out.writeUTF((String) param1);								// topic/association ID
+					DeepaMehtaUtils.writeHashtable((Hashtable) param2, out);	// topic/association properties
+					DeepaMehtaUtils.writeStrings((Vector) param3, out);			// disabled properties
 					out.writeBoolean(((Boolean) param4).booleanValue());		// retype allowed?
 					DeepaMehtaUtils.writeHashtable((Hashtable) param5, out);	// base URLs
 					break;

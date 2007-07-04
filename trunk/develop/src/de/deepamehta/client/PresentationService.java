@@ -35,7 +35,7 @@ import java.util.*;
  * Main controler of the graphical DeepaMehta frontend.
  * <P>
  * <HR>
- * Last functional change: 10.12.2006 (2.0b8)<BR>
+ * Last functional change: 7.6.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -1291,10 +1291,10 @@ public final class PresentationService implements DeepaMehtaConstants,
 					//
 					assocID = (String) param1;
 					props = (Hashtable) param2;
-					// ### Vector disabledProps = (Vector) param3;
-					retypeIsAllowed = ((Boolean) param3).booleanValue();
-					baseURLs = (Hashtable) param4;
-					selectAssociation(assocID, props, baseURLs, retypeIsAllowed, topicmapID, viewMode);
+					disabledProps = (Vector) param3;
+					retypeIsAllowed = ((Boolean) param4).booleanValue();
+					baseURLs = (Hashtable) param5;
+					selectAssociation(assocID, props, baseURLs, disabledProps, retypeIsAllowed, topicmapID, viewMode);
 					break;
 				case DIRECTIVE_SELECT_TOPICMAP:
 					// error check
@@ -1811,14 +1811,14 @@ public final class PresentationService implements DeepaMehtaConstants,
 	 *
 	 * @see		#processDirectives
 	 */
-	private void selectAssociation(String assocID, Hashtable props, Hashtable baseURLs, boolean retypeIsAllowed,
+	private void selectAssociation(String assocID, Hashtable props, Hashtable baseURLs, Vector disabledProps, boolean retypeIsAllowed,
 															String topicmapID, String viewmode) {
 		TopicmapEditorModel editor = getEditor(topicmapID);
 		editor.selectAssociation(assocID);
 		// --- update property panel ---
 		PresentationTopicMap topicmap = editor.getTopicMap();
 		BaseAssociation assoc = (BaseAssociation) topicmap.getAssociation(assocID);
-		propertyPanel.assocSelected(assoc, topicmap, viewmode, props, baseURLs /* ###, disabledProps */, retypeIsAllowed);
+		propertyPanel.assocSelected(assoc, topicmap, viewmode, props, baseURLs, disabledProps, retypeIsAllowed);
 	}
 
 	/**
