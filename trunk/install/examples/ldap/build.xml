@@ -1,0 +1,35 @@
+<project name="LDAP" default="jar" basedir=".">
+
+	<description>
+		LDAP
+	</description>
+
+	<property name="jar" value="LDAPTopics.jar"/>
+	<property name="build" location="build"/>
+
+	<import file="../../../config.xml"/>
+
+	<target name="init" description="create build directory">
+		<mkdir dir="${build}"/>
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
+			<classpath>
+				<pathelement location="${web.lib.dir}/DeepaMehtaService.jar"/>
+				<pathelement location="${web.lib.dir}/DeepaMehtaTopics.jar"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+   	    <jar jarfile="${jar}" basedir="${build}">
+			<include name="de/deepamehta/topics/*.class" />
+		</jar>
+	</target>
+
+	<target name="cleanup" description="remove build directory">
+		<delete dir="${build}"/>
+	</target>
+
+</project>
