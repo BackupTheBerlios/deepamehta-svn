@@ -26,7 +26,7 @@ import java.util.Vector;
  * </OL>
  * <P>
  * <HR>
- * Last functional change: 7.6.2007 (2.0b8)<BR>
+ * Last functional change: 6.7.2007 (2.0b8)<BR>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -94,6 +94,10 @@ public interface DeepaMehtaConstants {
 	static final String PROPERTY_TO = "To";
 	static final String PROPERTY_STATUS = "Status";
 	static final String PROPERTY_DATE = "Date";
+	static final String PROPERTY_BEGIN_DATE = "Begin Date";
+	static final String PROPERTY_BEGIN_TIME = "Begin Time";
+	static final String PROPERTY_END_DATE = "End Date";
+	static final String PROPERTY_END_TIME = "End Time";
 	static final String PROPERTY_LAST_REPLY_DATE = "Last Reply Date";
 	static final String PROPERTY_LAST_REPLY_TIME = "Last Reply Time";
 	static final String PROPERTY_BEGIN = "Begin";
@@ -503,6 +507,8 @@ public interface DeepaMehtaConstants {
 	static final String TOPICTYPE_FAX_NUMBER = "tt-faxnumber";
 	static final String TOPICTYPE_EMAIL_ADDRESS = "tt-emailaddress";
 	static final String TOPICTYPE_EMAIL = "tt-email";
+	static final String TOPICTYPE_CALENDAR = "tt-calendar";
+	static final String TOPICTYPE_EVENT = "tt-event";
 	static final String TOPICTYPE_DOCUMENT = "tt-document";
 	static final String TOPICTYPE_IMAGE = "tt-image";
 	static final String TOPICTYPE_WEBPAGE = "tt-webpage";
@@ -650,6 +656,11 @@ public interface DeepaMehtaConstants {
 
 	// direction is from chat board to chat
 	static final String SEMANTIC_CHAT = ASSOCTYPE_ASSOCIATION;
+
+	// *** Calendar ***
+
+	// direction is from calendar to event
+	static final String SEMANTIC_CALENDAR_EVENT = ASSOCTYPE_ASSOCIATION;
 
 
 
