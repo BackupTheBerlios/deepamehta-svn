@@ -1,0 +1,21 @@
+echo "--- creating example database \"Movies\" (MySQL root user password required) ..."
+
+mysql -u root -p mysql < install/examples/movies/db/createdb.sql
+
+if test $? == 1; then
+	echo "*** database \"Movies\" not created ***"
+	exit
+fi
+echo "> database \"Movies\" and database user created"
+echo "> hint: you can get the Movies SQL console by the \"mdb\" command"
+
+install/examples/movies/bin/mdb < install/examples/movies/db/db_tables_mysql.sql
+install/examples/movies/bin/mdb < install/examples/movies/db/db_inserts.sql
+
+if test $? == 1; then
+	echo "*** example \"Movies\" content not created ***"
+	exit
+fi
+echo "> default \"Movies\" content created"
+
+echo ">>> example database \"Movies\" created <<<"

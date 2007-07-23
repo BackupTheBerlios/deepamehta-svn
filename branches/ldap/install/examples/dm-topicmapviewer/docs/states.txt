@@ -1,0 +1,27 @@
+Topicmap Viewer Documentation
+=============================
+
+Web Session Attributes
+
+Jšrg Richter
+7.4.2007
+
+
+
+PAGE_TOPICMAP_LIST
+------------------
+
+workspaces		All workspaces (Vector of BaseTopic)
+topicmaps		All published topicmaps (Hashtable)
+					key: workspace ID (String)
+					value: topicmaps (Vector of BaseTopic)
+
+
+PAGE_TOPICMAP
+-------------
+
+topicmapName	Name of the topicmap to view (String)
+topicmapImage	URL of the topicmap image (String)
+geometryData	geometry data of all topics (Vector of TopicGeometry)
+
+

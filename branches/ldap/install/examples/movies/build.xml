@@ -1,0 +1,71 @@
+<project name="Movies" default="jar" basedir=".">
+
+	<description>
+		Movies
+	</description>
+
+	<property name="jar" value="MoviesTopics.jar"/>
+	<property name="build" location="build"/>
+
+	<property name="movies.db.name" value="Movies"/>
+	<property name="movies.db.userid" value="movies"/>
+	<property name="movies.db.password" value="movies"/>
+	<property name="movies.db.tables" value="db/db_tables_mysql.sql"/>
+	<property name="movies.db.content" value="db/db_inserts.sql"/>
+	<property name="movies.db.url" value="jdbc:mysql://127.0.0.1/${movies.db.name}?useUnicode=true&amp;characterEncoding=latin1"/>
+
+	<import file="../../../config.xml"/>
+
+	<target name="init" description="create build directory">
+		<mkdir dir="${build}"/>
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
+			<classpath>
+				<pathelement location="${web.lib.dir}/DeepaMehtaService.jar"/>
+				<pathelement location="${web.lib.dir}/DeepaMehtaTopics.jar"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+   	    <jar jarfile="${jar}" basedir="${build}">
+			<include name="de/deepamehta/movies/topics/*.class" />
+		</jar>
+	</target>
+
+	<target name="cleanup" description="remove build directory">
+		<delete dir="${build}"/>
+	</target>
+
+	<!-- example database "Movies" -->
+
+	<target name="install">
+		<antcall target="createdb"/>
+		<antcall target="createtables"/>
+		<antcall target="initdb"/>
+	</target>
+
+	<target name="createdb">
+		<input message="Enter MySQL root user password: " addproperty="db.rootpw"/>
+		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.rootpw}" classpathref="javalibs">
+			CREATE DATABASE ${movies.db.name};
+			GRANT ALL PRIVILEGES ON ${movies.db.name}.* TO ${movies.db.userid}@localhost IDENTIFIED BY '${movies.db.password}' WITH GRANT OPTION;
+			GRANT ALL PRIVILEGES ON ${movies.db.name}.* TO ${movies.db.userid}@"%"       IDENTIFIED BY '${movies.db.password}' WITH GRANT OPTION;
+		</sql>
+	</target>
+
+	<target name="createtables">
+		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.userid}" password="${movies.db.password}" src="${movies.db.tables}">
+			<classpath refid="javalibs"/>
+		</sql>
+	</target>
+
+	<target name="initdb">
+		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.userid}" password="${movies.db.password}" src="${movies.db.content}">
+			<classpath refid="javalibs"/>
+		</sql>
+	</target>
+
+</project>
