@@ -26,7 +26,7 @@ import java.util.Vector;
  * </OL>
  * <P>
  * <HR>
- * Last functional change: 24.8.2006 (2.0b8)<BR>
+ * Last functional change: 6.7.2007 (2.0b8)<BR>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -94,6 +94,10 @@ public interface DeepaMehtaConstants {
 	static final String PROPERTY_TO = "To";
 	static final String PROPERTY_STATUS = "Status";
 	static final String PROPERTY_DATE = "Date";
+	static final String PROPERTY_BEGIN_DATE = "Begin Date";
+	static final String PROPERTY_BEGIN_TIME = "Begin Time";
+	static final String PROPERTY_END_DATE = "End Date";
+	static final String PROPERTY_END_TIME = "End Time";
 	static final String PROPERTY_LAST_REPLY_DATE = "Last Reply Date";
 	static final String PROPERTY_LAST_REPLY_TIME = "Last Reply Time";
 	static final String PROPERTY_BEGIN = "Begin";
@@ -130,9 +134,9 @@ public interface DeepaMehtaConstants {
 	static final String PROPERTY_ORDINAL_NUMBER = "Ordinal Number";
 	static final String PROPERTY_ACCESS_PERMISSION = "Access Permission";
 	static final String PROPERTY_CARDINALITY = "Cardinality";
-	static final String PROPERTY_ASSOCIATION_TYPE_ID = "Association Type ID";	// "relation"
-	static final String PROPERTY_WEB_INFO = "Web Info";						// "relation"
-	static final String PROPERTY_WEB_FORM = "Web Form";					// "relation"
+	static final String PROPERTY_ASSOCIATION_TYPE_ID = "Association Type ID";	// "Relation"
+	static final String PROPERTY_WEB_INFO = "Web Info";							// "Relation"
+	static final String PROPERTY_WEB_FORM = "Web Form";							// "Relation"
 	// ### static final String PROPERTY_STRONG = "Strong";
 	static final String PROPERTY_PUBLIC = "Public";
 	static final String PROPERTY_DEFAULT_WORKSPACE = "Default";
@@ -143,6 +147,8 @@ public interface DeepaMehtaConstants {
 	static final String PROPERTY_SEARCH = "Search";								// "TopicSearch"
 	static final String PROPERTY_RELATED_TOPIC_ID = "RelatedTopicID";			// "Search"
 	static final String PROPERTY_RELATED_TOPIC_SEMANTIC = "AssociationTypeID";	// "Search"
+	static final String PROPERTY_ROLE_EDITOR = "Editor";						// "Membership"
+	static final String PROPERTY_ROLE_PUBLISHER = "Publisher";					// "Membership"
 	// property values
 	static final String PERMISSION_VIEW = "view";
 	static final String PERMISSION_CREATE = "create";
@@ -165,7 +171,7 @@ public interface DeepaMehtaConstants {
 	static final String DATE_SEPARATOR = "/";
 	static final String TIME_SEPARATOR = ":";
 	static final String[] monthNames = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-	static final int YEAR_MIN = 1900;
+	static final int YEAR_MIN = 1850;
 	static final int YEAR_MAX = 2010;
 	static final String PARAM_SEPARATOR = "_";	// ### was "." clashed with "Course No."
 	static final String LEVEL_SEPARATOR = ":";
@@ -501,6 +507,8 @@ public interface DeepaMehtaConstants {
 	static final String TOPICTYPE_FAX_NUMBER = "tt-faxnumber";
 	static final String TOPICTYPE_EMAIL_ADDRESS = "tt-emailaddress";
 	static final String TOPICTYPE_EMAIL = "tt-email";
+	static final String TOPICTYPE_CALENDAR = "tt-calendar";
+	static final String TOPICTYPE_EVENT = "tt-event";
 	static final String TOPICTYPE_DOCUMENT = "tt-document";
 	static final String TOPICTYPE_IMAGE = "tt-image";
 	static final String TOPICTYPE_WEBPAGE = "tt-webpage";
@@ -547,15 +555,15 @@ public interface DeepaMehtaConstants {
 
 
 
-	// direction is from origin view to personal view
+	// direction is from origin topic map to personal topic map
 	static final String SEMANTIC_ORIGIN_MAP = ASSOCTYPE_DERIVATION;
 
-	// direction is from personal view to workgroup
+	// direction is from personal topic map to workspace
 	static final String SEMANTIC_ORIGIN_WORKSPACE = ASSOCTYPE_PUBLISHING;
 
 	// *** User --> Workgroup, Workspace, Configuration Map ***
 
-	// direction is from user to workgroup
+	// direction is from user to workspace
 	static final String SEMANTIC_MEMBERSHIP = ASSOCTYPE_MEMBERSHIP;
 
 	// direction is from user to MIME Configuration
@@ -564,14 +572,14 @@ public interface DeepaMehtaConstants {
 	// direction is from user to email address
 	static final String SEMANTIC_EMAIL_ADDRESS = ASSOCTYPE_ASSOCIATION;
 
-	// direction is from user to view
+	// direction is from user to topic map
 	static final String SEMANTIC_VIEW_IN_USE = ASSOCTYPE_VIEW_IN_USE;
 
 	// direction is from authentification source to login topic
 	static final String SEMANTIC_AUTHENTIFICATION_SOURCE = ASSOCTYPE_ASSOCIATION;
 
-	// direction is from user resp. workgroup to workspace
-	static final String SEMANTIC_WORKSPACE = ASSOCTYPE_AGGREGATION;
+	// direction is from user resp. workspace to workspace topicmap
+	static final String SEMANTIC_WORKSPACE_TOPICMAP = ASSOCTYPE_AGGREGATION;
 
 	// *** Deployer (User resp. Workspace) --> Workspace Topicmap ***
 
@@ -580,10 +588,10 @@ public interface DeepaMehtaConstants {
 
 	// *** Workgroup resp. User --> Type ***
 
-	// direction is from user resp. workgroup to topic type
-	static final String SEMANTIC_WORKGROUP_TYPES = ASSOCTYPE_USES;
+	// direction is from user resp. workspace to topic type
+	static final String SEMANTIC_WORKSPACE_TYPES = ASSOCTYPE_USES;
 
-	// direction is from workgroup to association type
+	// direction is from workspace to association type
 	static final String SEMANTIC_MEMBERSHIP_TYPE = ASSOCTYPE_ASSOCIATION;
 
 	// *** Document Type --> MIME Type --> Application ***
@@ -631,7 +639,7 @@ public interface DeepaMehtaConstants {
 
 	// *** Preferences ***
 
-	// direction is from user resp. workgroup to somewhat
+	// direction is from user resp. workspace to somewhat
 	static final String SEMANTIC_PREFERENCE = ASSOCTYPE_PREFERENCE;
 
 	// ---
@@ -648,6 +656,11 @@ public interface DeepaMehtaConstants {
 
 	// direction is from chat board to chat
 	static final String SEMANTIC_CHAT = ASSOCTYPE_ASSOCIATION;
+
+	// *** Calendar ***
+
+	// direction is from calendar to event
+	static final String SEMANTIC_CALENDAR_EVENT = ASSOCTYPE_ASSOCIATION;
 
 
 
@@ -670,7 +683,7 @@ public interface DeepaMehtaConstants {
 	static final int REQUEST_EXEC_ASSOC_COMMAND_CHAINED = 8;
 	static final int REQUEST_PROCESS_ASSOC_DETAIL = 9;
 	static final int REQUEST_SET_ASSOC_DATA = 10;
-	// --- view requests ---
+	// --- topic map requests ---
 	static final int REQUEST_SET_GEOMETRY = 11;		// ### should be a message
 	static final int REQUEST_SET_TRANSLATION = 12;	// ### should be a message
 

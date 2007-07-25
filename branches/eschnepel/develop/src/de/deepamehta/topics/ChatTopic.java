@@ -237,7 +237,7 @@ public class ChatTopic extends LiveTopic {
 		}
 		//
 		this.workspace = owner;
-		// ### this.chatBoard = as.getWorkspace(workspace.getID(), directives);
+		// ### this.chatBoard = as.getWorkspaceTopicmap(workspace.getID(), directives);
 	}
 
 	private Vector activeSessions(Session session) {

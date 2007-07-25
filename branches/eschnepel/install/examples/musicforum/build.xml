@@ -1,0 +1,35 @@
+<project name="Music-Forum" default="build" basedir=".">
+
+	<description>
+		Music-Forum based on DeepaMehta MessageBoard Servlet
+	</description>
+
+	<property name="project.name" value="musicforum"/>
+	<property name="war" value="${project.name}.war"/>
+
+	<import file="../../../config.xml"/>
+
+	<target name="war">
+   	    <war warfile="${war}" webxml="config/web.xml">
+		    <classes dir="../messageboard/build">
+				<include name="de/deepamehta/messageboard/*.class" />
+            </classes>
+         	<fileset dir="../messageboard">
+            	<include name="pages/MessageBoard.jsp"/>
+            	<include name="images/*"/>
+         	</fileset>
+         	<fileset dir=".">
+            	<include name="pages/messageboard.css"/>
+         	</fileset>
+		</war>
+	</target>
+
+	<target name="build" depends="war">
+		<antcall target="deploy"/>
+	</target>
+
+	<target name="deploy">
+        <copy file="${war}" todir="${web.deploy.dir}"/>
+	</target>
+
+</project>

@@ -35,7 +35,7 @@ import java.util.*;
  * Main controler of the graphical DeepaMehta frontend.
  * <P>
  * <HR>
- * Last functional change: 24.8.2006 (2.0b8)<BR>
+ * Last functional change: 7.6.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -324,9 +324,12 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
+	 * References checked: 11.12.2006 (2.0b8)
+	 *
 	 * @param	applet		may be <CODE>null</CODE>
 	 *
 	 * @see		DeepeMehtaClient#init				(running as applet)
+	 * @see		de.deepamehta.service.DeepeMehta#init
 	 */
 	public void setApplet(Applet applet) {
 		if (applet != null) {
@@ -1288,10 +1291,10 @@ public final class PresentationService implements DeepaMehtaConstants,
 					//
 					assocID = (String) param1;
 					props = (Hashtable) param2;
-					// ### Vector disabledProps = (Vector) param3;
-					retypeIsAllowed = ((Boolean) param3).booleanValue();
-					baseURLs = (Hashtable) param4;
-					selectAssociation(assocID, props, baseURLs, retypeIsAllowed, topicmapID, viewMode);
+					disabledProps = (Vector) param3;
+					retypeIsAllowed = ((Boolean) param4).booleanValue();
+					baseURLs = (Hashtable) param5;
+					selectAssociation(assocID, props, baseURLs, disabledProps, retypeIsAllowed, topicmapID, viewMode);
 					break;
 				case DIRECTIVE_SELECT_TOPICMAP:
 					// error check
@@ -1808,14 +1811,14 @@ public final class PresentationService implements DeepaMehtaConstants,
 	 *
 	 * @see		#processDirectives
 	 */
-	private void selectAssociation(String assocID, Hashtable props, Hashtable baseURLs, boolean retypeIsAllowed,
+	private void selectAssociation(String assocID, Hashtable props, Hashtable baseURLs, Vector disabledProps, boolean retypeIsAllowed,
 															String topicmapID, String viewmode) {
 		TopicmapEditorModel editor = getEditor(topicmapID);
 		editor.selectAssociation(assocID);
 		// --- update property panel ---
 		PresentationTopicMap topicmap = editor.getTopicMap();
 		BaseAssociation assoc = (BaseAssociation) topicmap.getAssociation(assocID);
-		propertyPanel.assocSelected(assoc, topicmap, viewmode, props, baseURLs /* ###, disabledProps */, retypeIsAllowed);
+		propertyPanel.assocSelected(assoc, topicmap, viewmode, props, baseURLs, disabledProps, retypeIsAllowed);
 	}
 
 	/**
@@ -2262,7 +2265,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 			if (runsAsApplet) {
 				System.out.println("> PresentationService.playSound(): \"" +
 					soundfile + "\"");
-				applet.play(applet.getDocumentBase(), FILESERVER_SOUNDS_PATH + soundfile);
+				applet.play(applet.getCodeBase(), FILESERVER_SOUNDS_PATH + soundfile);
 			} else {
 				// ###
 				showMessage("Playing sounds not yet supported if running as application (" + soundfile +
@@ -2397,6 +2400,12 @@ public final class PresentationService implements DeepaMehtaConstants,
 	 * @see		#processDirectives
 	 */
 	private void executeCommand(String command, String param) {
+		// ### hack for Mac OS X: the application is ignored, the file is opened with "open" instead.
+		// ### I don't know how to start Mac OS X applications with Runtime.exec().
+		if (platform.equals(PLATFORM_MACOSX)) {
+			command = "open";
+		}
+		//
 		String[] cmd = {command, FILESERVER_DOCUMENTS_PATH + param};
 		String cmdStr = "\"" + cmd[0] + " " + cmd[1] + "\"";	// just for reporting
 		try {
@@ -2635,7 +2644,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	public Image getImage(String imagefile) {
 		// ### System.out.println(">>> PresentationService.getImage(): \"" + imagefile + "\"");
 		if (runsAsApplet) {
-			return applet.getImage(applet.getDocumentBase(), imagefile);
+			return applet.getImage(applet.getCodeBase(), imagefile);
 		} else {
 			return Toolkit.getDefaultToolkit().createImage(imagefile);
 		}
@@ -2868,8 +2877,12 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 
 	/**
+	 * References checked: 11.12.2006 (2.0b8)
+	 *
 	 * @see		DeepaMehtaClient#initApplication
 	 * @see		DeepaMehtaClient#init
+	 * @see		de.deepamehta.service.DeepeMehta#initApplication
+	 * @see		de.deepamehta.service.DeepeMehta#init
 	 */
 	public Component createLoginGUI() {
 		JPanel p1 = new JPanel();
@@ -2894,11 +2907,16 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
+	 * References checked: 11.12.2006 (2.0b8)
+	 *
 	 * @see		DeepaMehtaClient#init
+	 * @see		de.deepamehta.service.DeepeMehta#init
 	 */
 	public Component createStartDemoGUI() {
-		startDemoButton = new JButton(START_DEMO_LABEL);
-		startDemoButton.setBackground(COLOR_PROPERTY_PANEL);
+		String label = applet.getParameter("BUTTON_LABEL");
+		String color = applet.getParameter("BACKGROUND_COLOR");
+		startDemoButton = new JButton(label != null ? label : START_DEMO_LABEL);
+		startDemoButton.setBackground(DeepaMehtaUtils.parseHexColor(color, COLOR_PROPERTY_PANEL));
 		startDemoButton.setActionCommand("startdemo");
 		startDemoButton.addActionListener(this);
 		return startDemoButton;

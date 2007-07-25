@@ -429,32 +429,14 @@ class TopicmapEditorModel implements DeepaMehtaConstants {
 	// ---
 
 	/**
-	 * References checked: 29.4.2003 (2.0a18-pre10)
+	 * References checked: 7.4.2007 (2.0b8)
 	 *
 	 * @see		TopicmapEditorModel#TopicmapEditorModel
 	 * @see		PresentationService#updateBounds
 	 * @see		PresentationService#processDirectives	4x
 	 */
 	void setBounds() {
-		int xMin = Integer.MAX_VALUE;
-		int yMin = Integer.MAX_VALUE;
-		int xMax = Integer.MIN_VALUE;
-		int yMax = Integer.MIN_VALUE;
-		//
-		Enumeration e = topicMap.getTopics().elements();
-		while (e.hasMoreElements()) {
-			PresentationTopic topic = (PresentationTopic) e.nextElement();
-			Point p = topic.getGeometry();
-			if (p.x < xMin) xMin = p.x;
-			if (p.x > xMax) xMax = p.x;
-			if (p.y < yMin) yMin = p.y;
-			if (p.y > yMax) yMax = p.y;
-		}
-		//
-		bounds.x = xMin;
-		bounds.y = yMin;
-		bounds.width = xMax - xMin;
-		bounds.height = yMax - yMin;
+		DeepaMehtaUtils.initBounds(topicMap, bounds);
 	}
 
 	void addDetailListeners(JInternalFrame detailWindow) {

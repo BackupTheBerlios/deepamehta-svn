@@ -1,0 +1,28 @@
+<project name="KNOPPIX-Forum" default="deploy" basedir=".">
+
+	<description>
+		KNOPPIX-Forum based on DeepaMehta MessageBoard Servlet
+	</description>
+
+	<property name="project.name" value="knoppixforum"/>
+	<property name="war" value="${project.name}.war"/>
+
+	<import file="../../../config.xml"/>
+
+	<target name="war">
+   	    <war warfile="${war}" webxml="config/web.xml">
+		    <classes dir="../messageboard/build">
+				<include name="de/deepamehta/messageboard/*.class" />
+            </classes>
+         	<fileset dir=".">
+            	<include name="pages/*"/>
+            	<include name="images/*"/>
+         	</fileset>
+		</war>
+	</target>
+
+	<target name="deploy" depends="war">
+        <copy file="${war}" todir="${web.deploy.dir}"/>
+	</target>
+
+</project>

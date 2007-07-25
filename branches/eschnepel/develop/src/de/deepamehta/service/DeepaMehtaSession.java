@@ -86,11 +86,6 @@ public final class DeepaMehtaSession implements Session, DeepaMehtaConstants {
 	 */
 	private String userName;
 
-	/**
-	 * Accessed by {@link #getUserPreferences}
-	 */
-	// ### private UserPreferences userPrefs;
-
 	private EmailChecker emailChecker;
 
 	// ---
@@ -173,7 +168,7 @@ public final class DeepaMehtaSession implements Session, DeepaMehtaConstants {
 
 	/**
 	 * @see		CorporateDirectives#updateCorporateMemory
-	 * @see		de.deepamehta.topics.TopicMapTopic#openGroupView
+	 * @see		de.deepamehta.topics.TopicMapTopic#openSharedTopicmap
 	 */
 	public boolean isDemo() {
 		return isDemo;
@@ -194,15 +189,11 @@ public final class DeepaMehtaSession implements Session, DeepaMehtaConstants {
 		return userName;
 	}
 
-	/* ### public UserPreferences getUserPreferences() {
-		return userPrefs;
-	} */
-
 	/**
 	 * @see		ApplicationService#importTopicmap
 	 * @see		ApplicationService#importCM
 	 * @see		de.deepamehta.topics.TopicMapTopic#executeChainedCommand
-	 * @see		de.deepamehta.topics.TopicMapTopic#openGroupView
+	 * @see		de.deepamehta.topics.TopicMapTopic#openSharedTopicmap
 	 * @see		de.deepamehta.topics.TopicMapTopic#publish
 	 */
 	public BaseTopic getPersonalWorkspace() throws DeepaMehtaException {
@@ -257,13 +248,6 @@ public final class DeepaMehtaSession implements Session, DeepaMehtaConstants {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-
-	/**
-	 * @see		ApplicationService#startSession
-	 */
-	/* ### public void setUserPreferences(UserPreferences userPrefs) {
-		this.userPrefs = userPrefs;
-	} */
 
 	/**
 	 * @see		ApplicationService#addPersonalWorkspace

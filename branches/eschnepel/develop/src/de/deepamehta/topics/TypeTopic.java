@@ -324,7 +324,7 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 	public CorporateDirectives evoke(Session session, String topicmapID, String viewmode) {
 		// --- assign type to user ---
 		String assocID = as.getNewAssociationID();
-		cm.createAssociation(assocID, 1, SEMANTIC_WORKGROUP_TYPES, 1, session.getUserID(), 1, getID(), 1);
+		cm.createAssociation(assocID, 1, SEMANTIC_WORKSPACE_TYPES, 1, session.getUserID(), 1, getID(), 1);
 		cm.setAssociationData(assocID, 1, PROPERTY_ACCESS_PERMISSION, PERMISSION_CREATE);
 		//
 		return super.evoke(session, topicmapID, viewmode);

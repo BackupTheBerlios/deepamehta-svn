@@ -27,7 +27,7 @@ import java.util.*;
  * this <CODE>WorkspaceTopic</CODE> is renamed.
  * <P>
  * <HR>
- * Last functional change: 29.5.2006 (2.0b6-post3)<BR>
+ * Last functional change: 8.4.2007 (2.0b8)<BR>
  * Last documentation update: 29.4.2001 (2.0a10-pre7)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -91,7 +91,7 @@ public class WorkspaceTopic extends LiveTopic {
 		cm.createTopic(mapID, 1, TOPICTYPE_TOPICMAP, 1, "");		// ### create live topic instead ### version=1
 		// --- associate workspace with its topicmap ---
 		String assocID = cm.getNewAssociationID();
-		cm.createAssociation(assocID, 1, SEMANTIC_WORKSPACE, 1, getID(), 1, mapID, 1);		// ### version=1
+		cm.createAssociation(assocID, 1, SEMANTIC_WORKSPACE_TOPICMAP, 1, getID(), 1, mapID, 1);		// ### version=1
 		// --- create chat board---
 		String chatId = cm.getNewTopicID();
 		cm.createTopic(chatId, 1, TOPICTYPE_CHAT_BOARD, 1, "Chats");			// ### hardcoded
@@ -123,17 +123,17 @@ public class WorkspaceTopic extends LiveTopic {
 		// change name of this workspace
 		CorporateDirectives directives = super.nameChanged(name, topicmapID, viewmode);
 		// rename workspace topicmap
-		BaseTopic workspace = as.getWorkspace(getID(), directives);
+		BaseTopic workspace = as.getWorkspaceTopicmap(getID(), directives);
 		if (workspace != null) {
 			directives.add(as.getLiveTopic(workspace).nameChanged(name, topicmapID, viewmode));
 		}
 		// rename chat
-		BaseTopic chat = as.getChat(this, directives);
+		BaseTopic chat = as.getChatboard(this, directives);
 		if (chat != null) {
 			directives.add(as.getLiveTopic(chat).nameChanged(name + " Chats", topicmapID, viewmode));	// ### hardcoded
 		}
 		// rename message board
-		BaseTopic board = as.getMessageBoard(this, directives);
+		BaseTopic board = as.getMessageboard(this, directives);
 		if (board != null) {
 			directives.add(as.getLiveTopic(board).nameChanged(name + " Forum", topicmapID, viewmode));	// ### hardcoded
 		}
@@ -291,7 +291,7 @@ public class WorkspaceTopic extends LiveTopic {
 					// cause the client to show the changed icon
 					CorporateDirectives iconDirective = new CorporateDirectives();
 					iconDirective.add(DIRECTIVE_SET_EDITOR_ICON,
-						as.getWorkspace(getID()).getID(), newIcon);	// ### consider as.getWorkspace(2)
+						as.getWorkspaceTopicmap(getID()).getID(), newIcon);	// ### consider as.getWorkspaceTopicmap(2)
 					// Note: the DIRECTIVE_SET_EDITOR_ICON must be _queued_, because the
 					// icon upload must be completed _before_ the icon can be shown
 					directives.add(DIRECTIVE_QUEUE_DIRECTIVES, iconDirective);
@@ -346,7 +346,7 @@ public class WorkspaceTopic extends LiveTopic {
 		// --- open workspace ---
 		boolean isCurrentUser = userID.equals(session.getUserID());
 		if (isCurrentUser) {
-			BaseTopic workspace = as.getWorkspace(getID(), directives);
+			BaseTopic workspace = as.getWorkspaceTopicmap(getID(), directives);
 			if (workspace != null) {
 				CorporateTopicMap topicmap = new CorporateTopicMap(as, workspace.getID(), 1);
 				topicmap.createLiveTopicmap(session, directives);
@@ -388,7 +388,7 @@ public class WorkspaceTopic extends LiveTopic {
 		// --- close workspace ---
 		boolean isCurrentUser = userID.equals(session.getUserID());
 		if (isCurrentUser) {
-			BaseTopic workspace = as.getWorkspace(getID(), directives);
+			BaseTopic workspace = as.getWorkspaceTopicmap(getID(), directives);
 			if (workspace != null) {
 				directives.add(DIRECTIVE_CLOSE_EDITOR, workspace.getID());
 			}
@@ -456,7 +456,7 @@ public class WorkspaceTopic extends LiveTopic {
 	private void assignType(String typeID, CorporateDirectives directives) {
 		PresentableTopic type = new PresentableTopic(as.getLiveTopic(typeID, 1), getID());
 		PresentableAssociation assoc = as.createPresentableAssociation(
-			SEMANTIC_WORKGROUP_TYPES, getID(), getVersion(), typeID, 1, false);
+			SEMANTIC_WORKSPACE_TYPES, getID(), getVersion(), typeID, 1, false);
 		directives.add(DIRECTIVE_SHOW_TOPIC, type);
 		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, Boolean.TRUE);
 	}

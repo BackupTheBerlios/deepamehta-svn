@@ -108,7 +108,6 @@ public class DeepaMehta extends JApplet implements ApplicationServiceHost, Deepa
 			ApplicationService as = ApplicationService.create(this, instance);		// throws DME
 			// ### Note: the client name is unknown at this point
 			ps.createMainWindow("DeepaMehta " + CLIENT_VERSION);
-			// ### as.setGraphicsContext(ps.mainWindow);
 			ps.installationProps = as.getInstallationProps();
 			// --- create session ---
 			Session session = as.createSession(as.getNewSessionID(), "localhost", ps.hostAddress);
@@ -157,7 +156,6 @@ public class DeepaMehta extends JApplet implements ApplicationServiceHost, Deepa
 			String demoMapID = getParameter("DEMO_MAP");
 			ApplicationServiceInstance instance = ApplicationServiceInstance.lookup(serviceName);
 			ApplicationService as = ApplicationService.create(this, instance);	// throws DME
-			// ### as.setGraphicsContext(this);
 			ps.installationProps = as.getInstallationProps();
 			// --- create session ---
 			Session session = as.createSession(as.getNewSessionID(), "localhost", ps.hostAddress);

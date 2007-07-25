@@ -25,7 +25,7 @@ import java.util.*;
 /**
  * <p>
  * <hr>
- * Last sourcecode change: 13.6.2006 (2.0b7)<br>
+ * Last sourcecode change: 9.5.2007 (2.0b8)<br>
  * Last documentation update: 16.9.2002 (2.0a16-pre3)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -436,7 +436,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 
 	public String link(String text, String action, String params) {
 		StringBuffer html = new StringBuffer();
-		link(action, params, null, text, true, html);	// topicID=null, bold=true
+		link(action, params, null, text, false, true, html);	// topicID=null, quoteHTML=false, bold=true
 		//
 		return html.toString();
 	}
@@ -448,7 +448,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		Enumeration e = topics.elements();
 		while (e.hasMoreElements()) {
 			BaseTopic topic = (BaseTopic) e.nextElement();
-			link(action, null, topic.getID(), topic.getName(), true, html);		// params=null, bold=true
+			link(action, null, topic.getID(), topic.getName(), false, true, html);	// params=null, quoteHTML=false, bold=true
 			html.append("<p>");
 		}
 		//
@@ -608,7 +608,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 					"<img src=\"images/arrow_empty.gif\" border=0 hspace=10>");
 			}
 			// node name
-			link(infoAction, topicID, tree.topic.getName(), indent == 1, html);
+			link(infoAction, topicID, tree.topic.getName(), true, indent == 1, html);	// quoteHTML=true
 			html.append("</td>");
 			// buttons
 			actionButtons(topicID, actions, html);
@@ -866,7 +866,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		//
 		html.append("<tr valign=\"top\"><td><small>" + propLabel + "</small></td><td>");
 		//
-		if (visual.equals(VISUAL_FIELD) || visual.equals(VISUAL_PASSWORD_FIELD)) {
+		if (visual.equals(VISUAL_FIELD) || visual.equals(VISUAL_PASSWORD_FIELD) || visual.equals(VISUAL_COLOR_CHOOSER)) {
 			html.append("<input type=\"text\" name=\"" + prefix + propName + "\" value=\"" +
 				(propValue != null ? propValue : "") + "\" size=" + INPUTFIELD_WIDTH + ">");
 		} else if (visual.equals(VISUAL_AREA) || visual.equals(VISUAL_TEXT_EDITOR)) {
@@ -929,6 +929,8 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		String propValue = (String) props.get(propName);
 		if (visual.equals(VISUAL_SWITCH)) {
 			propValue = SWITCH_ON.equals(propValue) ? SWITCH_ON : SWITCH_OFF;
+		} else if (visual.equals(VISUAL_PASSWORD_FIELD)) {
+			propValue = "&bull;&bull;&bull;";
 		}
 		//
 		if (layout == LAYOUT_COLS) {
@@ -936,7 +938,8 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		}
 		//
 		html.append("<td>");
-		infolinkAdded = link(infoAction, infoActionParams, topicID, propValue, html);
+		boolean quoteHTML = !visual.equals(VISUAL_TEXT_EDITOR);
+		infolinkAdded = link(infoAction, infoActionParams, topicID, propValue, quoteHTML, html);
 		html.append("</td>");
 		//
 		if (layout == LAYOUT_COLS) {
@@ -1067,15 +1070,15 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 
 	// --- link (3 forms) ---
 
-	private boolean link(String action, String topicID, String text, boolean bold, StringBuffer html) {
-		return link(action, null, topicID, text, bold, html);
+	private boolean link(String action, String topicID, String text, boolean quoteHTML, boolean bold, StringBuffer html) {
+		return link(action, null, topicID, text, quoteHTML, bold, html);
 	}
 
-	private boolean link(String action, String params, String topicID, String text, StringBuffer html) {
-		return link(action, params, topicID, text, false, html);
+	private boolean link(String action, String params, String topicID, String text, boolean quoteHTML, StringBuffer html) {
+		return link(action, params, topicID, text, quoteHTML, false, html);
 	}
 
-	private boolean link(String action, String params, String topicID, String text, boolean bold, StringBuffer html) {
+	private boolean link(String action, String params, String topicID, String text, boolean quoteHTML, boolean bold, StringBuffer html) {
 		boolean linkAdded = false;
 		//
 		if (action != null) {
@@ -1084,8 +1087,10 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 			linkAdded = true;
 		}
 		if (text != null) {
-			text = DeepaMehtaUtils.replace(text, '\r', "<br>");		// needed for "Multiline Input Field"
-			text = DeepaMehtaUtils.quoteHTML(text);
+			if (quoteHTML) {
+				text = DeepaMehtaUtils.quoteHTML(text);
+				text = DeepaMehtaUtils.replaceLF(text);		// needed for "Multiline Input Field"
+			}
 			html.append((bold ? "<b>" : "") + text + (bold ? "</b>" : ""));
 		}
 		if (action != null) {

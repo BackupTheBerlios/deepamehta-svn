@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * <P>
  * <HR>
- * Last functional change: 13.6.2006 (2.0b7)<BR>
+ * Last functional change: 7.4.2007 (2.0b8)<BR>
  * Last documentation update: 28.7.2001 (2.0a11)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -210,7 +210,7 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 
 
 
-	// --- parseHexColor (3 forms) ---
+	// --- parseHexColor (4 forms) ---
 
 	public static Color parseHexColor(String color) {
 		return parseHexColor(color, 255);
@@ -228,17 +228,16 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		}
 	}
 
-	// ### to be dropped
 	public static Color parseHexColor(String color, String defaultColor) {
 		return parseHexColor(color, parseHexColor(defaultColor, Color.white));
 	}
 
-	// ### to be dropped
+	/**
+	 * @param	color	a string of format #rrggbb, may be <code>null</code> or empty.
+	 */
 	public static Color parseHexColor(String color, Color defaultColor) {
 		try {
-			if (color.length() == 0) {
-				System.out.println(">>> DeepaMehtaUtils.parseHexColor(): no " +
-					"color specified -- default color used");
+			if (color == null || color.length() == 0) {
 				return defaultColor;
 			}
 			//
@@ -293,6 +292,41 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 	// ----------------
 
 
+
+	// ---
+
+	public static Rectangle getBounds(PresentableTopicMap topicmap) {
+		return initBounds(topicmap, null);
+	}
+
+	public static Rectangle initBounds(PresentableTopicMap topicmap, Rectangle returnObject) {
+		int xMin = Integer.MAX_VALUE;
+		int yMin = Integer.MAX_VALUE;
+		int xMax = Integer.MIN_VALUE;
+		int yMax = Integer.MIN_VALUE;
+		//
+		Enumeration e = topicmap.getTopics().elements();
+		while (e.hasMoreElements()) {
+			PresentableTopic topic = (PresentableTopic) e.nextElement();
+			Point p = topic.getGeometry();
+			if (p.x < xMin) xMin = p.x;
+			if (p.x > xMax) xMax = p.x;
+			if (p.y < yMin) yMin = p.y;
+			if (p.y > yMax) yMax = p.y;
+		}
+		//
+		if (returnObject == null) {
+			returnObject = new Rectangle();
+		}
+		returnObject.x = xMin;
+		returnObject.y = yMin;
+		returnObject.width = xMax - xMin;
+		returnObject.height = yMax - yMin;
+		//
+		return returnObject;
+	}
+
+	// ---
 
 	/**
 	 * References checked: 4.9.2001 (2.0a12-pre1)
@@ -482,7 +516,7 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		return xml.toString();
 	}
 
-	// ---
+	// --- quoteHTML (2 forms) ---
 
 	static public String quoteHTML(String text) {
 		return quoteHTML(text, false);
@@ -510,6 +544,8 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		}
 		return quotedText.toString();
 	}
+
+	// ---
 
 	static private String getWord(StringBuffer str, int fromIndex) {
 		int i = fromIndex;

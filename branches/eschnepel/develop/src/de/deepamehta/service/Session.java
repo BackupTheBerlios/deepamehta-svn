@@ -33,7 +33,6 @@ public interface Session {
 	boolean loggedIn();
 	String getUserID();
 	String getUserName();
-	// ### UserPreferences getUserPreferences();
 	BaseTopic getPersonalWorkspace();
 	Object getCommunication();
 
@@ -43,7 +42,6 @@ public interface Session {
 	void setLoggedIn(boolean loggedIn);
 	void setUserID(String userID);
 	void setUserName(String userName);
-	// ### void setUserPreferences(UserPreferences userPrefs);
 	void setPersonalWorkspace(BaseTopic personalWorkspace);
 	void setCommunication(Object comm);
 	void setEmailChecker(EmailChecker ec);

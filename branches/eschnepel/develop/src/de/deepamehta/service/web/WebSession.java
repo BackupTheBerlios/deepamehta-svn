@@ -89,11 +89,6 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 	 */
 	// ### private String userName;
 
-	/**
-	 * Accessed by {@link #getUserPreferences}
-	 */
-	// ### private UserPreferences userPrefs;
-
 	// ---
 
 	/**
@@ -118,7 +113,7 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 
 
 	/**
-	 * @see		ApplicationService#createSession
+	 * @see		de.deepamehta.service.ApplicationService#createSession
 	 */
 	WebSession(HttpSession session) {
 		this.session = session;
@@ -171,7 +166,7 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 
 	/**
 	 * @see		CorporateDirectives#updateCorporateMemory
-	 * @see		de.deepamehta.topics.TopicMapTopic#openGroupView
+	 * @see		de.deepamehta.topics.TopicMapTopic#openSharedTopicmap
 	 */
 	public boolean isDemo() {
 		return false;	// ###
@@ -192,15 +187,11 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 		return null;	// ###
 	}
 
-	/* ### public UserPreferences getUserPreferences() {
-		return null;	// ###
-	} */
-
 	/**
 	 * @see		ApplicationService#importTopicmap
 	 * @see		ApplicationService#importCM
 	 * @see		de.deepamehta.topics.TopicMapTopic#executeChainedCommand
-	 * @see		de.deepamehta.topics.TopicMapTopic#openGroupView
+	 * @see		de.deepamehta.topics.TopicMapTopic#openSharedTopicmap
 	 * @see		de.deepamehta.topics.TopicMapTopic#publish
 	 */
 	public BaseTopic getPersonalWorkspace() throws DeepaMehtaException {
@@ -251,13 +242,6 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 	public void setUserName(String userName) {
 		// ### this.userName = userName;
 	}
-
-	/**
-	 * @see		ApplicationService#startSession
-	 */
-	/* ### public void setUserPreferences(UserPreferences userPrefs) {
-		// ### this.userPrefs = userPrefs;
-	} */
 
 	/**
 	 * @see		ApplicationService#addPersonalWorkspace
