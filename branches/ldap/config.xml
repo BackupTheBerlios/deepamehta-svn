@@ -34,6 +34,7 @@
 	<pathelement location="${libpath}/avalon-framework.jar"/>
 	<pathelement location="${libpath}/commons-fileupload-1.0.jar"/>
 	<pathelement location="${libpath}/googleapi.jar"/>
+	<pathelement location="${libpath}/endorsed/xerces_2_3_0.jar"/>
 </path>
 <pathconvert property="jarclasspath" pathsep=" " refid="javalibs">
 	<!-- The classpath inside the .JAR archive is always interpreted relative to the location
@@ -55,7 +56,7 @@
 	<pathelement location="${examples}/artfacts/ArtfactsTopics.jar"/>							<!-- configure this -->
 	<pathelement location="${examples}/messageboard/messageboard.jar"/>							<!-- configure this -->
 	<pathelement location="${examples}/kompetenzstern/kompetenzstern.jar"/>						<!-- configure this -->
-	<pathelement location="${examples}/ldqp/LDAPTopics.jar"/>						<!-- configure this -->
+	<pathelement location="${examples}/ldap/LDAPTopics.jar"/>						            <!-- configure this -->
 	<pathelement location="${appspath}/Kiezatlas/trunk/kiezatlas.jar"/>							<!-- configure this -->
 	<pathelement location="${appspath}/Stolpersteine/stolpersteine.jar"/>						<!-- configure this -->
 	<pathelement location="${appspath}/TeenKom/teenkom.jar"/>									<!-- configure this -->

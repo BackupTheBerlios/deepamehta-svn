@@ -184,25 +184,26 @@ public class CorporateLDAPSource implements CorporateDatasource, DeepaMehtaConst
 
 
 	/**
-	 *  Performs a (re)connect to the LDAP server.
+	 * Performs a (re)connect to the LDAP server. URL format:
+	 * ldap://localhost:389?login=cn=admin,dc=cmdghome,dc=local&password=ldap&base=dc=cmdghome,dc=local&scope=ou=People,dc=cmdghome,dc=local
 	 */
-	private void reconnect() throws NamingException
-	{
-		System.out.println( "=========> trying reconnect..." );
+	private void reconnect() throws NamingException {
 		int query_pos = url.indexOf("?");
 		String firstUrl = url.substring(0, query_pos);
-		
+
 		String args = url.substring(query_pos + 1, url.length());
 		Hashtable hash = parseArguments(args);
-		
-		String login       = getValue(hash, "login");
-		String password    = getValue(hash, "password");
-		String baseDN      = getValue(hash, "baseDN");
-		String searchScope = getValue(hash, "searchScope");
-		
+
+		String login = getValue(hash, "login");
+		String password = getValue(hash, "password");
+		// TODO consult ldap url rfc!
+		// in ldap url like ldap://deepamehta.de/dc=deepamehta,dc=de
+		String base = getValue(hash, "base");
+		String scope = getValue(hash, "scope");
+
 		initial = createInitialContext(firstUrl, login, password);
-		ctx = (DirContext) initial.lookup(baseDN);
-		setSearchScope(searchScope);
+		ctx = (DirContext) initial.lookup(base);
+		setSearchScope(scope);
 	}
 
 	/**

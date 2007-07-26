@@ -202,6 +202,8 @@
 	</target>
 
 	<target name="build" depends="compile" description="build jar files">
+		<mkdir dir="${client}"/>
+		<mkdir dir="${server}"/>
 		<!-- monolith -->
 		<jar jarfile="${client}/DeepaMehta.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
@@ -333,6 +335,7 @@
 	</target>
 
 	<target name="apidocs" description="generates the API documentation">
+		<mkdir dir="docs"/>
 		<javadoc 
 		   destdir="docs/apidocs"
 		   stylesheetfile="docs/stylesheet.css"

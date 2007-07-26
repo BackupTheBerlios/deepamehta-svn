@@ -1,0 +1,73 @@
+dn: dc=deepamehta,dc=de
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: Deepamehta
+dc: deepamehta
+description: Maintain your head, and share it
+l: Berlin
+
+dn: cn=admin,dc=deepamehta,dc=de
+objectClass: top
+objectClass: organizationalRole
+cn: admin
+description: LDAP administrator
+
+
+dn: ou=people,dc=deepamehta,dc=de
+objectClass: top
+objectClass: organizationalUnit
+ou: people
+
+dn: uid=danny,ou=people,dc=deepamehta,dc=de
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Danny Gräf
+description: ergomedia employee and DeepaMehta developer.
+givenName: Danny
+mail: deep@dagnu.de
+sn: Gräf
+uid: danny
+
+dn: uid=jri,ou=people,dc=deepamehta,dc=de
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Jörg Richter
+description: DeepaMehta co-founder and lead architect. CTO of the DeepaMehta company.
+givenName: Jörg
+mail: jri@deepamehta.de
+sn: Richter
+uid: jri
+
+
+dn: ou=groups,dc=deepamehta,dc=de
+objectClass: top
+objectClass: organizationalUnit
+ou: groups
+
+dn: ou=developer,ou=groups,dc=deepamehta,dc=de
+objectClass: top
+objectClass: groupOfNames
+cn: Developer
+description: DeepaMehta developer.
+member: uid=danny,ou=people,dc=deepamehta,dc=de
+member: uid=jri,ou=people,dc=deepamehta,dc=de
+ou: developer
+
+
+dn: ou=services,dc=deepamehta,dc=de
+objectClass: top
+objectClass: organizationalUnit
+ou: services
+
+dn: ou=dm,ou=services,dc=deepamehta,dc=de
+objectClass: top
+objectClass: organizationalUnit
+objectClass: simpleSecurityObject
+description: DeepaMehta LDAP communication.
+ou: dm
+userPassword: secret
