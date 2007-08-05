@@ -26,15 +26,17 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 
 	private Class driverClass;
 
-	private Properties conProps = new Properties();;
+	private Properties conProps = new Properties();
+
+	private Driver driver;
 
 	public DefaultDatabaseProvider(Properties conf)
-			throws ClassNotFoundException, SQLException {
+			throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
 		setupDatabaseProvider(conf);
 	}
 
 	protected void setupDatabaseProvider(Properties conf)
-			throws ClassNotFoundException, SQLException {
+			throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
 		this.jdbcURL = conf.getProperty(ConfigurationConstants.Database.DB_URL);
 		File libFile = new File(conf
 				.getProperty(ConfigurationConstants.Database.DB_LIB));
@@ -45,12 +47,13 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 					urlString) });
 			driverClass = classLoader.loadClass(conf
 					.getProperty(ConfigurationConstants.Database.DB_DRIVER));
+			driver = (Driver) driverClass.newInstance();
 		} catch (MalformedURLException e) {
 			throw new ClassNotFoundException(e.getMessage());
 		}
 	}
 
-	public Connection getConnection() throws SQLException {
+	public synchronized Connection getConnection() throws SQLException {
 		if (0 == freeCons.size()) {
 			return newConnection();
 		}
@@ -61,29 +64,26 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		return DBMS_HINT_SQL92;
 	}
 
-	public void freeConnection(Connection con) throws SQLException {
+	public synchronized void freeConnection(Connection con) throws SQLException {
 		freeCons.addLast(con);
-//		System.out.println("DB-Connections: ALL:"+allCons.size()+" FREE:"+freeCons.size());
+		// System.out.println("DB-Connections: ALL:"+allCons.size()+"
+		// FREE:"+freeCons.size());
 	}
 
-	protected void setConnectionProperties(String key, String value) {
+	protected void setConnectionProperty(String key, String value) {
 		conProps.setProperty(key, value);
 	}
 
-	protected Connection newConnection() throws SQLException {
-		try {
-			Driver driver = (Driver) driverClass.newInstance();
-			Connection con = driver.connect(jdbcURL, conProps);
-			con.setAutoCommit(true);
-			if (allCons.size() == 0) {
-				new DatabaseSweeper(con).sweep();
-			}
-			allCons.add(con);
-			System.out.println("DB-Connections: ALL:"+allCons.size()+" FREE:"+freeCons.size());
-			return con;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+	protected synchronized Connection newConnection() throws SQLException {
+		Connection con = driver.connect(jdbcURL, conProps);
+		con.setAutoCommit(true);
+		if (allCons.size() == 0) {
+			new DatabaseSweeper(con).sweep();
 		}
+		allCons.add(con);
+		System.out.println("DB-Connections: ALL:" + allCons.size() + " FREE:"
+				+ freeCons.size());
+		return con;
 	}
 
 	protected void finalize() throws Throwable {
@@ -100,38 +100,27 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 
 	public Statement getStatement() throws SQLException {
 		Connection con;
-		// at least 5 free Connections for better
+		// at least 2 free Connections for better
 		// Performance of parallel accesses
-		if (freeCons.size() < 1) {
+		if (freeCons.size() < 2) {
 			con = newConnection();
 		} else {
 			con = getConnection();
 		}
-		Statement stmt = con.createStatement();
-		freeConnection(con);
-		/*
-		try {
-			throw new Exception();
-		} catch (Exception e) {
-			StackTraceElement[] stes = e.getStackTrace();
-			int pos = 1;
-			StackTraceElement lste;
-			for (int i=0;i<3;i++){
-				lste=stes[pos];
-				while (pos<stes.length && lste.getClassName().equals(stes[pos].getClassName())){
-					pos++;
-				}
-				System.out.println(stes[pos-1].toString());
-			}
-		}*/
+		Statement stmt = new AutoFreeConnectionStatement(this, con);
 		return stmt;
 	}
 
 	public void release() {
 		try {
+			System.out.println("all / free connections : " + allCons.size()
+					+ " / " + freeCons.size());
 			closeAllCons();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void checkPointNeeded() {
 	}
 }

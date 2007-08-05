@@ -8,7 +8,7 @@ import de.deepamehta.ConfigurationConstants;
 public abstract class DatabaseProviderFactory {
 
 	public static DatabaseProvider getProvider(Properties conf)
-			throws ClassNotFoundException, SQLException {
+			throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
 		String dbUrl = conf.getProperty(ConfigurationConstants.Database.DB_URL);
 		if (OracleDatabaseProvider.isResponsibleFor(dbUrl)) {
 			return new OracleDatabaseProvider(conf);

@@ -20,4 +20,6 @@ public interface DatabaseProvider {
 	void freeConnection(Connection con) throws SQLException;
 
 	Statement getStatement() throws SQLException;
+
+	void checkPointNeeded();
 }

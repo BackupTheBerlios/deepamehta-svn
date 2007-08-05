@@ -12,7 +12,8 @@ public class HsqlDatabaseProvider extends DefaultDatabaseProvider {
 	private class CheckpointThread extends TimerTask {
 		public void run() {
 			try {
-				checkpoint();
+				if (doNextCheckPoint)
+					checkpoint();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -27,10 +28,12 @@ public class HsqlDatabaseProvider extends DefaultDatabaseProvider {
 
 	private static final String DEFAULT_DRIVER_CLASS = "org.hsqldb.jdbcDriver";
 
+	private boolean doNextCheckPoint = false;
+
 	public HsqlDatabaseProvider(Properties conf) throws ClassNotFoundException,
-			SQLException {
+			SQLException, InstantiationException, IllegalAccessException {
 		super(conf);
-		setConnectionProperties("shutdown", "true");
+		setConnectionProperty("shutdown", "true");
 		int rate = 5 * 60 * 1000;
 		new Timer().scheduleAtFixedRate(new CheckpointThread(), rate,
 				rate);
@@ -67,4 +70,8 @@ public class HsqlDatabaseProvider extends DefaultDatabaseProvider {
 		return url.contains(DBMS_HINT_HSQLDB_STR);
 	}
 
+	public void checkPointNeeded() {
+		super.checkPointNeeded();
+		doNextCheckPoint=true;
+	}
 }
