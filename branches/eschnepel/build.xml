@@ -4,9 +4,10 @@
 		DeepaMehta build file
 	</description>
 
-	<property file="build.properties"/>
-	<property file="${dm.instance.property-file}"/>
-	<property file="${dm.instance.build-property-file}"/>
+	<import file="config.xml"/>
+
+	<import file="${db}/${db.create-db}"/>
+	<import file="${db}/${db.drop-db}"/>
 
 	<path id="javalibs">
 		<pathelement location="${db.lib}"/>
@@ -46,10 +47,10 @@
 
 	<target name="install">
 		<echo message="--- DeepaMehta Installation ---"/>
-		<echo message="You are about to create a database '${db.name}' and an user '${db.userid}' (password '${db.password}')."/>
+		<echo message="You are about to create a database '${db.name}' and an user '${db.user}' (password '${db.password}')."/>
 		<echo message="You will be asked for the MySQL root user password."/>
 		<echo message="If you want change these settings, type 'n' and edit config.xml (section 'Database')"/>
-		<echo message="or use command line options -Ddb.name=... -Ddb.userid=... -Ddb.password=..."/>
+		<echo message="or use command line options -Ddb.name=... -Ddb.user=... -Ddb.password=..."/>
 		<input message="Continue? " validargs="y,n" addproperty="do.install"/>
 		<condition property="do.abort">
 			<equals arg1="${do.install}" arg2="n"/>
@@ -63,11 +64,11 @@
 		<antcall target="installweb"/>
 	</target>
 
-	<target name="installmovies">
-		<!--ant antfile="${examples}/movies/build.xml" dir="${examples}/movies" target="install"/-->
+	<target name="installmovies" if="false">
+		<ant antfile="build.xml" dir="${examples}/movies" target="install"/>
 	</target>
 
-	<target name="installweb">
+	<target name="installweb-ask">
 		<echo message="You are about to install the example web applications to '${web.deploy.dir}'."/>
 		<echo message="The directory for the servlet engines shared libraries is set to'${web.lib.dir}'."/>
 		<echo message="If you want change these settings, type 'n' and edit config.xml (section 'Servlet Engine')"/>
@@ -76,7 +77,11 @@
 		<condition property="do.abortweb">
 			<equals arg1="${do.installweb}" arg2="n"/>
 		</condition>
-		<fail if="do.abortweb" message="==> Installation aborted by user -- revisit with 'ant [options] installweb'"/>
+	</target>
+	<target name="installweb-if" if="do.abortweb" depends="installweb-ask">
+		<echo message="==> Installation aborted by user -- revisit with 'ant [options] installweb'"/>
+	</target>
+	<target name="installweb-unless" unless="do.abortweb" depends="installweb-ask">
 		<!-- copy shared libraries -->
 		<antcall target="deploylibs"/>
         <copy file="${libpath}/mysql-3.1.7.jar" todir="${web.lib.dir}"/>
@@ -89,9 +94,10 @@
 		<ant antfile="${examples}/musicforum/build.xml" dir="${examples}/musicforum" target="deploy"/>
 		<ant antfile="${examples}/kompetenzstern/build.xml" dir="${examples}/kompetenzstern" target="deploy"/>
 	</target>
+	<target name="installweb" depends="installweb-if,installweb-unless"/>
 
 	<target name="deploy" depends="build">
-		<!--antcall target="deploylibs"/-->
+		<antcall target="deploylibs"/>
 	</target>
 
 	<target name="deploylibs">
@@ -99,37 +105,11 @@
         <copy file="${server}/DeepaMehtaTopics.jar" todir="${web.lib.dir}"/>
 	</target>
 
-	<target name="createdb">
-<!-- MYSQL Only
-		<input message="Enter MySQL root user password: " addproperty="db.rootpw"/>
-		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.rootpw}" classpathref="javalibs">
-			CREATE DATABASE ${db.name};
-			GRANT ALL PRIVILEGES ON ${db.name}.* TO ${db.userid}@localhost IDENTIFIED BY '${db.password}' WITH GRANT OPTION;
-			GRANT ALL PRIVILEGES ON ${db.name}.* TO ${db.userid}@"%"       IDENTIFIED BY '${db.password}' WITH GRANT OPTION;
-		</sql>
--->
-	</target>
-
-	<target name="dropdb">
-		<echo message="You are about to drop the DeepaMehta database '${db.name}' and the user '${db.userid}'."/>
-		<echo message="You will be asked for the MySQL root user password."/>
-		<echo message="If you want drop another database and user, type 'n' and edit config.xml (section 'Database')"/>
-		<echo message="or use command line options -Ddb.name=... -Ddb.userid=..."/>
-		<input message="Continue? " validargs="y,n" addproperty="do.drop"/>
-		<condition property="do.abort">
-			<equals arg1="${do.drop}" arg2="n"/>
-		</condition>
-		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] dropdb'"/>
-		<input message="Enter MySQL root user password: " addproperty="db.rootpw"/>
-		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.rootpw}" classpathref="javalibs">
-			DROP DATABASE ${db.name};
-			DELETE FROM user where User='${db.userid}';
-			DELETE FROM db where Db='${db.name}';
-		</sql>
-	</target>
+	<!-- The target createdb has been "outsourced" to ${db.create-db}-->
+	<!-- The target createdb has been "outsourced" to ${db.drop-db}-->
 
 	<target name="createtables">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" classpathref="javalibs">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs">
 			<fileset dir="${db}">
 				<include name="${db.tables}"/>
 			</fileset>
@@ -140,7 +120,7 @@
 	</target>
 
 	<target name="initdb">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" classpathref="javalibs">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs">
 			<fileset dir="${db}">
 				<include name="cm.sql"/>
 				<include name="email.sql"/>
@@ -148,7 +128,6 @@
 				<include name="webcrawler.sql"/>
 				<include name="whois.sql"/>
 			</fileset>
-		<!--
 			<fileset dir="${examples}">
 				<include name="movies/movies.sql"/>
 				<include name="musicforum/music.sql"/>
@@ -156,7 +135,6 @@
 				<include name="kompetenzstern/kompetenzstern.sql"/>
 				<include name="kompetenzstern/businesscheck.sql"/>
 			</fileset>
-		-->
 			<fileset dir="${db}/patches">
 				<include name="names.sql"/>
 				<include name="help.sql"/>
@@ -168,7 +146,7 @@
 	</target>
 
 	<target name="droptables">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" classpathref="javalibs">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs">
 			<fileset dir="${db}">
 				<include name="${db.drop-tables}"/>
 			</fileset>
@@ -179,9 +157,9 @@
 	</target>
 
 	<target name="reset">
-		<echo message="You are about to reset the database ${db.name} (user '${db.userid}', password '${db.password}')."/>
+		<echo message="You are about to reset the database ${db.name} (user '${db.user}', password '${db.password}')."/>
 		<echo message="If you want reset another database, type 'n' and edit config.xml (section 'Database')"/>
-		<echo message="or use command line options -Ddb.name=... -Ddb.userid=... -Ddb.password=..."/>
+		<echo message="or use command line options -Ddb.name=... -Ddb.user=... -Ddb.password=..."/>
 		<input message="Continue? " validargs="y,n" addproperty="do.reset"/>
 		<condition property="do.abort">
 			<equals arg1="${do.reset}" arg2="n"/>
@@ -193,15 +171,15 @@
 	</target>
 
 	<target name="patchdb">
-		<echo message="You are about to apply the patch ${patch} the database ${db.name} (user '${db.userid}', password '${db.password}')."/>
+		<echo message="You are about to apply the patch ${patch} the database ${db.name} (user '${db.user}', password '${db.password}')."/>
 		<echo message="If you want patch another database, type 'n' and edit config.xml (section 'Database')"/>
-		<echo message="or use command line options -Ddb.name=... -Ddb.userid=... -Ddb.password=... -Dpatch=..."/>
+		<echo message="or use command line options -Ddb.name=... -Ddb.user=... -Ddb.password=... -Dpatch=..."/>
 		<input message="Continue? " validargs="y,n" addproperty="do.patch"/>
 		<condition property="do.abort">
 			<equals arg1="${do.patch}" arg2="n"/>
 		</condition>
 		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] patchdb'"/>
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" classpathref="javalibs">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs">
 			<fileset>
 				<include name="${patch}"/>
 			</fileset>

@@ -1,0 +1,12 @@
+<project name="DeepaMehta-db-createdb-sql92" >
+<!-- DeepaMehta Database creation script.-->
+<!-- must run as database root user.-->
+	<target name="createdb">
+		<input message="Enter database ${db.sysuser} user password: " addproperty="db.rootpw"/>
+		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.rootpw}" classpathref="javalibs">
+			CREATE DATABASE ${db.name};
+			GRANT ALL PRIVILEGES ON ${db.name}.* TO ${db.user}@localhost IDENTIFIED BY '${db.password}' WITH GRANT OPTION;
+			GRANT ALL PRIVILEGES ON ${db.name}.* TO ${db.user}@"%"       IDENTIFIED BY '${db.password}' WITH GRANT OPTION;
+		</sql>
+	</target>
+</project>

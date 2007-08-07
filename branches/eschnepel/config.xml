@@ -1,0 +1,5 @@
+<project>
+	<property file="build.properties"/>
+	<property file="${dm.instance.property-file}"/>
+	<property file="${dm.instance.build-property-file}"/>
+</project>

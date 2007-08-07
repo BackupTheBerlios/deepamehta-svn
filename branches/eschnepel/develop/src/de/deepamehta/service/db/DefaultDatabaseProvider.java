@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.Properties;
 
 import de.deepamehta.ConfigurationConstants;
+import de.deepamehta.DeepaMehtaException;
 
 public class DefaultDatabaseProvider implements DatabaseProvider {
 
@@ -31,13 +32,17 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	private Driver driver;
 
 	public DefaultDatabaseProvider(Properties conf)
-			throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+			throws ClassNotFoundException, SQLException,
+			InstantiationException, IllegalAccessException {
 		setupDatabaseProvider(conf);
+		new DatabaseSweeper(this).sweep();
 	}
 
 	protected void setupDatabaseProvider(Properties conf)
-			throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+			throws ClassNotFoundException, SQLException,
+			InstantiationException, IllegalAccessException {
 		this.jdbcURL = conf.getProperty(ConfigurationConstants.Database.DB_URL);
+		System.out.println("Using Database URL "+jdbcURL);
 		File libFile = new File(conf
 				.getProperty(ConfigurationConstants.Database.DB_LIB));
 		String urlString;
@@ -48,9 +53,16 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 			driverClass = classLoader.loadClass(conf
 					.getProperty(ConfigurationConstants.Database.DB_DRIVER));
 			driver = (Driver) driverClass.newInstance();
+			if (!driver.acceptsURL(jdbcURL))
+				throw new DeepaMehtaException(
+						"JDBC-Driver and JDBC-Url does not match!");
 		} catch (MalformedURLException e) {
 			throw new ClassNotFoundException(e.getMessage());
 		}
+		setConnectionProperty("user", conf
+				.getProperty(ConfigurationConstants.Database.DB_USER));
+		setConnectionProperty("password", conf
+				.getProperty(ConfigurationConstants.Database.DB_PASSWORD));
 	}
 
 	public synchronized Connection getConnection() throws SQLException {
@@ -77,9 +89,6 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	protected synchronized Connection newConnection() throws SQLException {
 		Connection con = driver.connect(jdbcURL, conProps);
 		con.setAutoCommit(true);
-		if (allCons.size() == 0) {
-			new DatabaseSweeper(con).sweep();
-		}
 		allCons.add(con);
 		System.out.println("DB-Connections: ALL:" + allCons.size() + " FREE:"
 				+ freeCons.size());

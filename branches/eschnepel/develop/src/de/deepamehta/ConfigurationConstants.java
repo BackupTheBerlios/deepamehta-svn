@@ -14,7 +14,7 @@ public final class ConfigurationConstants {
 	}
 
 	public final class Database {
-		public final static String DB_USERID = "db.user";
+		public final static String DB_USER = "db.user";
 
 		public final static String DB_PASSWORD = "db.password";
 

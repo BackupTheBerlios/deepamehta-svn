@@ -1,50 +1,87 @@
 package de.deepamehta.service.db;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import de.deepamehta.util.Benchmark;
 
+/**
+ * This class implements some database related cleanup routines. If there is an
+ * error (maybe due to autocommit) and the db is not in an consistent state,
+ * this helps to return to the consistent state.
+ * 
+ * @author enrico
+ */
 public class DatabaseSweeper {
-	private final Connection con;
+	private final class Worker implements Runnable {
+		public void run() {
+			try {
+				Statement statement = provider.getStatement();
+				Connection con = statement.getConnection();
+				try {
+					sweep(
+							statement,
+							"Association WHERE NOT EXISTS (SELECT * FROM Topic WHERE Association.TopicID1 = Topic.ID);",
+							"Accosiations with stale target Topic");
+					sweep(
+							statement,
+							"Association WHERE NOT EXISTS (SELECT * FROM Topic WHERE Association.TopicID2 = Topic.ID);",
+							"Accosiations with stale source Topic");
+					if (!con.getAutoCommit())
+						con.commit();
+				} catch (SQLException e) {
+					if (!con.getAutoCommit())
+						con.rollback();
+					throw new RuntimeException(e);
+				} finally {
+					statement.close();
+				}
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		}
 
-	public DatabaseSweeper(Connection con) {
-		this.con = con;
+		private void sweep(Statement statement, String cmd, String message)
+				throws SQLException {
+			ResultSet res = statement.executeQuery("SELECT * FROM " + cmd);
+			if (res.next()) {
+				System.out.println("*** " + message + ":");
+				ResultSetMetaData metaData = res.getMetaData();
+				do {
+					StringBuffer sb = new StringBuffer("***  ");
+					int columnCount = metaData.getColumnCount();
+					for (int i = 1; i <= columnCount; i++) {
+						sb.append(" ");
+						sb.append(metaData.getColumnLabel(i));
+						sb.append(":\"");
+						sb.append(res.getString(i));
+						sb.append("\"");
+					}
+					System.out.println(sb.toString());
+				} while (res.next());
+				int cnt = statement.executeUpdate("DELETE FROM " + cmd);
+				System.out.println("*** Deleted " + cnt + " " + message + "!");
+			}
+		}
+	}
+
+	private final DatabaseProvider provider;
+
+	public DatabaseSweeper(DefaultDatabaseProvider provider)
+			throws SQLException {
+		this.provider = provider;
 	}
 
 	public void sweep() throws SQLException {
 		try {
-			Benchmark.run("Sweeping Database", new Runnable() {
-				public void run() {
-					try {
-						final Statement statement = con
-								.createStatement();
-						sweep(
-								statement,
-								"delete from association where not exists (select * from topic where topicid1 = topic.id);",
-								"Deleted $$ Accosiations with stale target Topic!");
-						sweep(
-								statement,
-								"delete from association where not exists (select * from topic where topicid2 = topic.id);",
-								"Deleted $$ Accosiations with stale source Topic!");
-						statement.execute("commit");
-						statement.close();
-					} catch (SQLException e) {
-						throw new RuntimeException(e);
-					}
-				}
-			});
+			Benchmark.run("Sweeping Database", new Worker());
 		} catch (RuntimeException e) {
-			throw (SQLException) e.getCause();
-		}
-	}
-
-	private void sweep(Statement statement, String cmd, String message)
-			throws SQLException {
-		int cnt = statement.executeUpdate(cmd);
-		if (cnt > 0) {
-			System.out.println(">  " + message.replace("$$", "" + cnt));
+			SQLException cause = (SQLException) e.getCause();
+			cause.printStackTrace();
+			throw cause;
 		}
 	}
 }

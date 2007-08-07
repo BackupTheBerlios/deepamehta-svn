@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="develop/src"/>
+	<classpathentry kind="src" path="install/examples/artfacts/src"/>
+	<classpathentry kind="src" path="install/examples/dm-browser/src"/>
+	<classpathentry kind="src" path="install/examples/dm-search/src"/>
+	<classpathentry kind="src" path="install/examples/dm-topicmapviewer/src"/>
+	<classpathentry kind="src" path="install/examples/dm-web/src"/>
+	<classpathentry kind="src" path="install/examples/kompetenzstern/src"/>
+	<classpathentry kind="src" path="install/examples/ldap/src"/>
+	<classpathentry kind="src" path="install/examples/messageboard/src"/>
+	<classpathentry kind="src" path="install/examples/movies/src"/>
 	<classpathentry kind="lib" path="libs/activation.jar"/>
 	<classpathentry kind="lib" path="libs/avalon-framework.jar"/>
 	<classpathentry kind="lib" path="libs/batik.jar"/>

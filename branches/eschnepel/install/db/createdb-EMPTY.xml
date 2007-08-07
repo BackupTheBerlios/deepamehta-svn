@@ -1,0 +1,5 @@
+<project name="DeepaMehta-db-createdb-EMPTY" >
+	<target name="createdb">
+		<echo message="There is nothing to do to create a db for this type database"/>
+	</target>
+</project>
