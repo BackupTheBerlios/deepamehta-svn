@@ -6,7 +6,7 @@ CREATE CACHED TABLE Topic (
     TypeVersion INT NOT NULL,
     Version INT NOT NULL,
     ID CHAR(40) NOT NULL,
-    Name CHAR(255) NOT NULL,
+    Name VARCHAR_IGNORECASE NOT NULL,
 	PRIMARY KEY (ID, Version)
 );
 CREATE INDEX IDX_TopicType ON Topic (
@@ -18,7 +18,7 @@ CREATE CACHED TABLE Association (
     TypeVersion INT NOT NULL,
     Version INT NOT NULL,
     ID CHAR(40) NOT NULL,
-    Name CHAR(255) NOT NULL,
+    Name VARCHAR_IGNORECASE NOT NULL,
     TopicID1 CHAR(40) NOT NULL,
     TopicVersion1 INT NOT NULL,
     TopicID2 CHAR(40) NOT NULL,
