@@ -8,9 +8,10 @@
 
 	<import file="${db}/${db.create-db}"/>
 	<import file="${db}/${db.drop-db}"/>
-
 	<path id="javalibs">
-		<pathelement location="${db.lib}"/>
+		<fileset dir=".">
+			<include name="${db.libs}"/>
+		</fileset>
 		<pathelement location="${libpath}/servlet.jar"/>
 		<pathelement location="${libpath}/mail.jar"/>
 		<pathelement location="${libpath}/activation.jar"/>

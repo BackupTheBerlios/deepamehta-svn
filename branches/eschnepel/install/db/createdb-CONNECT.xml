@@ -1,4 +1,4 @@
-<project name="DeepaMehta-db-createdb-sql92" >
+<project name="DeepaMehta-db-createdb-CONNECT" >
 <!-- DeepaMehta Database creation script.-->
 <!-- must run as database root user.-->
 	<target name="asksyspass" unless="db.syspass">
@@ -6,9 +6,9 @@
 	</target>
 	<target name="createdb" depends="asksyspass">
 		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.syspass}" classpathref="javalibs">
-			CREATE DATABASE ${db.name};
-			GRANT ALL PRIVILEGES ON ${db.name}.* TO ${db.user}@localhost IDENTIFIED BY '${db.password}' WITH GRANT OPTION;
-			GRANT ALL PRIVILEGES ON ${db.name}.* TO ${db.user}@"%"       IDENTIFIED BY '${db.password}' WITH GRANT OPTION;
+			<fileset dir="${db}">
+				<include name="EMPTY.sql"/>
+			</fileset>
 		</sql>
 	</target>
 </project>

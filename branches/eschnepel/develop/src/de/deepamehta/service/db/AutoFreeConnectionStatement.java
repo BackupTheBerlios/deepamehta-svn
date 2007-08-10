@@ -25,7 +25,7 @@ public final class AutoFreeConnectionStatement implements Statement {
 
 	protected void finalize() throws Throwable {
 		if (finalClose) {
-			System.out.println("*** Closing statement while finalizing."
+			System.out.println("*** Closing statement while finalizing. "
 					+ "Someone forgot to close it.");
 			close();
 		}

@@ -22,6 +22,6 @@ public final class ConfigurationConstants {
 
 		public final static String DB_URL = "db.url";
 
-		public static final String DB_LIB = "db.lib";
+		public static final String DB_LIBS = "db.libs";
 	}
 }

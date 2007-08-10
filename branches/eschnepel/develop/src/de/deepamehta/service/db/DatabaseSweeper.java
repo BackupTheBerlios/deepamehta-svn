@@ -24,11 +24,11 @@ public class DatabaseSweeper {
 				try {
 					sweep(
 							statement,
-							"Association WHERE NOT EXISTS (SELECT * FROM Topic WHERE Association.TopicID1 = Topic.ID);",
+							"Association WHERE NOT EXISTS (SELECT * FROM Topic WHERE Association.TopicID1 = Topic.ID)",
 							"Accosiations with stale target Topic");
 					sweep(
 							statement,
-							"Association WHERE NOT EXISTS (SELECT * FROM Topic WHERE Association.TopicID2 = Topic.ID);",
+							"Association WHERE NOT EXISTS (SELECT * FROM Topic WHERE Association.TopicID2 = Topic.ID)",
 							"Accosiations with stale source Topic");
 					if (!con.getAutoCommit())
 						con.commit();

@@ -1,5 +1,5 @@
 <project name="DeepaMehta-db-dropedb-sql92" >
-	<target name="dropdb">
+	<target name="predropdb">
 		<echo message="You are about to drop the DeepaMehta database '${db.name}' and the user '${db.user}'."/>
 		<echo message="You will be asked for the database ${db.sysuser} user password."/>
 		<echo message="If you want drop another database and user, type 'n' and edit config.xml (section 'Database')"/>
@@ -9,8 +9,12 @@
 			<equals arg1="${do.drop}" arg2="n"/>
 		</condition>
 		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] dropdb'"/>
-		<input message="Enter database ${db.sysuser} user password: " addproperty="db.rootpw"/>
-		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.rootpw}" classpathref="javalibs">
+	</target>
+	<target name="asksyspass" depends="predropdb" unless="db.syspass">
+		<input message="Enter database ${db.sysuser} user password: " addproperty="db.syspass"/>
+	</target>
+	<target name="dropdb" depends="asksyspass">
+		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.syspass}" classpathref="javalibs">
 			DROP DATABASE ${db.name};
 			DELETE FROM user where User='${db.user}';
 			DELETE FROM db where Db='${db.name}';

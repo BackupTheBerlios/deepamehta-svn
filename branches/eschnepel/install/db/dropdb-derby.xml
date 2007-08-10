@@ -1,0 +1,13 @@
+<project name="DeepaMehta-db-dropedb-hsqldb">
+	<target name="dropdb">
+		<echo message="You are about to delete the DeepaMehta database '${db.name}'." />
+		<echo message="If you want delete another database, type 'n' and edit config.xml (section 'Database')" />
+		<echo message="or use command line options -Ddb.name=... -Ddb.userid=..." />
+		<input message="Continue? " validargs="y,n" addproperty="do.drop" />
+		<condition property="do.abort">
+			<equals arg1="${do.drop}" arg2="n" />
+		</condition>
+		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] dropdb'" />
+		<delete dir="${db.derby.path}" />
+	</target>
+</project>

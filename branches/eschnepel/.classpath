@@ -27,6 +27,8 @@
 	<classpathentry kind="lib" path="libs/providerutil.jar"/>
 	<classpathentry kind="lib" path="libs/servlet.jar"/>
 	<classpathentry kind="lib" path="libs/xml4j.jar"/>
+	<classpathentry kind="lib" path="libs/spring-core.jar"/>
+	<classpathentry kind="lib" path="libs/commons-logging.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="develop/build"/>
 </classpath>
