@@ -18,7 +18,7 @@ import java.util.*;
  * served by a DeepaMehta server.
  * <P>
  * <HR>
- * Last functional change: 29.3.2005 (2.0b6)<BR>
+ * Last functional change: 16.8.2007 (2.0b8)<BR>
  * Last documentation update: 22.9.2004 (2.0b3)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -53,6 +53,10 @@ class ExternalConnection implements DeepaMehtaConstants, Runnable {
 	 */
 	ExternalConnection(String host, int port, ApplicationService as) throws IOException {
 		Socket sock = new Socket(host, port);
+		//
+		System.out.println("> server side socket timeout was " + sock.getSoTimeout() + " ms -- timeout is now disabled");
+		sock.setSoTimeout(0);	// disable timeout ### does it help to avoid broken connections?
+		//
 		this.as = as;
 		this.in = new DataInputStream(sock.getInputStream());
 		this.out = new DataOutputStream(sock.getOutputStream());

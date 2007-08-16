@@ -24,7 +24,7 @@ import java.util.*;
  * and the {@link MessagingConnection} (used for <I>asynchronous</I> communication).
  * <P>
  * <HR>
- * Last functional change: 27.2.2005 (2.0b6)<BR>
+ * Last functional change: 16.8.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -39,11 +39,6 @@ class FileserverConnection implements DeepaMehtaConstants {
 
 
 
-	// needed for
-	// sending queued messages (ps.sendMessage()),
-	// processing queued directives (ps.processDirectives()) and
-	// sync modification of downloaded files (ps.setLastModifiedLocally())
-	// ### private PresentationService ps;
 	private FileServer fileServer;
 
 	private DataInputStream in;
@@ -62,7 +57,10 @@ class FileserverConnection implements DeepaMehtaConstants {
 	 */
 	FileserverConnection(String host, int port, int sessionID, FileServer fileServer) throws IOException {
 		Socket sock = new Socket(host, port);
-		// ### this.ps = ps;
+		//
+		System.out.println("> client side socket timeout was " + sock.getSoTimeout() + " ms -- timeout is now disabled");
+		sock.setSoTimeout(0);	// disable timeout ### does it help to avoid broken connections?
+		//
 		this.fileServer = fileServer;
 		this.in = new DataInputStream(sock.getInputStream());
 		this.out = new DataOutputStream(sock.getOutputStream());
