@@ -29,12 +29,14 @@ import java.io.*;
  * An email.
  * <P>
  * <HR>
- * Last sourcecode change: 25.6.2007 (2.0b7)<BR>
+ * Last sourcecode change: 16.8.2007 (2.0b8)<BR>
  * Last documentation update: 21.11.2001 (2.0a13-post1)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
  */
 public class EmailTopic extends LiveTopic {
+
+	private static final String TEXT_NO_SUBJECT = "<No Subject>";
 
 	// email states
 	private static final String EMAIL_STATE_DRAFT = "Draft";
@@ -143,7 +145,7 @@ public class EmailTopic extends LiveTopic {
 													String topicmapID, String viewmode) {
 		CorporateDirectives directives = new CorporateDirectives();
 		if (command.equals(CMD_SEND)) {
-			sendMail(session.getUserID(), 1, directives);
+			sendMail(directives);
 		} else if (command.equals(CMD_REPLY)) {
 			createDraftForReply(session.getUserID(), 1, directives);
 		} else if (command.equals(CMD_FORWARD)) {
@@ -174,7 +176,7 @@ public class EmailTopic extends LiveTopic {
 
 
 
-	private void sendMail(String userID, int userVersion, CorporateDirectives directives) throws DeepaMehtaException {
+	private void sendMail(CorporateDirectives directives) throws DeepaMehtaException {
 		Hashtable data = getProperties();
 		if (!data.get(PROPERTY_STATUS).equals(EMAIL_STATE_DRAFT)) {
 			return;
@@ -184,7 +186,6 @@ public class EmailTopic extends LiveTopic {
 		if (aRcpts.size() == 0) {
 			return;
 		}
-		// ### String from = as.getEmailAddress(userID);
 		String author = (String) data.get(PROPERTY_FROM);
 		System.out.println(">>> EmailTopic.sendMail(): " + this + ", author=\"" + author + "\"");
 		Properties mprops = new Properties();
@@ -199,7 +200,11 @@ public class EmailTopic extends LiveTopic {
 				address[i] = new InternetAddress((String)aRcpts.get(i));
 			}
 			msg.setRecipients(Message.RecipientType.TO, address);
-			msg.setSubject((String)data.get(PROPERTY_SUBJECT));
+			String subject = (String) data.get(PROPERTY_SUBJECT);
+			if (subject == null || subject.equals("")) {
+				subject = TEXT_NO_SUBJECT;
+			}
+			msg.setSubject(subject);
 			Date d = new Date();
 			msg.setSentDate(d);			
 			String msgText = (String) data.get(PROPERTY_TEXT);
@@ -223,6 +228,9 @@ public class EmailTopic extends LiveTopic {
 			MimeMessage msg = new MimeMessage(session);
 			msg.setFrom(new InternetAddress(from));
 			msg.setRecipients(Message.RecipientType.TO, to);
+			if (subject == null || subject.equals("")) {
+				subject = TEXT_NO_SUBJECT;
+			}
 			msg.setSubject(subject);
 			msg.setText(body);
 			msg.setSentDate(new Date());
