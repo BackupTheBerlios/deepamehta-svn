@@ -85,7 +85,7 @@ import java.io.*;
  *     ({@link #importFromFile})</LI>
  * </OL>
  * <HR>
- * Last functional change: 9.7.2008 (2.0b8)<BR>
+ * Last functional change: 20.8.2008 (2.0b8)<BR>
  * Last documentation update: 11.12.2001 (2.0a14-pre4)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -1000,8 +1000,10 @@ public class TopicMapTopic extends LiveTopic {
 		sendNotificationEmails(users, workspaceName, subject, notifyText);
 		// --- remove topicmap from personal workspace ---
 		CorporateDirectives directives = new CorporateDirectives();
-		directives.add(DIRECTIVE_HIDE_TOPIC, getID(), Boolean.FALSE, /* ### die=false */
-			session.getPersonalWorkspace().getID());
+		directives.add(DIRECTIVE_HIDE_TOPIC, getID(), Boolean.FALSE, session.getPersonalWorkspace().getID());
+		// ### Note: the personal topicmap remains in the corporate memory as ballast as well as the associations.
+		// The die-flag should set to TRUE. But the associations are not removed this way.
+		// Think again about the die() hook.
 		// --- upload documents ---
 		addPublishDirectives(directives);
 		// --- publish this map ---
@@ -1042,8 +1044,15 @@ public class TopicMapTopic extends LiveTopic {
 			// --- override origin topicmap with this topicmap ---
 			as.updateView(getID(), getVersion(), originTopicmapID, originTopicmapVersion);
 			// transfer topicmap properties
-			Hashtable props = cm.getTopicData(getID(), 1);
-			cm.setTopicData(originTopicmapID, 1, props);
+			Hashtable props = getProperties();
+			// ### cm.setTopicData(originTopicmapID, 1, props);
+			// transfer topicmap name
+			// ### directives.add(DIRECTIVE_SET_TOPIC_NAME, originTopicmapID, getName(), new Integer(1));
+			// Note: the topicmap name must not be transfered explicitly because the property change will trigger
+			// the name change
+			// ### One problem: the properties of the original topicmap in the shared workspace are not updated
+			// immedeatly if the original topicmap is still selected in the publishers view. No clue why!
+			directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, originTopicmapID, props, new Integer(1));
 		}
 	}
 

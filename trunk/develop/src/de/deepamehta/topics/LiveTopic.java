@@ -1114,6 +1114,8 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * <P>
 	 * ### Hypothesis: topicmapID and viewmode are only needed when called by client,
 	 * ### when called by servlet they can be set to null
+	 * <P>
+	 * References checked: 20.8.2007 (2.0b8)
 	 *
 	 * @see		#executeCommand
 	 * @see		de.deepamehta.service.ApplicationService#deleteTopic
@@ -1130,10 +1132,13 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * <P>
 	 * ### Hypothesis: topicmapID and viewmode are only needed when called by client,
 	 * ### when called by servlet they can be set to null
+	 * <P>
+	 * References checked: 20.8.2007 (2.0b8)
 	 *
-	 * @see		de.deepamehta.topics.TopicMapTopic#hideAll
 	 * @see		#executeCommand
 	 * @see		#delete
+	 * @see		de.deepamehta.topics.TopicMapTopic#hideAll
+	 * @see		de.deepamehta.kompetenzstern.topics.KriteriumTopic#hideRecursively
 	 */
 	public void hide(String topicmapID, String viewmode, boolean delete, CorporateDirectives directives) {
 		Boolean doDelete = new Boolean(delete);
