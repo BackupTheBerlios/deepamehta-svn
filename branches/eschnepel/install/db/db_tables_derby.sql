@@ -1,4 +1,5 @@
--- DeepaMehta database model for use with MySQL.
+-- DeepaMehta database model for use with DERBY.
+-- DERBY comes with Java 1.6 but is delivered with DM too.
 -- This script just creates the tables.
 
 CREATE TABLE Topic (

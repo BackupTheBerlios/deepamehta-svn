@@ -16,6 +16,9 @@ public abstract class DatabaseProviderFactory {
 		if (HsqlDatabaseProvider.isResponsibleFor(dbUrl)) {
 			return new HsqlDatabaseProvider(conf);
 		}
+		if (DerbyDatabaseProvider.isResponsibleFor(dbUrl)) {
+			return new DerbyDatabaseProvider(conf);
+		}
 		return new DefaultDatabaseProvider(conf);
 	}
 

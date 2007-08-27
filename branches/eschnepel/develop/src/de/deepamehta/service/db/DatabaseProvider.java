@@ -22,4 +22,6 @@ public interface DatabaseProvider {
 	Statement getStatement() throws SQLException;
 
 	void checkPointNeeded();
+
+	DatabaseOptimizer getDatabaseOptimizer();
 }

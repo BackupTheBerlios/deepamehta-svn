@@ -133,7 +133,7 @@ public class ApplicationServiceInstance implements DeepaMehtaConstants {
      *
 	 * @see		ApplicationService#create
 	 */
-	CorporateMemory createCorporateMemory() throws DeepaMehtaException {
+	public CorporateMemory createCorporateMemory() throws DeepaMehtaException {
 		CorporateMemory cm;		// returned object
         //
         String errText = "error while establishing access to corporate memory";

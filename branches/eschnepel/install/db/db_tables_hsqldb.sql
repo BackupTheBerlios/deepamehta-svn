@@ -1,4 +1,4 @@
--- DeepaMehta database model for use with MySQL.
+-- DeepaMehta database model for use with HSQLDB.
 -- This script just creates the tables.
 
 CREATE CACHED TABLE Topic (
