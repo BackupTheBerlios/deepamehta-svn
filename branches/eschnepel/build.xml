@@ -22,6 +22,8 @@
 		<pathelement location="${libpath}/avalon-framework.jar"/>
 		<pathelement location="${libpath}/commons-fileupload-1.0.jar"/>
 		<pathelement location="${libpath}/googleapi.jar"/>
+		<pathelement location="${libpath}/spring-core.jar"/>
+		<pathelement location="${libpath}/commons-logging.jar"/>
 	</path>
 
 	<pathconvert property="jarclasspath" pathsep=" " refid="javalibs">
@@ -110,7 +112,7 @@
 	<!-- The target createdb has been "outsourced" to ${db.drop-db}-->
 
 	<target name="createtables">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${db}">
 				<include name="${db.tables}"/>
 			</fileset>
@@ -121,7 +123,7 @@
 	</target>
 
 	<target name="initdb">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${db}">
 				<include name="cm.sql"/>
 				<include name="email.sql"/>
@@ -129,6 +131,11 @@
 				<include name="webcrawler.sql"/>
 				<include name="whois.sql"/>
 			</fileset>
+			<fileset dir="${db}">
+				<include name="${db.close-session}"/>
+			</fileset>
+		</sql>
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${examples}">
 				<include name="movies/movies.sql"/>
 				<include name="musicforum/music.sql"/>
@@ -136,6 +143,11 @@
 				<include name="kompetenzstern/kompetenzstern.sql"/>
 				<include name="kompetenzstern/businesscheck.sql"/>
 			</fileset>
+			<fileset dir="${db}">
+				<include name="${db.close-session}"/>
+			</fileset>
+		</sql>
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${db}/patches">
 				<include name="names.sql"/>
 				<include name="help.sql"/>
@@ -147,7 +159,7 @@
 	</target>
 
 	<target name="droptables">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${db}">
 				<include name="${db.drop-tables}"/>
 			</fileset>
@@ -180,7 +192,7 @@
 			<equals arg1="${do.patch}" arg2="n"/>
 		</condition>
 		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] patchdb'"/>
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset>
 				<include name="${patch}"/>
 			</fileset>
@@ -248,6 +260,7 @@
 			<include name="de/deepamehta/service/db/*.class"/>
 			<include name="de/deepamehta/topics/**/*.class"/>
 			<include name="de/deepamehta/assocs/**/*.class"/>
+			<include name="de/deepamehta/util/*.class"/>
 			<exclude name="de/deepamehta/client/DeepaMehtaClient.class"/>
 			<exclude name="de/deepamehta/client/SocketService.class"/>
 			<exclude name="de/deepamehta/client/InteractionConnection.class"/>
@@ -280,6 +293,7 @@
 		<jar jarfile="${server}/DeepaMehtaService.jar" basedir="${build}">
 			<include name="de/deepamehta/*.class"/>
 			<include name="de/deepamehta/service/**/*.class"/>
+			<include name="de/deepamehta/util/**/*.class"/>
 			<manifest>
 				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehtaServer"/>
 				<attribute name="Class-Path" value="${jarclasspath}"/>
@@ -393,10 +407,10 @@
 	<!-- Fix -->
 
 	<target name="fixdb" depends="build" description="fixes invalid HTML">
-		<java classname="de.deepamehta.service.DBFix" dir="${client}" fork="true">
+		<java classname="de.deepamehta.service.db.DBFix" dir="${client}" fork="true">
 			<classpath>
 				<pathelement location="${server}/DeepaMehtaService.jar"/>
-				<path refid="javalibs"/> 
+				<path refid="javalibs"/>
 			</classpath>
 			<arg value="${dm.instance}"/>
         </java>
