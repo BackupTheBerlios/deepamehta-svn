@@ -62,8 +62,8 @@
 	</target>
 
 	<target name="installweb-ask">
-		<echo message="You are about to install the example web applications to '${web.deploy.dir}'." />
-		<echo message="The directory for the servlet engines shared libraries is set to'${web.lib.dir}'." />
+		<echo message="You are about to install the web applications to '${web.deploy.dir}'." />
+		<echo message="The directory for the servlet engines shared libraries is set to '${web.lib.dir}'." />
 		<echo message="If you want change these settings, type 'n' and edit config.xml (section 'Servlet Engine')" />
 		<echo message="or use command line options -Dweb.deploy.dir=... -Dweb.lib.dir=..." />
 		<input message="Continue? " validargs="y,n" addproperty="do.installweb" />
@@ -77,7 +77,11 @@
 	<target name="installweb-unless" unless="do.abortweb" depends="installweb-ask">
 		<!-- copy shared libraries -->
 		<antcall target="deploylibs" />
-		<copy file="${libpath}/mysql-3.1.7.jar" todir="${web.lib.dir}" />
+		<copy todir="${web.lib.dir}" >
+			<fileset dir="${dm.base-dir}">
+				<include name="${db.libs}" />
+			</fileset>
+		</copy>
 		<copy file="${libpath}/googleapi.jar" todir="${web.lib.dir}" />
 		<copy file="${libpath}/commons-fileupload-1.0.jar" todir="${web.lib.dir}" />
 		<!-- deploy web applications -->
@@ -89,11 +93,11 @@
 	</target>
 	<target name="installweb" depends="installweb-if,installweb-unless" />
 
-	<target name="deploy" depends="build">
+	<target name="deploy" depends="build,installweb-ask">
 		<antcall target="deploylibs" />
 	</target>
 
-	<target name="deploylibs">
+	<target name="deploylibs" unless="do.abortweb">
 		<copy file="${server}/DeepaMehtaService.jar" todir="${web.lib.dir}" />
 		<copy file="${server}/DeepaMehtaTopics.jar" todir="${web.lib.dir}" />
 	</target>
