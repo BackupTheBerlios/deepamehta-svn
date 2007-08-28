@@ -42,10 +42,9 @@
 
 	<target name="install" depends="initdb" />
 
-	<import file="${db}/${db.create-db}" />
-
 	<target name="createmoviesdb">
-		<ant antfile="${db}/${db.create-db}" target="createdb" inheritrefs="true">
+		<ant antfile="${movies.db.create-db}" target="createdb" inheritrefs="true">
+			<property name="db.sysurl" value="${movies.db.sysurl}" />
 			<property name="db.name" value="${movies.db.name}" />
 			<property name="db.user" value="${movies.db.user}" />
 			<property name="db.password" value="${movies.db.password}" />

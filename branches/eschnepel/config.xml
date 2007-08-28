@@ -9,6 +9,10 @@
 	<property file="${dm.instance.property-file}" />
 	<property file="${dm.instance.build-property-file}" />
 
+	<property name="db.type.property-file" value="${config}/db-${db.type}.properties"/>
+
+	<property file="${db.type.property-file}" />
+
 	<path id="javalibs">
 		<fileset dir="${dm.base-dir}">
 			<include name="${db.libs}" />

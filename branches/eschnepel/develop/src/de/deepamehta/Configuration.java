@@ -26,6 +26,8 @@ public class Configuration extends Properties {
 			resolveReferences();
 			loadProperties(getProperty(ConfigurationConstants.Instance.DM_INSTANCE_PROPERTY_FILE));
 			resolveReferences();
+			loadProperties(getProperty(ConfigurationConstants.Database.DB_TYPE_PROPERTY_FILE));
+			resolveReferences();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
