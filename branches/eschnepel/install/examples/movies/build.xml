@@ -4,79 +4,72 @@
 		Movies
 	</description>
 
-	<property name="jar" value="MoviesTopics.jar"/>
-	<property name="build" location="build"/>
-	<property name="dm.base-dir" location="../../.."/>
+	<property name="jar" value="MoviesTopics.jar" />
+	<property name="build" location="build" />
+	<property name="dm.base-dir" location="../../.." />
 
-	<import file="${dm.base-dir}/config.xml"/>
-	<property file="config/movies-${dm.instance}.properties"/>
+	<import file="${dm.base-dir}/config.xml" />
+	<property file="config/movies-${dm.instance}.properties" />
 
 	<condition property="db.syspass" value="${syspass}">
 		<istrue value="${withsyspass}" />
 	</condition>
 
 	<target name="init" description="create build directory">
-		<mkdir dir="${build}"/>
+		<mkdir dir="${build}" />
 	</target>
 
 	<target name="compile" depends="init">
 		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
 			<classpath>
-				<pathelement location="${server}/DeepaMehtaService.jar"/>
-				<pathelement location="${server}/DeepaMehtaTopics.jar"/>
+				<pathelement location="${server}/DeepaMehtaService.jar" />
+				<pathelement location="${server}/DeepaMehtaTopics.jar" />
 			</classpath>
 		</javac>
 	</target>
 
 	<target name="jar" depends="compile">
-   	    <jar jarfile="${jar}" basedir="${build}">
+		<jar jarfile="${jar}" basedir="${build}">
 			<include name="de/deepamehta/movies/topics/*.class" />
 		</jar>
 	</target>
 
 	<target name="cleanup" description="remove build directory">
-		<delete dir="${build}"/>
+		<delete dir="${build}" />
 	</target>
 
 	<!-- example database "Movies" -->
 
-	<target name="install" depends="initdb"/>
+	<target name="install" depends="initdb" />
 
-	<target name="asksyspass" unless="db.syspass">
-		<input message="Enter database ${db.sysuser} user password: " addproperty="db.syspass"/>
+	<import file="${db}/${db.create-db}" />
+
+	<target name="createmoviesdb">
+		<ant antfile="${db}/${db.create-db}" target="createdb" inheritrefs="true">
+			<property name="db.name" value="${movies.db.name}" />
+			<property name="db.user" value="${movies.db.user}" />
+			<property name="db.password" value="${movies.db.password}" />
+		</ant>
 	</target>
 
-	<target name="createdb" depends="asksyspass">
-		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.syspass}" classpathref="javalibs">
-			<transaction>
-				CREATE DATABASE ${movies.db.name};
-				GRANT ALL PRIVILEGES ON ${movies.db.name}.* TO ${movies.db.userid}@localhost IDENTIFIED BY '${movies.db.password}' WITH GRANT OPTION;
-				GRANT ALL PRIVILEGES ON ${movies.db.name}.* TO ${movies.db.userid}@"%"       IDENTIFIED BY '${movies.db.password}' WITH GRANT OPTION;
-			</transaction>
-			<fileset dir="${db}">
-				<include name="${db.close-session}"/>
-			</fileset>
-		</sql>
-	</target>
-
-	<target name="createtables" depends="createdb">
-		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.userid}" password="${movies.db.password}" classpathref="javalibs">
+	<target name="createtables" depends="createmoviesdb">
+		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.user}" password="${movies.db.password}" classpathref="javalibs">
 			<fileset dir=".">
-			    <include name="${movies.db.tables}"/>
+				<include name="${movies.db.tables}" />
 			</fileset>
 			<fileset dir="${db}">
-				<include name="${db.close-session}"/>
+				<include name="${db.close-session}" />
 			</fileset>
 		</sql>
 	</target>
 
 	<target name="initdb" depends="createtables">
-		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.userid}" password="${movies.db.password}" classpathref="javalibs">
+		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.user}" password="${movies.db.password}" classpathref="javalibs">
 			<fileset dir=".">
-			    <include name="${movies.db.content}"/>
+				<include name="${movies.db.content}" />
 			</fileset>
 			<fileset dir="${db}">
-				<include name="${db.close-session}"/>
+				<include name="${db.close-session}" />
 			</fileset>
 		</sql>
 	</target>

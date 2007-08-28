@@ -176,4 +176,8 @@ public class ApplicationServiceInstance implements DeepaMehtaConstants {
 		//
 		return cm;
 	}
+
+	public String getConfigurationProperty(String property) {
+		return conf.getProperty(property);
+	}
 }

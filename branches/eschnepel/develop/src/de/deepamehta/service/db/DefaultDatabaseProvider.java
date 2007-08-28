@@ -45,8 +45,6 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 			throws ClassNotFoundException, SQLException,
 			InstantiationException, IllegalAccessException {
 		setupDatabaseProvider(conf);
-		new DatabaseSweeper(this).sweep();
-		getDatabaseOptimizer().optimize();
 	}
 
 	public DatabaseOptimizer getDatabaseOptimizer() {

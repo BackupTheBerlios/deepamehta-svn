@@ -3,6 +3,11 @@ package de.deepamehta.service;
 import java.sql.*;
 import java.util.*;
 
+import de.deepamehta.ConfigurationConstants;
+import de.deepamehta.DeepaMehtaConstants;
+import de.deepamehta.service.db.DatabaseProvider;
+import de.deepamehta.service.db.DatabaseProviderFactory;
+
 
 
 /**
@@ -29,7 +34,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 	/**
 	 * The connection to the database.
 	 */
-	private Connection con;
+	private DatabaseProvider provider;
 
 
 
@@ -40,14 +45,20 @@ public class CorporateSQLSource implements CorporateDatasource {
 
 
 	/**
+	 * @param libs 
 	 * @see		de.deepamehta.topics.DataSourceTopic#openCorporateDatasource
 	 */
-	public CorporateSQLSource(String url, String driver) throws Exception {
+	public CorporateSQLSource(String url, String driver, String libs) throws Exception {
 		// create database connection
 		System.out.println(">>> CorporateSQLSource(): connecting to database ... ");
 		System.out.println(">    URL: \"" + url + "\"\n>    driver: \"" + driver + "\"");
-		Class.forName(driver);
-		con = DriverManager.getConnection(url);
+		Properties conf = new Properties();
+		conf.setProperty(ConfigurationConstants.Database.DB_LIBS, libs);
+		conf.setProperty(ConfigurationConstants.Database.DB_DRIVER, driver);
+		conf.setProperty(ConfigurationConstants.Database.DB_URL, url);
+		provider = DatabaseProviderFactory.getProvider(conf);
+		Statement statement = provider.getStatement();
+		statement.close();
 		System.out.println(">>> connected.");
 	}
 
@@ -65,7 +76,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 		String queryStr = buildQuery(elementName, conditions, caseSensitiv, "*");
 		//
 		System.out.println("> CorporateSQLSource.queryElements(): \"" + queryStr + "\"");
-		Statement stmt = con.createStatement();
+		Statement stmt = provider.getStatement();
 		ResultSet result = stmt.executeQuery(queryStr);
 		Vector elements = queryResult(result);
 		stmt.close();
@@ -83,7 +94,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 		}
 		//
 		System.out.println("> CorporateSQLSource.queryElements(): \"" + queryStr + "\"");
-		Statement stmt = con.createStatement();
+		Statement stmt = provider.getStatement();
 		ResultSet result = stmt.executeQuery(queryStr);
 		Vector elements = queryResult(result);
 		stmt.close();
@@ -96,7 +107,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 		String queryStr = buildQuery(elementType, id, relatedElementType, helperElementType);
 		//
 		System.out.println("> CorporateSQLSource.queryElements(): \"" + queryStr + "\"");
-		Statement stmt = con.createStatement();
+		Statement stmt = provider.getStatement();
 		ResultSet result = stmt.executeQuery(queryStr);
 		Vector elements = queryResult(result);
 		stmt.close();
@@ -116,7 +127,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 			return new Hashtable();
 		}
 		System.out.println("> CorporateSQLSource.queryElement(): \"" + queryStr + "\"");
-		Statement stmt = con.createStatement();
+		Statement stmt = provider.getStatement();
 		ResultSet result = stmt.executeQuery(queryStr);
 		Vector queryResult = queryResult(result);
 		stmt.close();
@@ -138,7 +149,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 		String queryStr = buildQuery(elementName, conditions, false,
 			groupingField + ", COUNT(*)") + " GROUP BY " + groupingField;
 		System.out.println("> CorporateSQLSource.queryGroups(): \"" + queryStr + "\"");
-		Statement stmt = con.createStatement();
+		Statement stmt = provider.getStatement();
 		ResultSet result = stmt.executeQuery(queryStr);
 		Vector groups = queryGroups(result);
 		stmt.close();
@@ -151,7 +162,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 		String query = "SELECT COUNT(*) AS Count FROM " + type;
 		//
 		// ### System.out.println("> CorporateSQLSource.getElementCount(): \"" + query + "\"");
-		Statement stmt = con.createStatement();
+		Statement stmt = provider.getStatement();
 		ResultSet result = stmt.executeQuery(query);
 		int count = queryCount(result);
 		stmt.close();
@@ -163,7 +174,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 		String queryStr = buildQuery(elementType, attributes, caseSensitiv, "*", true);		// ### onlyCount=true
 		//
 		// ### System.out.println("> CorporateSQLSource.getElementCount(): \"" + queryStr + "\"");
-		Statement stmt = con.createStatement();
+		Statement stmt = provider.getStatement();
 		ResultSet result = stmt.executeQuery(queryStr);
 		int count = queryCount(result);
 		stmt.close();
@@ -175,7 +186,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 		String queryStr = buildQuery(elementType, id, relatedElementType, helperElementType, true);		// ### onlyCount=true
 		//
 		// ### System.out.println("> CorporateSQLSource.getElementCount(): \"" + queryStr + "\"");
-		Statement stmt = con.createStatement();
+		Statement stmt = provider.getStatement();
 		ResultSet result = stmt.executeQuery(queryStr);
 		int count = queryCount(result);
 		stmt.close();

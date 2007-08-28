@@ -121,6 +121,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	private TimerTask statisticsThread;
 
+	private static ApplicationServiceInstance applicationServiceInstance;
+
 
 
 	// *****************************
@@ -185,6 +187,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 */
 	public static ApplicationService create(ApplicationServiceHost host, ApplicationServiceInstance instance)
 																			throws DeepaMehtaException {
+		ApplicationService.applicationServiceInstance = instance;
 		// ### compare to client.DeepaMehta.createApplicationService()
 		// ### compare to service.DeepaMehtaServer.main()
 		System.out.println("> DeepaMehta Application Service");
@@ -5215,4 +5218,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		directives.add(getLiveTopic(topic).published());
 	}
 
+	public String getConfigurationProperty(String property){
+		return applicationServiceInstance.getConfigurationProperty(property);
+	}
 }

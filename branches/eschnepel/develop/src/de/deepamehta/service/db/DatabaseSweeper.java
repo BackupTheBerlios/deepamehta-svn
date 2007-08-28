@@ -9,8 +9,9 @@ import java.sql.Statement;
 import de.deepamehta.util.Benchmark;
 
 /**
- * This class implements some database related cleanup routines. If there is an
- * error (maybe due to autocommit) and the db is not in an consistent state,
+ * This class implements some database related cleanup routines.
+ * If there is an error and the db is not in an consistent state
+ * (maybe due to autocommit and not using transactions),
  * this helps to return to the consistent state.
  * 
  * @author enrico
@@ -25,11 +26,11 @@ public class DatabaseSweeper {
 					sweep(
 							statement,
 							"Association WHERE NOT EXISTS (SELECT * FROM Topic WHERE Association.TopicID1 = Topic.ID)",
-							"Accosiations with stale target Topic");
+							"Associations with stale target Topic");
 					sweep(
 							statement,
 							"Association WHERE NOT EXISTS (SELECT * FROM Topic WHERE Association.TopicID2 = Topic.ID)",
-							"Accosiations with stale source Topic");
+							"Associations with stale source Topic");
 					if (!con.getAutoCommit())
 						con.commit();
 				} catch (SQLException e) {
@@ -70,7 +71,7 @@ public class DatabaseSweeper {
 
 	private final DatabaseProvider provider;
 
-	public DatabaseSweeper(DefaultDatabaseProvider provider)
+	public DatabaseSweeper(DatabaseProvider provider)
 			throws SQLException {
 		this.provider = provider;
 	}

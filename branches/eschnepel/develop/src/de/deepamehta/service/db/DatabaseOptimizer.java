@@ -5,8 +5,7 @@ import java.sql.SQLException;
 import de.deepamehta.util.Benchmark;
 
 public abstract class DatabaseOptimizer {
-
-	public class Worker implements Runnable {
+	private class Worker implements Runnable {
 		public void run() {
 			try {
 				optimize_internal();
@@ -16,7 +15,7 @@ public abstract class DatabaseOptimizer {
 		}
 	}
 
-	final void optimize() throws SQLException {
+	public final void optimize() throws SQLException {
 		try {
 			Benchmark.run("Optimizing Database", new Worker());
 		} catch (RuntimeException e) {
@@ -26,5 +25,5 @@ public abstract class DatabaseOptimizer {
 		}
 	}
 
-	abstract void optimize_internal() throws SQLException;
+	protected abstract void optimize_internal() throws SQLException;
 }

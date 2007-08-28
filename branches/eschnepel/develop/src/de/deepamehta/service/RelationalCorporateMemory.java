@@ -11,6 +11,7 @@ import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableType;
 import de.deepamehta.Topic;
 import de.deepamehta.service.db.DatabaseProvider;
+import de.deepamehta.service.db.DatabaseSweeper;
 import de.deepamehta.service.db.OracleDatabaseProvider;
 import de.deepamehta.service.db.DatabaseProvider.DbmsHint;
 //
@@ -71,6 +72,9 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 */
 	RelationalCorporateMemory(DatabaseProvider dbProvider) throws Exception {
 		provider=dbProvider;
+		new DatabaseSweeper(provider).sweep();
+		provider.getDatabaseOptimizer().optimize();
+
 		this.dbmsHint = dbProvider.getDbmsHint();
 		System.out.println(">    DBMS hint: \"" + dbmsHint.getName() + "\"");
 	}

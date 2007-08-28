@@ -5,6 +5,7 @@
 		<input message="Enter database ${db.sysuser} user password: " addproperty="db.syspass"/>
 	</target>
 	<target name="createdb" depends="asksyspass">
+		<echo>Creating Database ${db.name} for user ${db.user} with password ${db.password} ...</echo>
 		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.syspass}" classpathref="javalibs">
 			CREATE DATABASE ${db.name};
 			GRANT ALL PRIVILEGES ON ${db.name}.* TO ${db.user}@localhost IDENTIFIED BY '${db.password}' WITH GRANT OPTION;
