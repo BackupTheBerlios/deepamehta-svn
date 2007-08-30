@@ -85,7 +85,7 @@ import java.io.*;
  *     ({@link #importFromFile})</LI>
  * </OL>
  * <HR>
- * Last functional change: 7.4.2008 (2.0b8)<BR>
+ * Last functional change: 20.8.2008 (2.0b8)<BR>
  * Last documentation update: 11.12.2001 (2.0a14-pre4)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -983,35 +983,42 @@ public class TopicMapTopic extends LiveTopic {
 	 * @see		#executeCommand
 	 */
 	private CorporateDirectives publish(String workspaceID, Session session) throws DeepaMehtaException {
-		CorporateDirectives directives = new CorporateDirectives();
+		String workspaceName = cm.getTopic(workspaceID, 1).getName();
+		Vector users = as.workgroupMembers(workspaceID);
+		boolean isFirstPublishing = as.getOriginWorkspace(getID()) == null;
+		String notifyText = isFirstPublishing ?
+			"A new topicmap \"" + getName() + "\" has been published to workspace \"" +
+			workspaceName + "\" by user \"" + session.getUserName() + "\"" :
+			"Topicmap \"" + getName() + "\" of workspace \"" + workspaceName + "\" has " +
+			"been updated by user \"" + session.getUserName() + "\"";
+		// --- send notification emails ---
+		// Note: the notification emails are send before the publishing performs because the topic ID
+		// may change while publishing and the list of topics could not generated easily
+		String subject = isFirstPublishing ?
+			"New topicmap \"" + getName() + "\" published by \"" + session.getUserName() + "\"" :
+			"Topicmap \"" + getName() + "\" updated by \"" + session.getUserName() + "\"";
+		sendNotificationEmails(users, workspaceName, subject, notifyText);
 		// --- remove topicmap from personal workspace ---
-		directives.add(DIRECTIVE_HIDE_TOPIC, getID(), Boolean.FALSE, /* ### die=false */
-			session.getPersonalWorkspace().getID());
+		CorporateDirectives directives = new CorporateDirectives();
+		directives.add(DIRECTIVE_HIDE_TOPIC, getID(), Boolean.FALSE, session.getPersonalWorkspace().getID());
+		// ### Note: the personal topicmap remains in the corporate memory as ballast as well as the associations.
+		// The die-flag should set to TRUE. But the associations are not removed this way.
+		// Think again about the die() hook.
 		// --- upload documents ---
 		addPublishDirectives(directives);
 		// --- publish this map ---
-		CorporateDirectives notify = new CorporateDirectives();
-		boolean isFirstPublishing = as.getOriginWorkspace(getID()) == null;
+		CorporateDirectives notify = new CorporateDirectives();		// this directives are broadcasted to every workspace member
 		publishTo(workspaceID, isFirstPublishing, notify);
 		// --- close view ---
 		if (as.isViewOpen(getID(), session.getUserID())) {
 			close(session, directives);
 		}
 		// --- notify all workspace members ---
-		String workspaceName = cm.getTopic(workspaceID, 1).getName();
-		String notifyText = isFirstPublishing ?
-			"A new topicmap \"" + getName() + "\" has been published to workspace \"" +
-			workspaceName + "\" by user \"" + session.getUserName() + "\"" :
-			"Topicmap \"" + getName() + "\" of workspace \"" + workspaceName + "\" has " +
-			"been updated by user \"" + session.getUserName() + "\"";
 		notify.add(DIRECTIVE_SHOW_MESSAGE, notifyText, new Integer(NOTIFICATION_DEFAULT));
-		Vector users = as.workgroupMembers(workspaceID);
 		as.broadcast(notify, users.elements(), true);
 		//
 		return directives;
 	}
-
-	// ---
 
 	/**
 	 * @param	directives	this directives are broadcasted to every workspace member
@@ -1037,9 +1044,81 @@ public class TopicMapTopic extends LiveTopic {
 			// --- override origin topicmap with this topicmap ---
 			as.updateView(getID(), getVersion(), originTopicmapID, originTopicmapVersion);
 			// transfer topicmap properties
-			Hashtable props = cm.getTopicData(getID(), 1);
-			cm.setTopicData(originTopicmapID, 1, props);
+			Hashtable props = getProperties();
+			// ### cm.setTopicData(originTopicmapID, 1, props);
+			// transfer topicmap name
+			// ### directives.add(DIRECTIVE_SET_TOPIC_NAME, originTopicmapID, getName(), new Integer(1));
+			// Note: the topicmap name must not be transfered explicitly because the property change will trigger
+			// the name change
+			// ### One problem: the properties of the original topicmap in the shared workspace are not updated
+			// immedeatly if the original topicmap is still selected in the publishers view. No clue why!
+			directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, originTopicmapID, props, new Integer(1));
 		}
+	}
+
+	// ---
+
+	private void sendNotificationEmails(Vector users, String workspace, String subject, String notification) {
+		try {
+			System.out.println("> send notification emails to " + users.size() + " workspace members:");
+			// "from"
+			String from = as.getEmailAddress("t-rootuser");		// ###
+			if (from == null || from.equals("")) {
+				throw new DeepaMehtaException("email address of root user is unknown");
+			}
+			// "body"
+			String body = "\rDear DeepaMehta User,\r\r" +
+				"This automatic notification is send to you as a member of the DeepaMehta workspace \"" +
+				workspace + "\".\r\r" +
+				notification + ".\r\r" +
+				"The topicmap contains the following topics:\r\r" + topicList();
+			//
+			Enumeration e = users.elements();
+			while (e.hasMoreElements()) {
+				BaseTopic user = (BaseTopic) e.nextElement();
+				String emailAddress = as.getEmailAddress(user.getID());
+				System.out.println("    " + user.getName() + " (" + emailAddress + ")");
+				if (emailAddress != null && !emailAddress.equals("") ) {
+					EmailTopic.sendMail(as.getSMTPServer(), from, emailAddress, "DeepaMehta: " + subject, body);		// EmailTopic.sendMail() throws DME
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("*** notification emails not send (" + e + ")");
+		}
+	}
+
+	private String topicList() {
+		Hashtable groupedTopics = new Hashtable();
+		//
+		Vector topics = cm.getViewTopics(getID(), getVersion());
+		Enumeration e = topics.elements();
+		while (e.hasMoreElements()) {
+			BaseTopic topic = (BaseTopic) e.nextElement();
+			String typeID = topic.getType();
+			Vector topicGroup = (Vector) groupedTopics.get(typeID);
+			if (topicGroup == null) {
+				topicGroup = new Vector();
+				groupedTopics.put(typeID, topicGroup);
+			}
+			topicGroup.addElement(topic.getName());
+		}
+		//
+		StringBuffer topicList = new StringBuffer();
+		//
+		Enumeration keys = groupedTopics.keys();
+		while (keys.hasMoreElements()) {
+			String typeID = (String) keys.nextElement();
+			Vector topicGroup = (Vector) groupedTopics.get(typeID);
+			String typeName = as.type(typeID, 1).getPluralNaming();
+			topicList.append(topicGroup.size() + " " + typeName + ":\r");
+			Enumeration e2 = topicGroup.elements();
+			while (e2.hasMoreElements()) {
+				String topicName = (String) e2.nextElement();
+				topicList.append("    " + topicName + "\r");
+			}
+		}
+		//
+		return topicList.toString();
 	}
 
 

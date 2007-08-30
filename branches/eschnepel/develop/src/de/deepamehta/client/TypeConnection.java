@@ -11,7 +11,7 @@ import java.io.*;
 /**
  * <P>
  * <HR>
- * Last functional change: 27.10.2002 (2.0a17-pre1)<BR>
+ * Last functional change: 16.8.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -44,6 +44,10 @@ class TypeConnection implements DeepaMehtaConstants {
 	TypeConnection(String host, int port, int sessionID, PresentationService ps)
 																throws IOException {
 		Socket sock = new Socket(host, port);
+		//
+		System.out.println("> client side socket timeout was " + sock.getSoTimeout() + " ms -- timeout is now disabled");
+		sock.setSoTimeout(0);	// disable timeout ### does it help to avoid broken connections?
+		//
 		this.in = new DataInputStream(sock.getInputStream());
 		this.out = new DataOutputStream(sock.getOutputStream());
 		this.ps = ps;

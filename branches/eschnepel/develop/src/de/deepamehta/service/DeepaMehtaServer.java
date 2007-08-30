@@ -21,7 +21,7 @@ import java.io.*;
  * by closing its console window.
  * <P>
  * <HR>
- * Last functional change: 7.6.2006 (2.0b7)<BR>
+ * Last functional change: 13.8.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -286,6 +286,9 @@ final class DeepaMehtaServer implements ApplicationServiceHost, DeepaMehtaConsta
 		String clientAddress;
 	
 		Connection(Socket sock) throws IOException {
+			System.out.println("> server side socket timeout was " + sock.getSoTimeout() + " ms -- timeout is now disabled");
+			sock.setSoTimeout(0);	// disable timeout ### does it help to avoid broken connections?
+			//
 			InetAddress clientAddress = sock.getInetAddress();
 			this.in = new DataInputStream(sock.getInputStream());
 			this.out = new DataOutputStream(sock.getOutputStream());

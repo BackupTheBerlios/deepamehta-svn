@@ -28,7 +28,7 @@ import java.util.*;
  * transfers).
  * <P>
  * <HR>
- * Last functional change: 14.11.2004 (2.0b3)<BR>
+ * Last functional change: 16.8.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -66,6 +66,10 @@ class InteractionConnection implements DeepaMehtaConstants {
 												PresentationService ps)
 												throws DeepaMehtaException, IOException {
 		Socket sock = new Socket(host, port);	// may throw java.net.ConnectException
+		//
+		System.out.println("> client side socket timeout was " + sock.getSoTimeout() + " ms -- timeout is now disabled");
+		sock.setSoTimeout(0);	// disable timeout ### does it help to avoid broken connections?
+		//
 		this.ps = ps;
 		this.in = new DataInputStream(sock.getInputStream());
 		this.out = new DataOutputStream(sock.getOutputStream());

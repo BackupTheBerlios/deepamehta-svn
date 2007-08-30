@@ -2948,7 +2948,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 			if (host != null && e instanceof IOException) {
 				// Note: host="" happens if the applets HTML page is loaded via filesystem (file:)
 				addTextToPanel("The DeepaMehta server at " + (host.equals("") ? "port " : host + ":") + port +
-					" isn't running (" + e + ")", p, 39);	// ### width is 39 chars
+					" can't be connected (" + e + ")", p, 39);	// ### width is 39 chars
 			} else {
 				addTextToPanel(e.toString(), p, 39);		// ### width is 39 chars
 			}
