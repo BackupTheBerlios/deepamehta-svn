@@ -5,7 +5,7 @@ CREATE TABLE Movie (
     Originaltitle VARCHAR(100),
     GattungID INT,
     Country VARCHAR(20),
-    Year VARCHAR(10),
+    YearOfProduction VARCHAR(10),
     Duration CHAR(4)
 );
 

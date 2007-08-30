@@ -56,7 +56,7 @@
 			<fileset dir=".">
 				<include name="${movies.db.tables}" />
 			</fileset>
-			<fileset dir="${db}">
+			<fileset dir="${db-specific}">
 				<include name="${db.close-session}" />
 			</fileset>
 		</sql>
@@ -67,7 +67,7 @@
 			<fileset dir=".">
 				<include name="${movies.db.content}" />
 			</fileset>
-			<fileset dir="${db}">
+			<fileset dir="${db-specific}">
 				<include name="${db.close-session}" />
 			</fileset>
 		</sql>

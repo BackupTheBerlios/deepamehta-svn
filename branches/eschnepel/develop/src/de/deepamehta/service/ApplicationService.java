@@ -766,6 +766,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			// are no directives send back, but a vector of strings)
 			System.out.println("*** ApplicationService.revealTopictypes(): " + e +
 				" -- topic types not available");
+			e.printStackTrace();
 			return new Hashtable();
 		}
 	}

@@ -190,7 +190,7 @@ public abstract class DataConsumerTopic extends LiveTopic {
 			return topicTypes;
 		} catch (Exception e) {
 			throw new DeepaMehtaException("*** DataConsumerTopic.revealTopicTypes(): " +
-				"topic types of " + this + " not revealed (" + e + ")");
+				"topic types of " + this + " not revealed (" + e + ")",e);
 		}
 	}
 
@@ -259,7 +259,7 @@ public abstract class DataConsumerTopic extends LiveTopic {
 			}
 		} catch (Exception e) {
 			throw new DeepaMehtaException("*** DataConsumerTopic.revealRelatedTopics():" +
-				" related topics of " + this + " not revealed (" + e + ")");
+				" related topics of " + this + " not revealed (" + e + ")",e);
 		}
 	}
 

@@ -8,9 +8,10 @@
 			<equals arg1="${do.drop}" arg2="n" />
 		</condition>
 		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] dropdb'" />
+		<echo>${db.hsqldb.path}</echo>
 		<delete>
-			<fileset dir=".">
-				<include name="${db.hsqldb.path}.*" />
+			<fileset dir="${db.hsqldb.base-path}">
+				<include name="${db.name}.*" />
 			</fileset>
 		</delete>
 	</target>

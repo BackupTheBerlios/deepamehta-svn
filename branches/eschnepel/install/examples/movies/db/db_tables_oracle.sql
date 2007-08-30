@@ -5,7 +5,7 @@ CREATE TABLE movie
     originaltitle VARCHAR(100),
     gattungid     INT,
     country       VARCHAR(20),
-    year          VARCHAR(10),
+    YearOfProduction          VARCHAR(10),
     duration      VARCHAR(4),
     CONSTRAINT pk_movie PRIMARY KEY (id)
 );
