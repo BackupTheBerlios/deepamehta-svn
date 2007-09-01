@@ -48,7 +48,7 @@ public class EventTopic extends LiveTopic {
 											String topicmapID, String viewmode, Session session) {
 		CorporateDirectives directives = super.propertiesChanged(newProps, oldProps,
 			topicmapID, viewmode, session);
-		getCalendar().update();
+		getCalendar().updateView(directives);
 		return directives;
 	}
 
