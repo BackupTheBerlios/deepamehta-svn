@@ -46,9 +46,13 @@ INSERT INTO TopicProp VALUES ('tt-calendar-search', 1, 'Name', 'Calendar Search'
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-96', '', 'tt-topiccontainer', 1, 'tt-calendar-search', 1);
 -- assign search type to type
 INSERT INTO Association VALUES ('at-aggregation', 1, 1, 'a-97', '', 'tt-calendar-search', 1, 'tt-calendar', 1);
+-- create properties
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-displaydate', 'Display Date');
+INSERT INTO TopicProp VALUES ('pp-displaydate', 1, 'Name', 'Display Date');
+INSERT INTO TopicProp VALUES ('pp-displaydate', 1, 'Visualization', 'Date Chooser');
 -- assign properties
--- INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-ka-73', '', 'tt-calendar', 1, 'pp-color', 1);
--- INSERT INTO AssociationProp VALUES ('a-ka-73', 1, 'Ordinal Number', '50');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-141', '', 'tt-calendar', 1, 'pp-displaydate', 1);
+INSERT INTO AssociationProp VALUES ('a-141', 1, 'Ordinal Number', '220');
 
 --- create topic type "Event" ---
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-event', 'Event');

@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * <P>
  * <HR>
- * Last functional change: 7.4.2007 (2.0b8)<BR>
+ * Last functional change: 29.8.2007 (2.0b8)<BR>
  * Last documentation update: 28.7.2001 (2.0a11)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -256,13 +256,7 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 	// ---
 
 	public static Date parseDate(String date) {
-		int year = Integer.parseInt(date.substring(0, 4));
-		int month = Integer.parseInt(date.substring(5, 7));
-		int day = Integer.parseInt(date.substring(8));
-		Calendar cal = Calendar.getInstance();
-		cal.clear();
-		cal.set(year, month - 1, day);	// Calendar starts month with 0, DeepaMehta with 1
-		return cal.getTime();
+		return getCalendar(date).getTime();
 	}
 
 	public static Point parsePoint(String point) {
@@ -613,38 +607,6 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		return topicIDs;
 	}
 
-	// --- put (2 forms) ---
-
-	/**
-	 * Puts a key-value pair into the Hashtable. If value is null,
-	 * the defaultObject will be put instead of value.
-	 * If key is null, this method does nothing.
-	 *
-	 * @see     de.deepamehta.topics.TopicTypeTopic#exportTypeDefinition
-	 * @see     de.deepamehta.topics.AssociationTypeTopic#exportTypeDefinition
-	 */
-	/* ### public static void put(Hashtable hash, String key, Object value, Object defaultObj) {
-		if (key != null) {
-			Object toPut = value != null ? value : defaultObj;
-			if (toPut != null) {
-				hash.put(key, toPut);
-			}
-		}
-	} */
-
-	/**
-	 * Puts a key-value pair into the Hashtable. If value or key is null,
-	 * this method does nothing.
-	 *
-	 * @see     de.deepamehta.topics.TopicTypeTopic#exportTypeDefinition
-	 * @see     de.deepamehta.topics.AssociationTypeTopic#exportTypeDefinition
-	 */
-	/* ### public static void put(Hashtable hash, String key, Object value) {
-		if (key != null && value != null) {
-		    hash.put(key, value);
-		}
-	} */
-
 
 
 	// -------------------
@@ -653,8 +615,25 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 
 
 
+	public static Calendar getCalendar(String date) {
+		int year = Integer.parseInt(date.substring(0, 4));
+		int month = Integer.parseInt(date.substring(5, 7));
+		int day = Integer.parseInt(date.substring(8));
+		Calendar cal = Calendar.getInstance();
+		cal.clear();
+		// ### cal.setFirstDayOfWeek(Calendar.MONDAY);	// ### european
+		cal.set(year, month - 1, day);	// Calendar starts month with 0, DeepaMehta with 1
+		return cal;
+	}
+
+	// --- getDate(4 forms) ---
+
 	public static String getDate() {
 		return getDate(DATE_SEPARATOR);
+	}
+
+	public static String getDate(Calendar cal) {
+		return getDate(cal, DATE_SEPARATOR);
 	}
 
 	/**
@@ -662,6 +641,10 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 	 */
 	public static String getDate(String sep) {
 		Calendar cal = Calendar.getInstance();
+		return getDate(cal, sep);
+	}
+
+	public static String getDate(Calendar cal, String sep) {
 		int y = cal.get(Calendar.YEAR);
 		int m = cal.get(Calendar.MONTH) + 1;	// Note: DeepaMehta begins with month=1
 		int d = cal.get(Calendar.DAY_OF_MONTH);
@@ -696,6 +679,17 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		}
 		// ### consider align()
 		return time;
+	}
+
+	// ---
+
+	/**
+	 * @param	time	a time string in DeepaMehta format (hh:mm)
+	 */
+	public static int getMinutes(String time) {
+		int hours = Integer.parseInt(time.substring(0, 2));
+		int minutes = Integer.parseInt(time.substring(3, 5));
+		return 60 * hours + minutes;
 	}
 
 
