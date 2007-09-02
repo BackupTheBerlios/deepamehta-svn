@@ -73,4 +73,13 @@
 		</sql>
 	</target>
 
+	<target name="dropmoviesdb" >
+		<ant antfile="${movies.db.drop-db}" target="dropdb" inheritrefs="true">
+			<property name="db.sysurl" value="${movies.db.sysurl}" />
+			<property name="db.name" value="${movies.db.name}" />
+			<property name="db.user" value="${movies.db.user}" />
+			<property name="db.password" value="${movies.db.password}" />
+		</ant>
+	</target>
+
 </project>

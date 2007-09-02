@@ -1,4 +1,4 @@
-<project>
+<project name="DeepaMehta Config file">
 	<condition property="dm.base-dir" value=".">
 		<not>
 			<isset property="dm.base-dir" />
@@ -17,24 +17,24 @@
 		<fileset dir="${dm.base-dir}">
 			<include name="${db.libs}" />
 		</fileset>
-		<pathelement location="${libpath}/servlet.jar" />
-		<pathelement location="${libpath}/mail.jar" />
-		<pathelement location="${libpath}/activation.jar" />
-		<pathelement location="${libpath}/jndi.jar" />
-		<pathelement location="${libpath}/batik.jar" />
-		<pathelement location="${libpath}/fop.jar" />
-		<pathelement location="${libpath}/xml4j.jar" />
-		<pathelement location="${libpath}/avalon-framework.jar" />
-		<pathelement location="${libpath}/commons-fileupload-1.0.jar" />
-		<pathelement location="${libpath}/googleapi.jar" />
-		<pathelement location="${libpath}/spring-core.jar" />
-		<pathelement location="${libpath}/commons-logging.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/servlet.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/mail.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/activation.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/jndi.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/batik.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/fop.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/xml4j.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/avalon-framework.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/commons-fileupload-1.0.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/googleapi.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/spring-core.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/commons-logging.jar" />
 	</path>
 	<pathconvert property="jarclasspath" pathsep=" " refid="javalibs">
 		<!-- The classpath inside the .JAR archive is always interpreted relative to the location
 		     of the archive itself. Thus, if the archive resides in install/client/somename.jar and
 		     the libs reside in libs/, the JRE has to look in ../../libs/. The following option
 		     takes care of this. -->
-		<map from="${libpath}" to="../../libs" />
+		<map from="${dm.base-dir}/${libpath}" to="../../libs" />
 	</pathconvert>
 </project>

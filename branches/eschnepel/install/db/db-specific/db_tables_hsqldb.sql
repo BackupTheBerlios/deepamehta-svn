@@ -16,8 +16,8 @@ CREATE INDEX IDX_TopicType ON Topic (
 CREATE CACHED TABLE Association (
     TypeID CHAR(40) NOT NULL,
     TypeVersion INT NOT NULL,
-    Version INT NOT NULL,
     ID CHAR(40) NOT NULL,
+    Version INT NOT NULL,
     Name VARCHAR_IGNORECASE NOT NULL,
     TopicID1 CHAR(40) NOT NULL,
     TopicVersion1 INT NOT NULL,
@@ -43,11 +43,11 @@ CREATE CACHED TABLE ViewTopic (
     x INT NOT NULL,
     y INT NOT NULL
 );
-CREATE INDEX IDX_ViewTopic ON ViewTopic (
+CREATE INDEX IDX_ViewTopic_View ON ViewTopic (
     ViewTopicID, ViewTopicVersion
 );
-CREATE INDEX IDX_ViewTopicRef ON ViewTopic (
-	TopicID
+CREATE INDEX IDX_ViewTopic_Topic ON ViewTopic (
+	TopicID, TopicVersion
 );
 
 CREATE CACHED TABLE ViewAssociation (
@@ -56,8 +56,11 @@ CREATE CACHED TABLE ViewAssociation (
     AssociationID CHAR(40) NOT NULL,
     AssociationVersion INT NOT NULL
 );
-CREATE INDEX IDX_ViewAssociation ON ViewAssociation (
+CREATE INDEX IDX_ViewAssociation_View ON ViewAssociation (
 	ViewTopicID, ViewTopicVersion
+);
+CREATE INDEX IDX_ViewAssociation_Assoc ON ViewAssociation (
+	AssociationID, AssociationVersion
 );
 
 CREATE CACHED TABLE TopicProp (

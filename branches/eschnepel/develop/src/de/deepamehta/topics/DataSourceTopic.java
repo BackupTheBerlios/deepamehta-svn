@@ -40,7 +40,7 @@ public class DataSourceTopic extends LiveTopic implements Runnable {
 
 	protected String url;
 
-	protected String driver;
+	protected String dbtype;
 
 	protected String elements;
 
@@ -205,7 +205,7 @@ public class DataSourceTopic extends LiveTopic implements Runnable {
 	 */
 	private void openCorporateDatasource() throws TopicInitException {
 		this.url = getProperty("URL");
-		this.driver = getProperty("Driver");
+		this.dbtype = getProperty("Database Type");
 		this.elements = getProperty("Entities");
 		this.idleElement = getProperty("Idle Elementtype");
 		//
@@ -215,19 +215,19 @@ public class DataSourceTopic extends LiveTopic implements Runnable {
 			throw new TopicInitException(text + "(URL not set)");
 		}
 		// error check 2
-		if (driver.equals("")) {
-			throw new TopicInitException(text + "(Driver not set)");
+		if (dbtype.equals("")) {
+			throw new TopicInitException(text + "(Database Type not set)");
 		}
 		// ### passing text bad
 		if (url.startsWith("xml:")) {
-			this.dataSource = createXMLSource(url, elements, text); // throws
-																	// TopicInitException
+			this.dataSource = createXMLSource(url, elements, text);
+			// throws TopicInitException
 		} else if (url.startsWith("jdbc:")) {
-			this.dataSource = createSQLSource(url, driver, text); // throws
-																	// TopicInitException
+			this.dataSource = createSQLSource(url, dbtype, text);
+			// throws TopicInitException
 		} else if (url.startsWith("ldap:")) {
-			this.dataSource = createLDAPSource(url, text); // throws
-															// TopicInitException
+			this.dataSource = createLDAPSource(url, text); 
+			// throws TopicInitException
 		} else {
 			throw new TopicInitException(
 					text
@@ -258,15 +258,11 @@ public class DataSourceTopic extends LiveTopic implements Runnable {
 	/**
 	 * @return a new instance of CorporateSQLSource
 	 */
-	private CorporateDatasource createSQLSource(String url, String driver,
+	private CorporateDatasource createSQLSource(String url, String dbtype,
 			String errmsg) throws TopicInitException {
 		// --- open SQL datasource ---
 		try {
-			CorporateDatasource source = new CorporateSQLSource(
-					url,
-					driver,
-					as
-							.getConfigurationProperty(ConfigurationConstants.Database.DB_LIBS));
+			CorporateDatasource source = new CorporateSQLSource(url, dbtype);
 			startIdleThread();
 			return source;
 		} catch (ClassNotFoundException e) {

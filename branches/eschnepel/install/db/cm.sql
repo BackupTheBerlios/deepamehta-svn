@@ -166,7 +166,7 @@ INSERT INTO TopicProp VALUES ('tt-datasource', 1, 'Unique Topic Names', 'on');
 INSERT INTO TopicProp VALUES ('tt-datasource', 1, 'Custom Implementation', 'de.deepamehta.topics.DataSourceTopic');
 -- assign properties
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-20', '', 'tt-datasource', 1, 'pp-url', 1);
-INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-21', '', 'tt-datasource', 1, 'pp-driver', 1);
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-21', '', 'tt-datasource', 1, 'pp-dbtype', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-134', '', 'tt-datasource', 1, 'pp-idleelementtype', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-22', '', 'tt-datasource', 1, 'pp-entities', 1);
 INSERT INTO AssociationProp VALUES ('a-20', 1, 'Ordinal Number', '110');
@@ -1204,9 +1204,9 @@ INSERT INTO TopicProp VALUES ('pp-wit_server', 1, 'Name', 'Server');
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-wit_domains', 'Domains');
 INSERT INTO TopicProp VALUES ('pp-wit_domains', 1, 'Name', 'Domains');
 
---- "Driver" ---
-INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-driver', 'Driver');
-INSERT INTO TopicProp VALUES ('pp-driver', 1, 'Visualization', 'Input Field');
+--- "Database Type" ---
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-dbtype', 'Database Type');
+INSERT INTO TopicProp VALUES ('pp-dbtype', 1, 'Visualization', 'Input Field');
 
 --- "Entities" ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-entities', 'Entities');
@@ -1739,6 +1739,8 @@ INSERT INTO TopicProp VALUES ('t-directoriesmap', 1, 'Name', 'Directory Services
 -- the User Authentification Datasource
 INSERT INTO Topic VALUES ('tt-authentificationsource', 1, 1, 't-useraccounts', 'User Accounts');
 INSERT INTO TopicProp VALUES ('t-useraccounts', 1, 'Name', 'User Accounts');
+-- write comments in "description" of AuthentificationSource
+INSERT INTO TopicProp VALUES ('t-useraccounts', 1, 'Description', 'This topic must be associated with one of the Login topics. The association must be of type "association" and directed from AuthentificationSource to Login. If there is no such association, the CorporateMemory will be used for authentification.');
 -- CM Import/Export
 INSERT INTO Topic VALUES ('tt-cmimportexport', 1, 1, 't-cmimportexport', 'CM Import/Export');
 INSERT INTO TopicProp VALUES ('t-cmimportexport', 1, 'Name', 'CM Import/Export');

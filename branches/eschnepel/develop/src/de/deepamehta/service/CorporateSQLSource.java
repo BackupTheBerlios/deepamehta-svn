@@ -48,13 +48,12 @@ public class CorporateSQLSource implements CorporateDatasource {
 	 * @param libs 
 	 * @see		de.deepamehta.topics.DataSourceTopic#openCorporateDatasource
 	 */
-	public CorporateSQLSource(String url, String driver, String libs) throws Exception {
+	public CorporateSQLSource(String url, String dbtype) throws Exception {
 		// create database connection
 		System.out.println(">>> CorporateSQLSource(): connecting to database ... ");
-		System.out.println(">    URL: \"" + url + "\"\n>    driver: \"" + driver + "\"");
+		System.out.println(">    URL: \"" + url + "\"\n>    dbtype: \"" + dbtype + "\"");
 		Properties conf = new Properties();
-		conf.setProperty(ConfigurationConstants.Database.DB_LIBS, libs);
-		conf.setProperty(ConfigurationConstants.Database.DB_DRIVER, driver);
+		conf.setProperty(ConfigurationConstants.Database.DB_TYPE, dbtype);
 		conf.setProperty(ConfigurationConstants.Database.DB_URL, url);
 		provider = DatabaseProviderFactory.getProvider(conf);
 		Statement statement = provider.getStatement();

@@ -10,13 +10,22 @@ public class Configuration extends Properties {
 
 	private static final long serialVersionUID = 1L;
 
+	private static Configuration globalInstance;
+
+	private String dbTypePropertyFile;
+
 	public Configuration(String configFile) {
 		this(null, configFile);
 	}
 
 	public Configuration(String name, String configFile) {
+		super();
+		if (globalInstance == null) {
+			globalInstance = this;
+		}
 		try {
 			loadProperties(configFile);
+			dbTypePropertyFile = getProperty(ConfigurationConstants.Database.DB_TYPE_PROPERTY_FILE);
 			putAll(System.getProperties());
 			if (null != name) {
 				setProperty(ConfigurationConstants.Instance.DM_INSTANCE, name);
@@ -26,13 +35,31 @@ public class Configuration extends Properties {
 			resolveReferences();
 			loadProperties(getProperty(ConfigurationConstants.Instance.DM_INSTANCE_PROPERTY_FILE));
 			resolveReferences();
-			loadProperties(getProperty(ConfigurationConstants.Database.DB_TYPE_PROPERTY_FILE));
-			resolveReferences();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static Configuration getDbConfig(String dbType){
+		Configuration c = (Configuration) globalInstance.clone();
+		c.setProperty(ConfigurationConstants.Database.DB_TYPE_PROPERTY_FILE,
+				globalInstance.dbTypePropertyFile);
+		c.setProperty(ConfigurationConstants.Database.DB_TYPE, dbType);
+		c.resolveReferences();
+		try {
+			c.loadProperties(c.getProperty(ConfigurationConstants.Database.DB_TYPE_PROPERTY_FILE));
+		} catch (Exception e) {
+			System.out.println(">>> Unable to resolve config file for database specific settings.");
+			System.out.println(">>> You may have luck when only accessing global setting...");
+		}
+		c.resolveReferences();
+		return c;
+	}
+
+	public static Configuration getGlobalConfig() {
+		return globalInstance;
 	}
 
 	private void loadProperties(String configFile) throws IOException,

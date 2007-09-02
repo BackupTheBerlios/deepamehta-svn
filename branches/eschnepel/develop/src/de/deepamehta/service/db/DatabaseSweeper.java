@@ -9,10 +9,9 @@ import java.sql.Statement;
 import de.deepamehta.util.Benchmark;
 
 /**
- * This class implements some database related cleanup routines.
- * If there is an error and the db is not in an consistent state
- * (maybe due to autocommit and not using transactions),
- * this helps to return to the consistent state.
+ * This class implements some database related cleanup routines. If there is an
+ * error and the db is not in an consistent state (maybe due to autocommit and
+ * not using transactions), this helps to return to the consistent state.
  * 
  * @author enrico
  */
@@ -23,14 +22,7 @@ public class DatabaseSweeper {
 				Statement statement = provider.getStatement();
 				Connection con = statement.getConnection();
 				try {
-					sweep(
-							statement,
-							"Association WHERE NOT EXISTS (SELECT * FROM Topic WHERE Association.TopicID1 = Topic.ID)",
-							"Associations with stale target Topic");
-					sweep(
-							statement,
-							"Association WHERE NOT EXISTS (SELECT * FROM Topic WHERE Association.TopicID2 = Topic.ID)",
-							"Associations with stale source Topic");
+					sweep(statement);
 					if (!con.getAutoCommit())
 						con.commit();
 				} catch (SQLException e) {
@@ -45,9 +37,44 @@ public class DatabaseSweeper {
 			}
 		}
 
+		private void sweep(Statement statement) throws SQLException {
+			sweep(statement,
+					"Association a WHERE NOT EXISTS (SELECT * FROM Topic t WHERE "
+							+ compareIDVer("a.Topic", "1", "t.", "") + ")",
+					"Associations with stale source Topic");
+			sweep(statement,
+					"Association a WHERE NOT EXISTS (SELECT * FROM Topic t WHERE "
+							+ compareIDVer("a.Topic", "2", "t.", "") + ")",
+					"Associations with stale target Topic");
+			sweep(statement,
+					"ViewAssociation va WHERE NOT EXISTS (SELECT * FROM Association a WHERE "
+							+ compareIDVer("a.", "", "va.Association", "")
+							+ ")", "non-existent ViewAssociations");
+			sweep(statement,
+					"ViewTopic vt WHERE NOT EXISTS (SELECT * FROM Topic t WHERE "
+							+ compareIDVer("t.", "", "vt.Topic", "") + ")",
+					"non-existent ViewTopic");
+			sweep(statement,
+					"ViewAssociation va WHERE NOT EXISTS (SELECT * FROM Association a WHERE "
+							+ compareIDVer("a.", "", "va.Association", "")
+							+ ")", "non-existent View in ViewAssociations");
+			sweep(statement,
+					"ViewTopic vt WHERE NOT EXISTS (SELECT * FROM Topic t WHERE "
+							+ compareIDVer("t.", "", "vt.Topic", "") + ")",
+					"non-existent View in ViewTopic");
+		}
+
+		private String compareIDVer(String cmp1, String add1, String cmp2,
+				String add2) {
+			return cmp1 + "ID" + add1 + " = " + cmp2 + "ID" + add2 + " AND "
+					+ cmp1 + "Version" + add1 + " = " + cmp2 + "Version" + add2;
+		}
+
 		private void sweep(Statement statement, String cmd, String message)
 				throws SQLException {
-			ResultSet res = statement.executeQuery("SELECT * FROM " + cmd);
+			String query = "SELECT * FROM " + cmd;
+			System.out.println(query);
+			ResultSet res = statement.executeQuery(query);
 			if (res.next()) {
 				System.out.println("*** " + message + ":");
 				ResultSetMetaData metaData = res.getMetaData();
@@ -63,7 +90,9 @@ public class DatabaseSweeper {
 					}
 					System.out.println(sb.toString());
 				} while (res.next());
-				int cnt = statement.executeUpdate("DELETE FROM " + cmd);
+				query = "DELETE FROM " + cmd;
+				System.out.println(query);
+				int cnt = statement.executeUpdate(query);
 				System.out.println("*** Deleted " + cnt + " " + message + "!");
 			}
 		}
@@ -71,8 +100,7 @@ public class DatabaseSweeper {
 
 	private final DatabaseProvider provider;
 
-	public DatabaseSweeper(DatabaseProvider provider)
-			throws SQLException {
+	public DatabaseSweeper(DatabaseProvider provider) throws SQLException {
 		this.provider = provider;
 	}
 

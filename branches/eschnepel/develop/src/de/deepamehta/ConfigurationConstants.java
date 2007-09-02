@@ -25,5 +25,7 @@ public final class ConfigurationConstants {
 		public static final String DB_LIBS = "db.libs";
 
 		public static final String DB_TYPE_PROPERTY_FILE = "db.type.property-file";
+
+		public static final String DB_TYPE = "db.type";
 	}
 }

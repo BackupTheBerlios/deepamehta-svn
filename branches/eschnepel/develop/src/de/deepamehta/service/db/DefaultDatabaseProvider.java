@@ -1,6 +1,7 @@
 package de.deepamehta.service.db;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,6 +16,7 @@ import java.util.Properties;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import de.deepamehta.Configuration;
 import de.deepamehta.ConfigurationConstants;
 import de.deepamehta.DeepaMehtaException;
 
@@ -29,6 +31,8 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	/** SQL92 DBMS Hint */
 	public static final DbmsHint DBMS_HINT_SQL92 = new DbmsHint("SQL92");
 
+	private static final String DEFAULT_DB_TYPE = "mysql";
+
 	private final LinkedList freeCons = new LinkedList();
 
 	private final LinkedList allCons = new LinkedList();
@@ -40,6 +44,8 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	private Properties conProps = new Properties();
 
 	private Driver driver;
+
+	private String dbType;
 
 	public DefaultDatabaseProvider(Properties conf)
 			throws ClassNotFoundException, SQLException,
@@ -54,20 +60,27 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	protected void setupDatabaseProvider(Properties conf)
 			throws ClassNotFoundException, SQLException,
 			InstantiationException, IllegalAccessException {
-		this.jdbcURL = conf.getProperty(ConfigurationConstants.Database.DB_URL);
-		System.out.println("Using Database URL " + jdbcURL);
-		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		Resource[] resources;
-		try {
-			resources = resolver
-					.getResources("file:"
-							+ conf
-									.getProperty(ConfigurationConstants.Database.DB_LIBS));
-		} catch (IOException e) {
-			throw new ClassNotFoundException(e.getMessage(), e);
+		jdbcURL = conf.getProperty(ConfigurationConstants.Database.DB_URL);
+		dbType = conf.getProperty(ConfigurationConstants.Database.DB_TYPE);
+		if (dbType == null) {
+			dbType = DEFAULT_DB_TYPE;
 		}
-		loadClassFromLibs(resources, conf
-				.getProperty(ConfigurationConstants.Database.DB_DRIVER));
+		Configuration c2;
+		try {
+			c2 = Configuration.getDbConfig(dbType);
+		} catch (Exception e) {
+			c2 = Configuration.getGlobalConfig();
+		}
+		String libs = c2.getProperty(ConfigurationConstants.Database.DB_LIBS);
+		String driverClazz = c2
+				.getProperty(ConfigurationConstants.Database.DB_DRIVER);
+
+		System.out.println("Using Database");
+		System.out.println("  Type : " + dbType);
+		System.out.println("  URL : " + jdbcURL);
+		System.out.println("  Driver : " + driverClazz);
+
+		loadClassFromLibs(libs, driverClazz);
 		driver = (Driver) driverClass.newInstance();
 		if (!driver.acceptsURL(jdbcURL))
 			throw new DeepaMehtaException(
@@ -81,26 +94,44 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		}
 	}
 
+	private void loadClassFromLibs(String libs, String driverClazz)
+			throws ClassNotFoundException {
+		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		Resource[] resources;
+		try {
+			resources = resolver.getResources("file:" + libs);
+		} catch (IOException e) {
+			throw new ClassNotFoundException(e.getMessage(), e);
+		}
+		loadClassFromLibs(resources, driverClazz);
+	}
+
 	private void loadClassFromLibs(Resource[] resources, String clazz)
 			throws ClassNotFoundException {
-		URLClassLoader classLoader;
+		URL[] urls = new URL[resources.length];
 		try {
-			System.out.println("Using Classloader for Jars:");
-			URL[] urls = new URL[resources.length];
 			for (int i = 0; i < resources.length; i++) {
 				Resource res = resources[i];
 				File file = res.getFile();
 				String path = file.getCanonicalPath();
-				System.out.println(path);
 				String urlString = "jar:file:" + path + "!/";
 				urls[i] = new URL(urlString);
 			}
-			classLoader = new URLClassLoader(urls);
 		} catch (MalformedURLException e) {
 			throw new ClassNotFoundException(e.getMessage(), e);
 		} catch (IOException e) {
 			throw new ClassNotFoundException(e.getMessage(), e);
 		}
+		loadClassFromLibs(urls, clazz);
+	}
+
+	private void loadClassFromLibs(URL[] urls, String clazz)
+			throws ClassNotFoundException {
+		System.out.println("Using separate Classloader for:");
+		for (int i = 0; i < urls.length; i++) {
+			System.out.println("  " + urls[i].toExternalForm());
+		}
+		URLClassLoader classLoader = new URLClassLoader(urls);
 		driverClass = classLoader.loadClass(clazz);
 	}
 

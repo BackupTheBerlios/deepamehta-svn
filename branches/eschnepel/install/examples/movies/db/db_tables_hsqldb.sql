@@ -1,29 +1,29 @@
 
 CREATE TABLE Movie (
     ID INT NOT NULL PRIMARY KEY,
-    TITLE VARCHAR(100),
-    ORIGINALTITLE VARCHAR(100),
-    GATTUNGID INT,
-    COUNTRY VARCHAR(20),
-    YEAROFPRODUCTION VARCHAR(10),
-    DURATION CHAR(4)
+    Title VARCHAR(100),
+    Originaltitle VARCHAR(100),
+    GattungID INT,
+    Country VARCHAR(20),
+    YearOfProduction VARCHAR(10),
+    Duration CHAR(4)
 );
 
 CREATE TABLE ACTOR (
     ID INT NOT NULL PRIMARY KEY,
-    NAME VARCHAR(40)
+    Name VARCHAR(40)
 );
 
 CREATE TABLE Mitwirkung (
-    MOVIEID INT NOT NULL,
-    ACTORID INT NOT NULL
+    MovieID INT NOT NULL,
+    ActorID INT NOT NULL
 );
 
-CREATE INDEX IDX_Mitwirkung_MovieID ON Mitwirkung(MOVIEID);
-CREATE INDEX IDX_Mitwirkung_ActorID ON Mitwirkung(ACTORID);
+CREATE INDEX IDX_Mitwirkung_MovieID ON Mitwirkung(MovieID);
+CREATE INDEX IDX_Mitwirkung_ActorID ON Mitwirkung(ActorID);
 
 CREATE TABLE Gattung (
     ID INT NOT NULL PRIMARY KEY,
-    NAME VARCHAR(40)
+    Name VARCHAR(40)
 );
 
