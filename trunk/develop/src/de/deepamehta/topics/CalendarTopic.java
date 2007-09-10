@@ -181,7 +181,12 @@ public class CalendarTopic extends LiveTopic {
 	}
 
 	private String renderWeekView(Vector events) {
-		Calendar displayDate = DeepaMehtaUtils.getCalendar(getProperty(PROPERTY_DISPLAY_DATE));
+		String displayDateString = getProperty(PROPERTY_DISPLAY_DATE);
+		if (!isSet(displayDateString)) {
+			System.out.println("  > \"Display Date\" not set completely -- calendar view is not rendered");
+			return "<html><head></head><body></body></html>";
+		}
+		Calendar displayDate = DeepaMehtaUtils.getCalendar(displayDateString);
 		// display range: begin date
 		int delta = (displayDate.get(Calendar.DAY_OF_WEEK) + 5) % 7;
 		displayDate.add(Calendar.DATE, -delta);
@@ -321,7 +326,7 @@ public class CalendarTopic extends LiveTopic {
 
 	private boolean isSet(String dateOrTime) {
 		// ### return !dateOrTime.equals("-/-/-") && !dateOrTime.equals("-:-");
-		return dateOrTime.indexOf(VALUE_NOT_SET) == -1;
+		return dateOrTime.length() > 0 && dateOrTime.indexOf(VALUE_NOT_SET) == -1;
 	}
 
 
