@@ -85,7 +85,7 @@ import java.io.*;
  *     ({@link #importFromFile})</LI>
  * </OL>
  * <HR>
- * Last functional change: 20.8.2008 (2.0b8)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 11.12.2001 (2.0a14-pre4)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -348,7 +348,7 @@ public class TopicMapTopic extends LiveTopic {
 		// ### compare to GraphPanel.actionPerformed()
 		CorporateDirectives directives = new CorporateDirectives();
 		//
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		// --- default command (opening) ---
 		if (cmd.equals(CMD_DEFAULT)) {
@@ -424,7 +424,7 @@ public class TopicMapTopic extends LiveTopic {
 	public CorporateDirectives executeChainedCommand(String command, String result,
 								String topicmapID, String viewmode, Session session)
 								throws DeepaMehtaException {
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		//
 		if (cmd.equals(CMD_IMPORT_TOPICMAP)) {
@@ -1217,7 +1217,7 @@ public class TopicMapTopic extends LiveTopic {
 	// ---
 
 	private void processFilelist(String command, Session session, CorporateDirectives directives) {
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();	// ### skip command
 		//
 		Vector filenames = new Vector();

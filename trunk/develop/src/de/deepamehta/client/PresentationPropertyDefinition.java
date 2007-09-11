@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.*;
 import java.io.*;
 import java.util.*;
@@ -23,7 +24,7 @@ import java.util.*;
  * {@link PresentationType}. 
  * <P>
  * <HR>
- * Last functional change: 12.10.2003 (2.0b2)<BR>
+ * Last functional change: 10.9.2007 (2.0b8)<BR>
  * Last documentation update: 7.11.2000 (2.0a7-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -60,8 +61,9 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 
 
 	/**
-	 * Creates a GUI component for editing a property according to this property
-	 * definition.
+	 * Creates a GUI component for editing a property according to this property definition.
+	 * <p>
+	 * References checked: 10.9.2007 (2.0b8)
 	 *
 	 * @param	actionListener		may be null
 	 *
@@ -70,7 +72,8 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 	 *
 	 * @see		PropertyPanel.PropertyField#PropertyPanel.PropertyField
 	 */
-	Object[] createGUIComponent(ActionListener actionListener, PropertyPanelControler controler) {
+	Object[] createGUIComponent(ActionListener actionListener, HyperlinkListener hyperlinkListener,
+																	PropertyPanelControler controler) {
 		Object result[] = new Object[2];
 		if (visualization.equals(VISUAL_FIELD) ||
 			visualization.equals(VISUAL_FILE_CHOOSER) ||
@@ -98,7 +101,7 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 			result[1] = area;
 			return result;
 		} else if (visualization.equals(VISUAL_TEXT_EDITOR)) {
-			createTextEditor(actionListener, result, controler);
+			createTextEditor(actionListener, hyperlinkListener, result, controler);
 			return result;
 		} else if (visualization.equals(VISUAL_CHOICE)) {
 			result[0] = createOptionMenu(actionListener, controler);
@@ -137,6 +140,9 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 
 
 
+	/**
+	 * Called for <code>VISUAL_FIELD</code>, <code>VISUAL_FILE_CHOOSER</code>, and <code>VISUAL_COLOR_CHOOSER</code>.
+	 */
 	private JComponent createTextField(ActionListener actionListener) {
 		JTextField field = new JTextField() /* ### no effect {
 			public Dimension getPreferredSize() {
@@ -151,6 +157,9 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 		return field;
 	}
 
+	/**
+	 * Called for <code>VISUAL_PASSWORD_FIELD</code>.
+	 */
 	private JComponent createPasswordField(ActionListener actionListener) {
 		JPasswordField field = new JPasswordField() /* ### no effect {
 			public Dimension getPreferredSize() {
@@ -165,6 +174,9 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 		return field;
 	}
 
+	/**
+	 * Called for <code>VISUAL_AREA</code>.
+	 */
 	private JComponent createTextArea() {
 		JTextArea area = new JTextArea(50, 0);	// ### 50 rows
 		area.setLineWrap(true);
@@ -172,8 +184,13 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 		return area;
 	}
 
-	private void createTextEditor(ActionListener actionListener, Object[] result, PropertyPanelControler controler) {
-		TextEditorPanel textEditor = new TextEditorPanel(EDITOR_TYPE_STYLED, (GraphPanelControler) controler, true) {
+	/**
+	 * Called for <code>VISUAL_TEXT_EDITOR</code>.
+	 */
+	private void createTextEditor(ActionListener actionListener, HyperlinkListener hyperlinkListener,
+																	Object[] result, PropertyPanelControler controler) {
+		TextEditorPanel textEditor = new TextEditorPanel(EDITOR_TYPE_STYLED, hyperlinkListener,
+																	(GraphPanelControler) controler, true) {
 			public Dimension getPreferredSize() {
 				return new Dimension(0, 640);	// ### height 640 pixels
 			}

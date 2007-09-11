@@ -27,7 +27,7 @@ import java.util.*;
  * Part of {@link KompetenzsternTopic Kompetenzstern} application.
  * <P>
  * <HR>
- * Last functional change: 9.2.2005 (2.0b5)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 11.11.2001 (2.0a13-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -186,7 +186,7 @@ public class TemplateTopic extends TopicMapTopic implements KS {
 	public CorporateDirectives executeCommand(String command, Session session, String topicmapID, String viewmode) {
 		CorporateDirectives directives = new CorporateDirectives();
 		//
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
         String cmd = st.nextToken();
 		if (cmd.equals(CMD_ASSIGN_NEW_CRITERION)) {
 			createChildTopic(TOPICTYPE_BEWERTUNGS_KRITERIUM, SEMANTIC_STERN_COMPOSITION, session, directives);

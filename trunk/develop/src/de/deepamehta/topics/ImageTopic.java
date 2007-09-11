@@ -17,7 +17,7 @@ import java.util.*;
 /**
  * <P>
  * <HR>
- * Last functional change: 11.3.2004 (2.0b3-pre1)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 18.7.2003 (2.0b2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -53,7 +53,7 @@ public class ImageTopic extends FileTopic {
 	public CorporateDirectives executeChainedCommand(String command, String result,
 								String topicmapID, String viewmode, Session session)
 								throws DeepaMehtaException {
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		//
 		if (cmd.equals(CMD_ASSIGN_FILE)) {

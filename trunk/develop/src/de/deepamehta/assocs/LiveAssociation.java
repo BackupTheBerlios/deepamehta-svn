@@ -25,7 +25,7 @@ import java.util.*;
  * to the {@link CorporateMemory}.
  * <P>
  * <HR>
- * Last sourcecode change: 17.2.2005 (2.0b5)<BR>
+ * Last sourcecode change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 11.12.2000 (2.0a8-pre3)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -215,7 +215,7 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 													String topicmapID, String viewmode) {
 		// >>> compare to LiveTopic.executeCommand()
 		CorporateDirectives directives = new CorporateDirectives();
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		if (cmd.equals(CMD_DEFAULT)) {
 			// --- trigger getDetail() hook ---

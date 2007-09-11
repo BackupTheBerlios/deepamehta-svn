@@ -1008,42 +1008,6 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		return directives;
 	}
 
-	// --- createPresentableAssociation (2 forms) ---
-
-	public PresentableAssociation createPresentableAssociation(String assocTypeID, String topicID1, int topicVersion1,
-													String topicID2, int topicVersion2, boolean performExistenceCheck) {
-		return createPresentableAssociation(assocTypeID, "",
-			topicID1, topicVersion1, topicID2, topicVersion2, performExistenceCheck);
-	}
-
-	/**
-	 * <TABLE>
-	 * <TR><TD><B>Called by</B><TD><CODE>performExistenceCheck</CODE>
-	 * <TR><TD>{@link #createNewContainer}<TD><CODE>false</CODE>
-	 * <TR><TD>{@link #createPresentableAssociations}<TD><CODE>true</CODE>
-	 * <TR><TD>{@link de.deepamehta.topics.ElementContainerTopic#autoSearch}<TD><CODE>false</CODE>
-	 * <TR><TD>{@link de.deepamehta.topics.ElementContainerTopic#revealTopic}<TD><CODE>false</CODE>
-	 * </TABLE>
-	 */
-	public PresentableAssociation createPresentableAssociation(String assocTypeID, String assocName,
-									String topicID1, int topicVersion1,
-									String topicID2, int topicVersion2,
-									boolean performExistenceCheck) {
-		String assocID;
-		if (!performExistenceCheck || !cm.associationExists(topicID1, topicID2, false)) {
-			assocID = cm.getNewAssociationID();
-		} else {
-			Association assoc = cm.getAssociation(assocTypeID, topicID1, topicID2);
-			if (assoc == null) {
-				assocID = cm.getNewAssociationID();
-			} else {
-				assocID = assoc.getID();
-			}
-		}
-		return new PresentableAssociation(assocID, 1, assocTypeID, 1, assocName,
-			topicID1, topicVersion1, topicID2, topicVersion2);
-	}
-
 	// --- getTopicProperty (2 forms) ---
 
 	// ### should be named "getProperty"
@@ -4291,7 +4255,6 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 
 	public PresentableTopic createPresentableTopic(String topicID, int version) throws DeepaMehtaException {
 		PresentableTopic topic = createPresentableTopic(cm.getTopic(topicID, version));
-		// ### topic.setFreeGeometry();
 		return topic;
 	}
 
@@ -4354,12 +4317,52 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	}
 
 	/**
+	 * Creates a PresentableTopic for the specified topic that is about to appear in the near of another topic.
+	 * This is done by triggering the <code>getPresentableTopic()</code> hook of the specified topic map.
+	 * This way a custom topic map is able to adjust e.g. the geometry of the appearing topic.
+	 *
 	 * @see		#createPresentableTopics
 	 * @see		de.deepamehta.topics.LiveTopic#revealTopic
 	 */
 	public PresentableTopic createPresentableTopic(BaseTopic topic, String nearTopicID, String topicmapID) {
 		// --- trigger getPresentableTopic() hook ---
 		return getLiveTopic(topicmapID, 1).getPresentableTopic(topic, nearTopicID);
+	}
+
+	// --- createPresentableAssociation (2 forms) ---
+
+	public PresentableAssociation createPresentableAssociation(String assocTypeID, String topicID1, int topicVersion1,
+													String topicID2, int topicVersion2, boolean performExistenceCheck) {
+		return createPresentableAssociation(assocTypeID, "",
+			topicID1, topicVersion1, topicID2, topicVersion2, performExistenceCheck);
+	}
+
+	/**
+	 * <TABLE>
+	 * <TR><TD><B>Called by</B><TD><CODE>performExistenceCheck</CODE>
+	 * <TR><TD>{@link #createNewContainer}<TD><CODE>false</CODE>
+	 * <TR><TD>{@link #createPresentableAssociations}<TD><CODE>true</CODE>
+	 * <TR><TD>{@link de.deepamehta.topics.ElementContainerTopic#autoSearch}<TD><CODE>false</CODE>
+	 * <TR><TD>{@link de.deepamehta.topics.ElementContainerTopic#revealTopic}<TD><CODE>false</CODE>
+	 * </TABLE>
+	 */
+	public PresentableAssociation createPresentableAssociation(String assocTypeID, String assocName,
+									String topicID1, int topicVersion1,
+									String topicID2, int topicVersion2,
+									boolean performExistenceCheck) {
+		String assocID;
+		if (!performExistenceCheck || !cm.associationExists(topicID1, topicID2, false)) {
+			assocID = cm.getNewAssociationID();
+		} else {
+			Association assoc = cm.getAssociation(assocTypeID, topicID1, topicID2);
+			if (assoc == null) {
+				assocID = cm.getNewAssociationID();
+			} else {
+				assocID = assoc.getID();
+			}
+		}
+		return new PresentableAssociation(assocID, 1, assocTypeID, 1, assocName,
+			topicID1, topicVersion1, topicID2, topicVersion2);
 	}
 
 	// --- createWebpageTopic (2 forms) ---

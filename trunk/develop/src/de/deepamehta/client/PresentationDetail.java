@@ -16,7 +16,7 @@ import java.beans.PropertyVetoException;
  * with the origin topic.
  * <P>
  * <HR>
- * Last functional change: 12.10.2003 (2.0b2)<BR>
+ * Last functional change: 10.9.2007 (2.0b8)<BR>
  * Last documentation update: 12.10.2001 (2.0a13-pre1)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -98,7 +98,7 @@ class PresentationDetail extends Detail {
 			String text = (String) param1;
 			boolean multiline = ((Boolean) param2).booleanValue();
 			int editorType = multiline ? EDITOR_TYPE_DEFAULT : EDITOR_TYPE_SINGLE_LINE;
-			TextEditorPanel textEditor = new TextEditorPanel(editorType, controler, false, multiline ? null : this);
+			TextEditorPanel textEditor = new TextEditorPanel(editorType, null, controler, false, multiline ? null : this);	// ### hyperlinkListener=null
 			textEditor.setText(text);
 			// show detail window
 			int width = multiline ? TEXT_EDITOR_WIDTH : INPUT_LINE_WIDTH;
@@ -110,7 +110,7 @@ class PresentationDetail extends Detail {
 			// create text editor component (styled)
 			String html = (String) param1;
 			boolean editable = ((Boolean) param2).booleanValue();
-			textEditor = new TextEditorPanel(EDITOR_TYPE_STYLED, controler, editable);
+			textEditor = new TextEditorPanel(EDITOR_TYPE_STYLED, null, controler, editable);	// ### hyperlinkListener=null
 			textEditor.setText(html);
 			textEditor.setEnabled(editable);
 			// show detail window

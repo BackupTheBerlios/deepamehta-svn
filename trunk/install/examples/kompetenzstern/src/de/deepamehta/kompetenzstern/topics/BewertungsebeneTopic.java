@@ -20,7 +20,7 @@ import java.util.*;
  * Part of {@link KompetenzsternTopic Kompetenzstern} application.
  * <P>
  * <HR>
- * Last functional change: 10.6.2003 (2.0b1)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 15.10.2001 (2.0a13-pre1)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -102,15 +102,15 @@ public class BewertungsebeneTopic extends LiveTopic implements KS {
 		// ### compare to KriteriumTopic
 		CorporateDirectives directives = new CorporateDirectives();
 		//
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
         String cmd = st.nextToken();
 		if (cmd.equals(CMD_DEFAULT)) {
 			boolean insideTemplate = as.getLiveTopic(topicmapID, 1).getType().equals(
 			TOPICTYPE_KOMPETENZSTERN_TEMPLATE);
 			String prop = insideTemplate ? PROPERTY_HELP : PROPERTY_DESCRIPTION;
 			String propLabel = insideTemplate ? PROPERTY_HELP : PROPERTY_BESCHREIBUNG;
-			return super.executeCommand(CMD_EDIT_TOPIC_PROPERTY + ":" + prop + ":" +
-				propLabel + ":true:true", session, topicmapID, viewmode);
+			return super.executeCommand(CMD_EDIT_TOPIC_PROPERTY + COMMAND_SEPARATOR + prop + COMMAND_SEPARATOR +
+				propLabel + COMMAND_SEPARATOR + "true" + COMMAND_SEPARATOR + "true", session, topicmapID, viewmode);
 		} else if (KompetenzsternTopic.executeOrderCommand(this, command, directives,
         	as)) {		// do nothing
 		} else if (KompetenzsternTopic.executeDocumentCommand(this, command, session, directives)) {
@@ -160,7 +160,7 @@ public class BewertungsebeneTopic extends LiveTopic implements KS {
 	public CorporateDirectives processDetailHook(CorporateDetail detail,
 							Session session, String topicmapID, String viewmode) {
 		String command = detail.getCommand();
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		//
 		if (cmd.equals(CMD_SET_ORDER)) {

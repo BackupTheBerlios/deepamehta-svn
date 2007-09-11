@@ -12,6 +12,8 @@ import de.deepamehta.Type;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
@@ -32,13 +34,13 @@ import java.util.*;
  * <P>
  * There is one instance created (singleton).
  * <HR>
- * Last functional change: 8.6.2007 (2.0b8)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 10.6.2001 (2.0a11-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
  */
 class PropertyPanel extends JPanel implements ActionListener, ItemListener, DocumentListener,
-																			DeepaMehtaConstants {
+											  HyperlinkListener, DeepaMehtaConstants {
 
 
 
@@ -239,15 +241,13 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	/**
 	 * Called when one of this events occurred:
 	 * <UL>
-	 * <LI>Return has been pressed in the topic name field
-	 * <LI>Return has been pressed in an (slingle line) input field of the property panel
 	 * <LI>The value of a "Options Menu" / "Option Button" / "Switch" property has been changed
-	 * <LI>### ...
+	 * <LI>Return has been pressed in an (single line) input field of the property panel
 	 * </UL>
 	 */
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		//
 		if (cmd.equals(CMD_TOPIC_DATA_CHANGED_MENU)) {
@@ -261,15 +261,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			storeProperties();
 		} else {
 			storeProperties();
-			if (selected == SELECTED_TOPIC) {
-				controler.executeTopicCommand(getTopicmap(), getTopic(), command);
-			} else if (selected == SELECTED_ASSOCIATION) {
-				controler.executeAssocCommand(getTopicmap(), getAssociation(), command);
-			} else if (selected == SELECTED_TOPICMAP) {
-				controler.executeTopicCommand(getTopicmap(), getTopicmap().getEditor().getTopicmap(), command);
-			} else {
-				throw new DeepaMehtaException("unexpected selection mode: \"" + selected + "\"");
-			}
+			executeCommand(command);
 		}
 	}
 
@@ -293,7 +285,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			if (state) {
 				controler.beginLongTask();
 				String typename = (String) topicTypeChoice.getSelectedItem();
-				String command = CMD_CHANGE_TOPIC_TYPE_BY_NAME + ":" + typename;
+				String command = CMD_CHANGE_TOPIC_TYPE_BY_NAME + COMMAND_SEPARATOR + typename;
 				controler.executeTopicCommand(topicmap, getTopic(), command);
 				controler.endTask();
 			}
@@ -302,7 +294,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			if (state) {
 				controler.beginLongTask();
 				String typename = (String) assocTypeChoice.getSelectedItem();
-				String command = CMD_CHANGE_ASSOC_TYPE_BY_NAME + ":" + typename;
+				String command = CMD_CHANGE_ASSOC_TYPE_BY_NAME + COMMAND_SEPARATOR + typename;
 				controler.executeAssocCommand(topicmap, getAssociation(), command);
 				controler.endTask();
 			}
@@ -329,6 +321,22 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	public void removeUpdate(DocumentEvent e) {	
 		setPropertiesDirty("deleting");
+	}
+
+
+
+	// ***********************************************************************
+	// *** Implementation of interface javax.swing.event.HyperlinkListener ***
+	// ***********************************************************************
+
+
+
+	public void hyperlinkUpdate(HyperlinkEvent e) {
+		// ### System.out.println(">>> PropertyPanel.hyperlinkUpdate(): hyperlink event fired: " + e);
+		if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+			String command = CMD_FOLLOW_HYPERLINK + COMMAND_SEPARATOR + e.getURL();
+			executeCommand(command);
+		}
 	}
 
 
@@ -617,9 +625,9 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	// ---
 
 	/**
-	 * Stores changed properties/topic name (actually the {@link #controler} is informed).
+	 * Stores changed properties (actually the {@link #controler} is informed).
 	 * <P>
-	 * The properties/topic name are stored only, if marked dirty (see {@link #propertiesAreDirty}).
+	 * The properties are stored only, if marked dirty (see {@link #propertiesAreDirty}).
 	 * After storing the resp. flag is cleared.
 	 *
 	 * @see		#actionPerformed	4x
@@ -639,6 +647,22 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			}
 			setSelectionProperties(props, true);
 			propertiesAreDirty = false;
+		}
+	}
+
+	/**
+	 * @see		#actionPerformed
+	 * @see		#hyperlinkUpdate
+	 */
+	private void executeCommand(String command) {
+		if (selected == SELECTED_TOPIC) {
+			controler.executeTopicCommand(getTopicmap(), getTopic(), command);
+		} else if (selected == SELECTED_ASSOCIATION) {
+			controler.executeAssocCommand(getTopicmap(), getAssociation(), command);
+		} else if (selected == SELECTED_TOPICMAP) {
+			controler.executeTopicCommand(getTopicmap(), getTopicmap().getEditor().getTopicmap(), command);
+		} else {
+			throw new DeepaMehtaException("unexpected selection mode: \"" + selected + "\"");
 		}
 	}
 
@@ -949,12 +973,11 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	 */
 	private void buildPropertyFields(Type type) {
 		Vector propertyFields = new Vector();
-		ActionListener actionListener = this;
 		// get all property definitions of the topic type
 		Enumeration e = type.getTypeDefinition().elements();
 		while (e.hasMoreElements()) {
 			PresentationPropertyDefinition propertyDef = (PresentationPropertyDefinition) e.nextElement();
-			PropertyField propField = new PropertyField(propertyDef, actionListener /* ###, controler */);
+			PropertyField propField = new PropertyField(propertyDef, this, this);
 			propertyFields.addElement(propField);
 		}
 		//
@@ -1372,19 +1395,22 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 		/**
 		 * Standard constructor.
-		 * <P>
+		 * <p>
 		 * Creates the GUI component for this <CODE>PropertyField</CODE> and stores
 		 * it in the {@link #view} and {@link #model} fields.
+		 * <p>
+		 * References checked: 10.9.2007 (2.0b8)
 		 *
-		 * @see		PropertyPanel#createPropertyFields
+		 * @see		PropertyPanel#buildPropertyFields
 		 */
-		PropertyField(PresentationPropertyDefinition propertyDef,
-					ActionListener listener /* ###, PropertyPanelControler controler */) {
+		PropertyField(PresentationPropertyDefinition propertyDef, ActionListener actionListener,
+																  HyperlinkListener hyperlinkListener) {
 			this.propertyDef = propertyDef;
 			if (isHidden()) {
-				listener = null;
+				actionListener = null;		// ### required?
+				hyperlinkListener = null;	// ### required?
 			}
-			Object[] component = propertyDef.createGUIComponent(listener, controler);
+			Object[] component = propertyDef.createGUIComponent(actionListener, hyperlinkListener, controler);
 			this.view = (JComponent) component[0];
 			this.model = component[1];
 		}

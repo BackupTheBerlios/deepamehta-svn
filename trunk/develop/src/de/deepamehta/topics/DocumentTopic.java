@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * <P>
  * <HR>
- * Last functional change: 11.3.2004 (2.0b3-pre1)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 7.11.2000 (2.0a7-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -88,7 +88,7 @@ public class DocumentTopic extends FileTopic {
 		// ### compare to ApplicationTopic
 		CorporateDirectives directives = new CorporateDirectives();
 		//
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		if (cmd.equals(CMD_ASSIGN_FILE)) {	// ### to be dropped
 			// the chained action is only performed if the filechoosing has performed at

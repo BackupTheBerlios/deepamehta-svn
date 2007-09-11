@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
  * A chat board is a topic map that holds chats.
  * <P>
  * <HR>
- * Last functional change: 29.10.2004 (2.0b3)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 11.4.2003 (2.0a18-pre9)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -83,7 +83,7 @@ public class ChatBoardTopic extends TopicMapTopic {
 						String topicmapID, String viewmode) throws DeepaMehtaException {
 		CorporateDirectives directives = new CorporateDirectives();
 		//
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		//
 		if (cmd.equals(CMD_SHOW_CHATS)) {

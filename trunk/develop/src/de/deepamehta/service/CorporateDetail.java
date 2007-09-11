@@ -14,7 +14,7 @@ import java.util.*;
  * Server side extension of topic/association {@link de.deepamehta.Detail}.
  * <P>
  * <HR>
- * Last functional change: 12.4.2003 (2.0a18-pre9)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 14.10.2001 (2.0a13-pre1)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -80,7 +80,7 @@ public class CorporateDetail extends Detail {
 													String topicmapID, String viewmode) {
 		CorporateDirectives directives = new CorporateDirectives();
 		//
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		//
 		/* ### if (cmd.equals(CMD_CHANGE_TOPIC_NAME)) {

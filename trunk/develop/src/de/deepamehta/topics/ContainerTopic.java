@@ -88,7 +88,7 @@ import java.util.*;
  * </OL>
  * <P>
  * <HR>
- * Last functional change: 23.2.2005 (2.0b5)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 13.3.2001 (2.0a10-pre1)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -233,7 +233,7 @@ public abstract class ContainerTopic extends LiveTopic {
 			Enumeration e = getContent().elements();
 			while (e.hasMoreElements()) {
 				String[] topic = (String[]) e.nextElement();
-				cmdGroup.addCommand(topic[1], CMD_SHOW_CONTENT + ":" + topic[0],
+				cmdGroup.addCommand(topic[1], CMD_SHOW_CONTENT + COMMAND_SEPARATOR + topic[0],
 					FILESERVER_ICONS_PATH, getAppearance(topic[0], topic[1], session, directives));
 			}
 		}
@@ -242,7 +242,7 @@ public abstract class ContainerTopic extends LiveTopic {
 		if (groupingProps != null) {
 			cmdGroup = commands.addCommandGroup(as.string(ITEM_GROUP_BY), FILESERVER_IMAGES_PATH, ICON_GROUP_BY);
 			for (int i = 0; i < groupingProps.length; i++) {
-				cmdGroup.addCommand(groupingProps[i], CMD_GROUP_BY + ":" + groupingProps[i]);
+				cmdGroup.addCommand(groupingProps[i], CMD_GROUP_BY + COMMAND_SEPARATOR + groupingProps[i]);
 			}
 		}
 		// "Remove"
@@ -265,22 +265,25 @@ public abstract class ContainerTopic extends LiveTopic {
 	 */
 	public CorporateDirectives executeCommand(String command, Session session,
 											String topicmapID, String viewmode) throws DeepaMehtaException {
-		String[] cmd = DeepaMehtaUtils.explode(command);	// ### use a tokenizer instead
-		if (cmd[0].equals(CMD_DEFAULT)) {
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
+		String cmd = st.nextToken();
+		//
+		if (cmd.equals(CMD_DEFAULT)) {
 			// reveal content
 			CorporateDirectives directives = triggerQuery(topicmapID);
 			// ### let the superclass show the topic detail
 			// directives.add(super.executeCommand(command, session));
 			return directives;
-		} else if (cmd[0].equals(CMD_SUBMIT_FORM)) {
+		} else if (cmd.equals(CMD_SUBMIT_FORM)) {
 			// filtering
 			Hashtable containerProps = getProperties();
 			String nameFilter = (String) containerProps.get(PROPERTY_SEARCH);
 			return processQuery(nameFilter, queryProperties(containerProps), null, null, topicmapID);
-		} else if (cmd[0].equals(CMD_SHOW_CONTENT)) {
+		} else if (cmd.equals(CMD_SHOW_CONTENT)) {
 			// reveal one topic
 			CorporateDirectives directives = new CorporateDirectives();
-			String topicID = revealTopic(cmd[1], topicmapID, directives);
+			String id = st.nextToken();
+			String topicID = revealTopic(id, topicmapID, directives);
 			// reveal association(s) if relation filter is set
 			if (containerRelatedTopic != null) {
 				Vector assocs = cm.getAssociations(topicID, containerRelatedTopic.getID(), true);	// ignoreDirection=true
@@ -291,9 +294,10 @@ public abstract class ContainerTopic extends LiveTopic {
 				}
 			}
 			return directives;
-		} else if (cmd[0].equals(CMD_GROUP_BY)) {
+		} else if (cmd.equals(CMD_GROUP_BY)) {
 			// grouping
-			return autoSearch(cmd[1]);
+			String groupingProp = st.nextToken();
+			return autoSearch(groupingProp);
 		} else {
 			return super.executeCommand(command, session, topicmapID, viewmode);
 		}

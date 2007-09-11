@@ -24,7 +24,7 @@ import java.util.*;
  * is renamed.
  * <P>
  * <HR>
- * Last functional change: 7.6.2007 (2.0b8)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 29.11.2000 (2.0a7)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -131,7 +131,7 @@ public class UserTopic extends PersonTopic {
 		Commands workspacesGroup = commands.addCommandGroup(as.string(ITEM_SET_WORKSPACE),
 			FILESERVER_ICONS_PATH, "workgroup.gif");
 		// CMD_ASSIGN_TOPIC is handled by LiveTopic, 3 parameters are required, the 3rd is added by addTopicCommands()
-		String command = CMD_ASSIGN_TOPIC + ":" + SEMANTIC_PREFERENCE + ":" + CARDINALITY_ONE;
+		String command = CMD_ASSIGN_TOPIC + COMMAND_SEPARATOR + SEMANTIC_PREFERENCE + COMMAND_SEPARATOR + CARDINALITY_ONE;
 		commands.addTopicCommands(workspacesGroup, workspaces, command, COMMAND_STATE_RADIOBUTTON,
 			standardWorkspace, null, session, directives);	// title=null
 		//

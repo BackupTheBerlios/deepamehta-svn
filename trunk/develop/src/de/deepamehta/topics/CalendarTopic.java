@@ -1,8 +1,11 @@
 package de.deepamehta.topics;
 
 import de.deepamehta.BaseTopic;
+import de.deepamehta.BaseAssociation;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
+import de.deepamehta.PresentableTopic;
+import de.deepamehta.PresentableAssociation;
 import de.deepamehta.service.Session;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
@@ -14,7 +17,7 @@ import java.util.*;
 
 
 /**
- * Last functional change: 6.7.2007 (2.0b8)<br>
+ * Last functional change: 11.9.2007 (2.0b8)<br>
  * Last documentation update: 6.7.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -96,15 +99,28 @@ public class CalendarTopic extends LiveTopic {
 
 
 
-	public CorporateDirectives executeCommand(String actionCommand, Session session,
-													String topicmapID, String viewmode) {
+	public CorporateDirectives executeCommand(String command, Session session, String topicmapID, String viewmode) {
 		CorporateDirectives directives = new CorporateDirectives();
 		//
-		if (actionCommand.equals(CMD_CREATE_EVENT)) {
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
+		String cmd = st.nextToken();
+		//
+		if (cmd.equals(CMD_CREATE_EVENT)) {
 			createChildTopic(TOPICTYPE_EVENT, SEMANTIC_CALENDAR_EVENT, session, directives);
 			return directives;
+		} else if (cmd.equals(CMD_FOLLOW_HYPERLINK)) {
+			String url = st.nextToken();
+			String urlPrefix = "http://revealEvent/";
+			if (url.startsWith(urlPrefix)) {
+				String eventID = url.substring(urlPrefix.length());
+				revealEvent(eventID, directives);
+			} else {
+				System.out.println("*** CalendarTopic.executeCommand(): URL \"" + url + "\" not recognized by " +
+					"CMD_FOLLOW_HYPERLINK");
+			}
+			return directives;
 		} else {
-			return super.executeCommand(actionCommand, session, topicmapID, viewmode);
+			return super.executeCommand(command, session, topicmapID, viewmode);
 		}
 	}
 
@@ -216,7 +232,8 @@ public class CalendarTopic extends LiveTopic {
 					html.append("<td></td>");
 				} else if (cell.type == GridCell.BEGIN_OF_EVENT) {
 					html.append("<td rowspan=\"" + cell.occupiedSegments + "\">");
-					html.append("<b>" + cell.eventBegin + "</b><br>" + cell.eventName);
+					html.append("<b>" + cell.eventBegin + "</b><br>");
+					html.append("<a href=\"http://revealEvent/" + cell.eventID + "\">" + cell.eventName + "</a>");
 					html.append("</td>");
 				}
 			}
@@ -276,9 +293,12 @@ public class CalendarTopic extends LiveTopic {
 			// --- add to model ---
 			Calendar eventBegin = DeepaMehtaUtils.getCalendar(beginDate);
 			int dayOfWeek = (eventBegin.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// Mon=0 ... Sun=6
-			// add beginning segment to model
-			gridModel[dayOfWeek][beginSegment] = new GridCell(event.getID(), event.getName(), beginTime, segmentCount);
-			// add ocupied segments to model
+			// 1) add beginning segment to model
+			String eventName = getProperty(event, PROPERTY_NAME);	// note: event.getName() doesn't work here, because the
+			// propertiesChanged() hook is triggered after the properties are updated in CM but _before_ the topic name
+			// is updated in CM.
+			gridModel[dayOfWeek][beginSegment] = new GridCell(event.getID(), eventName, beginTime, segmentCount);
+			// 2) add ocupied segments to model
 			for (int seg = beginSegment + 1; seg < beginSegment + segmentCount; seg++) {
 				gridModel[dayOfWeek][seg] = new GridCell();
 			}
@@ -294,6 +314,15 @@ public class CalendarTopic extends LiveTopic {
 	private Vector getEvents() {
 		String[] sortProps = {PROPERTY_BEGIN_DATE, PROPERTY_BEGIN_TIME};
 		return cm.getRelatedTopics(getID(), SEMANTIC_CALENDAR_EVENT, TOPICTYPE_EVENT, 2, sortProps, true);	// descending=true
+	}
+
+	private void revealEvent(String eventID, CorporateDirectives directives) {
+		PresentableTopic event = new PresentableTopic(as.getLiveTopic(eventID, 1), getID());
+		BaseAssociation a = cm.getAssociation(ASSOCTYPE_ASSOCIATION, getID(), eventID);
+		PresentableAssociation assoc = new PresentableAssociation(a);
+		directives.add(DIRECTIVE_SHOW_TOPIC, event);
+		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc);
+		directives.add(DIRECTIVE_SELECT_TOPIC, eventID);
 	}
 
 	// ---
