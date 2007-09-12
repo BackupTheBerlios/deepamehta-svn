@@ -42,7 +42,7 @@ import java.util.*;
  * underlying {@link TemplateTopic Template}, but this isn't completely achieved yet.
  * <P>
  * <HR>
- * Last functional change: 7.6.2006 (2.0b7)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -293,7 +293,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 
 		CorporateDirectives directives = new CorporateDirectives();
 		//
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		if (cmd.equals(CMD_SHOW_COMPETENCE_STAR)) {
 			String topicID = st.nextToken();
@@ -318,7 +318,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 		//
 		System.out.println(">>> KompetenzsternTopic.executeWorkspaceCommand(): \"" + command + "\"");
 		//
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		if (cmd.equals(CMD_SET_TEMPLATE)) {
 			String templateID = st.nextToken();
@@ -498,7 +498,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 			String order = as.getAssociationData(assoc, PROPERTY_ORDINAL_NUMBER);
 			String item = order.equals("") ? ITEM_SET_ORDER : ITEM_CHANGE_ORDER;
 			//
-			commands.addCommand(item, CMD_SET_ORDER + ":" + assoc.getID(), FILESERVER_IMAGES_PATH, ICON_SET_ORDER);
+			commands.addCommand(item, CMD_SET_ORDER + COMMAND_SEPARATOR + assoc.getID(), FILESERVER_IMAGES_PATH, ICON_SET_ORDER);
 		} catch (DeepaMehtaException e) {
 			System.out.println("*** KompetenzsternTopic.addSetOrderCommand(): " + e);
 			directives.add(DIRECTIVE_SHOW_MESSAGE, "Das Kommando \"" + ITEM_SET_ORDER + "\" steht nicht zur " +
@@ -525,7 +525,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 	 */
 	static boolean executeOrderCommand(LiveTopic topic, String command,
 							CorporateDirectives directives, ApplicationService as) {
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		if (cmd.equals(CMD_SET_ORDER)) {
 			String assocID = st.nextToken();
@@ -990,7 +990,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 			BaseTopic topic = (BaseTopic) e.nextElement();
 			String topicID = topic.getID();
 			if (!getID().equals(topicID)) {
-				cmdGroup.addCommand(topic.getName(), CMD_SHOW_COMPETENCE_STAR + ":" + topicID,
+				cmdGroup.addCommand(topic.getName(), CMD_SHOW_COMPETENCE_STAR + COMMAND_SEPARATOR + topicID,
 					FILESERVER_ICONS_PATH, ICON_SHOW_COMPETENCE_STAR);
 			}
 		}

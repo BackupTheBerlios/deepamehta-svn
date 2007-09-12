@@ -27,7 +27,7 @@ import java.util.*;
  * this <CODE>WorkspaceTopic</CODE> is renamed.
  * <P>
  * <HR>
- * Last functional change: 8.4.2007 (2.0b8)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 29.4.2001 (2.0a10-pre7)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -242,7 +242,7 @@ public class WorkspaceTopic extends LiveTopic {
 	public CorporateDirectives executeCommand(String command, Session session,
 													String topicmapID, String viewmode) {
 		CorporateDirectives directives = new CorporateDirectives();
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		if (cmd.equals(CMD_JOIN_WORKSPACE)) {
 			joinUser(session.getUserID(), REVEAL_MEMBERSHIP_USER, true, session, directives);

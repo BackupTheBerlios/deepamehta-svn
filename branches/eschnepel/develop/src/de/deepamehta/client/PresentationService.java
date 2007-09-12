@@ -35,7 +35,7 @@ import java.util.*;
  * Main controler of the graphical DeepaMehta frontend.
  * <P>
  * <HR>
- * Last functional change: 7.6.2007 (2.0b8)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -681,7 +681,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	public void showNodeMenu(PresentationTopicMap topicmap, GraphNode node, int x, int y) {
 		storeProperties();
 		BaseTopic topic = (BaseTopic) node;
-		String command = CMD_GET_TOPIC_COMMANDS + ":" + topic.getID() + ":" + topic.getVersion() + ":" + x + ":" + y;
+		String command = CMD_GET_TOPIC_COMMANDS + COMMAND_SEPARATOR + topic.getID() + COMMAND_SEPARATOR + topic.getVersion() + COMMAND_SEPARATOR + x + COMMAND_SEPARATOR + y;
 		processTopicCommand(topic.getID(), topic.getVersion(), command, topicmap.getID());
 	}
 
@@ -691,7 +691,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	public void showEdgeMenu(PresentationTopicMap topicmap, GraphEdge edge, int x, int y) {
 		storeProperties();
 		BaseAssociation assoc = (BaseAssociation) edge;
-		String command = CMD_GET_ASSOC_COMMANDS + ":" + assoc.getID() + ":" + assoc.getVersion() + ":" + x + ":" + y;
+		String command = CMD_GET_ASSOC_COMMANDS + COMMAND_SEPARATOR + assoc.getID() + COMMAND_SEPARATOR + assoc.getVersion() + COMMAND_SEPARATOR + x + COMMAND_SEPARATOR + y;
 		processAssociationCommand(assoc.getID(), assoc.getVersion(), command, topicmap.getID());
 	}
 
@@ -700,7 +700,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	 */
 	public void showGraphMenu(PresentationTopicMap topicmap, int x, int y) {
 		storeProperties();
-		processTopicCommand(topicmap.getID(), 1, CMD_GET_VIEW_COMMANDS + ":" + x + ":" + y, topicmap.getID());
+		processTopicCommand(topicmap.getID(), 1, CMD_GET_VIEW_COMMANDS + COMMAND_SEPARATOR + x + COMMAND_SEPARATOR + y, topicmap.getID());
 	}
 
 	// ---
@@ -3448,7 +3448,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 				if (hasStringFlavor) {
 	                String str = (String) t.getTransferData(DataFlavor.stringFlavor);
 					System.out.println("    string=\"" + str + "\"");
-					processGraphCommand(getTopicmap(), CMD_PROCESS_STRING + ":" + str);
+					processGraphCommand(getTopicmap(), CMD_PROCESS_STRING + COMMAND_SEPARATOR + str);
 				} else if (hasFilelistFlavor) {
 	                java.util.List files = (java.util.List) t.getTransferData(DataFlavor.javaFileListFlavor);
 					System.out.println("    " + files.size() + " files:");
@@ -3456,7 +3456,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	                for (int i = 0; i < files.size(); i++) {
 						File file = (File) files.get(i);
 						System.out.println("    " + file);
-						cmdBuf.append(":");
+						cmdBuf.append(COMMAND_SEPARATOR);
 						cmdBuf.append(file);
 					}
 					processGraphCommand(getTopicmap(), cmdBuf.toString());

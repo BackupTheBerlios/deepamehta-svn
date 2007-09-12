@@ -14,6 +14,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import javax.swing.*;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.*;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
@@ -32,7 +33,7 @@ import java.util.*;
  * The content can also set to be view-only.
  * <P>
  * <HR>
- * Last functional change: 20.2.2005 (2.0b5)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 29.9.2001 (2.0a12-pre7)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -68,7 +69,7 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 	 */
 	private int editorType;
 
-	private GraphPanelControler controler;
+	// ### private GraphPanelControler controler;
 	private PresentationDetail detail;
 	private JTextComponent textComponent;	// a JTextArea, JTextPane or JTextField respectively
 	private JButton[] toolbarButtons;
@@ -89,17 +90,17 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 
 
 	/**
-	 * References checked: 8.10.2003 (2.0b2)
+	 * References checked: 10.9.2007 (2.0b8)
 	 *
 	 * @see		PresentationDetail#PresentationDetail
 	 * @see		PresentationPropertyDefinition#createTextEditor
 	 */
-	TextEditorPanel(int editorType, GraphPanelControler controler, boolean showToolbar) {
-		this(editorType, controler, showToolbar, null);
+	TextEditorPanel(int editorType, HyperlinkListener listener, GraphPanelControler controler, boolean showToolbar) {
+		this(editorType, listener, controler, showToolbar, null);
 	}
 
 	/**
-	 * References checked: 8.10.2003 (2.0b2)
+	 * References checked: 10.9.2007 (2.0b8)
 	 *
 	 * @param	editorType	editor type, one of this constants
 	 *						<UL>
@@ -107,14 +108,14 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 	 *						<LI>EDITOR_TYPE_STYLED
 	 *						<LI>EDITOR_TYPE_SINGLE_LINE
 	 *						</UL>
-	 * @param	controler	if not <code>null</code> for <code>EDITOR_TYPE_STYLED</code>
-	 *						editors a toolbar is created
+	 * @param	controler	for editors of type <code>EDITOR_TYPE_STYLED</code>: just needed to get the icons for the
+	 *						toolbar buttons ### bad approach
 	 *
 	 * @see		PresentationDetail#PresentationDetail
 	 */
-	TextEditorPanel(int editorType, GraphPanelControler controler, boolean showToolbar, PresentationDetail detail) {
+	TextEditorPanel(int editorType, HyperlinkListener listener, GraphPanelControler controler, boolean showToolbar, PresentationDetail detail) {
 		this.editorType = editorType;
-		this.controler = controler;
+		// ### this.controler = controler;
 		this.showToolbar = showToolbar;
 		this.detail = detail;
 		setLayout(new BorderLayout());
@@ -127,6 +128,7 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 		case EDITOR_TYPE_STYLED:
 			textComponent = new JTextPane();
 			textComponent.setTransferHandler(new TextTransferHandler());	// ### requires Java 1.4
+			((JEditorPane) textComponent).addHyperlinkListener(listener);
 			// --- add toolbar ---
 			if (showToolbar) {
 				JPanel bar = new JPanel();
@@ -223,8 +225,13 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 
 	// --- overrides Component ---
 
+	/**
+	 * @see		PropertyPanel.PropertyField#setEnabled
+	 * @see		PresentationDetail#PresentationDetail
+	 */
 	public void setEnabled(boolean enabled) {
 		textComponent.setEnabled(enabled);
+		textComponent.setEditable(enabled);		// ###
 		//
 		if (showToolbar) {
 			for (int i = 0; i < toolbarButtons.length; i++) {
@@ -258,6 +265,7 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 		if (editorType == EDITOR_TYPE_STYLED) {
 			//
 			// --- set content type ---
+			// ### System.out.println(">>> TextEditorPanel.setText(): before setContentType(): " + ((JEditorPane) textComponent).getHyperlinkListeners().length + " hyperlink listeners registered");
 			((JEditorPane) textComponent).setContentType("text/html");
 			//
 			// --- set base URL ---
@@ -282,6 +290,7 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 				textComponent.setText("<html><body><font color=#FF0000>Page can't be displayed</font></body></html>");
 				System.out.println("*** TextEditorPanel.setText(): error while HTML rendering: " + e);
 			}
+			// ### System.out.println(">>> TextEditorPanel.setText(): after setContentType():  " + ((JEditorPane) textComponent).getHyperlinkListeners().length + " hyperlink listeners registered");
 		} else {
 			textComponent.setText(text);
 			textComponent.setCaretPosition(0);

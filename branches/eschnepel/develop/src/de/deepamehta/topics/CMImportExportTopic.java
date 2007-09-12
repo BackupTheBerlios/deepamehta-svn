@@ -49,7 +49,7 @@ import java.io.*;
  *     ({@link #importFromFile importFromFile()})</LI>
  * </OL>
  * <HR>
- * Last functional change: 18.7.2003 (2.0b2)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 13.4.2002 (2.0a14-post1)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -156,7 +156,7 @@ public class CMImportExportTopic extends LiveTopic {
 	 */
 	public CorporateDirectives executeChainedCommand(String command, String result, String topicmapID,
 																	String viewmode, Session session) {
-		StringTokenizer st = new StringTokenizer(command, ":");		// ###
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);		// ###
 		String cmd = st.nextToken();
 		//
 		if (cmd.equals(CMD_IMPORT_CM)) {

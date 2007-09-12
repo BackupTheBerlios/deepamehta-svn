@@ -26,7 +26,7 @@ import java.util.Vector;
  * </OL>
  * <P>
  * <HR>
- * Last functional change: 6.7.2007 (2.0b8)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -167,13 +167,14 @@ public interface DeepaMehtaConstants {
 	// ### static final String PROPERTY_LAYOUT_SUPER_FIRST = "Supertypes first";
 	// ### static final String PROPERTY_LAYOUT_SUB_FIRST = "Subtypes first";
 	//
+	static final String COMMAND_SEPARATOR = "|";	// ### was ":", but appears in URLs and Windows-Paths
 	static final String VALUE_NOT_SET = "-";
 	static final String DATE_SEPARATOR = "/";
 	static final String TIME_SEPARATOR = ":";
 	static final String[] monthNames = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 	static final int YEAR_MIN = 1850;
 	static final int YEAR_MAX = 2010;
-	static final String PARAM_SEPARATOR = "_";	// ### was "." clashed with "Course No."
+	static final String PARAM_SEPARATOR = "_";		// ### was "." clashed with "Course No."
 	static final String LEVEL_SEPARATOR = ":";
 	static final String PARAM_RELATION = "Rel";
 
@@ -437,6 +438,7 @@ public interface DeepaMehtaConstants {
 	static final String CMD_PROCESS_FILELIST = "processDroppedFiles";
 	static final String CMD_PROCESS_STRING = "processDroppedString";
 	static final String CMD_CHOOSE_COLOR = "chooseColor";
+	static final String CMD_FOLLOW_HYPERLINK = "followHyperlink";
 	// ### static final String CMD_CHOOSE_BACKGROUND_COLOR = "chooseBackgroundColor";
 	// ### static final String CMD_SET_WORKSPACE = "setWorkspace";
 

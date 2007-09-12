@@ -17,7 +17,7 @@ import java.util.*;
  * The default behavoir of an <CODE>ApplicationTopic</CODE> causes the client to launch it.
  * <P>
  * <HR>
- * Last functional change: 12.4.2003 (2.0a18-pre9)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 7.11.2000 (2.0a7-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -82,7 +82,7 @@ public class ApplicationTopic extends FileTopic {
 		// ### compare to DocumentTopic
 		CorporateDirectives directives = new CorporateDirectives();
 		//
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		if (cmd.equals(CMD_ASSIGN_FILE)) {
 			// the chained directive is only performed if the filechoosing has

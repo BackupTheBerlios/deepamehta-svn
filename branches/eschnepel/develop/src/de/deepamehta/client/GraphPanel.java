@@ -23,7 +23,7 @@ import java.util.*;
  * An edge class must implement the {@link GraphEdge} interface.
  * <P>
  * <HR>
- * Last functional change: 23.8.2006 (2.0b8)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 25.6.2001 (2.0a11-pre6)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -322,7 +322,7 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 		} else if (menuID.equals(MENU_VIEW)) {
 			// Note: the parameters of view commands are extended by the
 			// click coordinates
-			controler.processGraphCommand(topicmap, command + ":" + (mX - translation.x) + ":" + (mY - translation.y));
+			controler.processGraphCommand(topicmap, command + COMMAND_SEPARATOR + (mX - translation.x) + COMMAND_SEPARATOR + (mY - translation.y));
 		} else {
 			throw new DeepaMehtaException("unexpected popup menu: " + menu + " (menuID: \"" + menuID +
 				"\") -- command \"" + command + "\" not processed");
@@ -704,8 +704,8 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 			dragInProgress = false;
 			//
 			if (targetNode != null && targetNode != selection.topic) {
-				controler.processGraphCommand(topicmap, CMD_CREATE_ASSOC + ":" +
-					selection.topic.getID() + ":" + targetNode.getID());
+				controler.processGraphCommand(topicmap, CMD_CREATE_ASSOC + COMMAND_SEPARATOR +
+					selection.topic.getID() + COMMAND_SEPARATOR + targetNode.getID());
 			} else {
 				repaint();
 			}

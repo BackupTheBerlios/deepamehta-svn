@@ -22,7 +22,7 @@ import java.util.StringTokenizer;
  * what to to with the selected file.
  * <P>
  * <HR>
- * Last functional change: 26.9.2002 (2.0a16-pre4)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 24.4.2001 (2.0a7-pre6)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -79,7 +79,7 @@ public abstract class FileTopic extends LiveTopic {
 													String topicmapID, String viewmode) {
 		CorporateDirectives directives = new CorporateDirectives();
 		//
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		if (cmd.equals(CMD_ASSIGN_FILE)) {
 			directives.add(DIRECTIVE_CHOOSE_FILE);

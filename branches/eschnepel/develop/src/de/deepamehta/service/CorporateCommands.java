@@ -24,7 +24,7 @@ import java.util.*;
  * Utility class for building {@link de.deepamehta.Commands topic commands / association commands}.
  * <P>
  * <HR>
- * Last functional change: 7.6.2007 (2.0b8)<BR>
+ * Last functional change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 9.10.2001 (2.0a12)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -143,7 +143,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 				defaultWorkspaceID = workspaceID;
 				cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
 					COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
-				commandGroup.addCommand(defaultWorkspace.getName(), CMD_PUBLISH + ":" + workspaceID,
+				commandGroup.addCommand(defaultWorkspace.getName(), CMD_PUBLISH + COMMAND_SEPARATOR + workspaceID,
 					FILESERVER_ICONS_PATH, as.getIconfile(defaultWorkspace), cmdState);
 				commandGroup.addSeparator();	// ### conditional
 			}
@@ -159,7 +159,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 				}
 				cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
 					COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
-				commandGroup.addCommand(workspaceTopic.getName(), CMD_PUBLISH + ":" + workspaceID,
+				commandGroup.addCommand(workspaceTopic.getName(), CMD_PUBLISH + COMMAND_SEPARATOR + workspaceID,
 					FILESERVER_ICONS_PATH, as.getIconfile(workspaceTopic), cmdState);
 			}
 		} else {
@@ -168,7 +168,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			workspaceID = workspace.getID();
 			cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
 				COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
-			commandGroup.addCommand(workspace.getName(), CMD_PUBLISH + ":" + workspaceID,
+			commandGroup.addCommand(workspace.getName(), CMD_PUBLISH + COMMAND_SEPARATOR + workspaceID,
 				FILESERVER_ICONS_PATH, as.getIconfile(workspace), cmdState);
 		}
 	}
@@ -431,7 +431,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 					false, true);	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
 				Vector selectedTopicIDs = DeepaMehtaUtils.topicIDs(selectedTopics);
 				//
-				String cmd = CMD_ASSIGN_TOPIC + ":" + assocTypeID + ":" + cardinality;
+				String cmd = CMD_ASSIGN_TOPIC + COMMAND_SEPARATOR + assocTypeID + COMMAND_SEPARATOR + cardinality;
 				addTopicCommands(topicGroup, topics, cmd, state, selectedTopicIDs, null, session, directives);
 				if (topics.size() > 0) {
 					topicGroup.addSeparator();
@@ -439,7 +439,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			}
 			// add additional "Create ..." command
 			String item = as.string(ITEM_ASSIGN_NEW_TOPIC, relTopicType.getName());
-			String cmd = CMD_ASSIGN_NEW_TOPIC + ":" + relTopicTypeID + ":" + assocTypeID + ":" + cardinality;
+			String cmd = CMD_ASSIGN_NEW_TOPIC + COMMAND_SEPARATOR + relTopicTypeID + COMMAND_SEPARATOR + assocTypeID + COMMAND_SEPARATOR + cardinality;
 			topicGroup.addCommand(item, cmd, FILESERVER_IMAGES_PATH, ICON_NEW_TOPIC);
 		}
 	}
@@ -456,7 +456,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 		if (query.equals("")) {
 			query = as.string(ITEM_SHOW_HELP, typeName);
 		}
-		addCommand(query, CMD_SHOW_HELP + ":" + type.getID(), FILESERVER_IMAGES_PATH, ICON_SHOW_HELP);	// ### encapsulate title
+		addCommand(query, CMD_SHOW_HELP + COMMAND_SEPARATOR + type.getID(), FILESERVER_IMAGES_PATH, ICON_SHOW_HELP);	// ### encapsulate title
 	}
 
 	public void addHelpCommand(LiveAssociation assoc, Session session) {
@@ -469,7 +469,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 		if (query.equals("")) {
 			query = as.string(ITEM_SHOW_HELP, typeName);
 		}
-		addCommand(query, CMD_SHOW_HELP + ":" + type.getID(), FILESERVER_IMAGES_PATH, ICON_SHOW_HELP);	// ### encapsulate title
+		addCommand(query, CMD_SHOW_HELP + COMMAND_SEPARATOR + type.getID(), FILESERVER_IMAGES_PATH, ICON_SHOW_HELP);	// ### encapsulate title
 	}
 
 	// ---
@@ -492,7 +492,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			option = (PresentableTopic) e.nextElement();
 			value = option.getName();
 			optionIconfile = option.getAppearanceParam();
-			cmd = CMD_SET_PROPERTY + ":" + propName + ":" + value;
+			cmd = CMD_SET_PROPERTY + COMMAND_SEPARATOR + propName + COMMAND_SEPARATOR + value;
 			cmdState = COMMAND_STATE_RADIOBUTTON + (propValue.equals(value) ?
 				COMMAND_STATE_SELECTED : COMMAND_STATE_DEFAULT);
 			cmdGroup.addCommand(value, cmd, FILESERVER_ICONS_PATH, optionIconfile,
@@ -508,12 +508,12 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 		String cmd;
 		int cmdState;
 		// on
-		cmd = CMD_SET_PROPERTY + ":" + propName + ":" + SWITCH_ON;
+		cmd = CMD_SET_PROPERTY + COMMAND_SEPARATOR + propName + COMMAND_SEPARATOR + SWITCH_ON;
 		cmdState = COMMAND_STATE_RADIOBUTTON + (propValue.equals(SWITCH_ON) ?
 				COMMAND_STATE_SELECTED : COMMAND_STATE_DEFAULT);
 		cmdGroup.addCommand(SWITCH_ON, cmd, "", "", cmdState);
 		// off
-		cmd = CMD_SET_PROPERTY + ":" + propName + ":" + SWITCH_OFF;
+		cmd = CMD_SET_PROPERTY + COMMAND_SEPARATOR + propName + COMMAND_SEPARATOR + SWITCH_OFF;
 		cmdState = COMMAND_STATE_RADIOBUTTON + (propValue.equals(SWITCH_OFF) ?
 				COMMAND_STATE_SELECTED : COMMAND_STATE_DEFAULT);
 		cmdGroup.addCommand(SWITCH_OFF, cmd, "", "", cmdState);
@@ -584,7 +584,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			int cmdState = commandState + (isSelected ? COMMAND_STATE_SELECTED : 0)
 										+ (isDisabled ? COMMAND_STATE_DISABLED : 0);
 			// add command
-			cmdGroup.addCommand(topicName, command + ":" + topicID, FILESERVER_ICONS_PATH, topic.getIconfile(), cmdState);
+			cmdGroup.addCommand(topicName, command + COMMAND_SEPARATOR + topicID, FILESERVER_ICONS_PATH, topic.getIconfile(), cmdState);
 		}
 	}
 
@@ -775,7 +775,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 					}
 					String count = (String) types.get(typeID);
 					cmdGroup.addCommand(type.getPluralNaming() + " (" + count + ")",
-						command + ":" + typeID, FILESERVER_ICONS_PATH, type.getIconfile());
+						command + COMMAND_SEPARATOR + typeID, FILESERVER_ICONS_PATH, type.getIconfile());
 				}
 			} catch (DeepaMehtaException ex) {
 				System.out.println("*** CorporateCommands.addTypeCommands(): command \"" + command + "\" cant be added for type \"" + typeID + "\": " + ex);
@@ -859,7 +859,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 									boolean editable, boolean styled, boolean multiline, Session session) {
 		int item = editable ? ITEM_EDIT_PROPERTY : ITEM_VIEW_PROPERTY;
 		String cmd = editable ? CMD_EDIT_TOPIC_PROPERTY : CMD_VIEW_TOPIC_PROPERTY;
-		String param = ":" + propName + ":" + propLabel + ":" + styled + ":" + multiline;
+		String param = COMMAND_SEPARATOR + propName + COMMAND_SEPARATOR + propLabel + COMMAND_SEPARATOR + styled + COMMAND_SEPARATOR + multiline;
 		addCommand(as.string(item, propLabel), cmd + param, FILESERVER_IMAGES_PATH, iconfile);
 	} */
 
@@ -872,7 +872,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 									boolean editable, boolean styled, boolean multiline, Session session) {
 		int item = editable ? ITEM_EDIT_PROPERTY : ITEM_VIEW_PROPERTY;
 		String cmd = editable ? CMD_EDIT_ASSOC_PROPERTY : CMD_VIEW_ASSOC_PROPERTY;
-		String param = ":" + propName + ":" + styled + ":" + multiline;
+		String param = COMMAND_SEPARATOR + propName + COMMAND_SEPARATOR + styled + COMMAND_SEPARATOR + multiline;
 		addCommand(as.string(item, propName), cmd + param, FILESERVER_IMAGES_PATH, iconfile);
 	}
 
@@ -971,7 +971,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	private void addTypeCommand(Commands cmdGroup, String typeID, String command,
 															boolean usePluralName) {
 		TypeTopic type = as.type(typeID, 1);
-		String cmd = command + ":" + type.getID();
+		String cmd = command + COMMAND_SEPARATOR + type.getID();
 		cmdGroup.addCommand(usePluralName ? type.getPluralNaming() : type.getName(), cmd,
 			FILESERVER_ICONS_PATH, type.getIconfile());
 	}

@@ -48,7 +48,7 @@ import java.util.*;
  * their topics from <CODE>LiveTopic</CODE>.
  * <P>
  * <HR>
- * Last sourcecode change: 7.6.2007 (2.0b8)<BR>
+ * Last sourcecode change: 11.9.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -416,7 +416,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 											Session session, CorporateDirectives directives) {
 		CorporateCommands commands = new CorporateCommands(as);
 		commands.addCommand(as.string(ITEM_CREATE_IN_WORKSPACE, type.getName()),
-			CMD_CREATE_TOPIC + ":" + type.getID(), type.getCreationIconPath(), type.getCreationIconfile());
+			CMD_CREATE_TOPIC + COMMAND_SEPARATOR + type.getID(), type.getCreationIconPath(), type.getCreationIconfile());
 		return commands;
 	}
 
@@ -448,7 +448,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		if (propName.equals(PROPERTY_ICON)) {
 			propDef.setActionButton(as.string(BUTTON_ASSIGN_FILE), CMD_ASSIGN_ICON);
 		} else if (propDef.getVisualization().equals(VISUAL_COLOR_CHOOSER)) {
-			propDef.setActionButton(as.string(BUTTON_CHOOSE_COLOR), CMD_CHOOSE_COLOR + ":" + propName);
+			propDef.setActionButton(as.string(BUTTON_CHOOSE_COLOR), CMD_CHOOSE_COLOR + COMMAND_SEPARATOR + propName);
 		}
 	}
 
@@ -472,7 +472,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		// >>> compare to LiveAssociation.executeCommand()
 		CorporateDirectives directives = new CorporateDirectives();
 		//
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		if (cmd.equals(CMD_DEFAULT)) {
 			// --- trigger getDetail() hook ---
@@ -544,7 +544,10 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 			as.performGoogleSearch(getName(), getID(), topicmapID, viewmode, session, directives);
 		} else if (cmd.equals(CMD_SUBMIT_FORM)) {
 			// Note: there is no standard behavoir for "submitForm" command -- do nothing
-			// just avoid "no command handler implemented" exception ### props could be saved
+			// just avoid "command not implemented" exception
+		} else if (cmd.equals(CMD_FOLLOW_HYPERLINK)) {
+			// Note: there is no standard behavoir for "followHyperlink" command -- do nothing
+			// just avoid "command not implemented" exception
 		} else {
 			if (as.editorContext(topicmapID) == EDITOR_CONTEXT_PERSONAL) {
 				handleWorkspaceCommand(command, topicmapID, viewmode, session, directives);
@@ -568,7 +571,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 												String topicmapID, String viewmode, Session session) {
 		CorporateDirectives directives = new CorporateDirectives();
 		//
-		StringTokenizer st = new StringTokenizer(command, ":");
+		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		//
 		if (cmd.equals(CMD_ASSIGN_ICON)) {
@@ -1348,7 +1351,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Extends the specified directives to perform this task: Create an association to the specified existing
-	 * topic and reveal that association. ### If the <CODE>select</CODE> flag is set, the topic is selected.
+	 * topic and reveal that association.
 	 * <p>
 	 * References checked: 14.11.2004 (2.0b4)
 	 *
