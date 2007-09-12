@@ -16,8 +16,8 @@ CREATE INDEX IDX_TopicType ON Topic (
 CREATE CACHED TABLE Association (
     TypeID CHAR(40) NOT NULL,
     TypeVersion INT NOT NULL,
-    ID CHAR(40) NOT NULL,
     Version INT NOT NULL,
+    ID CHAR(40) NOT NULL,
     Name VARCHAR_IGNORECASE NOT NULL,
     TopicID1 CHAR(40) NOT NULL,
     TopicVersion1 INT NOT NULL,
@@ -66,7 +66,7 @@ CREATE INDEX IDX_ViewAssociation_Assoc ON ViewAssociation (
 CREATE CACHED TABLE TopicProp (
     TopicID CHAR(40) NOT NULL,
     TopicVersion INT NOT NULL,
-    PropName CHAR(40) NOT NULL,
+    PropName CHAR(255) NOT NULL,
     PropValue VARCHAR_IGNORECASE
 );
 CREATE INDEX IDX_TopicProp ON TopicProp (
@@ -76,7 +76,7 @@ CREATE INDEX IDX_TopicProp ON TopicProp (
 CREATE CACHED TABLE AssociationProp (
     AssociationID CHAR(40) NOT NULL,
     AssociationVersion INT NOT NULL,
-    PropName CHAR(40) NOT NULL,
+    PropName CHAR(255) NOT NULL,
     PropValue VARCHAR_IGNORECASE
 );
 CREATE INDEX IDX_AssociationProp ON AssociationProp (

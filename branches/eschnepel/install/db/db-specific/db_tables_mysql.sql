@@ -49,7 +49,7 @@ CREATE TABLE ViewAssociation (
 CREATE TABLE TopicProp (
     TopicID CHAR(40) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
     TopicVersion INT NOT NULL,
-    PropName CHAR(40) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+    PropName CHAR(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
     PropValue MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci,
     INDEX (TopicID, TopicVersion, PropName)
 );
@@ -57,7 +57,7 @@ CREATE TABLE TopicProp (
 CREATE TABLE AssociationProp (
     AssociationID CHAR(40) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
     AssociationVersion INT NOT NULL,
-    PropName CHAR(40) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+    PropName CHAR(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
     PropValue MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci,
     INDEX (AssociationID, AssociationVersion, PropName)
 );

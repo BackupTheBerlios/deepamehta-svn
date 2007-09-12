@@ -24,4 +24,6 @@ public interface DatabaseProvider {
 	void checkPointNeeded();
 
 	DatabaseOptimizer getDatabaseOptimizer();
+
+	public void logStatement(String arg0);
 }

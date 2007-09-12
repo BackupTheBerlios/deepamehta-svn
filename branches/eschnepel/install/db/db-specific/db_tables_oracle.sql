@@ -57,7 +57,7 @@ CREATE INDEX i_viewassociation ON viewassociation (viewtopicid, viewtopicversion
 CREATE TABLE topicprop (
     topicid      VARCHAR2(40) NOT NULL,
     topicversion INT         NOT NULL,
-    propname    VARCHAR2(40) NOT NULL,
+    propname    VARCHAR2(255) NOT NULL,
     propvalue   VARCHAR2(4000)
 );
 CREATE INDEX i_topicprop ON topicprop (topicid, topicversion, propname);
@@ -67,7 +67,7 @@ CREATE INDEX i_topicprop ON topicprop (topicid, topicversion, propname);
 CREATE TABLE associationprop (
     associationid      VARCHAR2(40) NOT NULL,
     associationversion INT         NOT NULL,
-    propname          VARCHAR2(40) NOT NULL,
+    propname          VARCHAR2(255) NOT NULL,
     propvalue         VARCHAR2(4000)
 );
 CREATE INDEX i_associationprop ON associationprop (associationid, associationversion, propname);

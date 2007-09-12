@@ -113,6 +113,8 @@ DELETE FROM Association WHERE ID='a-325';
 DELETE FROM AssociationProp WHERE AssociationID='a-325';
 DELETE FROM ViewAssociation WHERE AssociationID='a-325';
 
+-- fixing a Typo in whois.sql
+UPDATE Association SET TopicID1='tt-whoistopic' WHERE TopicID1='tt-whoisTopic';
 
 
 --- *** UPDATE DATA DEFINITION *** ---

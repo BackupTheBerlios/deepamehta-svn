@@ -1,5 +1,10 @@
 package de.deepamehta.service.db;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.rmi.server.LogStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -55,22 +60,26 @@ public final class AutoFreeConnectionStatement implements Statement {
 	}
 
 	final public boolean execute(String arg0, int arg1) throws SQLException {
+		provider.logStatement(arg0);
 		provider.checkPointNeeded();
 		return statement.execute(arg0, arg1);
 	}
 
 	final public boolean execute(String arg0, int[] arg1) throws SQLException {
+		provider.logStatement(arg0);
 		provider.checkPointNeeded();
 		return statement.execute(arg0, arg1);
 	}
 
 	final public boolean execute(String arg0, String[] arg1)
 			throws SQLException {
+		provider.logStatement(arg0);
 		provider.checkPointNeeded();
 		return statement.execute(arg0, arg1);
 	}
 
 	final public boolean execute(String arg0) throws SQLException {
+		provider.logStatement(arg0);
 		provider.checkPointNeeded();
 		return statement.execute(arg0);
 	}
@@ -81,26 +90,31 @@ public final class AutoFreeConnectionStatement implements Statement {
 	}
 
 	final public ResultSet executeQuery(String arg0) throws SQLException {
+		provider.logStatement(arg0);
 		return statement.executeQuery(arg0);
 	}
 
 	final public int executeUpdate(String arg0, int arg1) throws SQLException {
+		provider.logStatement(arg0);
 		provider.checkPointNeeded();
 		return statement.executeUpdate(arg0, arg1);
 	}
 
 	final public int executeUpdate(String arg0, int[] arg1) throws SQLException {
+		provider.logStatement(arg0);
 		provider.checkPointNeeded();
 		return statement.executeUpdate(arg0, arg1);
 	}
 
 	final public int executeUpdate(String arg0, String[] arg1)
 			throws SQLException {
+		provider.logStatement(arg0);
 		provider.checkPointNeeded();
 		return statement.executeUpdate(arg0, arg1);
 	}
 
 	final public int executeUpdate(String arg0) throws SQLException {
+		provider.logStatement(arg0);
 		provider.checkPointNeeded();
 		return statement.executeUpdate(arg0);
 	}

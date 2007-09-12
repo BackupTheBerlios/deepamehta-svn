@@ -217,7 +217,7 @@
 		</condition>
 		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] patchdb'" />
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
-			<fileset>
+			<fileset dir=".">
 				<include name="${patch}" />
 			</fileset>
 			<fileset dir="${db-specific}">

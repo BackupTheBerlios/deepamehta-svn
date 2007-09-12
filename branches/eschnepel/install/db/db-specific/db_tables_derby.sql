@@ -64,7 +64,7 @@ CREATE INDEX IDX_ViewAssociation ON ViewAssociation (
 CREATE TABLE TopicProp (
     TopicID VARCHAR(40) NOT NULL,
     TopicVersion INT NOT NULL,
-    PropName VARCHAR(40) NOT NULL,
+    PropName VARCHAR(255) NOT NULL,
     PropValue VARCHAR(4096)
 );
 CREATE INDEX IDX_TopicProp ON TopicProp (
@@ -74,7 +74,7 @@ CREATE INDEX IDX_TopicProp ON TopicProp (
 CREATE TABLE AssociationProp (
     AssociationID VARCHAR(40) NOT NULL,
     AssociationVersion INT NOT NULL,
-    PropName VARCHAR(40) NOT NULL,
+    PropName VARCHAR(255) NOT NULL,
     PropValue VARCHAR(4096)
 );
 CREATE INDEX IDX_AssociationProp ON AssociationProp (

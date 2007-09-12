@@ -2,12 +2,16 @@ package de.deepamehta.service.db;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
@@ -114,7 +118,12 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 				Resource res = resources[i];
 				File file = res.getFile();
 				String path = file.getCanonicalPath();
-				String urlString = "jar:file:" + path + "!/";
+				String urlString;
+				if (file.isDirectory()) {
+					urlString = "file:" + path + "/";
+				} else {
+					urlString = "jar:file:" + path + "!/";
+				}
 				urls[i] = new URL(urlString);
 			}
 		} catch (MalformedURLException e) {
@@ -178,14 +187,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	}
 
 	public Statement getStatement() throws SQLException {
-		Connection con;
-		// at least 2 free Connections for better
-		// Performance of parallel accesses
-		if (freeCons.size() < 2) {
-			con = newConnection();
-		} else {
-			con = getConnection();
-		}
+		Connection con = getConnection();
 		Statement stmt = new AutoFreeConnectionStatement(this, con);
 		return stmt;
 	}
@@ -202,4 +204,47 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 
 	public void checkPointNeeded() {
 	}
+
+	static PrintStream dblog;
+	static {
+		try {
+			dblog = new PrintStream(new FileOutputStream("db.log"));
+		} catch (FileNotFoundException e) {
+			dblog = System.err;
+		}
+	}
+
+	public void logStatement(String arg0) {
+		dblog.println(arg0);
+		// do not use the AutoFreeConnectionStatement
+		try {
+			Connection connection = getConnection();
+			try {
+				Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery("EXPLAIN PLAN FOR "
+						+ arg0);
+				ResultSetMetaData md = rs.getMetaData();
+				int cc = md.getColumnCount();
+				for (int i = 1; i <= cc; i++) {
+					dblog.print(md.getColumnName(i) + ";");
+				}
+				dblog.println();
+				while (rs.next()) {
+					for (int i = 1; i <= cc; i++) {
+						dblog.print(rs.getString(i) + ";");
+					}
+					dblog.println();
+				}
+				dblog.println();
+				statement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				freeConnection(connection);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
