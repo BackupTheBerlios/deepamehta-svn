@@ -50,9 +50,28 @@ INSERT INTO Association VALUES ('at-aggregation', 1, 1, 'a-97', '', 'tt-calendar
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-displaydate', 'Display Date');
 INSERT INTO TopicProp VALUES ('pp-displaydate', 1, 'Name', 'Display Date');
 INSERT INTO TopicProp VALUES ('pp-displaydate', 1, 'Visualization', 'Date Chooser');
--- assign properties
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-displaymode', 'Display Mode');
+INSERT INTO TopicProp VALUES ('pp-displaymode', 1, 'Name', 'Display Mode');
+INSERT INTO TopicProp VALUES ('pp-displaymode', 1, 'Visualization', 'Options Menu');
+-- create property values
+INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-day', 'Day');
+INSERT INTO TopicProp VALUES ('t-day', 1, 'Name', 'Day');
+INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-week', 'Week');
+INSERT INTO TopicProp VALUES ('t-week', 1, 'Name', 'Week');
+INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-month', 'Month');
+INSERT INTO TopicProp VALUES ('t-month', 1, 'Name', 'Month');
+-- assign property values to property
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-157', '', 'pp-displaymode', 1, 't-day', 1);
+INSERT INTO AssociationProp VALUES ('a-157', 1, 'Ordinal Number', '1');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-162', '', 'pp-displaymode', 1, 't-week', 1);
+INSERT INTO AssociationProp VALUES ('a-162', 1, 'Ordinal Number', '2');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-187', '', 'pp-displaymode', 1, 't-month', 1);
+INSERT INTO AssociationProp VALUES ('a-187', 1, 'Ordinal Number', '3');
+-- assign properties to topic type
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-141', '', 'tt-calendar', 1, 'pp-displaydate', 1);
 INSERT INTO AssociationProp VALUES ('a-141', 1, 'Ordinal Number', '220');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-148', '', 'tt-calendar', 1, 'pp-displaymode', 1);
+INSERT INTO AssociationProp VALUES ('a-148', 1, 'Ordinal Number', '210');
 
 --- create topic type "Event" ---
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-event', 'Event');

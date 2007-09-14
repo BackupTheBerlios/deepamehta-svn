@@ -85,7 +85,7 @@ import java.io.*;
  *     ({@link #importFromFile})</LI>
  * </OL>
  * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
+ * Last functional change: 13.9.2007 (2.0b8)<BR>
  * Last documentation update: 11.12.2001 (2.0a14-pre4)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -1205,10 +1205,12 @@ public class TopicMapTopic extends LiveTopic {
 
 
 	private void processString(String command, CorporateDirectives directives) {
-		String str = command.substring(command.indexOf(':') + 1);
+		String str = command.substring(command.indexOf(COMMAND_SEPARATOR) + 1);
 		String topicID = as.getNewTopicID();
 		PresentableTopic topic = new PresentableTopic(topicID, 1, TOPICTYPE_TOPIC, 1, "");
 		Hashtable props = new Hashtable();
+		// ### Should possibly create more than one paragraph.
+		// ### A double line break could be interpreted as paragraph separation.
 		props.put(PROPERTY_DESCRIPTION, "<html><body><p>" + str + "</p></body></html>");
 		topic.setProperties(props);
 		directives.add(DIRECTIVE_SHOW_TOPIC, topic, Boolean.TRUE, getID());

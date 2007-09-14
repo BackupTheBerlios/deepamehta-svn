@@ -192,7 +192,7 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 		TextEditorPanel textEditor = new TextEditorPanel(EDITOR_TYPE_STYLED, hyperlinkListener,
 																	(GraphPanelControler) controler, true) {
 			public Dimension getPreferredSize() {
-				return new Dimension(0, 640);	// ### height 640 pixels
+				return new Dimension(0, 800);	// ### height 800 pixels
 			}
 		};
 		// --- add action button ---

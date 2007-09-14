@@ -35,7 +35,7 @@ import java.util.*;
  * Main controler of the graphical DeepaMehta frontend.
  * <P>
  * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
+ * Last functional change: 12.9.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -242,6 +242,13 @@ public final class PresentationService implements DeepaMehtaConstants,
 		}
 		// --- set GUI defaults ---
 		UIDefaults defaults = UIManager.getDefaults();
+		// reporting
+		/* ### System.out.println("> User Interface Defaults:");
+		Enumeration e = defaults.keys();
+		while (e.hasMoreElements()) {
+			Object key = e.nextElement();
+			System.out.println(">    \"" + key + "\" (" + key.getClass() + ")");
+		} */
 		// fonts
 		String fontname = ((Font) defaults.get("Label.font")).getName();
 		for (int i = 0; i < FONT_COUNT; i++) {
@@ -290,12 +297,16 @@ public final class PresentationService implements DeepaMehtaConstants,
 		defaults.put("TextArea.background", new ColorUIResource(COLOR_VIEW_BGCOLOR));
 		defaults.put("TextArea.selectionBackground", new ColorUIResource(COLOR_SELECTION));
 		defaults.put("TextArea.inactiveForeground", new ColorUIResource(COLOR_DARK_SHADOW));
+		defaults.put("TextPane.font", new FontUIResource(font[textsize + 1][Font.PLAIN]));		// ### no effect!
+		defaults.put("TextPane.background", new ColorUIResource(COLOR_VIEW_BGCOLOR));
+		defaults.put("TextPane.selectionBackground", new ColorUIResource(COLOR_SELECTION));
+		defaults.put("TextPane.inactiveForeground", new ColorUIResource(COLOR_DARK_SHADOW));	// ### any effect?
 		defaults.put("PasswordField.font", new FontUIResource(font[textsize + 1][Font.PLAIN]));
 		defaults.put("PasswordField.background", new ColorUIResource(COLOR_VIEW_BGCOLOR));
 		defaults.put("PasswordField.selectionBackground", new ColorUIResource(COLOR_SELECTION));
 		defaults.put("Separator.foreground", new ColorUIResource(COLOR_DARK_SHADOW));
-		defaults.put("TitledBorder.font", new FontUIResource(font[textsize][Font.PLAIN]));	// ###
-		defaults.put("TitledBorder.titleColor", new ColorUIResource(COLOR_DARK_SHADOW));	// ###
+		defaults.put("TitledBorder.font", new FontUIResource(font[textsize][Font.PLAIN]));		// ### still in use?
+		defaults.put("TitledBorder.titleColor", new ColorUIResource(COLOR_DARK_SHADOW));		// ### still in use?
 		// --- create login GUI components ---
 		usernameField = new JTextField(12);
 		usernameField.addActionListener(this);
