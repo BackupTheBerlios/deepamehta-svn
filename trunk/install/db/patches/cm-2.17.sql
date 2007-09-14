@@ -134,6 +134,16 @@ DELETE FROM ViewAssociation WHERE AssociationID='a-325';
 
 
 
+---
+--- Update standard installation
+---
+UPDATE TopicProp SET PropValue='DeepaMehta 2.0b8'         WHERE TopicID='t-deepamehtainstallation' AND PropName='Client Name';
+UPDATE TopicProp SET PropValue='DeepaMehtaServer 2.0b8'   WHERE TopicID='t-deepamehtainstallation' AND PropName='Server Name';
+DELETE FROM TopicProp                                     WHERE TopicID='t-deepamehtainstallation' AND PropName='Corporate Icon';
+INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Customer Icon', 'deepamehta-logo-tiny.png');
+
+
+
 --- *** UPDATE DATA DEFINITION *** ---
 ALTER TABLE       TopicProp CHANGE PropName PropName CHAR(255) NOT NULL;
 ALTER TABLE AssociationProp CHANGE PropName PropName CHAR(255) NOT NULL;
