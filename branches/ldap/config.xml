@@ -11,17 +11,17 @@
 <property name="endorsedpath" location="libs/endorsed"/>
 
 <!-- Servlet Engine -->
-<property name="web.deploy.dir"  value="/usr/local/tomcat/webapps"/>					<!-- configure this -->
-<property name="web.lib.dir"     value="/usr/local/tomcat/shared/lib"/>					<!-- configure this -->
-<property name="web.classes.dir" value="/usr/local/tomcat/shared/classes"/>				<!-- configure this -->
-<property name="web.servlet.lib" value="/usr/local/tomcat/common/lib/servlet-api.jar"/>	<!-- configure this -->
+<property name="web.deploy.dir"  value="/usr/share/tomcat5.5/webapps"/>
+<property name="web.lib.dir"     value="/usr/share/tomcat5.5/shared/lib"/>
+<property name="web.classes.dir" value="/usr/share/tomcat5.5/shared/classes"/>
+<property name="web.servlet.lib" value="/usr/share/tomcat5.5/common/lib/servlet-api.jar"/>
 
 <!-- Build Support -->
-<property name="build.archive.dir" value="/Users/jri/Archive/DeepaMehta"/>	<!-- configure this -->
-<property name="build.name" value="deepamehta-2.0b7.zip"/>					<!-- configure this -->
+<property name="build.archive.dir" value="${install}"/>
+<property name="build.name" value="deepamehta-2.0b7.zip"/>
 
 <!-- 3rd Party Libraries -->
-<path id="javalibs">
+<path id="javalibs">	
 	<pathelement location="${libpath}/mysql-3.1.7.jar"/>
 	<pathelement location="${libpath}/servlet.jar"/>
 	<pathelement location="${libpath}/mail.jar"/>
@@ -35,7 +35,10 @@
 	<pathelement location="${libpath}/commons-fileupload-1.0.jar"/>
 	<pathelement location="${libpath}/googleapi.jar"/>
 	<pathelement location="${libpath}/endorsed/xerces_2_3_0.jar"/>
+	<pathelement location="${libpath}/commons-logging-1.1.jar"/>
+	<pathelement location="${libpath}/commons-httpclient-3.0.1.jar"/>
 </path>
+
 <pathconvert property="jarclasspath" pathsep=" " refid="javalibs">
 	<!-- The classpath inside the .JAR archive is always interpreted relative to the location
 	     of the archive itself. Thus, if the archive resides in install/client/somename.jar and
@@ -50,7 +53,7 @@
 <property name="dm.port" value="7557"/>								<!-- configure this -->
 
 <!-- DeepaMehta Applications -->
-<property name="appspath" location="/Users/jri/Projects"/>			<!-- configure this -->
+<property name="appspath" location="Projects"/>			<!-- configure this -->
 <path id="dmapps">
 	<pathelement location="${examples}/movies/MoviesTopics.jar"/>								<!-- configure this -->
 	<pathelement location="${examples}/artfacts/ArtfactsTopics.jar"/>							<!-- configure this -->
@@ -63,6 +66,7 @@
 	<pathelement location="${appspath}/OLAP/olap.jar"/>											<!-- configure this -->
 	<pathelement location="${appspath}/Importer/importer.jar"/>									<!-- configure this -->
 	<pathelement location="${appspath}/DeepaMehta Coordination/coordination-platform.jar"/>		<!-- configure this -->
+	<pathelement location="${examples}/mailman/MailmanArchiveTopics.jar"/>
 </path>
 
 <!-- Database -->

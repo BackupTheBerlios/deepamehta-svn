@@ -1,0 +1,40 @@
+<project name="LDAP" default="jar" basedir=".">
+
+	<description>
+		mailman archiv import
+	</description>
+
+	<property name="jar" value="MailmanArchiveTopics.jar" />
+	<property name="build" location="build" />
+	<property name="server" location="../../server" />
+
+
+	<import file="../../../config.xml" />
+
+	<target name="init" description="create build directory">
+		<mkdir dir="${build}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
+			<classpath>
+				<pathelement location="${server}/DeepaMehtaService.jar" />
+				<pathelement location="${server}/DeepaMehtaTopics.jar" />
+				<pathelement location="../../../libs/commons-httpclient-3.0.1.jar" />
+				<pathelement location="../../../libs/commons-logging-1.1.jar" />
+				<pathelement location="../../../libs/commons-httpclient-3.0.1.jar" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar jarfile="${jar}" basedir="${build}">
+			<include name="de/deepamehta/topics/*.class" />
+		</jar>
+	</target>
+
+	<target name="cleanup" description="remove build directory">
+		<delete dir="${build}" />
+	</target>
+
+</project>
