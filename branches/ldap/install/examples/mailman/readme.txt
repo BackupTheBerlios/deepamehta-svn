@@ -8,16 +8,17 @@ Für jede Message in einem Archiv wird ein Message Topic angelegt. In diesem
 werden die Daten wie Name, Betreff und Inhalt der Mailman Message gespeichert.
 
 Bugs:
- * die Assoziationen sind noch ein wenig eigenartig, "What's related?" funktioniert 
-   leider nicht wirklich
  * es werden alle importierten Messages direkt angezeigt (leider habe ich keine
-   Directive bzw. Methode gefunden, die "nur speichert")
+   Directive bzw. Methode gefunden, die "nur speichert"). Wahrscheinlich muss der 
+   as.cm direkt verwendet werden, siehe entspr. TODOs im Quelltext
  * der Message Inhalt muss noch in HTML <pre> oder ähnliches
  * Prozess nicht von GUI entkoppelt (steht während des Importes)
 
 Features:
  * die Relation zwischen den Nachrichten über die referenceIds fehlt leider noch,
    für die messageId muss ein eigenes Attribut oder eine Hash-Methode genutzt werden
+ * der Container für das MailmanList Topic fehlt noch
+ * die Namensattribute müssen noch mit der Custom Implementation gemappt werden (z.B. Subject)
  * die Email-Adressen und Namen verwenden, um Personen und Emails zuzuordnen
  
 Anmerkungen bzw. was ist noch zu machen:

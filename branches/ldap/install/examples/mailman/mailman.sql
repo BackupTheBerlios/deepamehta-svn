@@ -30,6 +30,9 @@ INSERT INTO ViewTopic VALUES ('t-mailmantopicmap', 1, 't-mailmanforum', 1, 400, 
 -------------------
 -- Mailman List Topic
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-mailmanlist', 'Mailman List');
+INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-mailman-mailmanlisttopic', '', 'tt-generic', 1, 'tt-mailmanlist', 1);
+INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-mailman-mailmanlistuses', '', 't-corporategroup', 1, 'tt-mailmanlist', 1);
+INSERT INTO AssociationProp VALUES ('a-mailman-mailmanlistuses', 1, 'Access Permission', 'create');
 INSERT INTO TopicProp VALUES ('tt-mailmanlist', 1, 'Name', 'Mailman List');
 INSERT INTO TopicProp VALUES ('tt-mailmanlist', 1, 'Plural Name', 'Mailman Lists');
 INSERT INTO TopicProp VALUES ('tt-mailmanlist', 1, 'Icon', 'category.gif');
@@ -37,14 +40,30 @@ INSERT INTO TopicProp VALUES ('tt-mailmanlist', 1, 'Unique Topic Names', 'on');
 INSERT INTO TopicProp VALUES ('tt-mailmanlist', 1, 'Custom Implementation', 'de.deepamehta.topics.MailmanTopic');
 -- ListMessage Topic
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-listmessage', 'List Message');
+INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-mailman-listmessagetopic', '', 'tt-generic', 1, 'tt-listmessage', 1);
+INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-mailman-listmessageuses', '', 't-corporategroup', 1, 'tt-listmessage', 1);
+INSERT INTO AssociationProp VALUES ('a-mailman-listmessageuses', 1, 'Access Permission', 'create');
 INSERT INTO TopicProp VALUES ('tt-listmessage', 1, 'Name', 'List Message');
 INSERT INTO TopicProp VALUES ('tt-listmessage', 1, 'Plural Name', 'List Messages');
 INSERT INTO TopicProp VALUES ('tt-listmessage', 1, 'Icon', 'message.gif');
 INSERT INTO TopicProp VALUES ('tt-listmessage', 1, 'Unique Topic Names', 'on');
--- ListMessage Association
-INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-listmessageassoc', 'inlist');
-INSERT INTO TopicProp VALUES ('at-listmessageassoc', 1, 'Name', 'In List');
-INSERT INTO TopicProp VALUES ('at-listmessageassoc', 1, 'Color', '#0000FF');
+
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-listmessagecontainer', 'List Message Search');
+INSERT INTO TopicProp VALUES ('tt-listmessagecontainer', 1, 'Name', 'List Message Search');
+INSERT INTO TopicProp VALUES ('tt-listmessagecontainer', 1, 'Icon', 'websearchcontainer.gif');
+INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-mailman-listmessagetopiccontainer', '', 'tt-topiccontainer', 1, 'tt-listmessagecontainer', 1);
+INSERT INTO Association VALUES ('at-aggregation', 1, 1, 'a-mailman-listmessagecontainer', '', 'tt-listmessagecontainer', 1, 'tt-listmessage', 1);
+
+-- ListMessage Association Topic and Relation Hack
+INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-listmessageassociation', 'inlist');
+INSERT INTO TopicProp VALUES ('at-listmessageassociation', 1, 'Name', 'In List');
+INSERT INTO TopicProp VALUES ('at-listmessageassociation', 1, 'Color', '#0000FF');
+INSERT INTO Association VALUES ('at-relation', 1, 1, 'at-listmessagerelation', '', 'tt-mailmanlist', 1, 'tt-listmessage', 1);
+INSERT INTO AssociationProp VALUES ('at-listmessagerelation', 1, 'Cardinality', 'many');
+INSERT INTO AssociationProp VALUES ('at-listmessagerelation', 1, 'Association Type ID', 'at-listmessageassociation');
+INSERT INTO AssociationProp VALUES ('at-listmessagerelation', 1, 'Web Info', 'Related Topic Name');
+INSERT INTO AssociationProp VALUES ('at-listmessagerelation', 1, 'Web Form', 'Related Form');
+--INSERT INTO AssociationProp VALUES ('at-listmessagerelation', 1, 'Ordinal Number', '150');
 
 ------------------
 --- Properties ---
@@ -94,7 +113,7 @@ INSERT INTO ViewTopic VALUES ('t-mailmantopicmap', 1, 't-mailmanmap', 1, 100, 10
 INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'tt-mailmanlist', 1, 550, 100);
 INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'pp-mailmanusername', 1, 500, 50);
 INSERT INTO ViewAssociation VALUES ('t-mailmanmap', 1, 'a-mailman-mailmanlistusername', 1);
-INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'pp-mailmanurl', 1, 550, 50);
+INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'pp-mailmanurl', 1, 565, 50);
 INSERT INTO ViewAssociation VALUES ('t-mailmanmap', 1, 'a-mailman-mailmanlisturl', 1);
 INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'pp-mailmanpassword', 1, 600, 50);
 INSERT INTO ViewAssociation VALUES ('t-mailmanmap', 1, 'a-mailman-mailmanlistpassword', 1);
@@ -105,7 +124,12 @@ INSERT INTO ViewAssociation VALUES ('t-mailmanmap', 1, 'a-mailman-listmessagecon
 INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'pp-listmessagesubject', 1, 350, 50);
 INSERT INTO ViewAssociation VALUES ('t-mailmanmap', 1, 'a-mailman-listmessagesubject', 1);
 -- ListMessage Association
-INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'at-listmessageassoc', 1, 500, 100);
+INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'at-listmessageassociation', 1, 500, 125);
+INSERT INTO ViewAssociation VALUES ('t-mailmanmap', 1, 'at-listmessagerelation', 1);
+-- Container Associations
+INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'tt-listmessagecontainer', 1, 400, 150);
+INSERT INTO ViewAssociation VALUES ('t-mailmanmap', 1, 'a-mailman-listmessagecontainer', 1);
+
 -- Example List
 INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 't-deepamehtadevelopermailmanlist', 1, 100, 100);
 

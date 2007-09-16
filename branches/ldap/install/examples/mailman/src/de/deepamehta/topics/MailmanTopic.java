@@ -57,7 +57,7 @@ public class MailmanTopic extends LiveTopic {
 
 	private static final String PROPERTY_URL = "url";
 
-	private static final String ASSOCTYPE_INLIST = "at-listmessageassoc";
+	private static final String ASSOCTYPE_INLIST = "at-listmessageassociation";
 
 	/**
 	 * count of archives to process in get action
@@ -170,15 +170,20 @@ public class MailmanTopic extends LiveTopic {
 		messageId = messageId.substring(0, messageId.indexOf('@'));
 
 		// create message topic
+		// TODO use as.cm.createTopic(topicID, 1, topictype, 1, topicName);
 		PresentableTopic message = new PresentableTopic(messageId, 1,
 				TOPICTYPE_LISTMESSAGE, 1, subject);
 
+		// TODO user as.cm.setTopicData(topicID, 1, getProperties(topic));
 		Hashtable props = new Hashtable();
 		props.put(PROPERTY_CONTENT, content);
 		props.put(PROPERTY_SUBJECT, subject);
 		message.setProperties(props);
 
 		// create list association
+		// TODO use as.cm.createAssociation(assocID, 1, assoctype, 1, topicID1,
+		// 1, topicID2, 1); and as.cm.setAssociationData(assocID, 1,
+		// getProperties(assoc));
 		String assocID = as.getNewAssociationID();
 		PresentableAssociation assoc = new PresentableAssociation(assocID, 1,
 				ASSOCTYPE_INLIST, 1, "", messageId, 1, getID(), 1);

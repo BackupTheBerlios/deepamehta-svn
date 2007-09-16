@@ -36,6 +36,7 @@
 	<pathelement location="${libpath}/googleapi.jar"/>
 	<pathelement location="${libpath}/endorsed/xerces_2_3_0.jar"/>
 	<pathelement location="${libpath}/commons-logging-1.1.jar"/>
+	<pathelement location="${libpath}/commons-codec-1.3.jar"/>
 	<pathelement location="${libpath}/commons-httpclient-3.0.1.jar"/>
 </path>
 
