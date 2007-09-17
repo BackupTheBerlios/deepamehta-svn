@@ -50,7 +50,7 @@ public class DerbyDatabaseProvider extends DefaultDatabaseProvider {
 	}
 
 	public static boolean isResponsibleFor(String url) {
-		return url.contains(DBMS_HINT_DERBY_STR);
+		return url.indexOf(DBMS_HINT_DERBY_STR) >= 0;
 	}
 
 	public DatabaseOptimizer getDatabaseOptimizer() {

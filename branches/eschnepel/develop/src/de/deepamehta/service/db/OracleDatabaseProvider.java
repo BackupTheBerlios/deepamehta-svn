@@ -21,7 +21,7 @@ public class OracleDatabaseProvider extends DefaultDatabaseProvider {
 	}
 
 	public static boolean isResponsibleFor(String url) {
-		return url.contains(DBMS_HINT_ORACLE_STR);
+		return url.indexOf(DBMS_HINT_ORACLE_STR) >= 0;
 	}
 
 }

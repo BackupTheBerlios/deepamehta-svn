@@ -67,7 +67,7 @@ public class HsqlDatabaseProvider extends DefaultDatabaseProvider {
 	}
 
 	public static boolean isResponsibleFor(String url) {
-		return url.contains(DBMS_HINT_HSQLDB_STR);
+		return url.indexOf(DBMS_HINT_HSQLDB_STR) >= 0;
 	}
 
 	public void checkPointNeeded() {
