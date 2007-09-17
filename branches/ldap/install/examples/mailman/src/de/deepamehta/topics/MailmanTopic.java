@@ -1,21 +1,23 @@
 package de.deepamehta.topics;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.CharacterCodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +29,6 @@ import org.apache.commons.httpclient.HttpException;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
-import de.deepamehta.PropertyDefinition;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
@@ -47,58 +48,72 @@ public class MailmanTopic extends LiveTopic {
 	private static final String CMD_GET_LIST = "getList";
 
 	/* types and properties */
-	private static final String PROPERTY_MAILMAN_LIST = "Mailman List";
 
 	private static final String TOPICTYPE_LISTMESSAGE = "tt-listmessage";
 
-	private static final String PROPERTY_CONTENT = "content";
+	private static final String PROPERTY_CONTENT = "Content";
 
-	private static final String PROPERTY_SUBJECT = "subject";
+	private static final String PROPERTY_DATE = "Date";
 
-	private static final String PROPERTY_URL = "url";
+	private static final String PROPERTY_TIME = "Time";
+
+	private static final String PROPERTY_SUBJECT = "Subject";
+
+	private static final String PROPERTY_URL = "URL";
 
 	private static final String ASSOCTYPE_INLIST = "at-listmessageassociation";
+
+	private static final String ASSOCTYPE_INREPLYTO = "at-listmessageinreplyto";
+
+	private static final String ASSOCTYPE_REFERENCE = "at-listmessagereference";
 
 	/**
 	 * count of archives to process in get action
 	 */
 	private static final int ARCHIVE_COUNT = 1;
 
+	/**
+	 * format of a date string in archive
+	 */
+	private static final SimpleDateFormat formatArchiveDate = new SimpleDateFormat(
+			"EEE, d MMM yyyy HH:mm:ss Z", new Locale("en", "US"));
+
+	/**
+	 * format of a date string to save
+	 */
+	private static final SimpleDateFormat formatSaveDate = new SimpleDateFormat(
+			"yyyy/MM/dd", new Locale("en", "US"));
+
+	/**
+	 * format of a time string to save
+	 */
+	private static final SimpleDateFormat formatSaveTime = new SimpleDateFormat(
+			"HH:mm", new Locale("en", "US"));
+
 	public MailmanTopic(BaseTopic topic, ApplicationService as) {
 		super(topic, as);
 	}
 
-	public String getNameProperty() {
-		return PROPERTY_MAILMAN_LIST;
-	}
-
-	public static void propertyLabel(PropertyDefinition propertyDef,
-			ApplicationService as, Session session) {
-		String propName = propertyDef.getPropertyName();
-		if (propName.equals(PROPERTY_NAME)) {
-			propertyDef.setPropertyLabel(PROPERTY_MAILMAN_LIST);
-		}
-	}
-
+	/**
+	 * Adds context command for "get message" action
+	 */
 	public CorporateCommands contextCommands(String topicmapID,
 			String viewmode, Session session, CorporateDirectives directives) {
 		CorporateCommands commands = new CorporateCommands(as);
-		// add standard commands
 		int editorContext = as.editorContext(topicmapID);
 		commands.addNavigationCommands(this, editorContext, session);
-		//
-		// custom commands
 		commands.addSeparator();
 		commands.addCommand(ITEM_GET_LIST, CMD_GET_LIST,
 				FILESERVER_IMAGES_PATH, ICON_GET_LIST);
-		//
-		// add standard commands
 		commands.addStandardCommands(this, editorContext, viewmode, session,
 				directives);
-		//
 		return commands;
 	}
 
+	/**
+	 * Downloads the mailman list archives from URL property and creates a
+	 * message topic for each procceded message.
+	 */
 	@SuppressWarnings("unchecked")
 	public CorporateDirectives executeCommand(String command, Session session,
 			String topicmapID, String viewmode) {
@@ -129,11 +144,13 @@ public class MailmanTopic extends LiveTopic {
 				e.printStackTrace();
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
+			} catch (HttpException e) {
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
 			} catch (ParseException e) {
 				e.printStackTrace();
 			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			} catch (HttpException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -159,38 +176,63 @@ public class MailmanTopic extends LiveTopic {
 	 * @param name
 	 * @param referenceIds
 	 * @param subject
+	 * @throws IOException
+	 * @throws NoSuchAlgorithmException
 	 */
 	@SuppressWarnings("unchecked")
 	private void importMessage(Date date, String content, String inReplyToId,
 			String mail, String messageId, String name,
 			ArrayList<String> referenceIds, String subject,
-			CorporateDirectives directives) {
+			CorporateDirectives directives) throws NoSuchAlgorithmException,
+			IOException {
 
-		// TODO use hash or seperate field for complete messageId
-		messageId = messageId.substring(0, messageId.indexOf('@'));
+		// get md5 hash for messageId
+		messageId = getHash(messageId);
 
 		// create message topic
-		// TODO use as.cm.createTopic(topicID, 1, topictype, 1, topicName);
 		PresentableTopic message = new PresentableTopic(messageId, 1,
 				TOPICTYPE_LISTMESSAGE, 1, subject);
 
-		// TODO user as.cm.setTopicData(topicID, 1, getProperties(topic));
 		Hashtable props = new Hashtable();
+		content = "<html><body><pre>" + content + "</pre></body></html>";
 		props.put(PROPERTY_CONTENT, content);
 		props.put(PROPERTY_SUBJECT, subject);
+		props.put(PROPERTY_DATE, formatSaveDate.format(date));
+		props.put(PROPERTY_TIME, formatSaveTime.format(date));
 		message.setProperties(props);
 
-		// create list association
-		// TODO use as.cm.createAssociation(assocID, 1, assoctype, 1, topicID1,
-		// 1, topicID2, 1); and as.cm.setAssociationData(assocID, 1,
-		// getProperties(assoc));
-		String assocID = as.getNewAssociationID();
-		PresentableAssociation assoc = new PresentableAssociation(assocID, 1,
-				ASSOCTYPE_INLIST, 1, "", messageId, 1, getID(), 1);
+		// create in list relation
+		PresentableAssociation inList = new PresentableAssociation(as
+				.getNewAssociationID(), 1, ASSOCTYPE_INLIST, 1, "", messageId,
+				1, getID(), 1);
 
+		// create in reply to relation
+		inReplyToId = getHash(inReplyToId);
+		PresentableAssociation inReplyTo = new PresentableAssociation(as
+				.getNewAssociationID(), 1, ASSOCTYPE_INREPLYTO, 1, "",
+				messageId, 1, inReplyToId, 1);
+
+		// TODO use as.cm.createTopic(topicID, 1, topictype, 1, topicName)
+		// and as.cm.setTopicData(topicID, 1, getProperties(topic))
+		// TODO use as.cm.createAssociation(assocID, 1, assoctype, 1, topicID1,
+		// 1, topicID2, 1) and as.cm.setAssociationData(assocID, 1,
+		// getProperties(assoc))
 		directives.add(DIRECTIVE_SHOW_TOPIC, message, Boolean.TRUE);
-		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, Boolean.TRUE);
+		directives.add(DIRECTIVE_SHOW_ASSOCIATION, inList, Boolean.TRUE);
+		directives.add(DIRECTIVE_SHOW_ASSOCIATION, inReplyTo, Boolean.TRUE);
 		directives.add(DIRECTIVE_SELECT_TOPIC, messageId);
+
+		// create reference relations
+		if (referenceIds != null) {
+			for (String referenceId : referenceIds) {
+				referenceId = getHash(referenceId);
+				PresentableAssociation reference = new PresentableAssociation(
+						as.getNewAssociationID(), 1, ASSOCTYPE_REFERENCE, 1,
+						"", messageId, 1, referenceId, 1);
+				directives.add(DIRECTIVE_SHOW_ASSOCIATION, reference,
+						Boolean.TRUE);
+			}
+		}
 
 		// TODO create message references (reply, reference)
 
@@ -207,11 +249,9 @@ public class MailmanTopic extends LiveTopic {
 	 */
 	private void importArchive(final File file, CorporateDirectives directives)
 			throws CharacterCodingException, FileNotFoundException,
-			IOException, ParseException {
+			NoSuchAlgorithmException, ParseException, IOException {
 
 		BufferedReader in = null;
-		SimpleDateFormat formatter = new SimpleDateFormat(
-				"EEE, d MMM yyyy HH:mm:ss Z", new Locale("en", "US"));
 
 		// pattern
 		Matcher matcher = null;
@@ -257,7 +297,7 @@ public class MailmanTopic extends LiveTopic {
 				if (mail != null && date == null) {
 					matcher = pDate.matcher(line);
 					if (matcher.matches()) {
-						date = formatter.parse(matcher.group(1));
+						date = formatArchiveDate.parse(matcher.group(1));
 						continue;
 					}
 				}
@@ -285,8 +325,12 @@ public class MailmanTopic extends LiveTopic {
 						&& referenceIds == null) {
 					matcher = pReferencesId.matcher(line);
 					if (matcher.matches()) {
-						referenceIds = new ArrayList<String>(1);
-						referenceIds.add(matcher.group(1));
+						String referenceId = matcher.group(1);
+						if (inReplyToId != null
+								&& referenceId.equals(inReplyToId) == false) {
+							referenceIds = new ArrayList<String>(1);
+							referenceIds.add(referenceId);
+						}
 						continue;
 					}
 				}
@@ -302,7 +346,11 @@ public class MailmanTopic extends LiveTopic {
 							// read next referencesId
 							matcher = pTabReferencesId.matcher(line);
 							if (matcher.matches()) {
-								referenceIds.add(matcher.group(1));
+								String referenceId = matcher.group(1);
+								if (inReplyToId != null
+										&& referenceId.equals(inReplyToId) == false) {
+									referenceIds.add(referenceId);
+								}
 							}
 						} else {
 							// read additional subject lines before messageId
@@ -352,4 +400,32 @@ public class MailmanTopic extends LiveTopic {
 		}
 	}
 
+	/**
+	 * Calculates and returns a MD5 hash for the object.
+	 * 
+	 * @param object
+	 * @return md5 hash for object
+	 * @throws NoSuchAlgorithmException
+	 * @throws IOException
+	 */
+	public static final String getHash(final Object object)
+			throws NoSuchAlgorithmException, IOException {
+		MessageDigest mdAlgorithm = MessageDigest.getInstance("MD5");
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(baos);
+		oos.writeObject(object);
+		mdAlgorithm.update(baos.toByteArray());
+
+		byte[] digest = mdAlgorithm.digest();
+		StringBuffer hexString = new StringBuffer();
+
+		for (int i = 0; i < digest.length; i++) {
+			String x = Integer.toHexString(0xFF & digest[i]);
+			if (x.length() < 2)
+				x = "0" + x;
+			hexString.append(x);
+		}
+		return (hexString.toString());
+
+	}
 }
