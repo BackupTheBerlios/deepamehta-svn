@@ -127,13 +127,13 @@ INSERT INTO AssociationProp VALUES ('a-112', 1, 'Ordinal Number', '130');
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-113', '', 'tt-event', 1, 'pp-endtime', 1);
 INSERT INTO AssociationProp VALUES ('a-113', 1, 'Ordinal Number', '140');
 -- create relation to "Person"
-INSERT INTO Association VALUES ('at-relation', 1, 1, 'a-253', 'Attendee', 'tt-event', 1, 'tt-person', 1);
-INSERT INTO AssociationProp VALUES ('a-253', 1, 'Name', 'Attendee');
-INSERT INTO AssociationProp VALUES ('a-253', 1, 'Cardinality', 'many');
-INSERT INTO AssociationProp VALUES ('a-253', 1, 'Association Type ID', 'at-association');
-INSERT INTO AssociationProp VALUES ('a-253', 1, 'Web Info', 'Related Topic Name');
-INSERT INTO AssociationProp VALUES ('a-253', 1, 'Web Form', 'Related Topic Selector');
-INSERT INTO AssociationProp VALUES ('a-253', 1, 'Ordinal Number', '150');
+INSERT INTO Association VALUES ('at-relation', 1, 1, 'a-323', 'Attendee', 'tt-event', 1, 'tt-person', 1);
+INSERT INTO AssociationProp VALUES ('a-323', 1, 'Name', 'Attendee');
+INSERT INTO AssociationProp VALUES ('a-323', 1, 'Cardinality', 'many');
+INSERT INTO AssociationProp VALUES ('a-323', 1, 'Association Type ID', 'at-association');
+INSERT INTO AssociationProp VALUES ('a-323', 1, 'Web Info', 'Related Topic Name');
+INSERT INTO AssociationProp VALUES ('a-323', 1, 'Web Form', 'Related Topic Selector');
+INSERT INTO AssociationProp VALUES ('a-323', 1, 'Ordinal Number', '150');
 
 ---
 --- assign topic types to workspace "DeepaMehta"
