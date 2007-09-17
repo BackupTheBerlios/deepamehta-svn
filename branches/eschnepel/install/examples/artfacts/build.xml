@@ -7,7 +7,9 @@
 	<property name="jar" value="ArtfactsTopics.jar"/>
 	<property name="build" location="build"/>
 
-	<import file="../../../config.xml"/>
+	<property name="dm.base-dir" location="../../.." />
+
+	<import file="${dm.base-dir}/config.xml" />
 
 	<target name="init" description="create build directory">
 		<mkdir dir="${build}"/>
@@ -28,6 +30,8 @@
 			<include name="de/deepamehta/artfacts/topics/*.class" />
 		</jar>
 	</target>
+
+	<target name="build" depends="jar"/>
 
 	<target name="cleanup" description="remove build directory">
 		<delete dir="${build}"/>

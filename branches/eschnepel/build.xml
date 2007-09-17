@@ -1,4 +1,4 @@
-<project name="DeepaMehta" default="dm" basedir=".">
+<project name="DeepaMehta" default="-default" basedir=".">
 
 	<description>
 		DeepaMehta build file
@@ -8,6 +8,7 @@
 
 	<import file="${db-specific}/${db.create-db}" />
 	<import file="${db-specific}/${db.drop-db}" />
+	<target name="dropdb" depends="-dropdb"/>
 
 	<import file="build-development.xml" optional="true"/>
 	
@@ -30,70 +31,180 @@
 		<!-- configure this -->
 	</path>
 
-	<!-- Install -->
-
-	<target name="preinstall">
-		<echo message="--- DeepaMehta Installation ---" />
-		<echo message="You are about to create a database '${db.name}' and an user '${db.user}' (password '${db.password}')." />
-		<echo message="You will be asked for the MySQL root user password." />
-		<echo message="If you want change these settings, type 'n' and edit config.xml (section 'Database')" />
-		<echo message="or use command line options -Ddb.name=... -Ddb.user=... -Ddb.password=..." />
-		<input message="Continue? " validargs="y,n" addproperty="do.install" />
-		<condition property="do.abort">
-			<equals arg1="${do.install}" arg2="n" />
-		</condition>
-		<fail if="do.abort" message="==> Installation aborted by user -- revisit with 'ant [options] install'" />
+	<target name="-default">
+		<antcall target="${main-target}"></antcall>
 	</target>
 	
-	<target name="install" depends="preinstall" description="initialises the database">
-		<antcall target="createdb" />
-		<antcall target="createtables" />
-		<antcall target="initdb" />
+	<!-- Configuration -->
+
+	<target name="config" depends="-config-web-root,-config-instance,-config-examples" description="Configures the application DeepaMehta">
+		<propertyfile file="${config.properties}" >
+			<entry key="main-target" default="dm"/>
+		</propertyfile>
+		<echo>
+Your choices are stored in the "${config.properties}" file.
+If you want to change the settings you have made please edit
+this file or call the config target again.
+		</echo>
+	</target>
+	<target name="-config-web">
+		<condition property="old.do.installweb" value="n">
+			<isfalse value="${web.deploy.do}"/>
+		</condition>
+		<condition property="old.do.installweb" value="y">
+			<istrue value="${web.deploy.do}"/>
+		</condition>
+		<input
+			message="Do you want to install web applications?"
+			validargs="y,n"
+			addproperty="new.do.installweb"
+			defaultvalue="${old.do.installweb}"/>
+		<condition property="new.web.deploy.do" value="false">
+				<equals arg1="${new.do.installweb}" arg2="n" />
+		</condition>
+		<condition property="new.web.deploy.do" value="true">
+			<not><equals arg1="${new.do.installweb}" arg2="n" /></not>
+		</condition>
+		<condition property="new.do.web.deploy">
+			<istrue value="${new.web.deploy.do}" />
+		</condition>
+		<propertyfile file="${config.properties}" >
+			<entry key="web.deploy.do" value="${new.web.deploy.do}"/>
+		</propertyfile>
+		<var name="do.web.deploy" unset="true"/>
+		<condition property="do.web.deploy" value="true">
+			<istrue value="${web.deploy.do}"/>
+		</condition>
+	</target>
+	<target name="-config-web-root" if="new.do.web.deploy" depends="-config-web">
+		<input
+			message="Please enter the root directory of your application server."
+			addproperty="new.tomcat.root"
+			defaultvalue="${tomcat.root}"/>
+		<propertyfile file="${config.properties}" >
+			<entry key="tomcat.root" value="${new.tomcat.root}"/>
+		</propertyfile>
+	</target>
+	<target name="-config-which-instance">
+		<echo>Please select one of the following instance configurations:</echo>
+		<echo/>
+		<for param="list.instance.config.file">
+			<path>
+				<fileset dir="${config}" includes="dm-*.properties"/>
+			</path>
+			<sequential>
+				<var name="list.instance" unset="true"/>
+				<var name="list.dm-instance" unset="true"/>
+				<basename file="@{list.instance.config.file}" property="list.dm-instance" suffix=".properties"/>
+				<propertyregex property="list.instance"
+	              input="${list.dm-instance}"
+	              regexp="dm-(.*)"
+	              select="\1"/>
+				<echo>${list.instance}</echo>
+			</sequential>
+		</for>
+		<echo/>
+		<input
+			message="currently set (default)"
+			addproperty="new.dm.instance"
+			defaultvalue="${dm.instance}"/>
+
+		<fileset dir="${config}" includes="dm-${new.dm.instance}.properties" id="instance.config.fileset"/>
+		<var name="correct" unset="true"/>
+		<condition property="correct">
+			<resourcecount refid="instance.config.fileset" when="equal" count="1" />
+		</condition>
+		<fail
+			unless="correct"
+			message="${new.dm.instance} does not refer to an instance configuration" />
+		<propertyfile file="${config.properties}" >
+			<entry key="dm.instance" value="${new.dm.instance}"/>
+		</propertyfile>
+	</target>
+	<target name="-config-instance" depends="-config-which-instance">
+		<echo>configuring now the DeepaMehta instance "${dm.instance}...</echo>
+		<ant target="-config-instance2" inheritall="false"/>
+	</target>
+	<target name="-config-instance2" depends="-config-instance-db.host,-config-instance-db.name,-config-instance-db.user">
+		<echo>completed configuring instance "${dm.instance}"</echo>
+		<echo>Instance-related settings are stored in "${dm.instance.config-property-file}.</echo>
+	</target>
+	<target name="-config-instance-db.host" if="do.config.db.host">
+		<input
+			message="Please enter the host of your database:"
+			addproperty="new.db.host"
+			defaultvalue="${db.host}"/>
+		<propertyfile file="${dm.instance.config-property-file}" >
+			<entry key="db.host" value="${new.db.host}"/>
+		</propertyfile>
+	</target>
+	<target name="-config-instance-db.name" if="do.config.db.name">
+		<input
+			message="Please enter the name of your database:"
+			addproperty="new.db.name"
+			defaultvalue="${db.name}"/>
+		<propertyfile file="${dm.instance.config-property-file}" >
+			<entry key="db.name" value="${new.db.name}"/>
+		</propertyfile>
+	</target>
+	<target name="-config-instance-db.user" if="do.config.db.user">
+		<echo>It is strongly advised to change the database user and password before creation!</echo>
+		<input
+			message="Please enter the user to use:"
+			addproperty="new.db.user"
+			defaultvalue="${db.user}"/>
+		<input
+			message="Please enter the password to use:"
+			addproperty="new.db.password"
+			defaultvalue="${db.password}"/>
+		<propertyfile file="${dm.instance.config-property-file}" >
+			<entry key="db.user" value="${new.db.user}"/>
+			<entry key="db.password" value="${new.db.password}"/>
+		</propertyfile>
+	</target>
+	<target name="-config-examples">
+		<ant target="-call-examples">
+			<property name="target" value="config"/>
+		</ant>
+	</target>
+
+	<!-- Install -->
+
+	<target name="install" description="initialises the database">
+		<antcall target="-createdb" />
+		<antcall target="-createtables" />
+		<antcall target="-initdb" />
 		<!-- example applications -->
-		<antcall target="installmovies" />
-		
-		<!-- this should be a seperate call to ant-->
-		
-		<!--antcall target="installweb" /-->
+		<antcall target="-installexamples" />
 	</target>
 
 	<!-- Movies -->
-	<target name="dropmovies">
-		<condition property="withsyspass" value="true">
-			<isset property="db.syspass" />
-		</condition>
-		<ant antfile="build.xml" dir="${examples}/movies" target="dropmoviesdb" inheritall="false" inheritrefs="false">
-			<property name="syspass" value="${db.syspass}" />
-			<property name="withsyspass" value="${withsyspass}" />
+	<target name="dropmovies" depends="-testsyspass">
+		<ant target="-call-example">
+			<property name="example" value="movies"/>
+			<property name="target" value="dropmoviesdb"/>
 		</ant>
 	</target>
-	<target name="installmovies">
-		<condition property="withsyspass" value="true">
-			<isset property="db.syspass" />
-		</condition>
-		<ant antfile="build.xml" dir="${examples}/movies" target="install" inheritall="false" inheritrefs="false">
-			<property name="syspass" value="${db.syspass}" />
-			<property name="withsyspass" value="${withsyspass}" />
+	<target name="-installexamples" depends="-testsyspass">
+		<ant target="-call-examples">
+			<property name="target" value="install"/>
 		</ant>
 	</target>
 
 	<!-- Web-related tasks -->
-	<target name="installweb-ask">
-		<echo message="You are about to install the web applications to '${web.deploy.dir}'." />
-		<echo message="The directory for the servlet engines shared libraries is set to '${web.lib.dir}'." />
-		<echo message="If you want change these settings, type 'n' and edit config.xml (section 'Servlet Engine')" />
-		<echo message="or use command line options -Dweb.deploy.dir=... -Dweb.lib.dir=..." />
-		<input message="Continue? " validargs="y,n" addproperty="do.installweb" />
-		<condition property="do.abortweb">
-			<equals arg1="${do.installweb}" arg2="n" />
-		</condition>
+	<target name="-installweb-ask" depends="-config-web-root" unless="web.deploy.do"/>
+	<target name="-installweb-unless" unless="do.web.deploy" depends="-installweb-ask">
+		<echo>
+=========================
+Deployment not configured
+=========================
+Please run the config target if you want to have
+your DeepaMehta installed into your tomcat.
+		</echo>
 	</target>
-	<target name="installweb-if" if="do.abortweb" depends="installweb-ask">
-		<echo message="==> Installation aborted by user -- revisit with 'ant [options] installweb'" />
-	</target>
-	<target name="installweb-unless" unless="do.abortweb" depends="installweb-ask">
+	<target name="-installweb-if" if="do.web.deploy" depends="-installweb-ask">
 		<!-- copy shared libraries -->
-		<antcall target="deploylibs" />
+		<antcall target="-deploylibs" />
 		<copy todir="${web.lib.dir}" >
 			<fileset dir="${dm.base-dir}">
 				<include name="${db.libs}" />
@@ -102,19 +213,15 @@
 		<copy file="${libpath}/googleapi.jar" todir="${web.lib.dir}" />
 		<copy file="${libpath}/commons-fileupload-1.0.jar" todir="${web.lib.dir}" />
 		<!-- deploy web applications -->
-		<ant antfile="${examples}/dm-browser/build.xml" dir="${examples}/dm-browser" target="deploy" />
-		<ant antfile="${examples}/dm-search/build.xml" dir="${examples}/dm-search" target="deploy" />
-		<ant antfile="${examples}/messageboard/build.xml" dir="${examples}/messageboard" target="deploy" />
-		<ant antfile="${examples}/musicforum/build.xml" dir="${examples}/musicforum" target="deploy" />
-		<ant antfile="${examples}/kompetenzstern/build.xml" dir="${examples}/kompetenzstern" target="deploy" />
+		<ant target="-call-examples-web">
+			<property name="target" value="deploy"/>
+		</ant>
 	</target>
-	<target name="installweb" depends="installweb-if,installweb-unless" />
+	<target name="-installweb" depends="-installweb-if,-installweb-unless" />
 
-	<target name="deploy" depends="build,installweb-ask">
-		<antcall target="deploylibs" />
-	</target>
+	<target name="deploy" depends="-build-self,-installweb" description="Does everything to setup your Tomcat."/>
 
-	<target name="deploylibs" unless="do.abortweb">
+	<target name="-deploylibs" if="do.web.deploy">
 		<copy file="${server}/DeepaMehtaService.jar" todir="${web.lib.dir}" />
 		<copy file="${server}/DeepaMehtaTopics.jar" todir="${web.lib.dir}" />
 	</target>
@@ -122,7 +229,7 @@
 	<!-- The target createdb has been "outsourced" to ${db.create-db}-->
 	<!-- The target dropdb has been "outsourced" to ${db.drop-db}-->
 
-	<target name="createtables">
+	<target name="-createtables">
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${db-specific}">
 				<include name="${db.tables}" />
@@ -131,10 +238,10 @@
 				<include name="${db.close-session}" />
 			</fileset>
 		</sql>
-		<antcall target="optimize" />
+		<antcall target="-optimize" />
 	</target>
 
-	<target name="optimize">
+	<target name="-optimize">
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${db-specific}">
 				<include name="${db.optimize}" />
@@ -145,7 +252,7 @@
 		</sql>
 	</target>
 
-	<target name="initdb">
+	<target name="-initdb">
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${db}">
 				<include name="cm.sql" />
@@ -153,18 +260,6 @@
 				<include name="auth.sql" />
 				<include name="webcrawler.sql" />
 				<include name="whois.sql" />
-			</fileset>
-			<fileset dir="${db-specific}">
-				<include name="${db.close-session}" />
-			</fileset>
-		</sql>
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
-			<fileset dir="${examples}">
-				<include name="movies/db/dmdb-movies.sql" />
-				<include name="movies/db/dmdb-movies-${dm.instance}.sql" />
-				<include name="musicforum/music.sql" />
-				<include name="kompetenzstern/kompetenzstern.sql" />
-				<include name="kompetenzstern/businesscheck.sql" />
 			</fileset>
 			<fileset dir="${db-specific}">
 				<include name="${db.close-session}" />
@@ -179,10 +274,10 @@
 				<include name="${db.close-session}" />
 			</fileset>
 		</sql>
-		<antcall target="optimize" />
+		<antcall target="-optimize" />
 	</target>
 
-	<target name="droptables">
+	<target name="-droptables">
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${db-specific}">
 				<include name="${db.drop-tables}" />
@@ -224,7 +319,7 @@
 				<include name="${db.close-session}" />
 			</fileset>
 		</sql>
-		<antcall target="optimize" />
+		<antcall target="-optimize" />
 	</target>
 
 	<!-- Run -->
@@ -273,6 +368,66 @@
 			</classpath>
 			<arg value="${dm.instance}" />
 		</java>
+	</target>
+
+	<!-- Herlper Targets -->
+
+	<target name="-testsyspass">
+		<condition property="withsyspass" value="true">
+			<isset property="db.syspass" />
+		</condition>
+	</target>
+
+    <target name="-call-examples">
+    	<antcall target="-call-examples-noweb"/>
+    	<antcall target="-call-examples-web"/>
+    </target>
+	<target name="-call-examples-noweb">
+		<ant target="-call-example">
+			<property name="example" value="ldap"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="movies"/>
+		</ant>
+    </target>
+	<target name="-call-examples-web">
+		<ant target="-call-example">
+			<property name="example" value="dm-browser"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="dm-search"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="dm-topicmapviewer"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="dm-web"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="knoppixforum"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="kompetenzstern"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="messageboard"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="musicforum"/>
+		</ant>
+    </target>
+    <target name="-call-example">
+    	<echo>calling target "${target}" in example "${example}"</echo>
+		<trycatch>
+			<try>
+				<ant antfile="build.xml" dir="${examples}/${example}" target="${target}" inheritall="false">
+					<property name="syspass" value="${db.syspass}" />
+					<property name="withsyspass" value="${withsyspass}" />
+				</ant>
+			</try>
+			<catch/>
+		</trycatch>
+    	<echo>finished target "${target}" in example "${example}"</echo>
 	</target>
 
 </project>

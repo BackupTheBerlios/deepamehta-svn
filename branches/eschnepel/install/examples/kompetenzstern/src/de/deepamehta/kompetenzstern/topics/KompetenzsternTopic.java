@@ -385,11 +385,11 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 		}
 		if (layers == null) {
 			throw new DeepaMehtaException("Kompetenzstern \"" + getName() + "\" kann " +
-				"nicht angezeigt werden, da sein Template keine Bewertungsebenen enthŠlt");
+				"nicht angezeigt werden, da sein Template keine Bewertungsebenen enthï¿½lt");
 		}
 		if (kriterien == null) {
 			throw new DeepaMehtaException("Kompetenzstern \"" + getName() + "\" kann " +
-				"nicht angezeigt werden, da sein Template keine Kriterien enthŠlt");
+				"nicht angezeigt werden, da sein Template keine Kriterien enthï¿½lt");
 		}
 		//
 		checkBackground(directives);
@@ -481,7 +481,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 
 
 	/**
-	 * Adds a "Reihenfolge festlegen"/"Reihenfolge Šndern" command to the specified
+	 * Adds a "Reihenfolge festlegen"/"Reihenfolge Ã¤ndern" command to the specified
 	 * (topic) command set.
 	 * <P>
 	 * References checked: 30.12.2001 (2.0a14-pre5)
@@ -502,7 +502,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 		} catch (DeepaMehtaException e) {
 			System.out.println("*** KompetenzsternTopic.addSetOrderCommand(): " + e);
 			directives.add(DIRECTIVE_SHOW_MESSAGE, "Das Kommando \"" + ITEM_SET_ORDER + "\" steht nicht zur " +
-				"VerfŸgung (" + e.getMessage() + ")", new Integer(NOTIFICATION_WARNING));
+				"VerfÃ¼gung (" + e.getMessage() + ")", new Integer(NOTIFICATION_WARNING));
 		}
 	} */
 
@@ -721,7 +721,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 			return template.getKriterien();
 		} catch (DeepaMehtaException e) {
 			throw new DeepaMehtaException("Kompetenzstern \"" + getName() + "\" kann " +
-				"nicht angezeigt werden, da sein Template keine Kriterien enthŠlt");
+				"nicht angezeigt werden, da sein Template keine Kriterien enthï¿½lt");
 		}
 	}
 
@@ -737,7 +737,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 				TOPICTYPE_BEWERTUNGS_EBENE, 2, true, false);	// throws DME
 		} catch (DeepaMehtaException e) {
 			throw new DeepaMehtaException("Kompetenzstern \"" + getName() + "\" kann " +
-				"nicht angezeigt werden, da sein Template keine Bewertungsebenen enthŠlt");
+				"nicht angezeigt werden, da sein Template keine Bewertungsebenen enthï¿½lt");
 		}
 	}
 

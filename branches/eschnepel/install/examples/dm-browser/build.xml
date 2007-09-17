@@ -8,7 +8,9 @@
 	<property name="war" value="${project.name}.war"/>
 	<property name="build" location="build"/>
 
-	<import file="../../../config.xml"/>
+	<property name="dm.base-dir" location="../../.." />
+
+	<import file="${dm.base-dir}/config.xml" />
 
 	<target name="init" description="create build directory">
 		<mkdir dir="${build}"/>
@@ -35,11 +37,9 @@
 		</war>
 	</target>
 
-	<target name="build" depends="war">
-		<antcall target="deploy"/>
-	</target>
+	<target name="build" depends="war"/>
 
-	<target name="deploy">
+	<target name="deploy" if="do.web.deploy">
         <copy file="${war}" todir="${web.deploy.dir}"/>
         <copy file="browser.xsl" todir="../../client/stylesheets/browser"/>
 	</target>
@@ -47,5 +47,4 @@
 	<target name="cleanup" description="remove build directory">
 		<delete dir="${build}"/>
 	</target>
-
 </project>

@@ -18,7 +18,7 @@
 		</javac>
 	</target>
 
-	<target name="build" depends="compile" description="build jar files">
+	<target name="-build-self" depends="compile">
 		<!-- monolith -->
 		<mkdir dir="${client}" />
 		<jar jarfile="${client}/DeepaMehta.jar" basedir="${build}">
@@ -72,6 +72,11 @@
 			<include name="de/deepamehta/topics/**/*.class" />
 			<include name="de/deepamehta/assocs/**/*.class" />
 		</jar>
+	</target>
+	<target name="build" depends="-build-self" description="build jar files">
+		<ant target="-call-examples">
+			<property name="target" value="build"/>
+		</ant>
 	</target>
 
 	<target name="sign" depends="build" description="sign client">

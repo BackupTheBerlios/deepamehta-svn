@@ -1,5 +1,6 @@
 <project name="DeepaMehta-db-createdb-EMPTY" >
-	<target name="createdb">
+	<import file="createdb-ask.xml"/>
+	<target name="-createdb" depends="-askcreatedb" unless="do.abort">
 		<echo message="There is nothing to do to create a db for this type database"/>
 	</target>
 </project>

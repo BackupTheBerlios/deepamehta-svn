@@ -118,7 +118,7 @@ INSERT INTO Association VALUES ('at-aggregation', 1, 1, 'a-602', '', 'tt-kompete
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-bewertungsgegenstand', 'Bewertungsgegenstand');
 -- set properties
 INSERT INTO TopicProp VALUES ('tt-bewertungsgegenstand', 1, 'Name', 'Bewertungsgegenstand');
-INSERT INTO TopicProp VALUES ('tt-bewertungsgegenstand', 1, 'Plural Name', 'Bewertungsgegenstände');
+INSERT INTO TopicProp VALUES ('tt-bewertungsgegenstand', 1, 'Plural Name', 'BewertungsgegenstÃ¤nde');
 INSERT INTO TopicProp VALUES ('tt-bewertungsgegenstand', 1, 'Description', '<HTML><BODY>Die Hilfe zu <I>Bewertungsgegenstand</I></BODY></HTML>');
 INSERT INTO TopicProp VALUES ('tt-bewertungsgegenstand', 1, 'Description Query', 'Was ist ein Bewertungsgegenstand?');
 INSERT INTO TopicProp VALUES ('tt-bewertungsgegenstand', 1, 'Icon', 'BewertungsGegenstand.gif');
@@ -340,20 +340,20 @@ INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-635', '', 'tt-topiccon
 --- assign type to container type
 INSERT INTO Association VALUES ('at-aggregation', 1, 1, 'a-636', '', 'tt-kompetenzsterntemplatecontainer', 1, 'tt-kompetenzsterntemplate', 1);
 
---- "Verknüpftes Dokument" ---
-INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-relateddocument', 'Verknüpftes Dokument');
+--- "VerknÃ¼pftes Dokument" ---
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-relateddocument', 'VerknÃ¼pftes Dokument');
 --- set properties
-INSERT INTO TopicProp VALUES ('tt-relateddocument', 1, 'Name', 'Verknüpftes Dokument');
-INSERT INTO TopicProp VALUES ('tt-relateddocument', 1, 'Plural Name', 'Verknüpfte Dokumente');
-INSERT INTO TopicProp VALUES ('tt-relateddocument', 1, 'Description Query', 'Was ist ein verknüpftes Dokument?');
+INSERT INTO TopicProp VALUES ('tt-relateddocument', 1, 'Name', 'VerknÃ¼pftes Dokument');
+INSERT INTO TopicProp VALUES ('tt-relateddocument', 1, 'Plural Name', 'VerknÃ¼pfte Dokumente');
+INSERT INTO TopicProp VALUES ('tt-relateddocument', 1, 'Description Query', 'Was ist ein verknÃ¼pftes Dokument?');
 INSERT INTO TopicProp VALUES ('tt-relateddocument', 1, 'Unique Topic Names', 'on');
 INSERT INTO TopicProp VALUES ('tt-relateddocument', 1, 'Custom Implementation', 'de.deepamehta.kompetenzstern.topics.VerknuepftesDokumentTopic');
 --- derive from "Document"
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-671', '', 'tt-document', 1, 'tt-relateddocument', 1);
 --- container type
-INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-relateddocumentcontainer', 'Verknüpfte Dokumente Search');
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-relateddocumentcontainer', 'VerknÃ¼pfte Dokumente Search');
 --- set properties of container type
-INSERT INTO TopicProp VALUES ('tt-relateddocumentcontainer', 1, 'Name', 'Verknüpfte Dokumente Search');
+INSERT INTO TopicProp VALUES ('tt-relateddocumentcontainer', 1, 'Name', 'VerknÃ¼pfte Dokumente Search');
 --- derive container type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-672', '', 'tt-topiccontainer', 1, 'tt-relateddocumentcontainer', 1);
 --- assign type to container type

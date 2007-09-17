@@ -38,30 +38,36 @@ public class DatabaseSweeper {
 		}
 
 		private void sweep(Statement statement) throws SQLException {
-			sweep(statement,
-					"Association a WHERE NOT EXISTS (SELECT * FROM Topic t WHERE "
-							+ compareIDVer("a.Topic", "1", "t.", "") + ")",
-					"Associations with stale source Topic");
-			sweep(statement,
-					"Association a WHERE NOT EXISTS (SELECT * FROM Topic t WHERE "
-							+ compareIDVer("a.Topic", "2", "t.", "") + ")",
-					"Associations with stale target Topic");
-			sweep(statement,
-					"ViewAssociation va WHERE NOT EXISTS (SELECT * FROM Association a WHERE "
-							+ compareIDVer("a.", "", "va.Association", "")
-							+ ")", "non-existent ViewAssociations");
-			sweep(statement,
-					"ViewTopic vt WHERE NOT EXISTS (SELECT * FROM Topic t WHERE "
-							+ compareIDVer("t.", "", "vt.Topic", "") + ")",
-					"non-existent ViewTopic");
-			sweep(statement,
-					"ViewAssociation va WHERE NOT EXISTS (SELECT * FROM Association a WHERE "
-							+ compareIDVer("a.", "", "va.Association", "")
-							+ ")", "non-existent View in ViewAssociations");
-			sweep(statement,
-					"ViewTopic vt WHERE NOT EXISTS (SELECT * FROM Topic t WHERE "
-							+ compareIDVer("t.", "", "vt.Topic", "") + ")",
-					"non-existent View in ViewTopic");
+			sweepAssocStaleTopic(statement, "1", "source");
+			sweepAssocStaleTopic(statement, "2", "target");
+			sweepNoneViewTopicInView(statement, "Association");
+			sweepNoneViewTopicInView(statement, "Topic");
+			sweepRropNoRef(statement, "Association");
+			sweepRropNoRef(statement, "Topic");
+		}
+
+		private void sweepAssocStaleTopic(Statement statement, String whichRef,
+				String whichDesc) throws SQLException {
+			sweep(statement, "Association a LEFT JOIN Topic t ON "
+					+ compareIDVer("a.Topic", whichRef, "t.", "")
+					+ " WHERE t.ID IS NULL", "Associations with stale "
+					+ whichDesc + " Topic");
+		}
+
+		private void sweepNoneViewTopicInView(Statement statement, String what)
+				throws SQLException {
+			sweep(statement, "View" + what + " v LEFT JOIN Topic t ON "
+					+ compareIDVer("t.", "", "v.ViewTopic", "")
+					+ " WHERE t.ID IS NULL", "non-existent ViewTopic in "
+					+ what + "s");
+		}
+
+		private void sweepRropNoRef(Statement statement, String what)
+				throws SQLException {
+			sweep(statement, what + "Prop p LEFT JOIN " + what + " r ON "
+					+ compareIDVer("r.", "", "p." + what, "")
+					+ " WHERE r.ID IS NULL", "non-existent " + what + " in "
+					+ what + "Properties");
 		}
 
 		private String compareIDVer(String cmp1, String add1, String cmp2,
@@ -90,10 +96,10 @@ public class DatabaseSweeper {
 					}
 					System.out.println(sb.toString());
 				} while (res.next());
-				query = "DELETE FROM " + cmd;
-				System.out.println(query);
-				int cnt = statement.executeUpdate(query);
-				System.out.println("*** Deleted " + cnt + " " + message + "!");
+//				query = "DELETE FROM " + cmd;
+//				System.out.println(query);
+//				int cnt = statement.executeUpdate(query);
+//				System.out.println("*** Deleted " + cnt + " " + message + "!");
 			}
 		}
 	}

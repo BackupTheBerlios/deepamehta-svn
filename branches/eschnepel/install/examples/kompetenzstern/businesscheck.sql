@@ -15,12 +15,12 @@ INSERT INTO TopicProp VALUES ('t-businesscheck', 1, 'Name', 'Business Check');
 
 --- create assessment layers
 INSERT INTO Topic VALUES ('tt-bewertungsebene', 1, 1, 't-chancen',    'Chancen');
-INSERT INTO Topic VALUES ('tt-bewertungsebene', 1, 1, 't-plaene',     'Pl‰ne');
-INSERT INTO Topic VALUES ('tt-bewertungsebene', 1, 1, 't-ablaeufe',   'Abl‰ufe');
+INSERT INTO Topic VALUES ('tt-bewertungsebene', 1, 1, 't-plaene',     'Pl√§ne');
+INSERT INTO Topic VALUES ('tt-bewertungsebene', 1, 1, 't-ablaeufe',   'Abl√§ufe');
 INSERT INTO Topic VALUES ('tt-bewertungsebene', 1, 1, 't-ergebnisse', 'Ergebnisse');
 INSERT INTO TopicProp VALUES ('t-chancen',  1,   'Name', 'Chancen');
-INSERT INTO TopicProp VALUES ('t-plaene', 1,     'Name', 'Pl‰ne');
-INSERT INTO TopicProp VALUES ('t-ablaeufe', 1,   'Name', 'Abl‰ufe');
+INSERT INTO TopicProp VALUES ('t-plaene', 1,     'Name', 'Pl√§ne');
+INSERT INTO TopicProp VALUES ('t-ablaeufe', 1,   'Name', 'Abl√§ufe');
 INSERT INTO TopicProp VALUES ('t-ergebnisse', 1, 'Name', 'Ergebnisse');
 
 --- assign assessment layers to template "Business Check"
@@ -39,7 +39,7 @@ INSERT INTO AssociationProp VALUES ('a-653', 1, 'Ordinal Number', '4');
 INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-ziele',      'Ziele');
 INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-management', 'Management');
 INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-betrieb',    'Betrieb');
-INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-ertraege',   'Ertr‰ge');
+INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-ertraege',   'Ertr√§ge');
 INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-produkte',   'Produkte');
 INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-vertrieb',   'Vertrieb');
 INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-marketing',  'Marketing');
@@ -47,19 +47,19 @@ INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-markt',      'Markt');
 INSERT INTO TopicProp VALUES ('t-ziele', 1,      'Name', 'Ziele');
 INSERT INTO TopicProp VALUES ('t-management', 1, 'Name', 'Management');
 INSERT INTO TopicProp VALUES ('t-betrieb', 1,    'Name', 'Betrieb');
-INSERT INTO TopicProp VALUES ('t-ertraege', 1,   'Name', 'Ertr‰ge');
+INSERT INTO TopicProp VALUES ('t-ertraege', 1,   'Name', 'Ertr√§ge');
 INSERT INTO TopicProp VALUES ('t-produkte', 1,   'Name', 'Produkte');
 INSERT INTO TopicProp VALUES ('t-vertrieb', 1,   'Name', 'Vertrieb');
 INSERT INTO TopicProp VALUES ('t-marketing', 1,  'Name', 'Marketing');
 INSERT INTO TopicProp VALUES ('t-markt', 1,      'Name', 'Markt');
-INSERT INTO TopicProp VALUES ('t-ziele', 1,      'Hilfe', 'Der Hilfe-Text f¸r "Ziele" ...');
-INSERT INTO TopicProp VALUES ('t-management', 1, 'Hilfe', 'Der Hilfe-Text f¸r "Management" ...');
-INSERT INTO TopicProp VALUES ('t-betrieb', 1,    'Hilfe', 'Der Hilfe-Text f¸r "Betrieb" ...');
-INSERT INTO TopicProp VALUES ('t-ertraege', 1,   'Hilfe', 'Der Hilfe-Text f¸r "Ertr‰ge" ...');
-INSERT INTO TopicProp VALUES ('t-produkte', 1,   'Hilfe', 'Der Hilfe-Text f¸r "Produkte" ...');
-INSERT INTO TopicProp VALUES ('t-vertrieb', 1,   'Hilfe', 'Der Hilfe-Text f¸r "Vertrieb" ...');
-INSERT INTO TopicProp VALUES ('t-marketing', 1,  'Hilfe', 'Der Hilfe-Text f¸r "Marketing" ...');
-INSERT INTO TopicProp VALUES ('t-markt', 1,      'Hilfe', 'Der Hilfe-Text f¸r "Markt" ...');
+INSERT INTO TopicProp VALUES ('t-ziele', 1,      'Hilfe', 'Der Hilfe-Text f√ºr "Ziele" ...');
+INSERT INTO TopicProp VALUES ('t-management', 1, 'Hilfe', 'Der Hilfe-Text f√ºr "Management" ...');
+INSERT INTO TopicProp VALUES ('t-betrieb', 1,    'Hilfe', 'Der Hilfe-Text f√ºr "Betrieb" ...');
+INSERT INTO TopicProp VALUES ('t-ertraege', 1,   'Hilfe', 'Der Hilfe-Text f√ºr "Ertr√§ge" ...');
+INSERT INTO TopicProp VALUES ('t-produkte', 1,   'Hilfe', 'Der Hilfe-Text f√ºr "Produkte" ...');
+INSERT INTO TopicProp VALUES ('t-vertrieb', 1,   'Hilfe', 'Der Hilfe-Text f√ºr "Vertrieb" ...');
+INSERT INTO TopicProp VALUES ('t-marketing', 1,  'Hilfe', 'Der Hilfe-Text f√ºr "Marketing" ...');
+INSERT INTO TopicProp VALUES ('t-markt', 1,      'Hilfe', 'Der Hilfe-Text f√ºr "Markt" ...');
 
 --- assign top-level criteria to template "Business Check"
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-642', '', 't-businesscheck', 1, 't-ziele', 1);
@@ -99,32 +99,32 @@ INSERT INTO TopicProp VALUES ('t-marktpartner', 1,      'Name', 'Marktpartner');
 INSERT INTO TopicProp VALUES ('t-markterwartungen', 1,  'Name', 'Markterwartungen');
 
 INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-produktplanung',    'Produktplanung');
-INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-geschaeftsleitung', 'Gesch‰ftsleitung');
-INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-techn-loesungen',   'Techn. Lˆsungen');
+INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-geschaeftsleitung', 'Gesch√§ftsleitung');
+INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-techn-loesungen',   'Techn. L√∂sungen');
 INSERT INTO TopicProp VALUES ('t-produktplanung', 1,    'Name', 'Produktplanung');
-INSERT INTO TopicProp VALUES ('t-geschaeftsleitung', 1, 'Name', 'Gesch‰ftsleitung');
-INSERT INTO TopicProp VALUES ('t-techn-loesungen', 1,   'Name', 'Techn. Lˆsungen');
+INSERT INTO TopicProp VALUES ('t-geschaeftsleitung', 1, 'Name', 'Gesch√§ftsleitung');
+INSERT INTO TopicProp VALUES ('t-techn-loesungen', 1,   'Name', 'Techn. L√∂sungen');
 
 INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-kommunikation',       'Kommunikation');
 INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-produktmarketing',    'Produktmarketing');
-INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-preisattraktivitaet', 'Preisattraktivit‰t');
+INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-preisattraktivitaet', 'Preisattraktivit√§t');
 INSERT INTO TopicProp VALUES ('t-kommunikation', 1,       'Name', 'Kommunikation');
 INSERT INTO TopicProp VALUES ('t-produktmarketing', 1,    'Name', 'Produktmarketing');
-INSERT INTO TopicProp VALUES ('t-preisattraktivitaet', 1, 'Name', 'Preisattraktivit‰t');
+INSERT INTO TopicProp VALUES ('t-preisattraktivitaet', 1, 'Name', 'Preisattraktivit√§t');
 
 INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-betriebsstruktur', 'Betriebsstruktur');
-INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-betriebsqualitaet', 'Betriebsqualit‰t');
-INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-betriebsablaeufe', 'Betriebsabl‰ufe');
+INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-betriebsqualitaet', 'Betriebsqualit√§t');
+INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-betriebsablaeufe', 'Betriebsabl√§ufe');
 INSERT INTO TopicProp VALUES ('t-betriebsstruktur', 1, 'Name', 'Betriebsstruktur');
-INSERT INTO TopicProp VALUES ('t-betriebsqualitaet', 1, 'Name', 'Betriebsqualit‰t');
-INSERT INTO TopicProp VALUES ('t-betriebsablaeufe', 1, 'Name', 'Betriebsabl‰ufe');
+INSERT INTO TopicProp VALUES ('t-betriebsqualitaet', 1, 'Name', 'Betriebsqualit√§t');
+INSERT INTO TopicProp VALUES ('t-betriebsablaeufe', 1, 'Name', 'Betriebsabl√§ufe');
 
 INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-vertriebsstruktur',  'Vertriebsstruktur');
-INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-vertriebsqualitaet', 'Vertriebsqualit‰t');
-INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-vertriebsablaeufe',  'Vertriebsabl‰ufe');
+INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-vertriebsqualitaet', 'Vertriebsqualit√§t');
+INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-vertriebsablaeufe',  'Vertriebsabl√§ufe');
 INSERT INTO TopicProp VALUES ('t-vertriebsstruktur', 1,  'Name', 'Vertriebsstruktur');
-INSERT INTO TopicProp VALUES ('t-vertriebsqualitaet', 1, 'Name', 'Vertriebsqualit‰t');
-INSERT INTO TopicProp VALUES ('t-vertriebsablaeufe', 1,  'Name', 'Vertriebsabl‰ufe');
+INSERT INTO TopicProp VALUES ('t-vertriebsqualitaet', 1, 'Name', 'Vertriebsqualit√§t');
+INSERT INTO TopicProp VALUES ('t-vertriebsablaeufe', 1,  'Name', 'Vertriebsabl√§ufe');
 
 INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-wirtschaftlichkeit', 'Wirtschaftlichkeit');
 INSERT INTO Topic VALUES ('tt-kriterium', 1, 1, 't-ertragslage',        'Ertragslage');

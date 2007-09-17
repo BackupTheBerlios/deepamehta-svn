@@ -1,10 +1,6 @@
 <project name="DeepaMehta-db-createdb-CONNECT" >
-<!-- DeepaMehta Database creation script.-->
-<!-- must run as database root user.-->
-	<target name="asksyspass" unless="db.syspass">
-		<input message="Enter database ${db.sysuser} user password: " addproperty="db.syspass"/>
-	</target>
-	<target name="createdb" depends="asksyspass">
+	<import file="createdb-ask.xml"/>
+	<target name="-createdb" depends="-askcreatedb" unless="do.abort">
 		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.syspass}" classpathref="javalibs">
 			<fileset dir="${db}">
 				<include name="EMPTY.sql"/>

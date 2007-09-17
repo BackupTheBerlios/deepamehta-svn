@@ -5,13 +5,19 @@
 		</not>
 	</condition>
 
+	<property name="config.properties" value="${dm.base-dir}/config.properties"/>
+
+	<property file="${config.properties}" />
 	<property file="${dm.base-dir}/build.properties" />
+	<property file="${dm.instance.config-property-file}" />
 	<property file="${dm.instance.property-file}" />
 	<property file="${dm.instance.build-property-file}" />
 
 	<property name="db.type.property-file" value="${config}/db-${db.type}.properties"/>
 
 	<property file="${db.type.property-file}" />
+
+	<property name="main-target" value="config"/>
 
 	<path id="javalibs">
 		<fileset dir="${dm.base-dir}">
@@ -37,4 +43,20 @@
 		     takes care of this. -->
 		<map from="${dm.base-dir}/${libpath}" to="../../libs" />
 	</pathconvert>
+
+	<condition property="do.web.deploy" value="true">
+		<istrue value="${web.deploy.do}"/>
+	</condition>
+	<condition property="do.config.db.host" value="true">
+		<istrue value="${config.db.host}"/>
+	</condition>
+	<condition property="do.config.db.name" value="true">
+		<istrue value="${config.db.name}"/>
+	</condition>
+	<condition property="do.config.db.user" value="true">
+		<istrue value="${config.db.user}"/>
+	</condition>
+
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<taskdef name="for" classname="net.sf.antcontrib.logic.ForTask"/>
 </project>

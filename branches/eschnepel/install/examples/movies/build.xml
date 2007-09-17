@@ -34,13 +34,25 @@
 		</jar>
 	</target>
 
+	<target name="build" depends="jar"/>
+	
 	<target name="cleanup" description="remove build directory">
 		<delete dir="${build}" />
 	</target>
 
 	<!-- example database "Movies" -->
 
-	<target name="install" depends="initdb" />
+	<target name="install" depends="initdb" >
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${examples}">
+				<include name="movies/db/dmdb-movies.sql" />
+				<include name="movies/db/dmdb-movies-${dm.instance}.sql" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+	</target>
 
 	<target name="createmoviesdb">
 		<ant antfile="${movies.db.create-db}" target="createdb" inheritrefs="true">

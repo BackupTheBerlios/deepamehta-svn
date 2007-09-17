@@ -1,19 +1,6 @@
-<project name="DeepaMehta-db-dropedb-sql92" >
-	<target name="predropdb">
-		<echo message="You are about to drop the DeepaMehta database '${db.name}' and the user '${db.user}'."/>
-		<echo message="You will be asked for the database ${db.sysuser} user password."/>
-		<echo message="If you want drop another database and user, type 'n' and edit config.xml (section 'Database')"/>
-		<echo message="or use command line options -Ddb.name=... -Ddb.user=..."/>
-		<input message="Continue? " validargs="y,n" addproperty="do.drop"/>
-		<condition property="do.abort">
-			<equals arg1="${do.drop}" arg2="n"/>
-		</condition>
-		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] dropdb'"/>
-	</target>
-	<target name="asksyspass" depends="predropdb" unless="db.syspass">
-		<input message="Enter database ${db.sysuser} user password: " addproperty="db.syspass"/>
-	</target>
-	<target name="dropdb" depends="asksyspass">
+<project name="DeepaMehta-db-dropdb-sql92" >
+	<import file="dropdb-ask.xml"/>
+	<target name="-dropdb" depends="-askdropdb" unless="do.abort">
 		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.syspass}" classpathref="javalibs">
 			DROP DATABASE ${db.name};
 			DELETE FROM user where User='${db.user}';

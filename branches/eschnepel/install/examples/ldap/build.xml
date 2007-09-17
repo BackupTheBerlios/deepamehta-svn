@@ -7,7 +7,9 @@
 	<property name="jar" value="LDAPTopics.jar"/>
 	<property name="build" location="build"/>
 
-	<import file="../../../config.xml"/>
+	<property name="dm.base-dir" location="../../.." />
+
+	<import file="${dm.base-dir}/config.xml" />
 
 	<target name="init" description="create build directory">
 		<mkdir dir="${build}"/>
@@ -16,8 +18,8 @@
 	<target name="compile" depends="init">
 		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
 			<classpath>
-				<pathelement location="${web.lib.dir}/DeepaMehtaService.jar"/>
-				<pathelement location="${web.lib.dir}/DeepaMehtaTopics.jar"/>
+				<pathelement location="${server}/DeepaMehtaService.jar"/>
+				<pathelement location="${server}/DeepaMehtaTopics.jar"/>
 			</classpath>
 		</javac>
 	</target>
@@ -28,8 +30,20 @@
 		</jar>
 	</target>
 
+	<target name="build" depends="jar"/>
+
 	<target name="cleanup" description="remove build directory">
 		<delete dir="${build}"/>
 	</target>
 
+	<target name="install">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${examples}">
+				<include name="ldap/ldap.sql" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+	</target>
 </project>
