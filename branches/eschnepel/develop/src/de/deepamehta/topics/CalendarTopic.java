@@ -17,7 +17,7 @@ import java.util.*;
 
 
 /**
- * Last functional change: 11.9.2007 (2.0b8)<br>
+ * Last functional change: 17.9.2007 (2.0b8)<br>
  * Last documentation update: 6.7.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -45,8 +45,22 @@ public class CalendarTopic extends LiveTopic {
 	private static final String  CMD_CREATE_EVENT = "createEvent";
 	private static final String ICON_CREATE_EVENT = "event.png";
 
+	// actions
+	private static final String ACTION_REVEAL_EVENT = "revealEvent";
+	private static final String ACTION_SELECT_DAY_MODE = "selectDayMode";
+	private static final String ACTION_SELECT_WEEK_MODE = "selectWeekMode";
+	private static final String ACTION_SELECT_MONTH_MODE = "selectMonthMode";
+	private static final String ACTION_GO_BACK = "goBack";
+	private static final String ACTION_GO_FORWARD = "goForward";
+
 	// properties
+	private static final String PROPERTY_DISPLAY_MODE = "Display Mode";
 	private static final String PROPERTY_DISPLAY_DATE = "Display Date";
+
+	// property values
+	private static final String DISPLAY_MODE_DAY = "Day";
+	private static final String DISPLAY_MODE_WEEK = "Week";
+	private static final String DISPLAY_MODE_MONTH = "Month";
 
 
 
@@ -65,6 +79,25 @@ public class CalendarTopic extends LiveTopic {
 	// **********************
 	// *** Defining Hooks ***
 	// **********************
+
+
+
+	// ------------------
+	// --- Life Cycle ---
+	// ------------------
+
+
+
+	public CorporateDirectives evoke(Session session, String topicmapID, String viewmode) {
+		CorporateDirectives directives = super.evoke(session, topicmapID, viewmode);
+		// setup calendar for today
+		setTopicData(PROPERTY_DISPLAY_MODE, DISPLAY_MODE_WEEK);
+		setTopicData(PROPERTY_DISPLAY_DATE, DeepaMehtaUtils.getDate());
+		// initial rendering
+		updateView(directives);
+		//
+		return directives;
+	}
 
 
 
@@ -110,10 +143,26 @@ public class CalendarTopic extends LiveTopic {
 			return directives;
 		} else if (cmd.equals(CMD_FOLLOW_HYPERLINK)) {
 			String url = st.nextToken();
-			String urlPrefix = "http://revealEvent/";
-			if (url.startsWith(urlPrefix)) {
-				String eventID = url.substring(urlPrefix.length());
+			String urlPrefix = "http://";
+			if (!url.startsWith(urlPrefix)) {
+				System.out.println("*** CalendarTopic.executeCommand(): URL \"" + url + "\" not recognized by " +
+					"CMD_FOLLOW_HYPERLINK");
+				return directives;
+			}
+			String action = url.substring(urlPrefix.length());
+			if (action.startsWith(ACTION_REVEAL_EVENT)) {
+				String eventID = action.substring(ACTION_REVEAL_EVENT.length() + 1);	// +1 to skip /
 				revealEvent(eventID, directives);
+			} else if (action.equals(ACTION_SELECT_DAY_MODE)) {
+				selectDayMode(directives);
+			} else if (action.equals(ACTION_SELECT_WEEK_MODE)) {
+				selectWeekMode(directives);
+			} else if (action.equals(ACTION_SELECT_MONTH_MODE)) {
+				selectMonthMode(directives);
+			} else if (action.equals(ACTION_GO_BACK)) {
+				navigate(-1, directives);
+			} else if (action.equals(ACTION_GO_FORWARD)) {
+				navigate(1, directives);
 			} else {
 				System.out.println("*** CalendarTopic.executeCommand(): URL \"" + url + "\" not recognized by " +
 					"CMD_FOLLOW_HYPERLINK");
@@ -132,6 +181,7 @@ public class CalendarTopic extends LiveTopic {
 
 
 
+	// ### to be dropped
 	public CorporateDirectives propertiesChanged(Hashtable newProps, Hashtable oldProps,
 											String topicmapID, String viewmode, Session session) {
 		CorporateDirectives directives = super.propertiesChanged(newProps, oldProps,
@@ -139,8 +189,13 @@ public class CalendarTopic extends LiveTopic {
 		// --- "Display Date" ---
 		String prop = (String) newProps.get(PROPERTY_DISPLAY_DATE);
 		if (prop != null) {
-			System.out.println(">>> \"" + PROPERTY_DISPLAY_DATE + "\" property has changed " +
-			"-- render calendar view");
+			System.out.println(">>> \"" + PROPERTY_DISPLAY_DATE + "\" property has changed -- update calendar view");
+			updateView(directives);
+		}
+		// --- "Display Mode" ---
+		prop = (String) newProps.get(PROPERTY_DISPLAY_MODE);
+		if (prop != null) {
+			System.out.println(">>> \"" + PROPERTY_DISPLAY_MODE + "\" property has changed -- update calendar view");
 			updateView(directives);
 		}
 		//
@@ -155,28 +210,120 @@ public class CalendarTopic extends LiveTopic {
 		return props;
 	}
 
+	public static Vector hiddenProperties(TypeTopic type) {
+		Vector props = new Vector();
+		props.addElement(PROPERTY_DISPLAY_MODE);
+		props.addElement(PROPERTY_DISPLAY_DATE);
+		props.addElement(PROPERTY_ICON);
+		return props;
+	}
 
 
-	// *****************
-	// *** Utilities ***
-	// *****************
+
+	// **********************
+	// *** Custom Methods ***
+	// **********************
 
 
 
 	void updateView(CorporateDirectives directives) {
 		Vector events = getEvents();
 		System.out.println(">>> Update view of calender \"" + getName() + "\" (" + events.size() + " events)");
-		// ### String html = renderEventsAsList(events);
-		String html = renderWeekView(events);
+		// ### String html = renderListView(events);
 		// ### setTopicData(PROPERTY_DESCRIPTION, html);
 		// ### directives.add(as.setTopicProperty(getID(), 1, PROPERTY_DESCRIPTION, html, topicmapID, viewmode, session));
+		String html;
+		String displayMode = getProperty(PROPERTY_DISPLAY_MODE);
+		if (displayMode.equals(DISPLAY_MODE_DAY)) {
+			html = renderDayView(events);
+		} else if (displayMode.equals(DISPLAY_MODE_WEEK)) {
+			html = renderWeekView(events);
+		} else if (displayMode.equals(DISPLAY_MODE_MONTH)) {
+			html = renderMonthView(events);
+		} else {
+			throw new DeepaMehtaException("unexpected calendar display mode: \"" + displayMode + "\"");
+		}
+		//
 		Hashtable props = new Hashtable();
 		props.put(PROPERTY_DESCRIPTION, html);
 		directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, getID(), props, new Integer(1));
 	}
 
-	private String renderEventsAsList(Vector events) {
-		StringBuffer html = new StringBuffer("<html><head></head><body>");
+	private String renderDayView(Vector events) {
+		String displayDateString = getProperty(PROPERTY_DISPLAY_DATE);
+		StringBuffer html = new StringBuffer("<html><head><link href=\"stylesheets/calendar.css\" rel=\"stylesheet\" " +
+			"type=\"text/css\"></head><body>");
+		html.append(renderTimeControls());
+		html.append("<p>The day view is not yet implemented. But you already can scroll the date day-wise.</p>");
+		html.append("<p>Current date: " + displayDateString + "</p>");
+		html.append("</body></html>");
+		return html.toString();
+	}
+
+	private String renderWeekView(Vector events) {
+		String displayDateString = getProperty(PROPERTY_DISPLAY_DATE);
+		// error check ### to be droppped
+		if (!isSet(displayDateString)) {
+			System.out.println("  > \"Display Date\" not set completely -- rendering not yet possible");
+			return "<html><body></body></html>";
+		}
+		//
+		Calendar displayDate = DeepaMehtaUtils.getCalendar(displayDateString);
+		// display range: begin date
+		int delta = (displayDate.get(Calendar.DAY_OF_WEEK) + 5) % 7;
+		displayDate.add(Calendar.DATE, -delta);
+		// display range: end date
+		Calendar lastDisplayDate = (Calendar) displayDate.clone();
+		lastDisplayDate.add(Calendar.DATE, 6);
+		// --- make model ---
+		GridCell[][] gridModel = makeGridModel(events, displayDate, lastDisplayDate);
+		// --- rendering ---
+		StringBuffer html = new StringBuffer("<html><head><link href=\"stylesheets/calendar.css\" rel=\"stylesheet\" " +
+			"type=\"text/css\"></head><body>");
+		html.append(renderTimeControls());
+		// heading
+		DateFormat df = DateFormat.getDateInstance();
+		Calendar cal = (Calendar) displayDate.clone();
+		html.append("<table><tr><td>Mon-Sun</td>");
+		for (int day = 0; day < 7; day++) {
+			html.append("<td>" + df.format(cal.getTime()) + "</td>");
+			cal.add(Calendar.DATE, 1);
+		}
+		html.append("</tr>");
+		// body
+		for (int seg = 0; seg < CALENDAR_DAY_SEGMENTS; seg++) {
+			html.append("<tr valign=\"top\"><td>" + (seg % CALENDAR_HOUR_SEGMENTS == 0 ?
+				CALENDAR_DAY_START_HOUR + seg / CALENDAR_HOUR_SEGMENTS + ":00" : "") + "</td>");
+			for (int day = 0; day < 7; day++) {
+				GridCell cell = gridModel[day][seg];
+				if (cell == null) {
+					html.append("<td></td>");
+				} else if (cell.type == GridCell.BEGIN_OF_EVENT) {
+					html.append("<td class=\"event\" rowspan=\"" + cell.occupiedSegments + "\">");
+					html.append("<b>" + cell.eventBegin + "</b><br>");
+					html.append("<a href=\"http://" + ACTION_REVEAL_EVENT + "/" + cell.eventID + "\">" + cell.eventName + "</a>");
+					html.append("</td>");
+				}
+			}
+			html.append("</tr>");
+		}
+		html.append("</table></body></html>");
+		return html.toString();
+	}
+
+	private String renderMonthView(Vector events) {
+		String displayDateString = getProperty(PROPERTY_DISPLAY_DATE);
+		StringBuffer html = new StringBuffer("<html><head><link href=\"stylesheets/calendar.css\" rel=\"stylesheet\" " +
+			"type=\"text/css\"></head><body>");
+		html.append(renderTimeControls());
+		html.append("<p>The month view is not yet implemented. But you already can scroll the date month-wise.</p>");
+		html.append("<p>Current date: " + displayDateString + "</p>");
+		html.append("</body></html>");
+		return html.toString();
+	}
+
+	private String renderListView(Vector events) {
+		StringBuffer html = new StringBuffer("<html><body>");
 		Enumeration e = events.elements();
 		while (e.hasMoreElements()) {
 			BaseTopic event = (BaseTopic) e.nextElement();
@@ -196,52 +343,20 @@ public class CalendarTopic extends LiveTopic {
 		return html.toString();
 	}
 
-	private String renderWeekView(Vector events) {
-		String displayDateString = getProperty(PROPERTY_DISPLAY_DATE);
-		if (!isSet(displayDateString)) {
-			System.out.println("  > \"Display Date\" not set completely -- calendar view is not rendered");
-			return "<html><head></head><body></body></html>";
-		}
-		Calendar displayDate = DeepaMehtaUtils.getCalendar(displayDateString);
-		// display range: begin date
-		int delta = (displayDate.get(Calendar.DAY_OF_WEEK) + 5) % 7;
-		displayDate.add(Calendar.DATE, -delta);
-		// display range: end date
-		Calendar lastDisplayDate = (Calendar) displayDate.clone();
-		lastDisplayDate.add(Calendar.DATE, 6);
-		// --- make model ---
-		GridCell[][] gridModel = makeGridModel(events, displayDate, lastDisplayDate);
-		// --- rendering ---
-		StringBuffer html = new StringBuffer("<html><head></head><body><table border=\"1\">");
-		// heading
-		DateFormat df = DateFormat.getDateInstance();
-		Calendar cal = (Calendar) displayDate.clone();
-		html.append("<tr><td>Mon-Sun</td>");
-		for (int day = 0; day < 7; day++) {
-			html.append("<td>" + df.format(cal.getTime()) + "</td>");
-			cal.add(Calendar.DATE, 1);
-		}
-		html.append("</tr>");
-		// body
-		for (int seg = 0; seg < CALENDAR_DAY_SEGMENTS; seg++) {
-			html.append("<tr valign=\"top\"><td>" + (seg % CALENDAR_HOUR_SEGMENTS == 0 ?
-				CALENDAR_DAY_START_HOUR + seg / CALENDAR_HOUR_SEGMENTS + ":00" : "") + "</td>");
-			for (int day = 0; day < 7; day++) {
-				GridCell cell = gridModel[day][seg];
-				if (cell == null) {
-					html.append("<td></td>");
-				} else if (cell.type == GridCell.BEGIN_OF_EVENT) {
-					html.append("<td rowspan=\"" + cell.occupiedSegments + "\">");
-					html.append("<b>" + cell.eventBegin + "</b><br>");
-					html.append("<a href=\"http://revealEvent/" + cell.eventID + "\">" + cell.eventName + "</a>");
-					html.append("</td>");
-				}
-			}
-			html.append("</tr>");
-		}
-		html.append("</table></body></html>");
+	// ---
+
+	private String renderTimeControls() {
+		String displayMode = getProperty(PROPERTY_DISPLAY_MODE);
+		StringBuffer html = new StringBuffer();
+		html.append("<a href=\"http://" + ACTION_GO_BACK + "\"><img src=\"images/button-arrow-left.png\" border=\"0\"></a>");
+		html.append("<a href=\"http://" + ACTION_SELECT_DAY_MODE + "\"><img src=\"images/button-day" + (displayMode.equals(DISPLAY_MODE_DAY) ? "-activated" : "") + ".png\" border=\"0\"></a>");
+		html.append("<a href=\"http://" + ACTION_SELECT_WEEK_MODE + "\"><img src=\"images/button-week" + (displayMode.equals(DISPLAY_MODE_WEEK) ? "-activated" : "") + ".png\" border=\"0\"></a>");
+		html.append("<a href=\"http://" + ACTION_SELECT_MONTH_MODE + "\"><img src=\"images/button-month" + (displayMode.equals(DISPLAY_MODE_MONTH) ? "-activated" : "") + ".png\" border=\"0\"></a>");
+		html.append("<a href=\"http://" + ACTION_GO_FORWARD + "\"><img src=\"images/button-arrow-right.png\" border=\"0\"></a>");
 		return html.toString();
 	}
+
+	// ---
 
 	private GridCell[][] makeGridModel(Vector events, Calendar displayDate, Calendar lastDisplayDate) {
 		GridCell[][] gridModel = new GridCell[7][CALENDAR_DAY_SEGMENTS];
@@ -312,17 +427,96 @@ public class CalendarTopic extends LiveTopic {
 	// ---
 
 	private Vector getEvents() {
+		Vector events;
+		// 1) add events directly connected to this calendar
+		// ### sorting not needed anymore
 		String[] sortProps = {PROPERTY_BEGIN_DATE, PROPERTY_BEGIN_TIME};
-		return cm.getRelatedTopics(getID(), SEMANTIC_CALENDAR_EVENT, TOPICTYPE_EVENT, 2, sortProps, true);	// descending=true
+		events = cm.getRelatedTopics(getID(), SEMANTIC_CALENDAR_EVENT, TOPICTYPE_EVENT, 2, sortProps, true);	// descending=true
+		// 2) add events of the persons connected to this calendar
+		Enumeration e = getCalendarPersons().elements();
+		while (e.hasMoreElements()) {
+			BaseTopic person = (BaseTopic) e.nextElement();
+			Vector personEvents = ((PersonTopic) as.getLiveTopic(person)).getCalendarEvents();
+			events.addAll(personEvents);
+		}
+		return events;
 	}
+
+	private Vector getCalendarPersons() {
+		return cm.getRelatedTopics(getID(), SEMANTIC_CALENDAR_PERSON, TOPICTYPE_PERSON, 2);
+	}
+
+	// ---
 
 	private void revealEvent(String eventID, CorporateDirectives directives) {
 		PresentableTopic event = new PresentableTopic(as.getLiveTopic(eventID, 1), getID());
-		BaseAssociation a = cm.getAssociation(ASSOCTYPE_ASSOCIATION, getID(), eventID);
+		BaseAssociation a = cm.getAssociation(SEMANTIC_CALENDAR_EVENT, getID(), eventID);
+		Boolean evoke = Boolean.FALSE;
+		if (a == null) {
+			// create a "virtual" association of type "Search Result" if not yet exist
+			a = cm.getAssociation(SEMANTIC_CONTAINER_HIERARCHY, getID(), eventID);
+			if (a == null) {
+				String assocID = as.getNewAssociationID();
+				a = new BaseAssociation(assocID, 1, SEMANTIC_CONTAINER_HIERARCHY, 1, "", getID(), 1, eventID, 1);
+				evoke = Boolean.TRUE;
+			}
+		}
+		//
 		PresentableAssociation assoc = new PresentableAssociation(a);
 		directives.add(DIRECTIVE_SHOW_TOPIC, event);
-		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc);
+		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, evoke);
 		directives.add(DIRECTIVE_SELECT_TOPIC, eventID);
+	}
+
+	// ---
+
+	private void selectDayMode(CorporateDirectives directives) {
+		Hashtable props = new Hashtable();
+		props.put(PROPERTY_DISPLAY_MODE, DISPLAY_MODE_DAY);
+		directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, getID(), props, new Integer(1));
+	}
+
+	private void selectWeekMode(CorporateDirectives directives) {
+		Hashtable props = new Hashtable();
+		props.put(PROPERTY_DISPLAY_MODE, DISPLAY_MODE_WEEK);
+		directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, getID(), props, new Integer(1));
+	}
+
+	private void selectMonthMode(CorporateDirectives directives) {
+		Hashtable props = new Hashtable();
+		props.put(PROPERTY_DISPLAY_MODE, DISPLAY_MODE_MONTH);
+		directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, getID(), props, new Integer(1));
+	}
+
+	// ---
+
+	private void navigate(int amount, CorporateDirectives directives) {
+		String displayDateString = getProperty(PROPERTY_DISPLAY_DATE);
+		// error check ### to be droppped
+		if (!isSet(displayDateString)) {
+			System.out.println("  > \"Display Date\" not set completely -- navigation not yet possible");
+			return;
+		}
+		//
+		Calendar displayDate = DeepaMehtaUtils.getCalendar(displayDateString);
+		//
+		String displayMode = getProperty(PROPERTY_DISPLAY_MODE);
+		int field;
+		if (displayMode.equals(DISPLAY_MODE_DAY)) {
+			field = Calendar.DATE;
+		} else if (displayMode.equals(DISPLAY_MODE_WEEK)) {
+			field = Calendar.WEEK_OF_YEAR;
+		} else if (displayMode.equals(DISPLAY_MODE_MONTH)) {
+			field = Calendar.MONTH;
+		} else {
+			throw new DeepaMehtaException("unexpected calendar display mode: \"" + displayMode + "\"");
+		}
+		//
+		displayDate.add(field, amount);
+		//
+		Hashtable props = new Hashtable();
+		props.put(PROPERTY_DISPLAY_DATE, DeepaMehtaUtils.getDate(displayDate));
+		directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, getID(), props, new Integer(1));
 	}
 
 	// ---

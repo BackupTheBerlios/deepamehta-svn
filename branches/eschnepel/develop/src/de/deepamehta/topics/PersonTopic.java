@@ -14,7 +14,7 @@ import java.util.*;
 
 
 /**
- * Last functional change: 25.6.2006 (2.0b7)<BR>
+ * Last functional change: 17.9.2007 (2.0b8)<BR>
  * Last documentation update: 7.3.2004 (2.0b3-pre1)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -148,5 +148,21 @@ public class PersonTopic extends LiveTopic {
 		if (propName.equals(PROPERTY_NAME)) {
 			propertyDef.setPropertyLabel("Last Name");
 		}
+	}
+
+
+
+	// **********************
+	// *** Custom Methods ***
+	// **********************
+
+
+
+	public Vector getCalendars() {
+		return cm.getRelatedTopics(getID(), SEMANTIC_CALENDAR_PERSON, TOPICTYPE_CALENDAR, 1);
+	}
+
+	public Vector getCalendarEvents() {
+		return cm.getRelatedTopics(getID(), SEMANTIC_EVENT_ATTENDEE, TOPICTYPE_EVENT, 1);
 	}
 }

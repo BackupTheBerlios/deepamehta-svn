@@ -33,7 +33,7 @@ import java.util.*;
  * The content can also set to be view-only.
  * <P>
  * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
+ * Last functional change: 13.9.2007 (2.0b8)<BR>
  * Last documentation update: 29.9.2001 (2.0a12-pre7)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -69,12 +69,11 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 	 */
 	private int editorType;
 
-	// ### private GraphPanelControler controler;
-	private PresentationDetail detail;
 	private JTextComponent textComponent;	// a JTextArea, JTextPane or JTextField respectively
-	private JButton[] toolbarButtons;
-	boolean showToolbar;
-	private int buttonIndex;
+	private PresentationDetail detail;
+
+	boolean showToolbar;	// indicates weather a toolbar is created
+	JPanel toolbar;
 
 	/**
 	 * Indicates weather this text editor is dirty (means: contains unsaved changes).
@@ -113,9 +112,9 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 	 *
 	 * @see		PresentationDetail#PresentationDetail
 	 */
-	TextEditorPanel(int editorType, HyperlinkListener listener, GraphPanelControler controler, boolean showToolbar, PresentationDetail detail) {
+	TextEditorPanel(int editorType, HyperlinkListener listener, GraphPanelControler controler, boolean showToolbar,
+																							PresentationDetail detail) {
 		this.editorType = editorType;
-		// ### this.controler = controler;
 		this.showToolbar = showToolbar;
 		this.detail = detail;
 		setLayout(new BorderLayout());
@@ -131,16 +130,15 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 			((JEditorPane) textComponent).addHyperlinkListener(listener);
 			// --- add toolbar ---
 			if (showToolbar) {
-				JPanel bar = new JPanel();
+				toolbar = new JPanel();
 				Hashtable actions = DeepaMehtaClientUtils.createActionTable(textComponent);
-				bar.setBackground(COLOR_PROPERTY_PANEL);
-				toolbarButtons = new JButton[3];
-				addButton(bar, new StyledEditorKit.BoldAction(), actions, controler.boldIcon());
-				addButton(bar, new StyledEditorKit.ItalicAction(), actions, controler.italicIcon());
-				addButton(bar, new StyledEditorKit.UnderlineAction(), actions, controler.underlineIcon());
-				// ### addButton(bar, "H1", CMD_SET_HEADLINE1);
-				// ### addButton(bar, "H2", CMD_SET_HEADLINE2);
-				add(bar, BorderLayout.SOUTH);
+				toolbar.setBackground(COLOR_PROPERTY_PANEL);
+				addButton(toolbar, new StyledEditorKit.BoldAction(), actions, controler.boldIcon());
+				addButton(toolbar, new StyledEditorKit.ItalicAction(), actions, controler.italicIcon());
+				addButton(toolbar, new StyledEditorKit.UnderlineAction(), actions, controler.underlineIcon());
+				// ### addButton(toolbar, "H1", CMD_SET_HEADLINE1);
+				// ### addButton(toolbar, "H2", CMD_SET_HEADLINE2);
+				add(toolbar, BorderLayout.SOUTH);
 			}
 			add(new JScrollPane(textComponent));
 			break;
@@ -231,12 +229,10 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 	 */
 	public void setEnabled(boolean enabled) {
 		textComponent.setEnabled(enabled);
-		textComponent.setEditable(enabled);		// ###
+		textComponent.setEditable(enabled);		// ### required for hyperlinks to work
 		//
 		if (showToolbar) {
-			for (int i = 0; i < toolbarButtons.length; i++) {
-				toolbarButtons[i].setEnabled(enabled);
-			}
+			toolbar.setVisible(enabled);
 		}
 	}
 
@@ -281,9 +277,11 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 			//
 			// --- set text ---
 			try {
-				if (text.length() <= 59) {	// ### 59 <html><head></head><body></body></html> + whitespace
+				// ### required for what?
+				// ### serious oddity: contents of less then 14 characters are not displayed!
+				/* ### if (text.length() <= 59) {	// ### 59 <html><head></head><body></body></html> + whitespace
 					text = "<html><body><p></p></body></html>";
-				}
+				} */
 				textComponent.setText(text);
 				textComponent.setCaretPosition(0);
 			} catch (Throwable e) {
@@ -316,15 +314,7 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 		button.setActionCommand(actionCommand);
 		button.addActionListener(DeepaMehtaClientUtils.getActionByName(actionName, actions));
 		container.add(button);
-		toolbarButtons[buttonIndex++] = button;
 	}
-
-	/* ### private void addButton(JPanel container, String label, String actionCommand) {
-		JButton button = new JButton(label);
-		button.setActionCommand(actionCommand);
-		button.addActionListener(this);
-		container.add(button);
-	} */
 
 	// ---
 

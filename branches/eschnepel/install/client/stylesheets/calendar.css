@@ -1,0 +1,15 @@
+td {
+	font-family: Lucida Grande;
+	font-size: 9px;
+
+	padding: 0px;
+
+	border-style: solid;
+	border-width: 1px;
+	border-color: #CCCCCC;
+
+}
+
+.event {
+	background: #FFFFFF;
+}

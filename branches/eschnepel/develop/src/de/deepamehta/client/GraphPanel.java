@@ -388,6 +388,7 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 	 */
 	void setModel(PresentationTopicMap topicmap, Selection selection, Rectangle bounds, Hashtable details,
 											boolean creatingEdgesEnabled, Font font) {
+		System.out.println(">>> GraphPanel.setModel(): font=" + font);
 		removeDetailWindows();
 		//
 		this.topicmap = topicmap;
