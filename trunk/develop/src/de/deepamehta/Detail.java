@@ -109,7 +109,7 @@ public class Detail implements DeepaMehtaConstants {
 	 * <P>
 	 * References checked: 2.1.2002 (2.0a15-pre5)
 	 *
-	 * @see		de.deepamehta.service.CorporateDetail#CorporateDetail(Detail, ApplicationService)
+	 * @see		de.deepamehta.service.CorporateDetail#CorporateDetail(Detail, de.deepamehta.service.ApplicationService)
 	 * @see		de.deepamehta.client.PresentationDetail#PresentationDetail
 	 */
 	public Detail(Detail detail) {

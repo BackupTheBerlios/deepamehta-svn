@@ -7,7 +7,9 @@
 	<property name="project.name" value="knoppixforum"/>
 	<property name="war" value="${project.name}.war"/>
 
-	<import file="../../../config.xml"/>
+	<property name="dm.base-dir" location="../../.." />
+
+	<import file="${dm.base-dir}/config.xml" />
 
 	<target name="war">
    	    <war warfile="${war}" webxml="config/web.xml">
@@ -21,8 +23,9 @@
 		</war>
 	</target>
 
-	<target name="deploy" depends="war">
+	<target name="build" depends="war"/>
+
+	<target name="deploy" if="do.web.deploy">
         <copy file="${war}" todir="${web.deploy.dir}"/>
 	</target>
-
 </project>

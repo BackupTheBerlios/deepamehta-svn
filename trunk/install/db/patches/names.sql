@@ -7,7 +7,6 @@ INSERT INTO TopicProp VALUES ('pp-cardinality', 1, 'Name', 'Cardinality');
 INSERT INTO TopicProp VALUES ('pp-chatarea', 1, 'Name', 'Chat Flow');
 INSERT INTO TopicProp VALUES ('pp-clientname', 1, 'Name', 'Client Name');
 INSERT INTO TopicProp VALUES ('pp-color', 1, 'Name', 'Color');
-INSERT INTO TopicProp VALUES ('pp-contentlength', 1, 'Name', 'ContentLength');
 INSERT INTO TopicProp VALUES ('pp-corporateworkgroup', 1, 'Name', 'Default');
 INSERT INTO TopicProp VALUES ('pp-createpermission', 1, 'Name', 'Access Permission');
 INSERT INTO TopicProp VALUES ('pp-creationicon', 1, 'Name', 'Creation Icon');
@@ -16,12 +15,10 @@ INSERT INTO TopicProp VALUES ('pp-descriptionquery', 1, 'Name', 'Description Que
 INSERT INTO TopicProp VALUES ('pp-disabled', 1, 'Name', 'Disabled');
 INSERT INTO TopicProp VALUES ('pp-domaininfo', 1, 'Name', 'Domain Information');
 INSERT INTO TopicProp VALUES ('pp-downloading', 1, 'Name', 'Loading');
-INSERT INTO TopicProp VALUES ('pp-driver', 1, 'Name', 'Driver');
 INSERT INTO TopicProp VALUES ('pp-duration', 1, 'Name', 'Duration');
 INSERT INTO TopicProp VALUES ('pp-editicon', 1, 'Name', 'Edit Icon');
 INSERT INTO TopicProp VALUES ('pp-elementcount', 1, 'Name', 'ElementCount');
 INSERT INTO TopicProp VALUES ('pp-entities', 1, 'Name', 'Entities');
-INSERT INTO TopicProp VALUES ('pp-exists', 1, 'Name', 'Exists');
 INSERT INTO TopicProp VALUES ('pp-file', 1, 'Name', 'File');
 INSERT INTO TopicProp VALUES ('pp-geometrylocked', 1, 'Name', 'Locked Geometry');
 INSERT INTO TopicProp VALUES ('pp-hideinstancenames', 1, 'Name', 'Hidden Topic Names');
@@ -31,7 +28,6 @@ INSERT INTO TopicProp VALUES ('pp-implementingclass', 1, 'Name', 'Custom Impleme
 INSERT INTO TopicProp VALUES ('pp-info', 1, 'Name', 'Description');
 INSERT INTO TopicProp VALUES ('pp-infosingle', 1, 'Name', 'Description');
 INSERT INTO TopicProp VALUES ('pp-language', 1, 'Name', 'Language');
-INSERT INTO TopicProp VALUES ('pp-lastmodified', 1, 'Name', 'Last Updated');
 INSERT INTO TopicProp VALUES ('pp-name', 1, 'Name', 'Name');
 INSERT INTO TopicProp VALUES ('pp-ordinalnumber', 1, 'Name', 'Ordinal Number');
 INSERT INTO TopicProp VALUES ('pp-parsing', 1, 'Name', 'Parsing');

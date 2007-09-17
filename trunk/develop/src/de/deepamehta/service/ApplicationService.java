@@ -55,7 +55,7 @@ import java.util.*;
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
  */
-public final class ApplicationService extends BaseTopicMap implements Runnable, LoginCheck, DeepaMehtaConstants {
+public final class ApplicationService extends BaseTopicMap implements LoginCheck, DeepaMehtaConstants {
 
 
 
@@ -119,7 +119,9 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 
 	private ServerConsole serverConsole;	// only initialized if running as server
 
-	private Thread statisticsThread;
+	private TimerTask statisticsThread;
+
+	private static ApplicationServiceInstance applicationServiceInstance;
 
 
 
@@ -151,30 +153,21 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		System.out.println(">    active installation: \"" + installation.getName() + "\"");
 	}
 
-
-
-	// ******************************************************
-	// *** Implementation of interface java.lang.Runnable ***
-	// ******************************************************
-
-
-
-	/**
-	 * The body of the statistics thread.
-	 */
-	public void run() {
-		while (true) {
-			try {
-				Thread.sleep(5 * 60 * 1000);	// interval is 5 min.
-				System.out.println(DeepaMehtaUtils.getDate() + " " + DeepaMehtaUtils.getTime() + " statistics: " +
-					cm.getTopicCount() + " topics, " + cm.getAssociationCount() + " associations");
-			} catch (InterruptedException e) {
-				System.out.println("*** ApplicationService.run(): " + e);
-			}
+	private class StatisticsThread extends TimerTask{
+	
+		// ******************************************************
+		// *** Implementation of interface java.util.TimerTask ***
+		// ******************************************************
+	
+	
+		/**
+		 * The body of the statistics thread.
+		 */
+		public void run() {
+			System.out.println(DeepaMehtaUtils.getDate() + " " + DeepaMehtaUtils.getTime() + " statistics: " +
+				cm.getTopicCount() + " topics, " + cm.getAssociationCount() + " associations");
 		}
 	}
-
-
 
 	// ***************
 	// *** Methods ***
@@ -194,6 +187,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	 */
 	public static ApplicationService create(ApplicationServiceHost host, ApplicationServiceInstance instance)
 																			throws DeepaMehtaException {
+		ApplicationService.applicationServiceInstance = instance;
 		// ### compare to client.DeepaMehta.createApplicationService()
 		// ### compare to service.DeepaMehtaServer.main()
 		System.out.println("> DeepaMehta Application Service");
@@ -203,8 +197,8 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		System.out.println(">    service name: \"" + instance.name + "\"");
 		System.out.println("> Corporate Memory");
 		System.out.println(">    implementation: \"" + instance.cmClass + "\"");
-		System.out.println(">    URL: \"" + instance.cmURL + "\"");
-		System.out.println(">    driver: \"" + instance.cmDriverClass + "\"");
+//		System.out.println(">    URL: \"" + instance.dbURL + "\"");
+//		System.out.println(">    driver: \"" + instance.dbDriverClass + "\"");
 		// establish access to corporate memory
 		CorporateMemory cm = instance.createCorporateMemory();	// throws DME
 		// create application service
@@ -213,8 +207,9 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 		as.setAuthentificationSourceTopic();
 		// start statictics thread, basically to keep the CM connection alive,
 		// compare to DataSourceTopic.startIdleThread()
-		as.statisticsThread = new Thread(as);
-		as.statisticsThread.start();
+		as.statisticsThread = as.new StatisticsThread();
+		int rate = 5 * 60 * 1000;	// interval is 5 min.
+		new Timer().scheduleAtFixedRate(as.statisticsThread, rate, rate);
 		//
 		return as;
 	}
@@ -239,7 +234,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	}
 
 	public void shutdown() {
-		statisticsThread.stop();
+		cm.release();
 	}
 
 	// ---
@@ -771,6 +766,7 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 			// are no directives send back, but a vector of strings)
 			System.out.println("*** ApplicationService.revealTopictypes(): " + e +
 				" -- topic types not available");
+			e.printStackTrace();
 			return new Hashtable();
 		}
 	}
@@ -3582,15 +3578,15 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	public String downloadFile(URL url) throws IOException {
 		System.out.println("  > \"" + url + "\" -- begin download");
 		//
-		InputStream in = new BufferedInputStream(url.openStream(), 1024);
-		ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
-		byte buffer[] = new byte[1024];
+		Reader in = new InputStreamReader(url.openStream());
+		CharArrayWriter out = new CharArrayWriter(1024);
+		char buffer[] = new char[1024];
 		int num;
 		while ((num = in.read(buffer)) != -1) {
 			out.write(buffer, 0, num);
 		}
 		in.close();
-		String html = out.toString(0);		// hibyte=0 ### deprecated, compare to DeepaMehtaUtils.readFile()
+		String html = new String(out.toCharArray());		// hibyte=0 ### deprecated, compare to DeepaMehtaUtils.readFile()
 		System.out.println("  > \"" + url + "\" -- (" + html.length() + " bytes read)");
 		//
 		return html;
@@ -5224,5 +5220,9 @@ public final class ApplicationService extends BaseTopicMap implements Runnable, 
 	private void addPublishAction(BaseTopic topic, CorporateDirectives directives) {
 		// --- trigger published() hook ---
 		directives.add(getLiveTopic(topic).published());
+	}
+
+	public String getConfigurationProperty(String property){
+		return applicationServiceInstance.getConfigurationProperty(property);
 	}
 }

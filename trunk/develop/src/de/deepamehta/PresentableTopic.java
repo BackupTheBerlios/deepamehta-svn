@@ -311,7 +311,7 @@ public class PresentableTopic extends BaseTopic implements DeepaMehtaConstants {
 	}
 
 	/**
-	 * @see		ApplicationService#initTopicLock
+	 * @see		de.deepamehta.service.ApplicationService#initTopicLock
 	 * @see		RelationalCorporateMemory#queryPresentableTopics(String query)
 	 * @see		PresentationTopicMap#setTopicLock
 	 */

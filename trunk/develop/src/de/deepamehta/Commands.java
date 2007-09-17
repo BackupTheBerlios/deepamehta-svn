@@ -264,12 +264,7 @@ public class Commands implements DeepaMehtaConstants {
 				"commands of type TYPE_COMMAND_GROUP");
 		}
 		//
-		Enumeration e = commands.groupCommands.elements();
-		Commands command;
-		while (e.hasMoreElements()) {
-			command = (Commands) e.nextElement();
-			groupCommands.addElement(command);
-		}
+		groupCommands.addAll(commands.groupCommands);
 	}
 
 	// ---

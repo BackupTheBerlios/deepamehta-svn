@@ -341,8 +341,9 @@ public abstract class ElementContainerTopic extends ContainerTopic {
 			//
 			return topicID;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new DeepaMehtaException("*** ElementContainerTopic.revealTopic(): " +
-				"topic \"" + id + "\" not revealed (" + e + ")");
+				"topic \"" + id + "\" not revealed (" + e + ")",e);
 		}
 	}
 

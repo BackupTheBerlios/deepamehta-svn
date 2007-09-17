@@ -2487,8 +2487,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 		} catch (Exception e) {
 			current = Color.white;
 		}
-		JColorChooser chooser = new JColorChooser();
-		col = chooser.showDialog(mainWindow, "Choose color", current);
+		col = JColorChooser.showDialog(mainWindow, "Choose color", current);
 		if (col != null)
 		{
 			int r = col.getRed();

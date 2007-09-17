@@ -166,7 +166,7 @@ INSERT INTO TopicProp VALUES ('tt-datasource', 1, 'Unique Topic Names', 'on');
 INSERT INTO TopicProp VALUES ('tt-datasource', 1, 'Custom Implementation', 'de.deepamehta.topics.DataSourceTopic');
 -- assign properties
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-20', '', 'tt-datasource', 1, 'pp-url', 1);
-INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-21', '', 'tt-datasource', 1, 'pp-driver', 1);
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-21', '', 'tt-datasource', 1, 'pp-dbtype', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-134', '', 'tt-datasource', 1, 'pp-idleelementtype', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-22', '', 'tt-datasource', 1, 'pp-entities', 1);
 INSERT INTO AssociationProp VALUES ('a-20', 1, 'Ordinal Number', '110');
@@ -897,6 +897,51 @@ INSERT INTO TopicProp VALUES ('tt-cmimportexport', 1, 'Custom Implementation', '
 -- super type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-142', '', 'tt-generic', 1, 'tt-cmimportexport', 1);
 
+---
+--- create topic type "Calendar" ---
+---
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-calendar', 'Calendar');
+INSERT INTO TopicProp VALUES ('tt-calendar', 1, 'Name', 'Calendar');
+INSERT INTO TopicProp VALUES ('tt-calendar', 1, 'Plural Name', 'Calendars');
+INSERT INTO TopicProp VALUES ('tt-calendar', 1, 'Description', '<html><head></head><body><p>A <i>Calendar</i> is ...</p></body></html>');
+INSERT INTO TopicProp VALUES ('tt-calendar', 1, 'Description Query', 'What is a "Calendar"?');
+INSERT INTO TopicProp VALUES ('tt-calendar', 1, 'Icon', 'calendar.png');
+-- INSERT INTO TopicProp VALUES ('tt-calendar', 1, 'Creation Icon', 'createKompetenzstern.gif');
+-- INSERT INTO TopicProp VALUES ('tt-calendar', 1, 'Unique Topic Names', 'on');
+INSERT INTO TopicProp VALUES ('tt-calendar', 1, 'Custom Implementation', 'de.deepamehta.topics.CalendarTopic');
+-- super type
+INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-95', '', 'tt-generic', 1, 'tt-calendar', 1);
+-- search type
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-calendar-search', 'Calendar Search');
+INSERT INTO TopicProp VALUES ('tt-calendar-search', 1, 'Name', 'Calendar Search');
+-- INSERT INTO TopicProp VALUES ('tt-calendar-search', 1, 'Icon', 'KompetenzsternContainer.gif');
+-- derive search type
+INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-96', '', 'tt-topiccontainer', 1, 'tt-calendar-search', 1);
+-- assign search type to type
+INSERT INTO Association VALUES ('at-aggregation', 1, 1, 'a-97', '', 'tt-calendar-search', 1, 'tt-calendar', 1);
+
+---
+--- create topic type "Event" ---
+---
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-event', 'Event');
+INSERT INTO TopicProp VALUES ('tt-event', 1, 'Name', 'Event');
+INSERT INTO TopicProp VALUES ('tt-event', 1, 'Plural Name', 'Events');
+INSERT INTO TopicProp VALUES ('tt-event', 1, 'Description', '<html><head></head><body><p>An <i>Event</i> is ...</p></body></html>');
+INSERT INTO TopicProp VALUES ('tt-event', 1, 'Description Query', 'What is an "Event"?');
+INSERT INTO TopicProp VALUES ('tt-event', 1, 'Icon', 'event.png');
+-- INSERT INTO TopicProp VALUES ('tt-event', 1, 'Creation Icon', 'createKompetenzstern.gif');
+-- INSERT INTO TopicProp VALUES ('tt-event', 1, 'Unique Topic Names', 'on');
+INSERT INTO TopicProp VALUES ('tt-event', 1, 'Custom Implementation', 'de.deepamehta.topics.EventTopic');
+-- super type
+INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-98', '', 'tt-generic', 1, 'tt-event', 1);
+-- search type
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-event-search', 'Event Search');
+INSERT INTO TopicProp VALUES ('tt-event-search', 1, 'Name', 'Event Search');
+-- INSERT INTO TopicProp VALUES ('tt-event-search', 1, 'Icon', 'KompetenzsternContainer.gif');
+-- derive search type
+INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-99', '', 'tt-topiccontainer', 1, 'tt-event-search', 1);
+-- assign search type to type
+INSERT INTO Association VALUES ('at-aggregation', 1, 1, 'a-109', '', 'tt-event-search', 1, 'tt-event', 1);
 
 
 -------------------------
@@ -1183,6 +1228,7 @@ INSERT INTO TopicProp VALUES ('pp-assoctypeid', 1, 'Visualization', 'hidden');
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-emailaddress', 'Email Address');
 INSERT INTO TopicProp VALUES ('pp-emailaddress', 1, 'Name', 'Email Address');
 INSERT INTO TopicProp VALUES ('pp-emailaddress', 1, 'Visualization', 'Input Field');
+
 -- "Mailbox URL"
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-mailboxurl', 'Mailbox URL');
 INSERT INTO TopicProp VALUES ('pp-mailboxurl', 1, 'Name', 'Mailbox URL');
@@ -1204,9 +1250,9 @@ INSERT INTO TopicProp VALUES ('pp-wit_server', 1, 'Name', 'Server');
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-wit_domains', 'Domains');
 INSERT INTO TopicProp VALUES ('pp-wit_domains', 1, 'Name', 'Domains');
 
---- "Driver" ---
-INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-driver', 'Driver');
-INSERT INTO TopicProp VALUES ('pp-driver', 1, 'Visualization', 'Input Field');
+--- "Database Type" ---
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-dbtype', 'Database Type');
+INSERT INTO TopicProp VALUES ('pp-dbtype', 1, 'Visualization', 'Input Field');
 
 --- "Entities" ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-entities', 'Entities');
@@ -1370,6 +1416,18 @@ INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-relatedinfo', 'Related Info');
 INSERT INTO TopicProp VALUES ('t-relatedinfo', 1, 'Name', 'Related Info');
 INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-deeplyrelatedinfo', 'Deeply Related Info');
 INSERT INTO TopicProp VALUES ('t-deeplyrelatedinfo', 1, 'Name', 'Deeply Related Info');
+
+---
+--- "Membership" Properties: "Editor" and "Publisher"
+---
+-- create properties
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-editor', 'Editor');
+INSERT INTO TopicProp VALUES ('pp-editor', 1, 'Name', 'Editor');
+INSERT INTO TopicProp VALUES ('pp-editor', 1, 'Visualization', 'Switch');
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-publisher', 'Publisher');
+INSERT INTO TopicProp VALUES ('pp-publisher', 1, 'Name', 'Publisher');
+INSERT INTO TopicProp VALUES ('pp-publisher', 1, 'Visualization', 'Switch');
+
 -- assign property values
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-408', '', 'pp-webinfo', 1, 't-relatedtopicname', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-418', '', 'pp-webinfo', 1, 't-relatedinfo', 1);
@@ -1377,6 +1435,89 @@ INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-409', '', 'pp-webinfo
 INSERT INTO AssociationProp VALUES ('a-408', 1, 'Ordinal Number', '1');
 INSERT INTO AssociationProp VALUES ('a-418', 1, 'Ordinal Number', '2');
 INSERT INTO AssociationProp VALUES ('a-409', 1, 'Ordinal Number', '3');
+-- assign properties to association type "Membership"
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-93', '', 'at-membership', 1, 'pp-editor', 1);
+INSERT INTO AssociationProp VALUES ('a-93', 1, 'Ordinal Number', '10');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-94', '', 'at-membership', 1, 'pp-publisher', 1);
+INSERT INTO AssociationProp VALUES ('a-94', 1, 'Ordinal Number', '20');
+
+--- Calendar
+-- create properties
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-displaydate', 'Display Date');
+INSERT INTO TopicProp VALUES ('pp-displaydate', 1, 'Name', 'Display Date');
+INSERT INTO TopicProp VALUES ('pp-displaydate', 1, 'Visualization', 'Date Chooser');
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-displaymode', 'Display Mode');
+INSERT INTO TopicProp VALUES ('pp-displaymode', 1, 'Name', 'Display Mode');
+INSERT INTO TopicProp VALUES ('pp-displaymode', 1, 'Visualization', 'Options Menu');
+-- create property values
+INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-day', 'Day');
+INSERT INTO TopicProp VALUES ('t-day', 1, 'Name', 'Day');
+INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-week', 'Week');
+INSERT INTO TopicProp VALUES ('t-week', 1, 'Name', 'Week');
+INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-month', 'Month');
+INSERT INTO TopicProp VALUES ('t-month', 1, 'Name', 'Month');
+-- assign property values to property
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-157', '', 'pp-displaymode', 1, 't-day', 1);
+INSERT INTO AssociationProp VALUES ('a-157', 1, 'Ordinal Number', '1');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-162', '', 'pp-displaymode', 1, 't-week', 1);
+INSERT INTO AssociationProp VALUES ('a-162', 1, 'Ordinal Number', '2');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-187', '', 'pp-displaymode', 1, 't-month', 1);
+INSERT INTO AssociationProp VALUES ('a-187', 1, 'Ordinal Number', '3');
+-- assign properties to topic type
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-141', '', 'tt-calendar', 1, 'pp-displaydate', 1);
+INSERT INTO AssociationProp VALUES ('a-141', 1, 'Ordinal Number', '220');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-148', '', 'tt-calendar', 1, 'pp-displaymode', 1);
+INSERT INTO AssociationProp VALUES ('a-148', 1, 'Ordinal Number', '210');
+-- create relation to "Person"
+INSERT INTO Association VALUES ('at-relation', 1, 1, 'a-190', '', 'tt-calendar', 1, 'tt-person', 1);
+INSERT INTO AssociationProp VALUES ('a-190', 1, 'Cardinality', 'many');
+INSERT INTO AssociationProp VALUES ('a-190', 1, 'Association Type ID', 'at-association');
+INSERT INTO AssociationProp VALUES ('a-190', 1, 'Web Info', 'Related Topic Name');
+INSERT INTO AssociationProp VALUES ('a-190', 1, 'Web Form', 'Related Topic Selector');
+INSERT INTO AssociationProp VALUES ('a-190', 1, 'Ordinal Number', '150');
+
+--- Event
+-- create properties
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-begindate', 'Begin Date');
+INSERT INTO TopicProp VALUES ('pp-begindate', 1, 'Name', 'Begin Date');
+INSERT INTO TopicProp VALUES ('pp-begindate', 1, 'Visualization', 'Date Chooser');
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-begintime', 'Begin Time');
+INSERT INTO TopicProp VALUES ('pp-begintime', 1, 'Name', 'Begin Time');
+INSERT INTO TopicProp VALUES ('pp-begintime', 1, 'Visualization', 'Time Chooser');
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-enddate', 'End Date');
+INSERT INTO TopicProp VALUES ('pp-enddate', 1, 'Name', 'End Date');
+INSERT INTO TopicProp VALUES ('pp-enddate', 1, 'Visualization', 'Date Chooser');
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-endtime', 'End Time');
+INSERT INTO TopicProp VALUES ('pp-endtime', 1, 'Name', 'End Time');
+INSERT INTO TopicProp VALUES ('pp-endtime', 1, 'Visualization', 'Time Chooser');
+-- assign properties to topic type
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-110', '', 'tt-event', 1, 'pp-begindate', 1);
+INSERT INTO AssociationProp VALUES ('a-110', 1, 'Ordinal Number', '110');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-111', '', 'tt-event', 1, 'pp-begintime', 1);
+INSERT INTO AssociationProp VALUES ('a-111', 1, 'Ordinal Number', '120');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-112', '', 'tt-event', 1, 'pp-enddate', 1);
+INSERT INTO AssociationProp VALUES ('a-112', 1, 'Ordinal Number', '130');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-113', '', 'tt-event', 1, 'pp-endtime', 1);
+INSERT INTO AssociationProp VALUES ('a-113', 1, 'Ordinal Number', '140');
+-- create relation to "Person"
+INSERT INTO Association VALUES ('at-relation', 1, 1, 'a-323', 'Attendee', 'tt-event', 1, 'tt-person', 1);
+INSERT INTO AssociationProp VALUES ('a-323', 1, 'Name', 'Attendee');
+INSERT INTO AssociationProp VALUES ('a-323', 1, 'Cardinality', 'many');
+INSERT INTO AssociationProp VALUES ('a-323', 1, 'Association Type ID', 'at-association');
+INSERT INTO AssociationProp VALUES ('a-323', 1, 'Web Info', 'Related Topic Name');
+INSERT INTO AssociationProp VALUES ('a-323', 1, 'Web Form', 'Related Topic Selector');
+INSERT INTO AssociationProp VALUES ('a-323', 1, 'Ordinal Number', '150');
+
+---
+--- assign topic types to workspace "DeepaMehta"
+---
+INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-114', '', 't-corporategroup', 1, 'tt-calendar', 1);
+INSERT INTO AssociationProp VALUES ('a-114', 1, 'Access Permission', 'create');
+INSERT INTO AssociationProp VALUES ('a-114', 1, 'Ordinal Number', '50');
+INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-115', '', 't-corporategroup', 1, 'tt-event', 1);
+INSERT INTO AssociationProp VALUES ('a-115', 1, 'Access Permission', 'create');
+INSERT INTO AssociationProp VALUES ('a-115', 1, 'Ordinal Number', '55');
+
 
 --- "Web Form" ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-webform', 'Web Form');
@@ -1543,8 +1684,6 @@ INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-186', '', 't-corporategroup'
 INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-181', '', 't-corporategroup', 1, 'tt-email', 1);
 INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-191', '', 't-corporategroup', 1, 'tt-webpage', 1);
 INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-326', '', 't-corporategroup', 1, 'tt-institution', 1);
-INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-324', '', 't-corporategroup', 1, 'tt-city', 1);
-INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-325', '', 't-corporategroup', 1, 'tt-country', 1);
 INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-193', '', 't-corporategroup', 1, 'at-generic', 1);
 INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-194', '', 't-corporategroup', 1, 'at-association', 1);
 INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-195', '', 't-corporategroup', 1, 'at-aggregation', 1);
@@ -1559,8 +1698,6 @@ INSERT INTO AssociationProp VALUES ('a-186', 1, 'Access Permission', 'create');
 INSERT INTO AssociationProp VALUES ('a-181', 1, 'Access Permission', 'create');
 INSERT INTO AssociationProp VALUES ('a-191', 1, 'Access Permission', 'create');
 INSERT INTO AssociationProp VALUES ('a-326', 1, 'Access Permission', 'create');
-INSERT INTO AssociationProp VALUES ('a-324', 1, 'Access Permission', 'create');
-INSERT INTO AssociationProp VALUES ('a-325', 1, 'Access Permission', 'create');
 INSERT INTO AssociationProp VALUES ('a-193', 1, 'Access Permission', 'create');
 INSERT INTO AssociationProp VALUES ('a-194', 1, 'Access Permission', 'create');
 INSERT INTO AssociationProp VALUES ('a-195', 1, 'Access Permission', 'create');
@@ -1575,8 +1712,6 @@ INSERT INTO AssociationProp VALUES ('a-186', 1, 'Ordinal Number', '06');
 INSERT INTO AssociationProp VALUES ('a-181', 1, 'Ordinal Number', '07');
 INSERT INTO AssociationProp VALUES ('a-191', 1, 'Ordinal Number', '08');
 INSERT INTO AssociationProp VALUES ('a-326', 1, 'Ordinal Number', '09');
-INSERT INTO AssociationProp VALUES ('a-324', 1, 'Ordinal Number', '10');
-INSERT INTO AssociationProp VALUES ('a-325', 1, 'Ordinal Number', '11');
 -- "Type Builder"
 INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-263', '', 't-constructionworkspace', 1, 'tt-topictype', 1);
 INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-264', '', 't-constructionworkspace', 1, 'tt-assoctype', 1);
@@ -1739,6 +1874,8 @@ INSERT INTO TopicProp VALUES ('t-directoriesmap', 1, 'Name', 'Directory Services
 -- the User Authentification Datasource
 INSERT INTO Topic VALUES ('tt-authentificationsource', 1, 1, 't-useraccounts', 'User Accounts');
 INSERT INTO TopicProp VALUES ('t-useraccounts', 1, 'Name', 'User Accounts');
+-- write comments in "description" of AuthentificationSource
+INSERT INTO TopicProp VALUES ('t-useraccounts', 1, 'Description', 'This topic must be associated with one of the Login topics. The association must be of type "association" and directed from AuthentificationSource to Login. If there is no such association, the CorporateMemory will be used for authentification.');
 -- CM Import/Export
 INSERT INTO Topic VALUES ('tt-cmimportexport', 1, 1, 't-cmimportexport', 'CM Import/Export');
 INSERT INTO TopicProp VALUES ('t-cmimportexport', 1, 'Name', 'CM Import/Export');
@@ -1828,10 +1965,10 @@ INSERT INTO Association VALUES ('at-aggregation', 1, 1, 'a-288', '', 't-applicat
 ---
 INSERT INTO Topic VALUES ('tt-installation', 1, 1, 't-deepamehtainstallation', 'DeepaMehta');
 INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Name', 'DeepaMehta');
-INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Server Name', 'DeepaMehtaServer 2.0b7');
-INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Client Name', 'DeepaMehta 2.0b7');
+INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Server Name', 'DeepaMehtaServer 2.0b8');
+INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Client Name', 'DeepaMehta 2.0b8');
 INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Active', 'on');
-INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Corporate Icon', 'logo.png');
+INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Customer Icon', 'deepamehta-logo-tiny.png');
 -- INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Customer Icon', '');
 -- assign preferences to installation ("Export Format")
 INSERT INTO Association VALUES ('at-preference', 1, 1, 'a-270', '', 't-deepamehtainstallation', 1, 't-xml', 1);

@@ -54,7 +54,7 @@ public class KriteriumTopic extends LiveTopic implements KS {
     private static final String  CMD_HIDE_ALL_SUB_CRITERIA = "HideAllSubCriteria";
     private static final String ICON_HIDE_ALL_SUB_CRITERIA = "hideUnterkriterien.gif";
     // ---
-    private static final String ITEM_DELETE_ALL_SUB_CRITERIA = "Kriterium lšschen";
+    private static final String ITEM_DELETE_ALL_SUB_CRITERIA = "Kriterium lÃ¶chen";
     private static final String  CMD_DELETE_ALL_SUB_CRITERIA = "DeleteAllSubCriteria";
     private static final String ICON_DELETE_ALL_SUB_CRITERIA = ICON_DELETE_TOPIC;
 	// ---
@@ -144,7 +144,7 @@ public class KriteriumTopic extends LiveTopic implements KS {
 	        commands.addSeparator();
 			KompetenzsternTopic.addDocumentCommands(hasRelatedDocuments, commands);
 		}
-        // --- Lšschen (mit allen Unterkriterien) ---
+        // --- LÃ¶schen (mit allen Unterkriterien) ---
 		// Note: deleting only enabled for subcriteria
 		if (addHideDelete) {
 			commands.addSeparator();
@@ -231,7 +231,7 @@ public class KriteriumTopic extends LiveTopic implements KS {
 			} catch (DeepaMehtaException ex) {
 				System.out.println("*** KriteriumTopic.propertiesChanged(): " + ex);
 				ex.printStackTrace();	// ###
-				directives.add(DIRECTIVE_SHOW_MESSAGE, "Der geänderte Wert kann nicht angezeigt werden (" +
+				directives.add(DIRECTIVE_SHOW_MESSAGE, "Der geï¿½nderte Wert kann nicht angezeigt werden (" +
 					ex.getMessage() + ")", new Integer(NOTIFICATION_WARNING));
 			}
 		}

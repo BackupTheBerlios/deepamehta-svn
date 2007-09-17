@@ -113,7 +113,7 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 
 
 	/**
-	 * @see		ApplicationService#createSession
+	 * @see		de.deepamehta.service.ApplicationService#createSession
 	 */
 	WebSession(HttpSession session) {
 		this.session = session;

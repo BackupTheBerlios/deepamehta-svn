@@ -57,7 +57,6 @@ public class DeepaMehtaClientUtils {
 		// read number of associations
 		int assocCount = in.readInt();
 		// read associations
-		PresentationAssociation assoc;
 		for (int i = 0; i < assocCount; i++) {
 			associations.addElement(new PresentationAssociation(in));
 		}

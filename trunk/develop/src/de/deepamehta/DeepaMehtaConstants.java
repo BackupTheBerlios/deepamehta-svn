@@ -257,15 +257,15 @@ public interface DeepaMehtaConstants {
 		{"Create Topic Type ...", "Topictyp erzeugen ..."},
 		{"Create Association Type ...", "Assoziationstyp erzeugen ..."},
 		{"Create \\1", "\\1 erzeugen"},
-		{"Delete", "Lšschen"},
-		{"Delete", "Lšschen"},
+		{"Delete", "Lï¿½schen"},
+		{"Delete", "Lï¿½schen"},
 		{"Remove", "Entfernen"},
 		{"Remove", "Entfernen"},
 		{"Hide", "Ausblenden"},
 		{"Hide", "Ausblenden"},
 		{"Hide all", "Alle ausblenden"},
-		{"Close", "Schlie§en"},
-		{"Publish to", "Freigeben fŸr"},
+		{"Close", "Schlieï¿½en"},
+		{"Publish to", "Freigeben fï¿½r"},
 		{"Import Topic Map ...", "Topic Map importieren ..."},
 		{"Export", "Exportieren"},
 		{"Export Format", "Export-Format"},
@@ -281,7 +281,7 @@ public interface DeepaMehtaConstants {
 		{"Set \\1", "\\1 setzen"},
 		{"Edit \\1", "\\1 bearbeiten"},
 		{"Show \\1", "\\1 anzeigen"},
-		{"Choose \\1", "\\1 auswŠhlen"},
+		{"Choose \\1", "\\1 auswï¿½hlen"},
 		{"Assign \\1", "\\1 zuordnen"},
 		{"Create \\1", "\\1 erzeugen"},
 		{"What is a \"\\1\"?", "Hilfe zu \"\\1\""},
@@ -298,7 +298,7 @@ public interface DeepaMehtaConstants {
 		{"Use", "Inhalt"},
 		{"Build", "Struktur"},
 		{"Messages", "Mitteilungen"},
-		{"Choose ...", "AuswŠhlen ..."},
+		{"Choose ...", "Auswï¿½hlen ..."},
 		// --- "Workspace" commands ---
 		{"Join", "Beitreten"},
 		{"Leave", "Austreten"},
@@ -306,7 +306,7 @@ public interface DeepaMehtaConstants {
 		{"Assign Association Type", "Assoziationstyp zuordnen"},
 		// --- "User" commands ---
 		{"Set Standard Workspace", "Standard Workspace setzen"},
-		{"Choose ...", "AuswŠhlen ..."},
+		{"Choose ...", "Auswï¿½hlen ..."},
 	};
 
 	static final int ITEM_NEW_TOPIC    = 0;
@@ -1110,17 +1110,6 @@ public interface DeepaMehtaConstants {
 
 
 	public static final String PLATFORM_MACOSX = "Mac OS X";
-
-
-
-	// ----------------------
-	// --- Database Hints ---
-	// ----------------------
-
-
-
-	public static final String DBMS_HINT_ORACLE = "oracle";
-	public static final String DBMS_HINT_SQL92 = "sql92";
 
 
 

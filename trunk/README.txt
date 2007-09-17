@@ -1,5 +1,5 @@
 
-DeepaMehta 2.0b7 
+DeepaMehta 2.0b8
 ================
 
 README
@@ -41,11 +41,14 @@ Software
 
   * Java 1.4 Standard Edition
       http://java.sun.com/
+
+Optional Software
+
+  * Apache Ant 1.7
+      http://ant.apache.org/
   * MySQL 4
       http://www.mysql.com/
-  * Apache Ant 1.6
-      http://ant.apache.org/
-  * Optional: Apache Tomcat or another servlet engine
+  * Apache Tomcat or another servlet engine
       http://tomcat.apache.org/
 
 Hardware
@@ -68,36 +71,29 @@ instructions of the section "Administration / Update".
 Step 1: Unzip
 -------------
 
-1) Create the DeepaMehta home directory at a suitable location, e.g.
+a) Create the DeepaMehta home directory at a suitable location, e.g.
 
-   * Windows:     C:\Applications\DeepaMehta-2.0b7
-   * Mac OS X:    /Macintosh HD/Applications/DeepaMehta-2.0b7
-   * Linux:       /usr/local/deepamehta-2.0b7
+   * Windows:     C:\Program Files\DeepaMehta-2.0b8
+   * Mac OS X:    /Macintosh HD/Applications/DeepaMehta-2.0b8
+   * Linux:       /usr/local/deepamehta-2.0b8
 
-2) Unzip "deepamehta-2.0b7.zip" to a the just created directory.
+b) Unzip "deepamehta-2.0b8.zip" to the just created directory.
    The structure of the DeepaMehta installation looks like this:
 
-   README.txt     this text
-   install/       the software to run DeepaMehta
-   develop/       you can delete this folder if you do no DeepaMehta development
-   libs/          3rd party libraries
-   build.xml      buildfile for ant
-   config.xml     configurations read by the buildfile
+   README.txt         this text
+   ant/               this might be deleted if you have your own ant installation
+                      if you dont know what that means - just leave it there
+   install/           the software to run DeepaMehta
+   libs/              3rd party libraries
+   build.xml          buildfile for ant
+   config.xml         configurations read by the buildfile
+   build.properties   some basic configuration options
 
 
-Step 2: Configure 
+Step 2: Configure
 -----------------
 
-1) At the very minimum configuration effort you must add the directory /<Ant>/bin to your
-   environment, so you can start the ant tool from a console window.
-
-   * Windows:            set the PATH environment variable
-   * Linux / Mac OS X:   create a symbolic link in /usr/bin
-
-   To test the ant installation type "ant -version". A short message about the ant version
-   should appear.
-
-2) Optional: change the default DeepaMehta configuration by editing the file "config.xml"
+1) Optional: change the default DeepaMehta configuration by editing the file "build.properties"
    with a text editor.
 
    a) You are strongly advised to change the password for the DeepaMehta database user by
@@ -110,25 +106,27 @@ Step 2: Configure
       If you change the password here, you must set it in install/client/dms.rc too.
       The password is part of the connection parameters of the "default" instance.
 
-   b) If you want use the example web applications you must set the four "web.*"
-      properties to point to your servlet engine installation
+   b) If you want use the example web applications you must set the "tomcat.root"
+      property to point to your servlet engine installation
 
-         <!-- Servlet Engine -->
-         <property name="web.deploy.dir"  value="/usr/local/tomcat/webapps"/>
-         <property name="web.lib.dir"     value="/usr/local/tomcat/shared/lib"/>
-         <property name="web.classes.dir" value="/usr/local/tomcat/shared/classes"/>
-         <property name="web.servlet.lib" value="/usr/local/tomcat/common/lib/servlet-api.jar"/>
+          # Servlet Engine
+          tomcat.root			=/usr/local/tomcat
 
    c) If you want deploy 3rd party DeepaMehta applications, e.g. "Kiezatlas" add them to
       the "dmapps" path element.
 
-         <!-- DeepaMehta Applications -->
-         <property name="appspath" location="/Users/fred/My DeepaMehta Applications"/>
-         <path id="dmapps">
-            ...
-            <pathelement location="${appspath}/Kiez-Atlas/kiezatlas.jar"/>
-         </path>
+      within build.properties
 
+          # DeepaMehta Applications
+          appspath			=/Users/fred/My DeepaMehta Applications
+
+      within build.xml
+      
+          <!-- DeepaMehta Applications -->
+          <path id="dmapps">
+              ...
+              <pathelement location="${appspath}/Kiez-Atlas/kiezatlas.jar"/>
+          </path>
 
 Step 3: Install
 ---------------

@@ -1,156 +1,193 @@
-<project name="DeepaMehta" default="deploy" basedir=".">
+<project name="DeepaMehta" default="-default" basedir=".">
 
 	<description>
 		DeepaMehta build file
 	</description>
 
-	<import file="config.xml"/>
+	<import file="config.xml" />
+
+	<import file="${db-specific}/${db.create-db}" />
+	<import file="${db-specific}/${db.drop-db}" />
+	<target name="dropdb" depends="-dropdb"/>
+
+	<import file="build-development.xml" optional="true"/>
+	<import file="setup.xml"/>
+	
+	<path id="dmapps">
+		<pathelement location="${examples}/movies/MoviesTopics.jar" />
+		<!-- configure this -->
+		<pathelement location="${examples}/messageboard/messageboard.jar" />
+		<!-- configure this -->
+		<pathelement location="${examples}/kompetenzstern/kompetenzstern.jar" />
+		<!-- configure this -->
+		<pathelement location="${appspath}/Kiez-Atlas/kiezatlas.jar" />
+		<!-- configure this -->
+		<pathelement location="${appspath}/TeenKom/teenkom.jar" />
+		<!-- configure this -->
+		<pathelement location="${appspath}/OLAP/olap.jar" />
+		<!-- configure this -->
+		<pathelement location="${appspath}/Importer/importer.jar" />
+		<!-- configure this -->
+		<pathelement location="${appspath}/DeepaMehta Coordination/coordination-platform.jar" />
+		<!-- configure this -->
+	</path>
+
+	<target name="-default">
+		<antcall target="${main-target}"></antcall>
+	</target>
 
 	<!-- Install -->
 
-	<target name="install">
-		<echo message="--- DeepaMehta Installation ---"/>
-		<echo message="You are about to create a database '${db.name}' and an user '${db.userid}' (password '${db.password}')."/>
-		<echo message="You will be asked for the MySQL root user password."/>
-		<echo message="If you want change these settings, type 'n' and edit config.xml (section 'Database')"/>
-		<echo message="or use command line options -Ddb.name=... -Ddb.userid=... -Ddb.password=..."/>
-		<input message="Continue? " validargs="y,n" addproperty="do.install"/>
-		<condition property="do.abort">
-			<equals arg1="${do.install}" arg2="n"/>
-		</condition>
-		<fail if="do.abort" message="==> Installation aborted by user -- revisit with 'ant [options] install'"/>
-		<antcall target="createdb"/>
-		<antcall target="createtables"/>
-		<antcall target="initdb"/>
+	<target name="install" description="initialises the database">
+		<antcall target="-createdb" />
+		<antcall target="-createtables" />
+		<antcall target="-initdb" />
 		<!-- example applications -->
-		<antcall target="installmovies"/>
-		<antcall target="installweb"/>
+		<antcall target="-installexamples" />
 	</target>
 
-	<target name="installmovies">
-		<ant antfile="${examples}/movies/build.xml" dir="${examples}/movies" target="install"/>
+	<!-- Movies -->
+	<target name="dropmovies" depends="-testsyspass">
+		<ant target="-call-example">
+			<property name="example" value="movies"/>
+			<property name="target" value="dropmoviesdb"/>
+		</ant>
+	</target>
+	<target name="-installexamples" depends="-testsyspass">
+		<ant target="-call-examples">
+			<property name="target" value="install"/>
+		</ant>
 	</target>
 
-	<target name="installweb">
-		<echo message="You are about to install the example web applications to '${web.deploy.dir}'."/>
-		<echo message="The directory for the servlet engines shared libraries is set to'${web.lib.dir}'."/>
-		<echo message="If you want change these settings, type 'n' and edit config.xml (section 'Servlet Engine')"/>
-		<echo message="or use command line options -Dweb.deploy.dir=... -Dweb.lib.dir=..."/>
-		<input message="Continue? " validargs="y,n" addproperty="do.installweb"/>
-		<condition property="do.abortweb">
-			<equals arg1="${do.installweb}" arg2="n"/>
-		</condition>
-		<fail if="do.abortweb" message="==> Installation aborted by user -- revisit with 'ant [options] installweb'"/>
+	<!-- Web-related tasks -->
+	<target name="-installweb-ask" depends="-config-web-root" unless="web.deploy.do"/>
+	<target name="-installweb-unless" unless="do.web.deploy" depends="-installweb-ask">
+		<echo>
+=========================
+Deployment not configured
+=========================
+Please run the config target if you want to have
+your DeepaMehta installed into your tomcat.
+		</echo>
+	</target>
+	<target name="-installweb-if" if="do.web.deploy" depends="-installweb-ask">
 		<!-- copy shared libraries -->
-		<antcall target="deploylibs"/>
-        <copy file="${libpath}/mysql-3.1.7.jar" todir="${web.lib.dir}"/>
-        <copy file="${libpath}/googleapi.jar" todir="${web.lib.dir}"/>
-        <copy file="${libpath}/commons-fileupload-1.0.jar" todir="${web.lib.dir}"/>
+		<antcall target="-deploylibs" />
+		<copy todir="${web.lib.dir}" >
+			<fileset dir="${dm.base-dir}">
+				<include name="${db.libs}" />
+			</fileset>
+		</copy>
+		<copy file="${libpath}/googleapi.jar" todir="${web.lib.dir}" />
+		<copy file="${libpath}/commons-fileupload-1.0.jar" todir="${web.lib.dir}" />
 		<!-- deploy web applications -->
-		<ant antfile="${examples}/dm-browser/build.xml" dir="${examples}/dm-browser" target="deploy"/>
-		<ant antfile="${examples}/dm-search/build.xml" dir="${examples}/dm-search" target="deploy"/>
-		<ant antfile="${examples}/messageboard/build.xml" dir="${examples}/messageboard" target="deploy"/>
-		<ant antfile="${examples}/musicforum/build.xml" dir="${examples}/musicforum" target="deploy"/>
-		<ant antfile="${examples}/kompetenzstern/build.xml" dir="${examples}/kompetenzstern" target="deploy"/>
+		<ant target="-call-examples-web">
+			<property name="target" value="deploy"/>
+		</ant>
+	</target>
+	<target name="-installweb" depends="-installweb-if,-installweb-unless" />
+
+	<target name="deploy" depends="-build-self,-installweb" description="Does everything to setup your Tomcat."/>
+
+	<target name="-deploylibs" if="do.web.deploy">
+		<copy file="${server}/DeepaMehtaService.jar" todir="${web.lib.dir}" />
+		<copy file="${server}/DeepaMehtaTopics.jar" todir="${web.lib.dir}" />
 	</target>
 
-	<target name="deploy" depends="build">
-		<antcall target="deploylibs"/>
+	<!-- The target createdb has been "outsourced" to ${db.create-db}-->
+	<!-- The target dropdb has been "outsourced" to ${db.drop-db}-->
+
+	<target name="-createtables">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${db-specific}">
+				<include name="${db.tables}" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+		<antcall target="-optimize" />
 	</target>
 
-	<target name="deploylibs">
-        <copy file="${server}/DeepaMehtaService.jar" todir="${web.lib.dir}"/>
-        <copy file="${server}/DeepaMehtaTopics.jar" todir="${web.lib.dir}"/>
-	</target>
-
-	<target name="createdb">
-		<input message="Enter MySQL root user password: " addproperty="db.rootpw"/>
-		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.rootpw}" classpathref="javalibs">
-			CREATE DATABASE ${db.name};
-			GRANT ALL PRIVILEGES ON ${db.name}.* TO ${db.userid}@localhost IDENTIFIED BY '${db.password}' WITH GRANT OPTION;
-			GRANT ALL PRIVILEGES ON ${db.name}.* TO ${db.userid}@"%"       IDENTIFIED BY '${db.password}' WITH GRANT OPTION;
+	<target name="-optimize">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${db-specific}">
+				<include name="${db.optimize}" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
 		</sql>
 	</target>
 
-	<target name="dropdb">
-		<echo message="You are about to drop the DeepaMehta database '${db.name}' and the user '${db.userid}'."/>
-		<echo message="You will be asked for the MySQL root user password."/>
-		<echo message="If you want drop another database and user, type 'n' and edit config.xml (section 'Database')"/>
-		<echo message="or use command line options -Ddb.name=... -Ddb.userid=..."/>
-		<input message="Continue? " validargs="y,n" addproperty="do.drop"/>
-		<condition property="do.abort">
-			<equals arg1="${do.drop}" arg2="n"/>
-		</condition>
-		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] dropdb'"/>
-		<input message="Enter MySQL root user password: " addproperty="db.rootpw"/>
-		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.rootpw}" classpathref="javalibs">
-			DROP DATABASE ${db.name};
-			DELETE FROM user where User='${db.userid}';
-			DELETE FROM db where Db='${db.name}';
-		</sql>
-	</target>
-
-	<target name="createtables">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" src="${db.tables}">
-			<classpath refid="javalibs"/>
-		</sql>
-	</target>
-
-	<target name="initdb">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" classpathref="javalibs">
+	<target name="-initdb">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${db}">
-				<include name="cm.sql"/>
-				<include name="email.sql"/>
-				<include name="auth.sql"/>
-				<include name="webcrawler.sql"/>
-				<include name="whois.sql"/>
+				<include name="cm.sql" />
+				<include name="email.sql" />
+				<include name="auth.sql" />
+				<include name="webcrawler.sql" />
+				<include name="whois.sql" />
 			</fileset>
-			<fileset dir="${examples}">
-				<include name="movies/movies.sql"/>
-				<include name="musicforum/music.sql"/>
-				<include name="artfacts/artfacts.sql"/>
-				<include name="kompetenzstern/kompetenzstern.sql"/>
-				<include name="kompetenzstern/businesscheck.sql"/>
-			</fileset>
-			<fileset dir="${db}/patches">
-				<include name="names.sql"/>
-				<include name="help.sql"/>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
 			</fileset>
 		</sql>
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${db}/patches">
+				<include name="names.sql" />
+				<include name="help.sql" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+		<antcall target="-optimize" />
 	</target>
 
-	<target name="droptables">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" src="${db}/db_drop.sql">
-			<classpath refid="javalibs"/>
+	<target name="-droptables">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${db-specific}">
+				<include name="${db.drop-tables}" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
 		</sql>
 	</target>
 
 	<target name="reset">
-		<echo message="You are about to reset the database ${db.name} (user '${db.userid}', password '${db.password}')."/>
-		<echo message="If you want reset another database, type 'n' and edit config.xml (section 'Database')"/>
-		<echo message="or use command line options -Ddb.name=... -Ddb.userid=... -Ddb.password=..."/>
-		<input message="Continue? " validargs="y,n" addproperty="do.reset"/>
+		<echo message="You are about to reset the database ${db.name} (user '${db.user}', password '${db.password}')." />
+		<echo message="If you want reset another database, type 'n' and edit config.xml (section 'Database')" />
+		<echo message="or use command line options -Ddb.name=... -Ddb.user=... -Ddb.password=..." />
+		<input message="Continue? " validargs="y,n" addproperty="do.reset" />
 		<condition property="do.abort">
-			<equals arg1="${do.reset}" arg2="n"/>
+			<equals arg1="${do.reset}" arg2="n" />
 		</condition>
-		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] reset'"/>
-		<antcall target="droptables"/>
-		<antcall target="createtables"/>
-		<antcall target="initdb"/>
+		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] reset'" />
+		<antcall target="droptables" />
+		<antcall target="createtables" />
+		<antcall target="initdb" />
 	</target>
 
 	<target name="patchdb">
-		<echo message="You are about to apply the patch ${patch} the database ${db.name} (user '${db.userid}', password '${db.password}')."/>
-		<echo message="If you want patch another database, type 'n' and edit config.xml (section 'Database')"/>
-		<echo message="or use command line options -Ddb.name=... -Ddb.userid=... -Ddb.password=... -Dpatch=..."/>
-		<input message="Continue? " validargs="y,n" addproperty="do.patch"/>
+		<echo message="You are about to apply the patch ${patch} the database ${db.name} (user '${db.user}', password '${db.password}')." />
+		<echo message="If you want patch another database, type 'n' and edit config.xml (section 'Database')" />
+		<echo message="or use command line options -Ddb.name=... -Ddb.user=... -Ddb.password=... -Dpatch=..." />
+		<input message="Continue? " validargs="y,n" addproperty="do.patch" />
 		<condition property="do.abort">
-			<equals arg1="${do.patch}" arg2="n"/>
+			<equals arg1="${do.patch}" arg2="n" />
 		</condition>
-		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] patchdb'"/>
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.userid}" password="${db.password}" src="${patch}">
-			<classpath refid="javalibs"/>
+		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] patchdb'" />
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir=".">
+				<include name="${patch}" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
 		</sql>
+		<antcall target="-optimize" />
 	</target>
 
 	<!-- Run -->
@@ -158,208 +195,107 @@
 	<target name="dm" description="runs the monolithic DeepaMehta application, default instance">
 		<java classname="de.deepamehta.service.DeepaMehta" dir="${client}" fork="true">
 			<classpath>
-				<pathelement location="${client}/DeepaMehta.jar"/>
-				<path refid="dmapps"/> 
-				<path refid="javalibs"/> 
+				<pathelement location="${client}/DeepaMehta.jar" />
+				<path refid="dmapps" />
+				<path refid="javalibs" />
 			</classpath>
-			<sysproperty key="java.endorsed.dirs" path="${endorsedpath}"/>
-			<arg value="${dm.instance}"/>
-        </java>
+			<sysproperty key="java.endorsed.dirs" path="${endorsedpath}" />
+			<arg value="${dm.instance}" />
+		</java>
 	</target>
 
 	<target name="dms" description="runs the DeepaMehta server">
 		<java classname="de.deepamehta.service.DeepaMehtaServer" dir="${client}" fork="true">
 			<classpath>
-				<pathelement location="${server}/DeepaMehtaService.jar"/>
-				<pathelement location="${server}/DeepaMehtaTopics.jar"/>
-				<path refid="dmapps"/> 
-				<path refid="javalibs"/> 
+				<pathelement location="${server}/DeepaMehtaService.jar" />
+				<pathelement location="${server}/DeepaMehtaTopics.jar" />
+				<path refid="dmapps" />
+				<path refid="javalibs" />
 			</classpath>
-			<sysproperty key="java.endorsed.dirs" path="${endorsedpath}"/>
-			<arg value="${dm.instance}"/>
-        </java>
+			<sysproperty key="java.endorsed.dirs" path="${endorsedpath}" />
+			<arg value="${dm.instance}" />
+		</java>
 	</target>
 
 	<target name="dmc" description="runs the DeepaMehta client, connects to local server">
 		<java classname="de.deepamehta.client.DeepaMehtaClient" dir="${client}" fork="true">
 			<classpath>
-				<pathelement location="${client}/DeepaMehtaClient.jar"/>
+				<pathelement location="${client}/DeepaMehtaClient.jar" />
 			</classpath>
-			<arg value="${dm.host}:${dm.port}"/>
-        </java>
-	</target>
-
-	<!-- Build -->
-
-	<target name="init" description="create build directory">
-		<mkdir dir="${build}"/>
-	</target>
-
-	<target name="compile" depends="init" description="compile sources">
-		<javac srcdir="${sources}" destdir="${build}" debug="on" listfiles="yes" encoding="MacRoman">
-			<classpath refid="javalibs"/>
-		</javac>
-	</target>
-
-	<target name="build" depends="compile" description="build jar files">
-		<!-- monolith -->
-		<jar jarfile="${client}/DeepaMehta.jar" basedir="${build}">
-			<include name="de/deepamehta/*.class"/>
-			<include name="de/deepamehta/client/*.class"/>
-			<include name="de/deepamehta/service/*.class"/>
-			<include name="de/deepamehta/topics/**/*.class"/>
-			<include name="de/deepamehta/assocs/**/*.class"/>
-			<exclude name="de/deepamehta/client/DeepaMehtaClient.class"/>
-			<exclude name="de/deepamehta/client/SocketService.class"/>
-			<exclude name="de/deepamehta/client/InteractionConnection.class"/>
-			<exclude name="de/deepamehta/client/MessagingConnection.class"/>
-			<exclude name="de/deepamehta/client/TypeConnection.class"/>
-			<exclude name="de/deepamehta/client/FileserverConnection.class"/>
-			<exclude name="de/deepamehta/service/InteractionConnection.class"/>
-			<exclude name="de/deepamehta/service/MessagingConnection.class"/>
-			<exclude name="de/deepamehta/service/TypeConnection.class"/>
-			<exclude name="de/deepamehta/service/FileserverConnection.class"/>
-			<exclude name="de/deepamehta/service/ExternalConnection.class"/>
-			<exclude name="de/deepamehta/service/DeepaMehtaServer.class"/>
-			<exclude name="de/deepamehta/service/DeepaMehtaServer$Connection.class"/>
-			<manifest>
-				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehta"/>
-				<attribute name="Class-Path" value="${jarclasspath}"/>
-			</manifest>
-		</jar>
-		<!-- client -->
-		<jar jarfile="${client}/DeepaMehtaClient.jar" basedir="${build}">
-			<include name="de/deepamehta/*.class"/>
-			<include name="de/deepamehta/client/*.class"/>
-			<manifest>
-				<attribute name="Main-Class" value="de.deepamehta.client.DeepaMehtaClient"/>
-				<attribute name="Class-Path" value="${jarclasspath}"/>
-			</manifest>
-		</jar>
-		<!-- server -->
-		<jar jarfile="${server}/DeepaMehtaService.jar" basedir="${build}">
-			<include name="de/deepamehta/*.class"/>
-			<include name="de/deepamehta/service/**/*.class"/>
-			<manifest>
-				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehtaServer"/>
-				<attribute name="Class-Path" value="${jarclasspath}"/>
-			</manifest>
-		</jar>
-		<!-- topics -->
-		<jar jarfile="${server}/DeepaMehtaTopics.jar" basedir="${build}">
-			<include name="de/deepamehta/topics/**/*.class"/>
-			<include name="de/deepamehta/assocs/**/*.class"/>
-		</jar>
-	</target>
-
-	<target name="sign" depends="build" description="sign client">
-		<signjar jar="${client}/DeepaMehtaClient.jar" alias="tomcat"
-			storepass="kspw01" keypass="kspw01" signedjar="${client}/sDeepaMehtaClient.jar"/>
-	</target>
-
-	<target name="release" depends="sign">
-		<echo message="You are about to build the release file '${build.name}'."/>
-		<echo message="If you want use another name, type 'n' and edit config.xml (section 'Build Support')"/>
-		<echo message="or use a command line option -Dbuild.name=..."/>
-		<input message="Continue? " validargs="y,n" addproperty="do.release"/>
-		<condition property="do.abort">
-			<equals arg1="${do.release}" arg2="n"/>
-		</condition>
-		<fail if="do.abort" message="==> Release building aborted by user -- revisit with 'ant release [option]'"/>
-		<zip destfile="${build.archive.dir}/${build.name}" basedir=".">
-			<exclude name="**/build/"/>
-			<exclude name="contrib/"/>
-			<exclude name="docs/"/>
-			<exclude name="install/client/*.pid"/>
-			<exclude name="install/client/documents/*"/>
-			<exclude name="install/client/webpages/**"/>
-			<exclude name="install/client/icons/at-*"/>
-			<exclude name="install/client/icons/tt-*"/>
-			<exclude name="install/client/icons/ka-*"/>
-			<exclude name="install/client/icons/jah-*"/>
-			<exclude name="install/client/icons/108_*"/>
-			<exclude name="install/client/icons/rote-kapelle.png"/>
-			<exclude name="install/client/icons/3539-*"/>
-			<exclude name="install/client/icons/16212*"/>
-			<exclude name="install/client/icons/25984*"/>
-			<exclude name="install/client/icons/ploetze.gif"/>
-			<exclude name="install/client/icons/b17-2-harnack-*"/>
-			<exclude name="install/client/icons/Sacred*"/>
-			<exclude name="install/client/images/javaxml/"/>
-			<exclude name="install/client/images/HCI/"/>
-			<exclude name="install/client/images/stats/"/>
-			<exclude name="install/client/images/acro.png"/>
-			<exclude name="install/client/images/anika-7.gif"/>
-			<exclude name="install/client/images/axel-springer-40.png"/>
-			<exclude name="install/client/images/badawi.jpg"/>
-			<exclude name="install/client/images/BMFSFJ*"/>
-			<exclude name="install/client/images/comparison.png"/>
-			<exclude name="install/client/images/deepa_mehta-earth.jpg"/>
-			<exclude name="install/client/images/deepa_mehta.jpg"/>
-			<exclude name="install/client/images/DeepaMobil.png"/>
-			<exclude name="install/client/images/Driton*"/>
-			<exclude name="install/client/images/headregie.gif"/>
-			<exclude name="install/client/images/iso-9001.jpeg"/>
-			<exclude name="install/client/images/jah-*"/>
-			<exclude name="install/client/images/knoppix-logo.gif"/>
-			<exclude name="install/client/images/linkafn_*"/>
-			<exclude name="install/client/images/marlene-dietrich-11.png"/>
-			<exclude name="install/client/images/scidoc.gif"/>
-			<exclude name="install/client/images/sparkasse.gif"/>
-			<exclude name="install/client/images/schaukasten*"/>
-			<exclude name="install/client/stylesheets/browser/"/>
-			<exclude name="install/client/stylesheets/vergleich*"/>
-			<exclude name="install/client/backgrounds/axel-springer-40.png"/>
-			<exclude name="install/client/backgrounds/comparison.png"/>
-			<exclude name="install/client/backgrounds/daily*"/>
-			<exclude name="install/client/backgrounds/kartepur*"/>
-			<exclude name="install/client/backgrounds/ks-*"/>
-			<exclude name="install/client/backgrounds/Sacred*"/>
-			<exclude name="install/client/backgrounds/Scheitern*"/>
-			<exclude name="install/examples/knoppixforum/"/>
-			<exclude name="libs/commons-beanutils-1.7.0.jar"/>
-			<exclude name="libs/commons-beanutils-core-1.7.0.jar"/>
-			<exclude name="libs/commons-cli-1.0.jar"/>
-			<exclude name="libs/commons-collections-3.1.jar"/>
-			<exclude name="libs/commons-digester-1.7.jar"/>
-			<exclude name="libs/commons-logging-1.0.4.jar"/>
-			<exclude name="libs/commons-logging-api-1.0.4.jar"/>
-			<exclude name="libs/jwf-1.0.1.jar"/>
-			<exclude name="libs/log4j-1.2.13.jar"/>
-			<exclude name="libs/libraries.txt"/>
-			<exclude name="**/.FBC*"/>
-			<exclude name="**/.xvpics/"/>
-		</zip>
-	</target>
-
-	<target name="apidocs" description="generates the API documentation">
-		<javadoc 
-		   destdir="docs/apidocs"
-		   stylesheetfile="docs/stylesheet.css"
-		   package="true"
-		   windowtitle="DeepaMehta -- API Documentation">
-			<fileset dir="develop/src">
-			</fileset>		
-		</javadoc>
-        <copy file="docs/overview-frame.html" todir="docs/apidocs" overwrite="true"/>
-        <copy file="docs/overview-summary.html" todir="docs/apidocs" overwrite="true"/>
-        <copy file="docs/apidocs-index.html" tofile="docs/apidocs/index.html" overwrite="true"/>
-	</target>
-
-	<target name="cleanup" description="remove build directory">
-		<delete dir="${build}"/>
+			<arg value="${dm.host}:${dm.port}" />
+		</java>
 	</target>
 
 	<!-- Fix -->
 
-	<target name="fixdb" depends="build" description="fixes invalid HTML">
-		<java classname="de.deepamehta.service.DBFix" dir="${client}" fork="true">
+	<target name="fixdb" description="fixes invalid HTML">
+		<java classname="de.deepamehta.service.db.DBFix" dir="${client}" fork="true">
 			<classpath>
-				<pathelement location="${server}/DeepaMehtaService.jar"/>
-				<path refid="javalibs"/> 
+				<pathelement location="${server}/DeepaMehtaService.jar" />
+				<path refid="javalibs" />
 			</classpath>
-			<arg value="${dm.instance}"/>
-        </java>
+			<arg value="${dm.instance}" />
+		</java>
+	</target>
+
+	<!-- Herlper Targets -->
+
+	<target name="-testsyspass">
+		<condition property="withsyspass" value="true">
+			<isset property="db.syspass" />
+		</condition>
+	</target>
+
+    <target name="-call-examples">
+    	<antcall target="-call-examples-noweb"/>
+    	<antcall target="-call-examples-web"/>
+    </target>
+	<target name="-call-examples-noweb">
+		<ant target="-call-example">
+			<property name="example" value="ldap"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="movies"/>
+		</ant>
+    </target>
+	<target name="-call-examples-web">
+		<ant target="-call-example">
+			<property name="example" value="dm-browser"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="dm-search"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="dm-topicmapviewer"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="dm-web"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="knoppixforum"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="kompetenzstern"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="messageboard"/>
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="musicforum"/>
+		</ant>
+    </target>
+    <target name="-call-example">
+    	<echo>calling target "${target}" in example "${example}"</echo>
+		<trycatch>
+			<try>
+				<ant antfile="build.xml" dir="${examples}/${example}" target="${target}" inheritall="false">
+					<property name="syspass" value="${db.syspass}" />
+					<property name="withsyspass" value="${withsyspass}" />
+				</ant>
+			</try>
+			<catch/>
+		</trycatch>
+    	<echo>finished target "${target}" in example "${example}"</echo>
 	</target>
 
 </project>

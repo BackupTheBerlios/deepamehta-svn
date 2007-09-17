@@ -4,68 +4,94 @@
 		Movies
 	</description>
 
-	<property name="jar" value="MoviesTopics.jar"/>
-	<property name="build" location="build"/>
+	<property name="jar" value="MoviesTopics.jar" />
+	<property name="build" location="build" />
+	<property name="dm.base-dir" location="../../.." />
 
-	<property name="movies.db.name" value="Movies"/>
-	<property name="movies.db.userid" value="movies"/>
-	<property name="movies.db.password" value="movies"/>
-	<property name="movies.db.tables" value="db/db_tables_mysql.sql"/>
-	<property name="movies.db.content" value="db/db_inserts.sql"/>
-	<property name="movies.db.url" value="jdbc:mysql://127.0.0.1/${movies.db.name}?useUnicode=true&amp;characterEncoding=latin1"/>
+	<import file="${dm.base-dir}/config.xml" />
+	<property file="config/movies-${dm.instance}.properties" />
 
-	<import file="../../../config.xml"/>
+	<condition property="db.syspass" value="${syspass}">
+		<istrue value="${withsyspass}" />
+	</condition>
 
 	<target name="init" description="create build directory">
-		<mkdir dir="${build}"/>
+		<mkdir dir="${build}" />
 	</target>
 
 	<target name="compile" depends="init">
 		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
 			<classpath>
-				<pathelement location="${web.lib.dir}/DeepaMehtaService.jar"/>
-				<pathelement location="${web.lib.dir}/DeepaMehtaTopics.jar"/>
+				<pathelement location="${server}/DeepaMehtaService.jar" />
+				<pathelement location="${server}/DeepaMehtaTopics.jar" />
 			</classpath>
 		</javac>
 	</target>
 
 	<target name="jar" depends="compile">
-   	    <jar jarfile="${jar}" basedir="${build}">
+		<jar jarfile="${jar}" basedir="${build}">
 			<include name="de/deepamehta/movies/topics/*.class" />
 		</jar>
 	</target>
 
+	<target name="build" depends="jar"/>
+	
 	<target name="cleanup" description="remove build directory">
-		<delete dir="${build}"/>
+		<delete dir="${build}" />
 	</target>
 
 	<!-- example database "Movies" -->
 
-	<target name="install">
-		<antcall target="createdb"/>
-		<antcall target="createtables"/>
-		<antcall target="initdb"/>
-	</target>
-
-	<target name="createdb">
-		<input message="Enter MySQL root user password: " addproperty="db.rootpw"/>
-		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.rootpw}" classpathref="javalibs">
-			CREATE DATABASE ${movies.db.name};
-			GRANT ALL PRIVILEGES ON ${movies.db.name}.* TO ${movies.db.userid}@localhost IDENTIFIED BY '${movies.db.password}' WITH GRANT OPTION;
-			GRANT ALL PRIVILEGES ON ${movies.db.name}.* TO ${movies.db.userid}@"%"       IDENTIFIED BY '${movies.db.password}' WITH GRANT OPTION;
+	<target name="install" depends="initdb" >
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${examples}">
+				<include name="movies/db/dmdb-movies.sql" />
+				<include name="movies/db/dmdb-movies-${dm.instance}.sql" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
 		</sql>
 	</target>
 
-	<target name="createtables">
-		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.userid}" password="${movies.db.password}" src="${movies.db.tables}">
-			<classpath refid="javalibs"/>
+	<target name="createmoviesdb">
+		<ant antfile="${movies.db.create-db}" target="createdb" inheritrefs="true">
+			<property name="db.sysurl" value="${movies.db.sysurl}" />
+			<property name="db.name" value="${movies.db.name}" />
+			<property name="db.user" value="${movies.db.user}" />
+			<property name="db.password" value="${movies.db.password}" />
+		</ant>
+	</target>
+
+	<target name="createtables" depends="createmoviesdb">
+		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.user}" password="${movies.db.password}" classpathref="javalibs">
+			<fileset dir=".">
+				<include name="${movies.db.tables}" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
 		</sql>
 	</target>
 
-	<target name="initdb">
-		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.userid}" password="${movies.db.password}" src="${movies.db.content}">
-			<classpath refid="javalibs"/>
+	<target name="initdb" depends="createtables">
+		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.user}" password="${movies.db.password}" classpathref="javalibs">
+			<fileset dir=".">
+				<include name="${movies.db.content}" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
 		</sql>
+	</target>
+
+	<target name="dropmoviesdb" >
+		<ant antfile="${movies.db.drop-db}" target="dropdb" inheritrefs="true">
+			<property name="db.sysurl" value="${movies.db.sysurl}" />
+			<property name="db.name" value="${movies.db.name}" />
+			<property name="db.user" value="${movies.db.user}" />
+			<property name="db.password" value="${movies.db.password}" />
+		</ant>
 	</target>
 
 </project>

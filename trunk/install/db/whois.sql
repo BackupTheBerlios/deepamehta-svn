@@ -12,7 +12,7 @@ INSERT INTO TopicProp VALUES ('tt-whoistopic', 1, 'Icon', 'whois.gif');
 INSERT INTO TopicProp VALUES ('tt-whoistopic', 1, 'Unique Topic Names', 'on');
 -- assign properties
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-143', '', 'tt-whoistopic', 1, 'pp-wit_server', 1);
-INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-144', '', 'tt-whoisTopic', 1, 'pp-wit_domains', 1);
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-144', '', 'tt-whoistopic', 1, 'pp-wit_domains', 1);
 -- container type
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-whoistopiccontainer','Whois Search');
 -- set properties of container type

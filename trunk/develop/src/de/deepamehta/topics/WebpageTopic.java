@@ -169,7 +169,7 @@ public class WebpageTopic extends LiveTopic {
 		String urlString = (String) newData.get(PROPERTY_URL);
 		if (urlString != null) {
 			try {
-				URL url = new URL(urlString);
+				new URL(urlString);
 			} catch (MalformedURLException e) {
 				String errText = "\"" + urlString + "\" is not a valid URL";
 				directives.add(DIRECTIVE_SHOW_MESSAGE, errText, new Integer(NOTIFICATION_WARNING));

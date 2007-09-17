@@ -144,15 +144,15 @@ public interface KS extends DeepaMehtaConstants {
 	static final String ICON_SHOW_COMPETENCE_STAR = "Kompetenzstern.gif";
 	//
 	static final String ITEM_SET_ORDER = "Reihenfolge festlegen";
-	static final String ITEM_CHANGE_ORDER = "Reihenfolge ändern";
+	static final String ITEM_CHANGE_ORDER = "Reihenfolge √§ndern";
 	static final String  CMD_SET_ORDER = "setOrder";
 	static final String ICON_SET_ORDER = "setOrder.gif";
 	//
-    static final String ITEM_SHOW_DOCUMENTS = "Verknüpfte Dokumente anzeigen";
+    static final String ITEM_SHOW_DOCUMENTS = "Verkn√ºpfte Dokumente anzeigen";
     static final String  CMD_SHOW_DOCUMENTS = "showDocuments";
     static final String ICON_SHOW_DOCUMENTS = "showDocuments.gif";
     //
-    static final String ITEM_ASSIGN_DOCUMENT = "Dokument verknüpfen";
+    static final String ITEM_ASSIGN_DOCUMENT = "Dokument verkn√ºpfen";
     static final String  CMD_ASSIGN_DOCUMENT = "assignDocument";
     static final String ICON_ASSIGN_DOCUMENT = "createDocument.gif";
 	//

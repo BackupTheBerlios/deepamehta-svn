@@ -19,6 +19,7 @@ import java.util.*;
  */
 public interface CorporateMemory {
 
+	void release();
 
 
 	// -------------------------

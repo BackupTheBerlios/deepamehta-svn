@@ -180,10 +180,9 @@ public class CorporateDirectives extends Directives {
 		Enumeration e = directives.elements();
 		Directive directive = null;
 		int dirType = 0;
-		Object param1, param2, param3, param4, param5;
+		Object param1, param2, param3, param4;//, param5;
 		// directive parameters
 		String topicmapID;
-		String viewmode;
 		boolean evoke;
 		PresentableTopic viewMetadata;
 		//
@@ -198,7 +197,9 @@ public class CorporateDirectives extends Directives {
 				param2 = directive.param2;
 				param3 = directive.param3;
 				param4 = directive.param4;
-				param5 = directive.param5;
+				// param5 is currently not needed
+				// param5 = directive.param5;
+				
 				// switch by directive type
 				switch (dirType) {
 				case DIRECTIVE_SHOW_TOPIC:
