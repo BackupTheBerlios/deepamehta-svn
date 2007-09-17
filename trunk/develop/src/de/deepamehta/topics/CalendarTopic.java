@@ -17,7 +17,7 @@ import java.util.*;
 
 
 /**
- * Last functional change: 14.9.2007 (2.0b8)<br>
+ * Last functional change: 17.9.2007 (2.0b8)<br>
  * Last documentation update: 6.7.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -220,9 +220,9 @@ public class CalendarTopic extends LiveTopic {
 
 
 
-	// *****************
-	// *** Utilities ***
-	// *****************
+	// **********************
+	// *** Custom Methods ***
+	// **********************
 
 
 
@@ -427,16 +427,44 @@ public class CalendarTopic extends LiveTopic {
 	// ---
 
 	private Vector getEvents() {
+		Vector events;
+		// 1) add events directly connected to this calendar
+		// ### sorting not needed anymore
 		String[] sortProps = {PROPERTY_BEGIN_DATE, PROPERTY_BEGIN_TIME};
-		return cm.getRelatedTopics(getID(), SEMANTIC_CALENDAR_EVENT, TOPICTYPE_EVENT, 2, sortProps, true);	// descending=true
+		events = cm.getRelatedTopics(getID(), SEMANTIC_CALENDAR_EVENT, TOPICTYPE_EVENT, 2, sortProps, true);	// descending=true
+		// 2) add events of the persons connected to this calendar
+		Enumeration e = getCalendarPersons().elements();
+		while (e.hasMoreElements()) {
+			BaseTopic person = (BaseTopic) e.nextElement();
+			Vector personEvents = ((PersonTopic) as.getLiveTopic(person)).getCalendarEvents();
+			events.addAll(personEvents);
+		}
+		return events;
 	}
+
+	private Vector getCalendarPersons() {
+		return cm.getRelatedTopics(getID(), SEMANTIC_CALENDAR_PERSON, TOPICTYPE_PERSON, 2);
+	}
+
+	// ---
 
 	private void revealEvent(String eventID, CorporateDirectives directives) {
 		PresentableTopic event = new PresentableTopic(as.getLiveTopic(eventID, 1), getID());
-		BaseAssociation a = cm.getAssociation(ASSOCTYPE_ASSOCIATION, getID(), eventID);
+		BaseAssociation a = cm.getAssociation(SEMANTIC_CALENDAR_EVENT, getID(), eventID);
+		Boolean evoke = Boolean.FALSE;
+		if (a == null) {
+			// create a "virtual" association of type "Search Result" if not yet exist
+			a = cm.getAssociation(SEMANTIC_CONTAINER_HIERARCHY, getID(), eventID);
+			if (a == null) {
+				String assocID = as.getNewAssociationID();
+				a = new BaseAssociation(assocID, 1, SEMANTIC_CONTAINER_HIERARCHY, 1, "", getID(), 1, eventID, 1);
+				evoke = Boolean.TRUE;
+			}
+		}
+		//
 		PresentableAssociation assoc = new PresentableAssociation(a);
 		directives.add(DIRECTIVE_SHOW_TOPIC, event);
-		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc);
+		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, evoke);
 		directives.add(DIRECTIVE_SELECT_TOPIC, eventID);
 	}
 

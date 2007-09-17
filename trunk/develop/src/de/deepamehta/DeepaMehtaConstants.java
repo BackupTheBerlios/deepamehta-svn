@@ -26,7 +26,7 @@ import java.util.Vector;
  * </OL>
  * <P>
  * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
+ * Last functional change: 17.9.2007 (2.0b8)<BR>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -663,6 +663,12 @@ public interface DeepaMehtaConstants {
 
 	// direction is from calendar to event
 	static final String SEMANTIC_CALENDAR_EVENT = ASSOCTYPE_ASSOCIATION;
+
+	// direction is from calendar to person
+	static final String SEMANTIC_CALENDAR_PERSON = ASSOCTYPE_ASSOCIATION;
+
+	// direction is from event to person
+	static final String SEMANTIC_EVENT_ATTENDEE = ASSOCTYPE_ASSOCIATION;
 
 
 

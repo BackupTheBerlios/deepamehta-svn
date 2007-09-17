@@ -26,7 +26,9 @@ INSERT INTO AssociationProp VALUES ('a-94', 1, 'Ordinal Number', '20');
 --- New Feature: Calendar ---
 -----------------------------
 
+---
 --- create topic type "Calendar" ---
+---
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-calendar', 'Calendar');
 INSERT INTO TopicProp VALUES ('tt-calendar', 1, 'Name', 'Calendar');
 INSERT INTO TopicProp VALUES ('tt-calendar', 1, 'Plural Name', 'Calendars');
@@ -72,8 +74,17 @@ INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-141', '', 'tt-calenda
 INSERT INTO AssociationProp VALUES ('a-141', 1, 'Ordinal Number', '220');
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-148', '', 'tt-calendar', 1, 'pp-displaymode', 1);
 INSERT INTO AssociationProp VALUES ('a-148', 1, 'Ordinal Number', '210');
+-- create relation to "Person"
+INSERT INTO Association VALUES ('at-relation', 1, 1, 'a-190', '', 'tt-calendar', 1, 'tt-person', 1);
+INSERT INTO AssociationProp VALUES ('a-190', 1, 'Cardinality', 'many');
+INSERT INTO AssociationProp VALUES ('a-190', 1, 'Association Type ID', 'at-association');
+INSERT INTO AssociationProp VALUES ('a-190', 1, 'Web Info', 'Related Topic Name');
+INSERT INTO AssociationProp VALUES ('a-190', 1, 'Web Form', 'Related Topic Selector');
+INSERT INTO AssociationProp VALUES ('a-190', 1, 'Ordinal Number', '150');
 
+---
 --- create topic type "Event" ---
+---
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-event', 'Event');
 INSERT INTO TopicProp VALUES ('tt-event', 1, 'Name', 'Event');
 INSERT INTO TopicProp VALUES ('tt-event', 1, 'Plural Name', 'Events');
@@ -106,7 +117,7 @@ INSERT INTO TopicProp VALUES ('pp-enddate', 1, 'Visualization', 'Date Chooser');
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-endtime', 'End Time');
 INSERT INTO TopicProp VALUES ('pp-endtime', 1, 'Name', 'End Time');
 INSERT INTO TopicProp VALUES ('pp-endtime', 1, 'Visualization', 'Time Chooser');
--- assign properties
+-- assign properties to topic type
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-110', '', 'tt-event', 1, 'pp-begindate', 1);
 INSERT INTO AssociationProp VALUES ('a-110', 1, 'Ordinal Number', '110');
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-111', '', 'tt-event', 1, 'pp-begintime', 1);
@@ -115,16 +126,28 @@ INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-112', '', 'tt-event',
 INSERT INTO AssociationProp VALUES ('a-112', 1, 'Ordinal Number', '130');
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-113', '', 'tt-event', 1, 'pp-endtime', 1);
 INSERT INTO AssociationProp VALUES ('a-113', 1, 'Ordinal Number', '140');
+-- create relation to "Person"
+INSERT INTO Association VALUES ('at-relation', 1, 1, 'a-246', 'Attendee', 'tt-event', 1, 'tt-person', 1);
+INSERT INTO AssociationProp VALUES ('a-246', 1, 'Name', 'Attendee');
+INSERT INTO AssociationProp VALUES ('a-246', 1, 'Cardinality', 'many');
+INSERT INTO AssociationProp VALUES ('a-246', 1, 'Association Type ID', 'at-association');
+INSERT INTO AssociationProp VALUES ('a-246', 1, 'Web Info', 'Related Topic Name');
+INSERT INTO AssociationProp VALUES ('a-246', 1, 'Web Form', 'Related Topic Selector');
+INSERT INTO AssociationProp VALUES ('a-246', 1, 'Ordinal Number', '150');
 
+---
 --- assign topic types to workspace "DeepaMehta"
+---
 INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-114', '', 't-corporategroup', 1, 'tt-calendar', 1);
 INSERT INTO AssociationProp VALUES ('a-114', 1, 'Access Permission', 'create');
 INSERT INTO AssociationProp VALUES ('a-114', 1, 'Ordinal Number', '50');
 INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-115', '', 't-corporategroup', 1, 'tt-event', 1);
-INSERT INTO AssociationProp VALUES ('a-115', 1, 'Access Permission', 'view');
+INSERT INTO AssociationProp VALUES ('a-115', 1, 'Access Permission', 'create');
 INSERT INTO AssociationProp VALUES ('a-115', 1, 'Ordinal Number', '55');
 
+---
 --- delete "City" and "Country" assignments from workspace "DeepaMehta"
+---
 DELETE FROM Association WHERE ID='a-324';
 DELETE FROM AssociationProp WHERE AssociationID='a-324';
 DELETE FROM ViewAssociation WHERE AssociationID='a-324';
