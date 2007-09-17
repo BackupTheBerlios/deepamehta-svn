@@ -11,6 +11,7 @@
 	<target name="dropdb" depends="-dropdb"/>
 
 	<import file="build-development.xml" optional="true"/>
+	<import file="setup.xml"/>
 	
 	<path id="dmapps">
 		<pathelement location="${examples}/movies/MoviesTopics.jar" />
@@ -33,139 +34,6 @@
 
 	<target name="-default">
 		<antcall target="${main-target}"></antcall>
-	</target>
-	
-	<!-- Configuration -->
-
-	<target name="config" depends="-config-web-root,-config-instance,-config-examples" description="Configures the application DeepaMehta">
-		<propertyfile file="${config.properties}" >
-			<entry key="main-target" default="dm"/>
-		</propertyfile>
-		<echo>
-Your choices are stored in the "${config.properties}" file.
-If you want to change the settings you have made please edit
-this file or call the config target again.
-		</echo>
-	</target>
-	<target name="-config-web">
-		<condition property="old.do.installweb" value="n">
-			<isfalse value="${web.deploy.do}"/>
-		</condition>
-		<condition property="old.do.installweb" value="y">
-			<istrue value="${web.deploy.do}"/>
-		</condition>
-		<input
-			message="Do you want to install web applications?"
-			validargs="y,n"
-			addproperty="new.do.installweb"
-			defaultvalue="${old.do.installweb}"/>
-		<condition property="new.web.deploy.do" value="false">
-				<equals arg1="${new.do.installweb}" arg2="n" />
-		</condition>
-		<condition property="new.web.deploy.do" value="true">
-			<not><equals arg1="${new.do.installweb}" arg2="n" /></not>
-		</condition>
-		<condition property="new.do.web.deploy">
-			<istrue value="${new.web.deploy.do}" />
-		</condition>
-		<propertyfile file="${config.properties}" >
-			<entry key="web.deploy.do" value="${new.web.deploy.do}"/>
-		</propertyfile>
-		<var name="do.web.deploy" unset="true"/>
-		<condition property="do.web.deploy" value="true">
-			<istrue value="${web.deploy.do}"/>
-		</condition>
-	</target>
-	<target name="-config-web-root" if="new.do.web.deploy" depends="-config-web">
-		<input
-			message="Please enter the root directory of your application server."
-			addproperty="new.tomcat.root"
-			defaultvalue="${tomcat.root}"/>
-		<propertyfile file="${config.properties}" >
-			<entry key="tomcat.root" value="${new.tomcat.root}"/>
-		</propertyfile>
-	</target>
-	<target name="-config-which-instance">
-		<echo>Please select one of the following instance configurations:</echo>
-		<echo/>
-		<for param="list.instance.config.file">
-			<path>
-				<fileset dir="${config}" includes="dm-*.properties"/>
-			</path>
-			<sequential>
-				<var name="list.instance" unset="true"/>
-				<var name="list.dm-instance" unset="true"/>
-				<basename file="@{list.instance.config.file}" property="list.dm-instance" suffix=".properties"/>
-				<propertyregex property="list.instance"
-	              input="${list.dm-instance}"
-	              regexp="dm-(.*)"
-	              select="\1"/>
-				<echo>${list.instance}</echo>
-			</sequential>
-		</for>
-		<echo/>
-		<input
-			message="currently set (default)"
-			addproperty="new.dm.instance"
-			defaultvalue="${dm.instance}"/>
-
-		<fileset dir="${config}" includes="dm-${new.dm.instance}.properties" id="instance.config.fileset"/>
-		<var name="correct" unset="true"/>
-		<condition property="correct">
-			<resourcecount refid="instance.config.fileset" when="equal" count="1" />
-		</condition>
-		<fail
-			unless="correct"
-			message="${new.dm.instance} does not refer to an instance configuration" />
-		<propertyfile file="${config.properties}" >
-			<entry key="dm.instance" value="${new.dm.instance}"/>
-		</propertyfile>
-	</target>
-	<target name="-config-instance" depends="-config-which-instance">
-		<echo>configuring now the DeepaMehta instance "${dm.instance}...</echo>
-		<ant target="-config-instance2" inheritall="false"/>
-	</target>
-	<target name="-config-instance2" depends="-config-instance-db.host,-config-instance-db.name,-config-instance-db.user">
-		<echo>completed configuring instance "${dm.instance}"</echo>
-		<echo>Instance-related settings are stored in "${dm.instance.config-property-file}.</echo>
-	</target>
-	<target name="-config-instance-db.host" if="do.config.db.host">
-		<input
-			message="Please enter the host of your database:"
-			addproperty="new.db.host"
-			defaultvalue="${db.host}"/>
-		<propertyfile file="${dm.instance.config-property-file}" >
-			<entry key="db.host" value="${new.db.host}"/>
-		</propertyfile>
-	</target>
-	<target name="-config-instance-db.name" if="do.config.db.name">
-		<input
-			message="Please enter the name of your database:"
-			addproperty="new.db.name"
-			defaultvalue="${db.name}"/>
-		<propertyfile file="${dm.instance.config-property-file}" >
-			<entry key="db.name" value="${new.db.name}"/>
-		</propertyfile>
-	</target>
-	<target name="-config-instance-db.user" if="do.config.db.user">
-		<echo>It is strongly advised to change the database user and password before creation!</echo>
-		<input
-			message="Please enter the user to use:"
-			addproperty="new.db.user"
-			defaultvalue="${db.user}"/>
-		<input
-			message="Please enter the password to use:"
-			addproperty="new.db.password"
-			defaultvalue="${db.password}"/>
-		<propertyfile file="${dm.instance.config-property-file}" >
-			<entry key="db.user" value="${new.db.user}"/>
-			<entry key="db.password" value="${new.db.password}"/>
-		</propertyfile>
-	</target>
-	<target name="-config-examples">
-		<ant target="-call-examples">
-			<property name="target" value="config"/>
-		</ant>
 	</target>
 
 	<!-- Install -->
