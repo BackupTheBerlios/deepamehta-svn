@@ -148,7 +148,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		if (0 == freeCons.size()) {
 			return newConnection();
 		}
-		return (Connection) freeCons.poll();
+		return (Connection) freeCons.removeFirst();
 	}
 
 	public DbmsHint getDbmsHint() {
@@ -181,7 +181,8 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 
 	protected void closeAllCons() throws SQLException {
 		Connection con;
-		while (null != (con = (Connection) allCons.poll())) {
+		while (allCons.size() > 0) {
+			con = (Connection) allCons.removeFirst();
 			con.close();
 		}
 	}
@@ -215,7 +216,8 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	}
 
 	public void logStatement(String arg0) {
-		dblog.println(arg0);
+		return;
+		/* ### dblog.println(arg0);
 		// do not use the AutoFreeConnectionStatement
 		try {
 			Connection connection = getConnection();
@@ -244,7 +246,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} */
 	}
 
 }
