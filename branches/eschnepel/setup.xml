@@ -5,10 +5,12 @@
 	</description>
 
 	<!-- Configuration -->
-
-	<target name="config" depends="-config-web-root,-config-instance,-config-examples" description="Configures the application DeepaMehta">
+	<target name="-config-init">
+		<property name="configuration.isactive" value="true"/>
+	</target>
+	<target name="config" depends="-config-init,-config-web-root,-config-instance,-config-examples" description="Configures the application DeepaMehta">
 		<propertyfile file="${config.properties}" >
-			<entry key="main-target" default="dm"/>
+			<entry key="main-targets" default="dm"/>
 		</propertyfile>
 		<echo>
 Your choices are stored in the "${config.properties}" file.
@@ -16,7 +18,8 @@ If you want to change the settings you have made please edit
 this file or call the config target again.
 		</echo>
 	</target>
-	<target name="-config-web">
+
+	<target name="-config-web" depends="-config-init">
 		<condition property="old.do.installweb" value="n">
 			<isfalse value="${web.deploy.do}"/>
 		</condition>
@@ -45,6 +48,7 @@ this file or call the config target again.
 			<istrue value="${web.deploy.do}"/>
 		</condition>
 	</target>
+
 	<target name="-config-web-root" if="new.do.web.deploy" depends="-config-web">
 		<input
 			message="Please enter the root directory of your application server."
@@ -54,7 +58,8 @@ this file or call the config target again.
 			<entry key="tomcat.root" value="${new.tomcat.root}"/>
 		</propertyfile>
 	</target>
-	<target name="-config-which-instance">
+
+	<target name="-config-which-instance" depends="-config-init">
 		<echo>Please select one of the following instance configurations:</echo>
 		<echo/>
 		<for param="list.instance.config.file">
@@ -89,15 +94,21 @@ this file or call the config target again.
 		<propertyfile file="${config.properties}" >
 			<entry key="dm.instance" value="${new.dm.instance}"/>
 		</propertyfile>
+		<propertyfile file="${config}/config.properties" >
+			<entry key="dm.instance" value="${new.dm.instance}"/>
+		</propertyfile>
 	</target>
+
 	<target name="-config-instance" depends="-config-which-instance">
 		<echo>configuring now the DeepaMehta instance "${dm.instance}...</echo>
 		<ant target="-config-instance2" inheritall="false"/>
 	</target>
+
 	<target name="-config-instance2" depends="-config-instance-db.host,-config-instance-db.name,-config-instance-db.user">
 		<echo>completed configuring instance "${dm.instance}"</echo>
 		<echo>Instance-related settings are stored in "${dm.instance.config-property-file}.</echo>
 	</target>
+
 	<target name="-config-instance-db.host" if="do.config.db.host">
 		<input
 			message="Please enter the host of your database:"
@@ -107,6 +118,7 @@ this file or call the config target again.
 			<entry key="db.host" value="${new.db.host}"/>
 		</propertyfile>
 	</target>
+
 	<target name="-config-instance-db.name" if="do.config.db.name">
 		<input
 			message="Please enter the name of your database:"
@@ -116,6 +128,7 @@ this file or call the config target again.
 			<entry key="db.name" value="${new.db.name}"/>
 		</propertyfile>
 	</target>
+
 	<target name="-config-instance-db.user" if="do.config.db.user">
 		<echo>It is strongly advised to change the database user and password before creation!</echo>
 		<input
@@ -131,10 +144,66 @@ this file or call the config target again.
 			<entry key="db.password" value="${new.db.password}"/>
 		</propertyfile>
 	</target>
-	<target name="-config-examples">
+
+	<target name="-config-examples" depends="-config-init">
 		<ant target="-call-examples">
 			<property name="target" value="config"/>
 		</ant>
+	</target>
+
+	<target name="-config-ask-example">
+		<var name="example.execute" unset="true"/>
+		<property file="${examples}/${example}/config.properties"/>
+		<if>
+			<or>
+				<istrue value="${configuration.isactive}"/>
+				<not><isset property="example.execute"/></not>
+			</or>
+			<then>
+				<if>
+					<istrue value="${example.execute}"/>
+					<then>
+						<var name="default" value="y"/>
+					</then>
+					<else>
+						<var name="default" value="n"/>
+					</else>
+				</if>
+				<var name="input" unset="true"/>
+				<input
+					message="Shall the example ${example} be processed?"
+					validargs="y,n"
+					defaultvalue="${default}"
+					addproperty="input"/>
+				<var name="default" unset="true"/>
+				<if>
+					<equals arg1="${input}" arg2="y"/>
+					<then>
+						<var name="do.example.execute" value="true"/>
+						<propertyfile file="${examples}/${example}/config.properties">
+							<entry key="example.execute" value="true"/>
+						</propertyfile>
+					</then>
+					<else>
+						<var name="do.example.execute" unset="true"/>
+						<propertyfile file="${examples}/${example}/config.properties">
+							<entry key="example.execute" value="false"/>
+						</propertyfile>
+					</else>
+				</if>
+			</then>
+			<else>
+				<if>
+					<istrue value="${example.execute}"/>
+					<then>
+						<var name="do.example.execute" value="true"/>
+					</then>
+					<else>
+						<var name="do.example.execute" unset="true"/>
+					</else>
+				</if>
+			</else>
+		</if>
 	</target>
 
 </project>

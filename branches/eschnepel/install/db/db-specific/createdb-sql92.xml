@@ -1,6 +1,6 @@
 <project name="DeepaMehta-db-createdb-sql92" >
 	<import file="createdb-ask.xml"/>
-	<target name="-createdb" depends="-askcreatedb" unless="do.abort">
+	<target name="-createdb" depends="-askcreatedb" unless="do.createdb.abort">
 		<echo>Creating Database ${db.name} for user ${db.user} with password ${db.password} ...</echo>
 		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.syspass}" classpathref="javalibs">
 			CREATE DATABASE ${db.name};

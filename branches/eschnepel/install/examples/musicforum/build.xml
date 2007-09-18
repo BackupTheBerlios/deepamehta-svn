@@ -11,7 +11,7 @@
 
 	<import file="${dm.base-dir}/config.xml" />
 
-	<target name="war">
+	<target name="-war">
    	    <war warfile="${war}" webxml="config/web.xml">
 		    <classes dir="../messageboard/build">
 				<include name="de/deepamehta/messageboard/*.class" />
@@ -26,13 +26,15 @@
 		</war>
 	</target>
 
-	<target name="build" depends="war"/>
+	<target name="build" depends="-war"/>
 
 	<target name="deploy" if="do.web.deploy">
         <copy file="${war}" todir="${web.deploy.dir}"/>
 	</target>
 
-	<target name="install">
+	<target name="install" depends="-initdb"/>
+
+	<target name="-initdb">
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${examples}">
 				<include name="musicforum/music.sql" />
@@ -41,5 +43,9 @@
 				<include name="${db.close-session}" />
 			</fileset>
 		</sql>
+	</target>
+
+	<target name="cleanup">
+		<delete file="${war}"/>
 	</target>
 </project>

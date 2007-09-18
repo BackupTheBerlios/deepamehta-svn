@@ -1,4 +1,4 @@
-<project name="Movies" default="jar" basedir=".">
+<project name="Movies" default="build" basedir=".">
 
 	<description>
 		Movies
@@ -15,11 +15,11 @@
 		<istrue value="${withsyspass}" />
 	</condition>
 
-	<target name="init" description="create build directory">
+	<target name="-init" description="create build directory">
 		<mkdir dir="${build}" />
 	</target>
 
-	<target name="compile" depends="init">
+	<target name="-compile" depends="-init">
 		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
 			<classpath>
 				<pathelement location="${server}/DeepaMehtaService.jar" />
@@ -28,21 +28,25 @@
 		</javac>
 	</target>
 
-	<target name="jar" depends="compile">
+	<target name="-jar" depends="-compile">
 		<jar jarfile="${jar}" basedir="${build}">
 			<include name="de/deepamehta/movies/topics/*.class" />
 		</jar>
 	</target>
 
-	<target name="build" depends="jar"/>
-	
+	<target name="build" depends="-jar" />
+
 	<target name="cleanup" description="remove build directory">
 		<delete dir="${build}" />
 	</target>
 
 	<!-- example database "Movies" -->
 
-	<target name="install" depends="initdb" >
+	<target name="uninstall" depends="-dropmoviesdb" />
+
+	<target name="install" depends="-initmoviesdb,-initdb" />
+
+	<target name="-initdb">
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${examples}">
 				<include name="movies/db/dmdb-movies.sql" />
@@ -54,16 +58,17 @@
 		</sql>
 	</target>
 
-	<target name="createmoviesdb">
-		<ant antfile="${movies.db.create-db}" target="createdb" inheritrefs="true">
-			<property name="db.sysurl" value="${movies.db.sysurl}" />
-			<property name="db.name" value="${movies.db.name}" />
-			<property name="db.user" value="${movies.db.user}" />
-			<property name="db.password" value="${movies.db.password}" />
-		</ant>
+	<import file="${movies.db.create-db}" />
+
+	<target name="-createmoviesdb">
+		<var name="db.sysurl" value="${movies.db.sysurl}" />
+		<var name="db.name" value="${movies.db.name}" />
+		<var name="db.user" value="${movies.db.user}" />
+		<var name="db.password" value="${movies.db.password}" />
+		<antcallback target="-createdb" inheritrefs="true" return="do.createdb.abort" />
 	</target>
 
-	<target name="createtables" depends="createmoviesdb">
+	<target name="-createmoviestables" depends="-createmoviesdb" unless="do.createdb.abort">
 		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.user}" password="${movies.db.password}" classpathref="javalibs">
 			<fileset dir=".">
 				<include name="${movies.db.tables}" />
@@ -74,7 +79,7 @@
 		</sql>
 	</target>
 
-	<target name="initdb" depends="createtables">
+	<target name="-initmoviesdb" depends="-createmoviestables" unless="do.createdb.abort">
 		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.user}" password="${movies.db.password}" classpathref="javalibs">
 			<fileset dir=".">
 				<include name="${movies.db.content}" />
@@ -85,8 +90,8 @@
 		</sql>
 	</target>
 
-	<target name="dropmoviesdb" >
-		<ant antfile="${movies.db.drop-db}" target="dropdb" inheritrefs="true">
+	<target name="-dropmoviesdb">
+		<ant antfile="${movies.db.drop-db}" target="-dropdb" inheritrefs="true">
 			<property name="db.sysurl" value="${movies.db.sysurl}" />
 			<property name="db.name" value="${movies.db.name}" />
 			<property name="db.user" value="${movies.db.user}" />

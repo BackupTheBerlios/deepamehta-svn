@@ -1,6 +1,6 @@
 <project name="DeepaMehta-db-createdb-CONNECT" >
 	<import file="createdb-ask.xml"/>
-	<target name="-createdb" depends="-askcreatedb" unless="do.abort">
+	<target name="-createdb" depends="-askcreatedb" unless="do.createdb.abort">
 		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.syspass}" classpathref="javalibs">
 			<fileset dir="${db}">
 				<include name="EMPTY.sql"/>

@@ -33,7 +33,11 @@
 	</path>
 
 	<target name="-default">
-		<antcall target="${main-target}"></antcall>
+		<for list="${main-targets}" param="target" trim="true">
+			<sequential>
+				<antcall target="@{target}"></antcall>
+			</sequential>
+		</for>
 	</target>
 
 	<!-- Install -->
@@ -45,17 +49,19 @@
 		<!-- example applications -->
 		<antcall target="-installexamples" />
 	</target>
-
-	<!-- Movies -->
-	<target name="dropmovies" depends="-testsyspass">
-		<ant target="-call-example">
-			<property name="example" value="movies"/>
-			<property name="target" value="dropmoviesdb"/>
-		</ant>
+	<target name="uninstall" description="drops all databases">
+		<antcall target="-dropdb" />
+		<!-- example applications -->
+		<antcall target="-uninstallexamples" />
 	</target>
 	<target name="-installexamples" depends="-testsyspass">
 		<ant target="-call-examples">
 			<property name="target" value="install"/>
+		</ant>
+	</target>
+	<target name="-uninstallexamples" depends="-testsyspass">
+		<ant target="-call-examples">
+			<property name="target" value="uninstall"/>
 		</ant>
 	</target>
 
@@ -258,7 +264,7 @@ your DeepaMehta installed into your tomcat.
 			<property name="example" value="movies"/>
 		</ant>
     </target>
-	<target name="-call-examples-web">
+	<target name="-call-examples-web" if="do.web.deploy">
 		<ant target="-call-example">
 			<property name="example" value="dm-browser"/>
 		</ant>
@@ -284,16 +290,19 @@ your DeepaMehta installed into your tomcat.
 			<property name="example" value="musicforum"/>
 		</ant>
     </target>
-    <target name="-call-example">
+
+    <target name="-call-example" depends="-config-ask-example" if="do.example.execute">
     	<echo>calling target "${target}" in example "${example}"</echo>
-		<trycatch>
+		<trycatch property="exceptionProp" >
 			<try>
 				<ant antfile="build.xml" dir="${examples}/${example}" target="${target}" inheritall="false">
 					<property name="syspass" value="${db.syspass}" />
 					<property name="withsyspass" value="${withsyspass}" />
 				</ant>
 			</try>
-			<catch/>
+			<catch>
+				<echo>${exceptionProp}</echo>
+			</catch>
 		</trycatch>
     	<echo>finished target "${target}" in example "${example}"</echo>
 	</target>

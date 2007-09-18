@@ -170,6 +170,10 @@
 
 	<target name="cleanup" description="remove build directory">
 		<delete dir="${build}" />
+		<mkdir dir="${build}"/>
+		<ant target="-call-examples">
+			<property name="target" value="cleanup"/>
+		</ant>
 	</target>
 
 </project>
