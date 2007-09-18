@@ -55,9 +55,13 @@ public class MailmanTopic extends LiveTopic {
 
 	private static final String PROPERTY_DATE = "Date";
 
-	private static final String PROPERTY_TIME = "Time";
+	private static final String PROPERTY_FROMNAME = "From Name";
+
+	private static final String PROPERTY_FROMMAIL = "From Mail";
 
 	private static final String PROPERTY_SUBJECT = "Subject";
+
+	private static final String PROPERTY_TIME = "Time";
 
 	private static final String PROPERTY_URL = "URL";
 
@@ -65,7 +69,7 @@ public class MailmanTopic extends LiveTopic {
 
 	private static final String ASSOCTYPE_INREPLYTO = "at-listmessageinreplyto";
 
-	private static final String ASSOCTYPE_REFERENCE = "at-listmessagereference";
+	private static final String ASSOCTYPE_REFERENCE = "at-listmessagethread";
 
 	/**
 	 * count of archives to process in get action
@@ -197,6 +201,8 @@ public class MailmanTopic extends LiveTopic {
 		content = "<html><body><pre>" + content + "</pre></body></html>";
 		props.put(PROPERTY_CONTENT, content);
 		props.put(PROPERTY_SUBJECT, subject);
+		props.put(PROPERTY_FROMNAME, name);
+		props.put(PROPERTY_FROMMAIL, mail);
 		props.put(PROPERTY_DATE, formatSaveDate.format(date));
 		props.put(PROPERTY_TIME, formatSaveTime.format(date));
 		message.setProperties(props);

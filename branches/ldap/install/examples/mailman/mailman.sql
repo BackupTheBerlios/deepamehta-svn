@@ -80,15 +80,15 @@ INSERT INTO AssociationProp VALUES ('at-listmessageinreplytorelation', 1, 'Web F
 INSERT INTO AssociationProp VALUES ('at-listmessageinreplytorelation', 1, 'Ordinal Number', '1');
 
 -- List Message inReplyTo List Message Association Topic and Relation
-INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-listmessagereference', 'Reference');
-INSERT INTO TopicProp VALUES ('at-listmessagereference', 1, 'Name', 'Reference');
-INSERT INTO TopicProp VALUES ('at-listmessagereference', 1, 'Color', '#9F0000');
-INSERT INTO Association VALUES ('at-relation', 1, 1, 'at-listmessagereferencerelation', '', 'tt-listmessage', 1, 'tt-listmessage', 1);
-INSERT INTO AssociationProp VALUES ('at-listmessagereferencerelation', 1, 'Cardinality', 'many');
-INSERT INTO AssociationProp VALUES ('at-listmessagereferencerelation', 1, 'Association Type ID', 'at-listmessagereference');
-INSERT INTO AssociationProp VALUES ('at-listmessagereferencerelation', 1, 'Web Info', 'Related Topic Name');
-INSERT INTO AssociationProp VALUES ('at-listmessagereferencerelation', 1, 'Web Form', 'Related Form');
-INSERT INTO AssociationProp VALUES ('at-listmessagereferencerelation', 1, 'Ordinal Number', '2');
+INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-listmessagethread', 'Thread');
+INSERT INTO TopicProp VALUES ('at-listmessagethread', 1, 'Name', 'Thread');
+INSERT INTO TopicProp VALUES ('at-listmessagethread', 1, 'Color', '#9F0000');
+INSERT INTO Association VALUES ('at-relation', 1, 1, 'at-listmessagethreadrelation', '', 'tt-listmessage', 1, 'tt-listmessage', 1);
+INSERT INTO AssociationProp VALUES ('at-listmessagethreadrelation', 1, 'Cardinality', 'many');
+INSERT INTO AssociationProp VALUES ('at-listmessagethreadrelation', 1, 'Association Type ID', 'at-listmessagethread');
+INSERT INTO AssociationProp VALUES ('at-listmessagethreadrelation', 1, 'Web Info', 'Related Topic Name');
+INSERT INTO AssociationProp VALUES ('at-listmessagethreadrelation', 1, 'Web Form', 'Related Form');
+INSERT INTO AssociationProp VALUES ('at-listmessagethreadrelation', 1, 'Ordinal Number', '2');
 
 ------------------
 --- Properties ---
@@ -123,6 +123,16 @@ INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-listmessagesubject', 'Subject
 INSERT INTO TopicProp VALUES ('pp-listmessagesubject', 1, 'Name', 'Subject');
 INSERT INTO TopicProp VALUES ('pp-listmessagesubject', 1, 'Visualization', 'Input Field');
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-mailman-listmessagesubject', '', 'tt-listmessage', 1, 'pp-listmessagesubject', 1);
+
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-listmessagefromname', 'From Name');
+INSERT INTO TopicProp VALUES ('pp-listmessagefromname', 1, 'Name', 'From Name');
+INSERT INTO TopicProp VALUES ('pp-listmessagefromname', 1, 'Visualization', 'Input Field');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-mailman-listmessagefromname', '', 'tt-listmessage', 1, 'pp-listmessagefromname', 1);
+
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-listmessagefrommail', 'From Mail');
+INSERT INTO TopicProp VALUES ('pp-listmessagefrommail', 1, 'Mail', 'From Mail');
+INSERT INTO TopicProp VALUES ('pp-listmessagefrommail', 1, 'Visualization', 'Input Field');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-mailman-listmessagefrommail', '', 'tt-listmessage', 1, 'pp-listmessagefrommail', 1);
 
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-listmessagedate', 'Date');
 INSERT INTO TopicProp VALUES ('pp-listmessagedate', 1, 'Name', 'Date');
@@ -182,8 +192,8 @@ INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'at-listmessageassociation', 1,
 INSERT INTO ViewAssociation VALUES ('t-mailmanmap', 1, 'at-listmessagerelation', 1);
 INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'at-listmessageinreplyto', 1, 300, 100);
 INSERT INTO ViewAssociation VALUES ('t-mailmanmap', 1, 'at-listmessageinreplytorelation', 1);
-INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'at-listmessagereference', 1, 300, 150);
-INSERT INTO ViewAssociation VALUES ('t-mailmanmap', 1, 'at-listmessageinreferencerelation', 1);
+INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'at-listmessagethread', 1, 300, 150);
+INSERT INTO ViewAssociation VALUES ('t-mailmanmap', 1, 'at-listmessageinthreadrelation', 1);
 
 -- Container Associations
 INSERT INTO ViewTopic VALUES ('t-mailmanmap', 1, 'tt-listmessagecontainer', 1, 400, 150);
