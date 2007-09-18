@@ -13,4 +13,8 @@ public class TopicInitException extends RuntimeException {
     public TopicInitException(String s) {
 		super(s);
     }
+
+	public TopicInitException(String string, Exception e) {
+	    super(string, e);
+    }
 }

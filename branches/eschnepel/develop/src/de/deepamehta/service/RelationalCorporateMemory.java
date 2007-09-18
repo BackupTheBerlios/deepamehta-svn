@@ -79,6 +79,8 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		System.out.println(">    DBMS hint: \"" + dbmsHint.getName() + "\"");
 	}
 
+	
+	
 	// *************************************************************************
 	// *** Implementation of Interface de.deepamehta.service.CorporateMemory ***
 	// *************************************************************************
@@ -272,10 +274,11 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		return getRelatedTopics(topicID, assocType, null, null, null, relTopicPos, null, null, null, null, null, false, false);
 	}
 
-	/**
+	/* ###
+	/ **
 	 * @return	vector of {@link de.deepamehta.BaseTopic}
-	 */
-	/* ### public Vector getRelatedTopics(String topicID, String assocType, String relTopicType) {
+	 * /
+	public Vector getRelatedTopics(String topicID, String assocType, String relTopicType) {
 		return queryBaseTopics("SELECT Topic.* FROM Topic, Association WHERE " +
 			"(Association.TopicID1='" + topicID + "' AND Association.TopicID2 = Topic.ID OR " +
 			"Association.TopicID2='" + topicID + "' AND Association.TopicID1 = Topic.ID) AND " +
@@ -1369,6 +1372,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	// --- End of Interface de.deepamehta.service.CorporateMemory ---
 	// --------------------------------------------------------------
 
+	
 
 	// -----------------------
 	// --- Private Methods ---
@@ -1431,12 +1435,13 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		return result;
 	}
 
-	/**
+	/* ###
+	/ **
 	 * @see		#createPresentableTopic
 	 *
 	 * @return	null if geometry not exists
-	 */
-	/* ### private Point queryGeometry(String query) {
+	 * /
+	private Point queryGeometry(String query) {
 		Point p = null;
 		try {
 			Statement stmt = createStatement();
