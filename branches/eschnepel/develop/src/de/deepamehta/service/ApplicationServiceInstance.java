@@ -69,7 +69,7 @@ public class ApplicationServiceInstance implements DeepaMehtaConstants {
 			}
 		} catch (NumberFormatException e) {
 			throw new DeepaMehtaException("Service \"" + name + "\" has " +
-				"invalid port \"" + port + "\"");
+				"invalid port \"" + port + "\"", e);
 		}
 	}
 

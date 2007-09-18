@@ -183,8 +183,6 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		System.out.println(">    service name: \"" + instance.name + "\"");
 		System.out.println("> Corporate Memory");
 		System.out.println(">    implementation: \"" + instance.cmClass + "\"");
-//		System.out.println(">    URL: \"" + instance.dbURL + "\"");
-//		System.out.println(">    driver: \"" + instance.dbDriverClass + "\"");
 		// establish access to corporate memory
 		CorporateMemory cm = instance.createCorporateMemory();	// throws DME
 		// create application service
@@ -3573,7 +3571,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			out.write(buffer, 0, num);
 		}
 		in.close();
-		String html = new String(out.toCharArray());		// hibyte=0 ### deprecated, compare to DeepaMehtaUtils.readFile()
+		String html = new String(out.toCharArray());
 		System.out.println("  > \"" + url + "\" -- (" + html.length() + " bytes read)");
 		//
 		return html;
