@@ -19,6 +19,11 @@
 
 	<property name="main-target" value="config"/>
 
+	<path id="dblibs">
+		<fileset dir="${dm.base-dir}">
+			<include name="${db.libs}" />
+		</fileset>
+	</path>
 	<path id="javalibs">
 		<fileset dir="${dm.base-dir}">
 			<include name="${db.libs}" />

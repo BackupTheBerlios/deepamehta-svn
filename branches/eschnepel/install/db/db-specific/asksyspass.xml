@@ -1,0 +1,6 @@
+<project name="DeepaMehta-db-asksyspass">
+	<target name="-asksyspass" unless="do.db.abort">
+		<var name="return.syspass" unset="true"/>
+		<input message="Please enter the database ${db.sysuser} password: " addproperty="return.syspass" />
+	</target>
+</project>

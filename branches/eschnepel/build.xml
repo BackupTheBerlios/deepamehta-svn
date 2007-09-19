@@ -8,11 +8,10 @@
 
 	<import file="${db-specific}/${db.create-db}" />
 	<import file="${db-specific}/${db.drop-db}" />
-	<target name="dropdb" depends="-dropdb"/>
 
-	<import file="build-development.xml" optional="true"/>
-	<import file="setup.xml"/>
-	
+	<import file="build-development.xml" optional="true" />
+	<import file="setup.xml" />
+
 	<path id="dmapps">
 		<pathelement location="${examples}/movies/MoviesTopics.jar" />
 		<!-- configure this -->
@@ -35,7 +34,7 @@
 	<target name="-default">
 		<for list="${main-targets}" param="target" trim="true">
 			<sequential>
-				<antcall target="@{target}"></antcall>
+				<antcall target="@{target}"/>
 			</sequential>
 		</for>
 	</target>
@@ -43,9 +42,7 @@
 	<!-- Install -->
 
 	<target name="install" description="initialises the database">
-		<antcall target="-createdb" />
-		<antcall target="-createtables" />
-		<antcall target="-initdb" />
+		<antcallback target="-initdb" return="do.db.abort" />
 		<!-- example applications -->
 		<antcall target="-installexamples" />
 	</target>
@@ -56,17 +53,17 @@
 	</target>
 	<target name="-installexamples" depends="-testsyspass">
 		<ant target="-call-examples">
-			<property name="target" value="install"/>
+			<property name="target" value="install" />
 		</ant>
 	</target>
 	<target name="-uninstallexamples" depends="-testsyspass">
 		<ant target="-call-examples">
-			<property name="target" value="uninstall"/>
+			<property name="target" value="uninstall" />
 		</ant>
 	</target>
 
 	<!-- Web-related tasks -->
-	<target name="-installweb-ask" depends="-config-web-root" unless="web.deploy.do"/>
+	<target name="-installweb-ask" depends="-config-web-root" unless="web.deploy.do" />
 	<target name="-installweb-unless" unless="do.web.deploy" depends="-installweb-ask">
 		<echo>
 =========================
@@ -79,7 +76,7 @@ your DeepaMehta installed into your tomcat.
 	<target name="-installweb-if" if="do.web.deploy" depends="-installweb-ask">
 		<!-- copy shared libraries -->
 		<antcall target="-deploylibs" />
-		<copy todir="${web.lib.dir}" >
+		<copy todir="${web.lib.dir}">
 			<fileset dir="${dm.base-dir}">
 				<include name="${db.libs}" />
 			</fileset>
@@ -88,12 +85,12 @@ your DeepaMehta installed into your tomcat.
 		<copy file="${libpath}/commons-fileupload-1.0.jar" todir="${web.lib.dir}" />
 		<!-- deploy web applications -->
 		<ant target="-call-examples-web">
-			<property name="target" value="deploy"/>
+			<property name="target" value="deploy" />
 		</ant>
 	</target>
 	<target name="-installweb" depends="-installweb-if,-installweb-unless" />
 
-	<target name="deploy" depends="-build-self,-installweb" description="Does everything to setup your Tomcat."/>
+	<target name="deploy" depends="-build-self,-installweb" description="Does everything to setup your Tomcat." />
 
 	<target name="-deploylibs" if="do.web.deploy">
 		<copy file="${server}/DeepaMehtaService.jar" todir="${web.lib.dir}" />
@@ -103,7 +100,7 @@ your DeepaMehta installed into your tomcat.
 	<!-- The target createdb has been "outsourced" to ${db.create-db}-->
 	<!-- The target dropdb has been "outsourced" to ${db.drop-db}-->
 
-	<target name="-createtables">
+	<target name="-createtables" unless="do.db.abort" depends="-createdb">
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${db-specific}">
 				<include name="${db.tables}" />
@@ -126,7 +123,7 @@ your DeepaMehta installed into your tomcat.
 		</sql>
 	</target>
 
-	<target name="-initdb">
+	<target name="-initdb" unless="do.db.abort" depends="-createtables">
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${db}">
 				<include name="cm.sql" />
@@ -252,50 +249,51 @@ your DeepaMehta installed into your tomcat.
 		</condition>
 	</target>
 
-    <target name="-call-examples">
-    	<antcall target="-call-examples-noweb"/>
-    	<antcall target="-call-examples-web"/>
-    </target>
+	<target name="-call-examples">
+		<antcall target="-call-examples-noweb" />
+		<antcall target="-call-examples-web" />
+	</target>
 	<target name="-call-examples-noweb">
 		<ant target="-call-example">
-			<property name="example" value="ldap"/>
+			<property name="example" value="ldap" />
 		</ant>
 		<ant target="-call-example">
-			<property name="example" value="movies"/>
+			<property name="example" value="movies" />
 		</ant>
-    </target>
+	</target>
 	<target name="-call-examples-web" if="do.web.deploy">
 		<ant target="-call-example">
-			<property name="example" value="dm-browser"/>
+			<property name="example" value="dm-browser" />
 		</ant>
 		<ant target="-call-example">
-			<property name="example" value="dm-search"/>
+			<property name="example" value="dm-search" />
 		</ant>
 		<ant target="-call-example">
-			<property name="example" value="dm-topicmapviewer"/>
+			<property name="example" value="dm-topicmapviewer" />
 		</ant>
 		<ant target="-call-example">
-			<property name="example" value="dm-web"/>
+			<property name="example" value="dm-web" />
 		</ant>
 		<ant target="-call-example">
-			<property name="example" value="knoppixforum"/>
+			<property name="example" value="knoppixforum" />
 		</ant>
 		<ant target="-call-example">
-			<property name="example" value="kompetenzstern"/>
+			<property name="example" value="kompetenzstern" />
 		</ant>
 		<ant target="-call-example">
-			<property name="example" value="messageboard"/>
+			<property name="example" value="messageboard" />
 		</ant>
 		<ant target="-call-example">
-			<property name="example" value="musicforum"/>
+			<property name="example" value="musicforum" />
 		</ant>
-    </target>
+	</target>
 
-    <target name="-call-example" depends="-config-ask-example" if="do.example.execute">
-    	<echo>calling target "${target}" in example "${example}"</echo>
-		<trycatch property="exceptionProp" >
+	<target name="-call-example" depends="-config-ask-example" if="do.example.execute">
+		<echo>calling target "${target}" in example "${example}"</echo>
+		<trycatch property="exceptionProp">
 			<try>
 				<ant antfile="build.xml" dir="${examples}/${example}" target="${target}" inheritall="false">
+					<property name="do.dmdb.abort" value="${do.db.abort}" />
 					<property name="syspass" value="${db.syspass}" />
 					<property name="withsyspass" value="${withsyspass}" />
 				</ant>
@@ -304,7 +302,7 @@ your DeepaMehta installed into your tomcat.
 				<echo>${exceptionProp}</echo>
 			</catch>
 		</trycatch>
-    	<echo>finished target "${target}" in example "${example}"</echo>
+		<echo>finished target "${target}" in example "${example}"</echo>
 	</target>
 
 </project>
