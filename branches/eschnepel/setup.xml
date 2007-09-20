@@ -4,6 +4,16 @@
 		DeepaMehta setup build file
 	</description>
 
+	<condition property="do.config.db.host" value="true">
+		<istrue value="${config.db.host}" />
+	</condition>
+	<condition property="do.config.db.name" value="true">
+		<istrue value="${config.db.name}" />
+	</condition>
+	<condition property="do.config.db.user" value="true">
+		<istrue value="${config.db.user}" />
+	</condition>
+
 	<!-- Configuration -->
 	<target name="-config-init">
 		<property name="configuration.isactive" value="true" />
@@ -34,7 +44,7 @@ this file or call the config target again.
 				<var name="do.web.deploy" unset="true" />
 			</then>
 			<else>
-				<var name="do.web.deploy" value="true"/>
+				<var name="do.web.deploy" value="true" />
 				<var name="web.deploy.do" value="true" />
 			</else>
 		</if>
