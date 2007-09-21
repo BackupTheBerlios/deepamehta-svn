@@ -2,25 +2,19 @@ package de.deepamehta.topics;
 
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
-import de.deepamehta.PresentableTopic;
-import de.deepamehta.PresentableAssociation;
-import de.deepamehta.PropertyDefinition;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.service.Session;
+import de.deepamehta.PropertyDefinition;
+import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.DeepaMehtaServiceUtils;
-import de.deepamehta.service.ApplicationService;
+import de.deepamehta.service.Session;
 import de.deepamehta.topics.personalweb.PersonalWeb;
-//
-import java.net.*;
-import java.io.*;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.*;
-import javax.swing.text.*;
-import javax.swing.text.html.*;
-import javax.swing.text.html.parser.*;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 

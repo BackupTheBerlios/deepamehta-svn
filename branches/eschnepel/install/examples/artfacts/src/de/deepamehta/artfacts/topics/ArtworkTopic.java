@@ -1,18 +1,17 @@
 package de.deepamehta.artfacts.topics;
 
-import de.deepamehta.artfacts.Artfacts;
-//
 import de.deepamehta.BaseTopic;
-import de.deepamehta.Detail;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.TopicInitException;
+import de.deepamehta.artfacts.Artfacts;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
 import de.deepamehta.topics.DataConsumerTopic;
-//
-import java.net.*;
-import java.util.*;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Hashtable;
 
 
 

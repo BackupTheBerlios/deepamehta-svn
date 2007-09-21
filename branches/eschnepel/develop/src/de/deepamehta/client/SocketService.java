@@ -2,14 +2,11 @@ package de.deepamehta.client;
 
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.Detail;
 import de.deepamehta.Directives;
-//
-import javax.swing.BoundedRangeModel;
-import java.awt.*;
-import java.util.*;
-import java.io.*;
+
+import java.io.IOException;
+import java.util.Hashtable;
 
 
 

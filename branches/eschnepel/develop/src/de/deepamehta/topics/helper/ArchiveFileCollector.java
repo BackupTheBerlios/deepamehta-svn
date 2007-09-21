@@ -1,16 +1,15 @@
 package de.deepamehta.topics.helper;
 
 import de.deepamehta.DeepaMehtaConstants;
-import de.deepamehta.topics.TypeTopic;
-//
-import java.io.IOException;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileInputStream;
-import java.util.Hashtable;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Enumeration;
-import java.util.zip.ZipOutputStream;
+import java.util.Hashtable;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 

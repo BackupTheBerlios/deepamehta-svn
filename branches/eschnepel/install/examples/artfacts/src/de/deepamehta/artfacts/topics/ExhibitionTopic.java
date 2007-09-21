@@ -1,19 +1,16 @@
 package de.deepamehta.artfacts.topics;
 
-import de.deepamehta.artfacts.Artfacts;
-//
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.Detail;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.TopicInitException;
+import de.deepamehta.artfacts.Artfacts;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
 import de.deepamehta.topics.DataConsumerTopic;
-import de.deepamehta.topics.TypeTopic;
-//
-import java.util.*;
+
+import java.util.Hashtable;
 
 
 

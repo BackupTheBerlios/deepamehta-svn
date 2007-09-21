@@ -4,8 +4,9 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.topics.helper.EmailChecker;
-//
-import java.util.*;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 
 

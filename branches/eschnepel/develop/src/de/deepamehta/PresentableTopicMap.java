@@ -1,7 +1,9 @@
 package de.deepamehta;
 
-import java.io.*;
-import java.util.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Vector;
 
 
 

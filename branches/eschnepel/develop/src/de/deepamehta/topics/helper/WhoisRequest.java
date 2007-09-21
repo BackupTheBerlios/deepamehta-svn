@@ -1,14 +1,10 @@
 package de.deepamehta.topics.helper;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.DataOutputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.lang.String;				// import standard java libs
-import java.lang.StringBuffer;
 
 
 

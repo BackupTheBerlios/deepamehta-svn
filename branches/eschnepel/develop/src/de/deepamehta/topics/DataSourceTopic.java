@@ -4,16 +4,19 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.TopicInitException;
 import de.deepamehta.service.ApplicationService;
-import de.deepamehta.service.Session;
 import de.deepamehta.service.CorporateDatasource;
 import de.deepamehta.service.CorporateDirectives;
-import de.deepamehta.service.CorporateXMLSource;
-import de.deepamehta.service.CorporateSQLSource;
 import de.deepamehta.service.CorporateLDAPSource;
-//
+import de.deepamehta.service.CorporateSQLSource;
+import de.deepamehta.service.CorporateXMLSource;
+import de.deepamehta.service.Session;
+
 import org.xml.sax.SAXException;
+
 import java.io.IOException;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 

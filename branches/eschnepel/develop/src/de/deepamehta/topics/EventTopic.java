@@ -1,12 +1,13 @@
 package de.deepamehta.topics;
 
 import de.deepamehta.BaseTopic;
-import de.deepamehta.service.Session;
-import de.deepamehta.service.CorporateCommands;
-import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.ApplicationService;
-//
-import java.util.*;
+import de.deepamehta.service.CorporateDirectives;
+import de.deepamehta.service.Session;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 

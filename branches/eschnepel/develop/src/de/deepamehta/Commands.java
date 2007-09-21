@@ -1,7 +1,14 @@
 package de.deepamehta;
 
-import java.io.*;
-import java.util.*;
+import de.deepamehta.client.PresentationService;
+
+import org.apache.fop.viewer.Command;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Vector;
 
 
 

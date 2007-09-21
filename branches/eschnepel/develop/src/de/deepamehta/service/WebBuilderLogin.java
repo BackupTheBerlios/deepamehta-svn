@@ -4,10 +4,11 @@ import de.deepamehta.AmbiguousSemanticException;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.topics.LiveTopic ;
 import de.deepamehta.topics.DataSourceTopic;
-//
-import java.util.*;
+import de.deepamehta.topics.LiveTopic;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 

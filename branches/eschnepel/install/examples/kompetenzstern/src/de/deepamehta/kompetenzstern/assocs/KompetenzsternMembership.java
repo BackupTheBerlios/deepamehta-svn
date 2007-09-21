@@ -1,16 +1,15 @@
 package de.deepamehta.kompetenzstern.assocs;
 
-import de.deepamehta.kompetenzstern.KS;
-//
 import de.deepamehta.BaseAssociation;
-import de.deepamehta.PresentableTopic;
+import de.deepamehta.assocs.LiveAssociation;
+import de.deepamehta.kompetenzstern.KS;
+import de.deepamehta.kompetenzstern.topics.KompetenzsternTopic;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
 import de.deepamehta.topics.WorkspaceTopic;
-import de.deepamehta.assocs.LiveAssociation;
-//
-import java.util.*;
+
+import java.util.Hashtable;
 
 
 

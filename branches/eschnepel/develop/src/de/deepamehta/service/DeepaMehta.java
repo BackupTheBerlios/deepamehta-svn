@@ -1,27 +1,13 @@
 package de.deepamehta.service;
 
-import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.Detail;
-import de.deepamehta.Directive;
-import de.deepamehta.FileServer;
-import de.deepamehta.PresentableTopic;
-import de.deepamehta.Topic;
-//
 import de.deepamehta.client.PresentationDirectives;
 import de.deepamehta.client.PresentationService;
-//
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.plaf.*;
-import java.sql.SQLException;
-import java.awt.*;
-import java.awt.event.*;
-import java.net.*;
-import java.io.*;
-import java.util.*;
+
+import java.awt.Container;
+
+import javax.swing.JApplet;
 
 
 

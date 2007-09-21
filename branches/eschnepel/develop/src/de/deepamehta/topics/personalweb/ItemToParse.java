@@ -1,6 +1,6 @@
 package de.deepamehta.topics.personalweb;
 
-import java.net.*;
+import java.net.URL;
 
 
 

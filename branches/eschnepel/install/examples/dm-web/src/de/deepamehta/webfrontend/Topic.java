@@ -1,11 +1,9 @@
 package de.deepamehta.webfrontend;
 
 import de.deepamehta.BaseTopic;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.service.ApplicationService;
-//
+
 import java.io.Serializable;
-import java.util.*;
 
 
 

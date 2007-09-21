@@ -2,11 +2,11 @@ package de.deepamehta.client;
 
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
-//
-import java.net.*;
-import java.io.*;
-import java.util.*;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 
 
 

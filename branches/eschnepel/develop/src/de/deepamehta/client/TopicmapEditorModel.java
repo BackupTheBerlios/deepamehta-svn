@@ -1,22 +1,22 @@
 package de.deepamehta.client;
 
-import de.deepamehta.Association;
 import de.deepamehta.BaseTopic;
-import de.deepamehta.BaseAssociation;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.Detail;
-import de.deepamehta.Topic;
-//
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.*;
+
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+
+import javax.swing.Icon;
+import javax.swing.JInternalFrame;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 
 
 

@@ -1,13 +1,11 @@
 package de.deepamehta.client;
 
-import de.deepamehta.BaseTopic;	// ### not nice
 import de.deepamehta.Detail;
-//
-import javax.swing.*;
-import java.awt.*;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.util.*;
+
+import java.awt.Image;
+import java.util.Hashtable;
+
+import javax.swing.Icon;
 
 
 

@@ -1,8 +1,20 @@
 package de.deepamehta;
 
-import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 
 

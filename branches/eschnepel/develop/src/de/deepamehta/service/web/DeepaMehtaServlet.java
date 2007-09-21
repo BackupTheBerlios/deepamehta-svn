@@ -1,50 +1,53 @@
 package de.deepamehta.service.web;
 
-import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseAssociation;
+import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Relation;
-import de.deepamehta.Type;
+import de.deepamehta.messageboard.MessageBoardServlet;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.ApplicationServiceHost;
 import de.deepamehta.service.ApplicationServiceInstance;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.CorporateMemory;
 import de.deepamehta.service.Session;
-import de.deepamehta.topics.LiveTopic;
 import de.deepamehta.topics.TypeTopic;
-//
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Locale;
+import java.util.Vector;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-//
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
-//
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-//
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-//
-import java.io.*;
-import java.util.*;
+import javax.xml.transform.stream.StreamSource;
 
 
 

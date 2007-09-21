@@ -1,7 +1,7 @@
 package de.deepamehta;
 
-import java.io.*;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Vector;
 
 
 

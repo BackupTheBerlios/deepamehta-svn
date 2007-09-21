@@ -4,12 +4,14 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.TopicInitException;
+import de.deepamehta.client.DeepaMehtaClient;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.topics.LiveTopic;
-//
-import java.net.*;
-import java.io.*;
-import java.util.*;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 
 
 

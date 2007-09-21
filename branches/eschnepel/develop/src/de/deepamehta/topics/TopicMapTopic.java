@@ -1,19 +1,14 @@
 package de.deepamehta.topics;
 
-import de.deepamehta.AmbiguousSemanticException;
-import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseTopicMap;
-import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.FileServer;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableTopicMap;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.TopicGeometry;
-import de.deepamehta.TopicInitException;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
@@ -22,12 +17,10 @@ import de.deepamehta.service.DeepaMehtaServiceUtils;
 import de.deepamehta.service.Session;
 import de.deepamehta.topics.helper.ArchiveFileCollector;
 import de.deepamehta.topics.helper.TopicMapExporter;
-//
+
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-//
-import javax.swing.ImageIcon;
-//
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -37,8 +30,14 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.util.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.swing.ImageIcon;
 
 
 

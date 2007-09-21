@@ -41,20 +41,23 @@
 
 package de.deepamehta.topics.personalweb;
 
-import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableAssociation;
-import de.deepamehta.service.Session;
+import de.deepamehta.PresentableTopic;
+import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.DeepaMehtaServiceUtils;
-import de.deepamehta.service.ApplicationService;
-//
-import java.awt.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import de.deepamehta.service.Session;
+
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Date;
 
 
 

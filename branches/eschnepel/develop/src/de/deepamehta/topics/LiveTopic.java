@@ -1,8 +1,7 @@
 package de.deepamehta.topics;
 
-import de.deepamehta.AmbiguousSemanticException;
-import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseAssociation;
+import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.Detail;
@@ -10,24 +9,24 @@ import de.deepamehta.FileServer;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PropertyDefinition;
-import de.deepamehta.Topic;
 import de.deepamehta.TopicInitException;
-import de.deepamehta.Commands;
 import de.deepamehta.service.ApplicationService;
-import de.deepamehta.service.Session;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDatasource;
 import de.deepamehta.service.CorporateDetail;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.CorporateMemory;
+import de.deepamehta.service.Session;
 import de.deepamehta.topics.helper.ArchiveFileCollector;
-//
+
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-//
-import javax.swing.*;
-import java.io.*;
-import java.util.*;
+
+import java.io.File;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 
 

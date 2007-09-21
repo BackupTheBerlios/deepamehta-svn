@@ -1,8 +1,6 @@
 package de.deepamehta.topics.helper;
 
-import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
 

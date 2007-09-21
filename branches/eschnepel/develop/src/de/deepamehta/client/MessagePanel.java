@@ -2,12 +2,21 @@ package de.deepamehta.client;
 
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaUtils;
-//
-import javax.swing.*;
+
 import java.applet.AudioClip;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.util.Vector;
+
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 
 
 

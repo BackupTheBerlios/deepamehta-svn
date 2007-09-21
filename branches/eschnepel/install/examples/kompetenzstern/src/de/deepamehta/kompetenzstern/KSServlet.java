@@ -1,17 +1,15 @@
 package de.deepamehta.kompetenzstern;
 
 import de.deepamehta.BaseTopic;
-import de.deepamehta.service.Session;
-import de.deepamehta.service.CorporateDirectives;
-import de.deepamehta.service.web.RequestParameter;
-import de.deepamehta.service.web.DeepaMehtaServlet;
 import de.deepamehta.kompetenzstern.topics.KompetenzsternTopic;
 import de.deepamehta.kompetenzstern.topics.KriteriumTopic;
-//
+import de.deepamehta.service.Session;
+import de.deepamehta.service.web.DeepaMehtaServlet;
+import de.deepamehta.service.web.RequestParameter;
+
+import java.util.Vector;
+
 import javax.servlet.ServletException;
-//
-import java.io.IOException;
-import java.util.*;
 
 
 

@@ -1,12 +1,12 @@
 package de.deepamehta.service.db;
 
+import de.deepamehta.util.Benchmark;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import de.deepamehta.util.Benchmark;
 
 /**
  * This class implements some database related cleanup routines. If there is an

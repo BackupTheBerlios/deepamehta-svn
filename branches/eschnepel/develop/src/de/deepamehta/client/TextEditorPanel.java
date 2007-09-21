@@ -3,27 +3,42 @@ package de.deepamehta.client;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
-//
-import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+
+import java.awt.BorderLayout;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import javax.swing.*;
-import javax.swing.event.DocumentListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Hashtable;
+
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JEditorPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.TransferHandler;
 import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.text.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.Position;
+import javax.swing.text.StyledEditorKit;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.util.*;
 
 
 

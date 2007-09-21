@@ -1,22 +1,22 @@
 package de.deepamehta.service;
 
-import de.deepamehta.AmbiguousSemanticException;
-import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseAssociation;
+import de.deepamehta.BaseTopic;
 import de.deepamehta.Commands;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableTopic;
-import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Relation;
 import de.deepamehta.assocs.LiveAssociation;
-import de.deepamehta.topics.LiveTopic;
-import de.deepamehta.topics.TypeTopic;
-import de.deepamehta.topics.TopicTypeTopic;
 import de.deepamehta.topics.AssociationTypeTopic;
-//
-import java.util.*;
+import de.deepamehta.topics.LiveTopic;
+import de.deepamehta.topics.TopicTypeTopic;
+import de.deepamehta.topics.TypeTopic;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 

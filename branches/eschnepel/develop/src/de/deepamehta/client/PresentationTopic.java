@@ -1,10 +1,14 @@
 package de.deepamehta.client;
 
 // import de.deepamehta.BaseTopic;
+import de.deepamehta.Directives;
 import de.deepamehta.PresentableTopic;
-import java.awt.*;
-import java.io.*;
-import java.util.*;
+
+import java.awt.Image;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Vector;
 
 
 

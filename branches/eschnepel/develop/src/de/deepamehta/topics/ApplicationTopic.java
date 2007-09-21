@@ -2,12 +2,12 @@ package de.deepamehta.topics;
 
 import de.deepamehta.BaseTopic;
 import de.deepamehta.PropertyDefinition;
-import de.deepamehta.service.Session;
-import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.ApplicationService;
-//
-import java.io.File;
-import java.util.*;
+import de.deepamehta.service.CorporateDirectives;
+import de.deepamehta.service.Session;
+
+import java.util.Hashtable;
+import java.util.StringTokenizer;
 
 
 

@@ -1,14 +1,38 @@
 package de.deepamehta.client;
 
-import de.deepamehta.PresentableTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
-//
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import de.deepamehta.PresentableTopic;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 
 

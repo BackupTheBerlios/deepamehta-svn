@@ -1,10 +1,14 @@
 package de.deepamehta.service;
 
 import de.deepamehta.DeepaMehtaConstants;
-//
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+
+import java.awt.Container;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JFrame;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 
 
 

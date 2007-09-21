@@ -3,14 +3,12 @@ package de.deepamehta.service;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.PropertyDefinition;
-import de.deepamehta.topics.LiveTopic;
-//
-import javax.imageio.ImageIO;
+
 import java.awt.image.RenderedImage;
-import java.util.*;
-import java.sql.*;
-import java.io.*;
+import java.io.File;
+import java.util.Vector;
+
+import javax.imageio.ImageIO;
 
 
 

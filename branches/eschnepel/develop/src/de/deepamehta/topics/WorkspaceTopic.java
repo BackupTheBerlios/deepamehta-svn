@@ -1,20 +1,21 @@
 package de.deepamehta.topics;
 
 import de.deepamehta.Association;
-import de.deepamehta.AmbiguousSemanticException;
-import de.deepamehta.TopicInitException;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.Commands;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableAssociation;
-import de.deepamehta.service.Session;
+import de.deepamehta.PresentableTopic;
+import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
-import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateTopicMap;
-//
-import java.util.*;
+import de.deepamehta.service.Session;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 
 

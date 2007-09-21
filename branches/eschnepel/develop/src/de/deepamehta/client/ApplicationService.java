@@ -2,10 +2,8 @@ package de.deepamehta.client;
 
 import de.deepamehta.Detail;
 import de.deepamehta.Directives;
-//
-import javax.swing.BoundedRangeModel;
-import java.io.File;
-import java.util.*;
+
+import java.util.Hashtable;
 
 
 

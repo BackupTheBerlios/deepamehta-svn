@@ -1,7 +1,10 @@
 package de.deepamehta.client;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
 
 

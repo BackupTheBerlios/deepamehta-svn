@@ -1,5 +1,12 @@
 package de.deepamehta.service.db;
 
+import de.deepamehta.Configuration;
+import de.deepamehta.ConfigurationConstants;
+import de.deepamehta.DeepaMehtaException;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,19 +17,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.Driver;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.Properties;
-
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-
-import de.deepamehta.Configuration;
-import de.deepamehta.ConfigurationConstants;
-import de.deepamehta.DeepaMehtaException;
 
 public class DefaultDatabaseProvider implements DatabaseProvider {
 

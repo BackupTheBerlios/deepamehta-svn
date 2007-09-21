@@ -5,15 +5,19 @@ import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.Detail;
 import de.deepamehta.PropertyDefinition;
-import de.deepamehta.service.Session;
+import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDetail;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.CorporateMemory;
-import de.deepamehta.service.ApplicationService;
+import de.deepamehta.service.Session;
+import de.deepamehta.topics.TopicMapTopic;
 import de.deepamehta.topics.TypeTopic;
-//
-import java.util.*;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 
 

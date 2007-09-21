@@ -1,8 +1,8 @@
 package de.deepamehta.service.db;
 
-import java.sql.SQLException;
-
 import de.deepamehta.util.Benchmark;
+
+import java.sql.SQLException;
 
 public abstract class DatabaseOptimizer {
 	private class Worker implements Runnable {

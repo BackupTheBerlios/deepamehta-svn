@@ -2,10 +2,17 @@ package de.deepamehta.client;
 
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.Detail;
-//
-import javax.swing.*;
-import java.awt.*;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.beans.PropertyVetoException;
+
+import javax.swing.JInternalFrame;
+import javax.swing.JTable;
 
 
 

@@ -1,27 +1,33 @@
 package de.deepamehta.topics;
 
-import de.deepamehta.Topic;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableAssociation;
-import de.deepamehta.PropertyDefinition;
+import de.deepamehta.PresentableTopic;
 import de.deepamehta.service.ApplicationService;
-import de.deepamehta.service.Session;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
-//
+import de.deepamehta.service.Session;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Transport;
 import javax.mail.Multipart;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeMessage;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
-import javax.activation.*; 
-import java.util.*;
-import java.io.*;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 
 

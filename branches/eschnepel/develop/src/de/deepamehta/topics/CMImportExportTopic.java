@@ -1,28 +1,27 @@
 package de.deepamehta.topics;
 
-import de.deepamehta.Association;
 import de.deepamehta.BaseTopic;
-import de.deepamehta.BaseAssociation;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.FileServer;
-import de.deepamehta.service.Session;
+import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
-import de.deepamehta.service.ApplicationService;
-import de.deepamehta.topics.helper.TopicMapExporter;
+import de.deepamehta.service.Session;
 import de.deepamehta.topics.helper.ArchiveFileCollector;
-//
-import com.ibm.xml.parsers.NonValidatingDOMParser;
-//
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-//
+import de.deepamehta.topics.helper.TopicMapExporter;
+
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
-//
-import java.util.zip.*;
-import java.util.*;
-import java.io.*;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.StringTokenizer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 

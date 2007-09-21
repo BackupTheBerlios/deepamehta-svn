@@ -1,10 +1,5 @@
 package de.deepamehta.service.db;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.rmi.server.LogStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;

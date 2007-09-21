@@ -8,8 +8,9 @@ import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
-//
-import java.util.*;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 

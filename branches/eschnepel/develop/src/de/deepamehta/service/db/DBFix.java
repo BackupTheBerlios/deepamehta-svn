@@ -1,14 +1,12 @@
 package de.deepamehta.service.db;
 
 import de.deepamehta.BaseTopic;
-import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.service.ApplicationServiceInstance;
 import de.deepamehta.service.CorporateMemory;
-//
-import java.util.*;
-import java.io.*;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 
 

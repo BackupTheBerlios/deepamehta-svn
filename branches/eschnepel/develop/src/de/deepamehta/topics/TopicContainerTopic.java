@@ -2,15 +2,14 @@ package de.deepamehta.topics;
 
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.PresentableAssociation;
-import de.deepamehta.PresentableTopic;
 import de.deepamehta.TopicInitException;
-import de.deepamehta.service.Session;
-import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.ApplicationService;
-//
-import java.util.*;
+import de.deepamehta.service.CorporateDirectives;
+import de.deepamehta.service.Session;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 
