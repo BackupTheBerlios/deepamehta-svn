@@ -60,7 +60,9 @@ CREATE TABLE topicprop (
     propname    VARCHAR2(255) NOT NULL,
     propvalue   VARCHAR2(4000)
 );
-CREATE INDEX i_topicprop ON topicprop (topicid, topicversion, propname);
+ALTER TABLE TopicProp ADD PRIMARY KEY (
+	TopicID, TopicVersion, PropName
+);
 
 -- ----------------------------------------------------------------------------
 
@@ -70,7 +72,9 @@ CREATE TABLE associationprop (
     propname          VARCHAR2(255) NOT NULL,
     propvalue         VARCHAR2(4000)
 );
-CREATE INDEX i_associationprop ON associationprop (associationid, associationversion, propname);
+ALTER TABLE AssociationProp ADD PRIMARY KEY (
+	AssociationID, AssociationVersion, PropName
+);
     
 -- ----------------------------------------------------------------------------
 

@@ -53,6 +53,8 @@
 		<istrue value="${web.deploy.do}" />
 	</condition>
 
+	<taskdef resource="org/apache/tools/ant/taskdefs/antinput.properties" />
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+	<taskdef resource="checkstyletask.properties" />
 	<taskdef name="for" classname="net.sf.antcontrib.logic.ForTask" />
 </project>

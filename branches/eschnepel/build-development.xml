@@ -78,6 +78,8 @@
 		<jdepend outputfile="jdepend-report.xml" format="xml">
 			<exclude name="java.*" />
 			<exclude name="javax.*" />
+			<exclude name="com.*" />
+			<exclude name="org.*" />
 			<classespath location="${build}" />
 			<classpath location="${build}" />
 		</jdepend>
@@ -88,6 +90,14 @@
 			<arg value="jdepend-report.dot" />
 		</exec>
 		<echo>Image file is dependencies.png.</echo>
+	</target>
+
+	<target name="checkstyle">
+		<checkstyle config="checkstyle_config.xml">
+			<fileset dir="${sources}" includes="**/*.java" />
+			<formatter type="plain" />
+			<formatter type="xml" toFile="checkstyle_errors.xml" />
+		</checkstyle>
 	</target>
 
 	<target name="build" depends="-build-self" description="build jar files">

@@ -92,6 +92,7 @@ this file or call the config target again.
 	</target>
 
 	<target name="-config-instance-db.name" if="do.config.db.name">
+		<ant antfile="${db-specific}/list-db-${db.type}.xml" target="-listdb" />
 		<input message="Please enter the name of your database:" addproperty="new.db.name" defaultvalue="${db.name}" />
 		<propertyfile file="${dm.instance.config-property-file}">
 			<entry key="db.name" value="${new.db.name}" />
@@ -179,7 +180,7 @@ this file or call the config target again.
 				<var name="list.dm-instance" unset="true" />
 				<basename file="@{list.instance.config.file}" property="list.dm-instance" suffix=".properties" />
 				<propertyregex property="list.instance" input="${list.dm-instance}" regexp="${prefix}-(.*)" select="\1" />
-				<echo>${list.instance}</echo>
+				<echo>* ${list.instance}</echo>
 			</sequential>
 		</for>
 		<echo />

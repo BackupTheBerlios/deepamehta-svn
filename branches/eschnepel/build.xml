@@ -182,7 +182,7 @@ your DeepaMehta installed into your tomcat.
 			<equals arg1="${do.patch}" arg2="n" />
 		</condition>
 		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] patchdb'" />
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}" onerror="continue">
 			<fileset dir=".">
 				<include name="${patch}" />
 			</fileset>

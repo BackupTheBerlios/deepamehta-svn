@@ -155,20 +155,60 @@ DELETE FROM Association WHERE ID='a-325';
 DELETE FROM AssociationProp WHERE AssociationID='a-325';
 DELETE FROM ViewAssociation WHERE AssociationID='a-325';
 
--- fixing a Typo in whois.sql
+--- fixing some Typos in whois.sql
 UPDATE Association SET TopicID1='tt-whoistopic' WHERE TopicID1='tt-whoisTopic';
-
-
----
---- Update standard installation
----
-UPDATE TopicProp SET PropValue='DeepaMehta 2.0b8'         WHERE TopicID='t-deepamehtainstallation' AND PropName='Client Name';
-UPDATE TopicProp SET PropValue='DeepaMehtaServer 2.0b8'   WHERE TopicID='t-deepamehtainstallation' AND PropName='Server Name';
-DELETE FROM TopicProp                                     WHERE TopicID='t-deepamehtainstallation' AND PropName='Corporate Icon';
-INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Customer Icon', 'deepamehta-logo-tiny.png');
+delete from TopicProp where topicid='tt-whois6';
+INSERT INTO TopicProp VALUES ('tt-whois6', 1, 'Server', 'whois.nic.as');
+INSERT INTO TopicProp VALUES ('tt-whois6', 1, 'Domains', 'as');
+INSERT INTO TopicProp VALUES ('tt-whois18', 1, 'Server', 'whois.nic.fr');
+INSERT INTO TopicProp VALUES ('tt-whois18', 1, 'Domains', 'fr');
 
 
 
 --- *** UPDATE DATA DEFINITION *** ---
-ALTER TABLE       TopicProp CHANGE PropName PropName CHAR(255) NOT NULL;
-ALTER TABLE AssociationProp CHANGE PropName PropName CHAR(255) NOT NULL;
+ALTER TABLE				TopicProp
+     CHANGE				PropName PropName CHAR(255) NOT NULL
+     DROP	INDEX		TopicID,
+     ADD	PRIMARY KEY ( TopicID, TopicVersion, PropName )
+;
+ALTER TABLE				AssociationProp
+     CHANGE				PropName PropName CHAR(255) NOT NULL
+     DROP	INDEX		AssociationID,
+     ADD	PRIMARY KEY ( AssociationID, AssociationVersion, PropName )
+;
+
+---
+--- Update standard installation
+---
+DELETE FROM TopicProp                                     WHERE TopicID='t-deepamehtainstallation' AND PropName='Corporate Icon';
+INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Customer Icon', 'deepamehta-logo-tiny.png');
+
+--- Version Change
+UPDATE TopicProp SET PropValue='DeepaMehta 2.0b8'         WHERE TopicID='t-deepamehtainstallation' AND PropName='Client Name';
+UPDATE TopicProp SET PropValue='DeepaMehtaServer 2.0b8'   WHERE TopicID='t-deepamehtainstallation' AND PropName='Server Name';
+
+---
+--- Update DB content version
+---
+UPDATE KeyGenerator SET NextKey=17 WHERE Relation='DB-Content Version';
+
+
+
+
+SELECT *
+FROM TopicProp
+JOIN (
+	SELECT TopicID, TopicVersion, PropName
+	FROM TopicProp GROUP BY TopicID, TopicVersion, PropName
+	HAVING COUNT( * ) > 1 ) tp
+USING ( TopicID, TopicVersion, PropName );
+
+SELECT *
+FROM AssociationProp
+JOIN (
+	SELECT AssociationID, AssociationVersion, PropName
+	FROM AssociationProp GROUP BY AssociationID, AssociationVersion, PropName
+	HAVING COUNT( * ) > 1 ) ap
+USING ( AssociationID, AssociationVersion, PropName );
+
+

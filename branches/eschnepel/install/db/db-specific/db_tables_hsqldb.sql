@@ -69,8 +69,8 @@ CREATE CACHED TABLE TopicProp (
     PropName CHAR(255) NOT NULL,
     PropValue VARCHAR_IGNORECASE
 );
-CREATE INDEX IDX_TopicProp ON TopicProp (
-    TopicID, TopicVersion, PropName
+ALTER TABLE TopicProp ADD PRIMARY KEY (
+	TopicID , TopicVersion , PropName
 );
 
 CREATE CACHED TABLE AssociationProp (
@@ -79,8 +79,8 @@ CREATE CACHED TABLE AssociationProp (
     PropName CHAR(255) NOT NULL,
     PropValue VARCHAR_IGNORECASE
 );
-CREATE INDEX IDX_AssociationProp ON AssociationProp (
-    AssociationID, AssociationVersion, PropName
+ALTER TABLE AssociationProp ADD PRIMARY KEY (
+	AssociationID, AssociationVersion, PropName
 );
 
 CREATE TABLE KeyGenerator (

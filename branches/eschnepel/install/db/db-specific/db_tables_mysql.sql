@@ -51,7 +51,7 @@ CREATE TABLE TopicProp (
     TopicVersion INT NOT NULL,
     PropName CHAR(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
     PropValue MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci,
-    INDEX (TopicID, TopicVersion, PropName)
+    PRIMARY KEY (TopicID, TopicVersion, PropName)
 );
 
 CREATE TABLE AssociationProp (
@@ -59,7 +59,7 @@ CREATE TABLE AssociationProp (
     AssociationVersion INT NOT NULL,
     PropName CHAR(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
     PropValue MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci,
-    INDEX (AssociationID, AssociationVersion, PropName)
+    PRIMARY KEY (AssociationID, AssociationVersion, PropName)
 );
 
 CREATE TABLE KeyGenerator (
