@@ -7,7 +7,6 @@ import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Relation;
-import de.deepamehta.messageboard.MessageBoardServlet;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.ApplicationServiceHost;
 import de.deepamehta.service.ApplicationServiceInstance;
@@ -369,7 +368,7 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 	 * @see		#createTopic
 	 * @see		#updateTopic
 	 * @see		#updateStrongRelations
-	 * @see		MessageBoardServlet#performAction
+	 * @see		de.deepamehta.messageboard.MessageBoardServlet#performAction
 	 */
 	private void processForm(String typeID, String topicID, Hashtable params, boolean doCreate, Session session) {
 		processForm(typeID, topicID, params, doCreate, session, null, null);

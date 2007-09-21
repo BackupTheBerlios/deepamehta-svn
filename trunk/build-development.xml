@@ -13,7 +13,7 @@
 	</target>
 
 	<target name="compile" depends="init" description="compile sources">
-		<javac srcdir="${sources}" destdir="${build}" debug="on" listfiles="yes" encoding="MacRoman">
+		<javac srcdir="${sources}" destdir="${build}" debug="on" listfiles="yes" encoding="UTF8">
 			<classpath refid="javalibs" />
 		</javac>
 	</target>

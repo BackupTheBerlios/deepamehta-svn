@@ -5,7 +5,6 @@ import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.TopicInitException;
-import de.deepamehta.movies.topics.MovieContainerTopic;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
@@ -242,7 +241,7 @@ public abstract class ElementContainerTopic extends ContainerTopic {
 	}
 
 	/**
-	 * @see		MovieContainerTopic#executeCommand
+	 * @see		de.deepamehta.movies.topics.MovieContainerTopic#executeCommand
 	 */
 	protected CorporateDirectives autoSearch(String groupingField) {
 		CorporateDirectives directives = new CorporateDirectives();

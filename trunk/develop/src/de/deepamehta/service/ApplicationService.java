@@ -16,7 +16,6 @@ import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Topic;
 import de.deepamehta.TopicInitException;
 import de.deepamehta.assocs.LiveAssociation;
-import de.deepamehta.kompetenzstern.topics.KompetenzsternTopic;
 import de.deepamehta.service.web.DeepaMehtaServlet;
 import de.deepamehta.topics.AssociationTypeTopic;
 import de.deepamehta.topics.AuthentificationSourceTopic;
@@ -1620,7 +1619,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * <P>
 	 * References checked: 6.9.2002 (2.0a16-pre2)
 	 *
-	 * @see		KompetenzsternTopic#propertiesChanged
+	 * @see		de.deepamehta.kompetenzstern.topics.KompetenzsternTopic#propertiesChanged
 	 */
 	public CorporateDirectives setTopicProperty(String topicID, int version, String propName, String propValue,
 												String topicmapID, String viewmode, Session session) {
