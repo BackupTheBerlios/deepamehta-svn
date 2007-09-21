@@ -3,20 +3,18 @@ package de.deepamehta.service;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.Detail;
 import de.deepamehta.Directives;
 import de.deepamehta.PresentableType;
-//
 import de.deepamehta.client.PresentationDirectives;
 import de.deepamehta.client.PresentationService;
 import de.deepamehta.client.PresentationTopic;
+import de.deepamehta.client.PresentationTopicMap;
 import de.deepamehta.client.PresentationType;
-//
-import javax.swing.BoundedRangeModel;
-import java.awt.*;
-import java.util.*;
-import java.io.*;
+
+import java.awt.Point;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 
 

@@ -1,14 +1,11 @@
 package de.deepamehta.topics.helper;
 
-import java.util.Enumeration;
+import de.deepamehta.topics.TopicMapTopic;
 
-import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-import javax.xml.transform.sax.SAXResult;
 
-import de.deepamehta.topics.TopicMapTopic;
-import de.deepamehta.topics.helper.TopicMapExporter;
+import javax.xml.transform.sax.SAXResult;
 
 
 

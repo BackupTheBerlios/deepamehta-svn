@@ -1,10 +1,9 @@
 package de.deepamehta;
 
-import de.deepamehta.DeepaMehtaConstants;
-
-import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Vector;
 
 
 

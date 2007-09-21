@@ -1,14 +1,19 @@
 package de.deepamehta.client;
 
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.Directives;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PropertyDefinition;
-//
+
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
 import javax.swing.Action;
 import javax.swing.text.JTextComponent;
-import java.io.*;
-import java.util.*;
 
 
 

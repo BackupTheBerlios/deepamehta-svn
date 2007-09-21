@@ -1,23 +1,28 @@
 package de.deepamehta.service;
 
-import de.deepamehta.Association;
-import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseAssociation;
+import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableAssociation;
+import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableType;
-import de.deepamehta.Topic;
+import de.deepamehta.assocs.LiveAssociation;
 import de.deepamehta.service.db.DatabaseProvider;
 import de.deepamehta.service.db.DatabaseSweeper;
 import de.deepamehta.service.db.OracleDatabaseProvider;
 import de.deepamehta.service.db.DatabaseProvider.DbmsHint;
-//
-import java.sql.*;
-import java.util.*;
+import de.deepamehta.topics.LiveTopic;
+
 import java.awt.Point;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 

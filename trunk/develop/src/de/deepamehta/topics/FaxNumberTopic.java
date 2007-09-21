@@ -4,8 +4,6 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.Session;
-//
-import java.util.*;
 
 
 

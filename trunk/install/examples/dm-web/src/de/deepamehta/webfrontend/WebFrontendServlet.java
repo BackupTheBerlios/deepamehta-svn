@@ -1,17 +1,16 @@
 package de.deepamehta.webfrontend;
 
-import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseAssociation;
+import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.service.web.DeepaMehtaServlet;
-import de.deepamehta.service.web.HTMLGenerator;
-import de.deepamehta.service.web.RequestParameter;
 import de.deepamehta.service.Session;
-//
+import de.deepamehta.service.web.DeepaMehtaServlet;
+import de.deepamehta.service.web.RequestParameter;
+
+import java.util.Enumeration;
+import java.util.Vector;
+
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-//
-import java.util.*;
 
 
 

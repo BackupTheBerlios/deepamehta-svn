@@ -1,12 +1,17 @@
 package de.deepamehta.service;
 
-import java.sql.*;
-import java.util.*;
-
 import de.deepamehta.ConfigurationConstants;
-import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.service.db.DatabaseProvider;
 import de.deepamehta.service.db.DatabaseProviderFactory;
+
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.Vector;
 
 
 

@@ -1,17 +1,16 @@
 package de.deepamehta.kompetenzstern.topics;
 
-import de.deepamehta.kompetenzstern.KS;
-//
 import de.deepamehta.BaseTopic;
 import de.deepamehta.PropertyDefinition;
-import de.deepamehta.service.Session;
+import de.deepamehta.kompetenzstern.KS;
+import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
-import de.deepamehta.service.ApplicationService;
+import de.deepamehta.service.Session;
 import de.deepamehta.topics.DocumentTopic;
 import de.deepamehta.topics.TypeTopic;
-//
-import java.util.*;
+
+import java.util.Vector;
 
 
 

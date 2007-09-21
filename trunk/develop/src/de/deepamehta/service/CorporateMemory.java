@@ -1,8 +1,10 @@
 package de.deepamehta.service;
 
-import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseAssociation;
-import java.util.*;
+import de.deepamehta.BaseTopic;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 

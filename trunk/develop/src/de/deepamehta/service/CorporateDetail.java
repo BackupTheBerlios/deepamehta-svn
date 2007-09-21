@@ -2,9 +2,11 @@ package de.deepamehta.service;
 
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.Detail;
-//
-import java.io.*;
-import java.util.*;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
 
 
 

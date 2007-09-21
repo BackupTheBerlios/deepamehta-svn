@@ -1,12 +1,9 @@
 package de.deepamehta.artfacts.topics;
 
-import de.deepamehta.artfacts.Artfacts;
-//
 import de.deepamehta.BaseTopic;
+import de.deepamehta.artfacts.Artfacts;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.topics.ElementContainerTopic;
-//
-import java.util.*;
 
 
 

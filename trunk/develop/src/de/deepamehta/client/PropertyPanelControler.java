@@ -2,10 +2,11 @@ package de.deepamehta.client;
 
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
-//
+
+import java.util.Hashtable;
+import java.util.Vector;
+
 import javax.swing.ImageIcon;
-import java.awt.Frame;
-import java.util.*;
 
 
 

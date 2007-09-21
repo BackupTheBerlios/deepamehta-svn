@@ -1,16 +1,14 @@
 package de.deepamehta.topics;
 
 import de.deepamehta.BaseTopic;
+import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.Detail;
 import de.deepamehta.PropertyDefinition;
-import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.TopicInitException;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
-//
-import java.net.*;
-import java.util.*;
+
+import java.util.StringTokenizer;
 
 
 

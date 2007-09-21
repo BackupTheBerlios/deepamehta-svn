@@ -6,24 +6,28 @@ import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.FileServer;
 import de.deepamehta.PresentableTopic;
-import de.deepamehta.service.Session;
-import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.ApplicationService;
+import de.deepamehta.service.CorporateDirectives;
+import de.deepamehta.service.Session;
 import de.deepamehta.topics.TopicTypeTopic;
-//
-import java.awt.Point;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipEntry;
-import java.util.*;
-import java.io.*;
-//
-import org.apache.xerces.parsers.DOMParser;		// ### use JAX
-import org.xml.sax.InputSource;
-//
+
+import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import java.awt.Point;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 
 

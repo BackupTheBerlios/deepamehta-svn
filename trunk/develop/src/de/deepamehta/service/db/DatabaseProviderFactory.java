@@ -1,9 +1,9 @@
 package de.deepamehta.service.db;
 
+import de.deepamehta.ConfigurationConstants;
+
 import java.sql.SQLException;
 import java.util.Properties;
-
-import de.deepamehta.ConfigurationConstants;
 
 public abstract class DatabaseProviderFactory {
 

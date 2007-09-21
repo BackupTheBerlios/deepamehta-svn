@@ -1,6 +1,7 @@
 package de.deepamehta.kompetenzstern;
 
 import de.deepamehta.DeepaMehtaConstants;
+
 import java.awt.Color;
 import java.awt.Point;
 

@@ -4,18 +4,19 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.Commands;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.Detail;
-import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableAssociation;
-import de.deepamehta.Topic;
 import de.deepamehta.TopicInitException;
-import de.deepamehta.service.Session;
+import de.deepamehta.movies.topics.MovieContainerTopic;
+import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
-import de.deepamehta.service.ApplicationService;
-//
-import java.util.*;
+import de.deepamehta.service.Session;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 
 

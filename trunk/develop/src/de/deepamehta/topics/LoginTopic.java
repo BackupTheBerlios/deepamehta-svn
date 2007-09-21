@@ -1,10 +1,9 @@
 package de.deepamehta.topics;
 
 import de.deepamehta.BaseTopic;
-import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.TopicInitException;
-import de.deepamehta.service.*;
-//
+import de.deepamehta.service.ApplicationService;
+import de.deepamehta.service.LoginCheck;
+
 import java.lang.reflect.Constructor;
 
 

@@ -3,8 +3,6 @@ package de.deepamehta.movies.topics;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.topics.ElementContainerTopic;
-//
-import java.util.Vector;
 
 
 

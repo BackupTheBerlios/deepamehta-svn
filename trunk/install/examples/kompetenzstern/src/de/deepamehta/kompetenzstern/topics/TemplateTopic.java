@@ -1,25 +1,18 @@
 package de.deepamehta.kompetenzstern.topics;
 
-import de.deepamehta.kompetenzstern.KS;
-//
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.Commands;
-import de.deepamehta.PresentableTopic;
-import de.deepamehta.PresentableAssociation;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.PropertyDefinition;
-import de.deepamehta.service.Session;
+import de.deepamehta.kompetenzstern.KS;
+import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
-import de.deepamehta.service.ApplicationService;
-import de.deepamehta.topics.LiveTopic;
+import de.deepamehta.service.Session;
 import de.deepamehta.topics.TopicMapTopic;
-import de.deepamehta.topics.TypeTopic;
-//
-// import de.scidoc.taskmanager.TM;	// ###
-//
-import java.util.*;
+
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 
 

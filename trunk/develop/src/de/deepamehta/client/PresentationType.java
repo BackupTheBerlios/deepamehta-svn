@@ -1,14 +1,15 @@
 package de.deepamehta.client;
 
-import de.deepamehta.BaseTopic;
-import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableType;
-//
-import javax.swing.*;
-import java.awt.*;
-import java.io.*;
-import java.util.*;
+
+import java.awt.Color;
+import java.awt.Image;
+import java.io.DataInputStream;
+import java.io.IOException;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 
 

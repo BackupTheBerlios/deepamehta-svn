@@ -2,21 +2,19 @@ package de.deepamehta.topics;
 
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableType;
-import de.deepamehta.service.Session;
+import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
-import de.deepamehta.service.ApplicationService;
+import de.deepamehta.service.Session;
 import de.deepamehta.topics.helper.ArchiveFileCollector;
 import de.deepamehta.topics.helper.TopicMapExporter;
-//
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-//
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-//
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+
 import java.io.File;
 import java.util.Hashtable;
 

@@ -2,10 +2,20 @@ package de.deepamehta.service;
 
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-//
-import javax.naming.*;
-import javax.naming.directory.*;
-import java.util.*;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.naming.Context;
+import javax.naming.NameClassPair;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.SearchControls;
 
 
 

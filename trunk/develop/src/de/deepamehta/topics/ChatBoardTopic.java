@@ -2,11 +2,11 @@ package de.deepamehta.topics;
 
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.service.Session;
+import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
-import de.deepamehta.service.ApplicationService;
-//
+import de.deepamehta.service.Session;
+
 import java.util.StringTokenizer;
 
 

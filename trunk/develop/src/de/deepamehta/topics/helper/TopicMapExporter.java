@@ -10,37 +10,37 @@ import de.deepamehta.PresentableTopic;
 import de.deepamehta.Type;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.topics.TopicMapTopic;
-import de.deepamehta.topics.helper.ArchiveFileCollector;
-//
-// ### import javax.xml.parsers.SAXParser;
-// ### import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Result;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-//
+
+import org.apache.avalon.framework.logger.ConsoleLogger;
+import org.apache.avalon.framework.logger.Logger;
+import org.apache.fop.apps.Driver;
+import org.apache.fop.messaging.MessageHandler;
+import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
-//
-import org.apache.fop.apps.Driver;
-import org.apache.fop.apps.FOPException;
-import org.apache.fop.messaging.MessageHandler;
-import org.apache.xerces.parsers.SAXParser;					// ### use JAXP instead
-import org.apache.avalon.framework.logger.Logger; 
-import org.apache.avalon.framework.logger.ConsoleLogger; 
-//
+
 import java.awt.Point;
-import java.util.zip.ZipOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.zip.ZipEntry;
-import java.util.*;
-import java.io.*;
+import java.util.zip.ZipOutputStream;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 
 

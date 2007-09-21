@@ -1,21 +1,19 @@
 package de.deepamehta.client;
 
-import de.deepamehta.Association;
-import de.deepamehta.BaseAssociation;
-import de.deepamehta.BaseTopic;
-import de.deepamehta.BaseTopicMap;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.Detail;
 import de.deepamehta.Directives;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableTopicMap;
 import de.deepamehta.Topic;
-//
-import java.awt.*;
-import java.io.*;
-import java.util.*;
+
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.Point;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.Enumeration;
 
 
 

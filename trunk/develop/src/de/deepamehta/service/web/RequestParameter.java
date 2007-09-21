@@ -1,14 +1,18 @@
 package de.deepamehta.service.web;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletException;
-import java.io.UnsupportedEncodingException;
-import java.io.File;
-import java.util.*;
-//
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 
 

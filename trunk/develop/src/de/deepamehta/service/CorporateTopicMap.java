@@ -1,10 +1,11 @@
 package de.deepamehta.service;
 
-import de.deepamehta.PresentableTopicMap;
 import de.deepamehta.DeepaMehtaConstants;
+import de.deepamehta.PresentableTopicMap;
 import de.deepamehta.TopicInitException;
-//
-import java.io.*;
+
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 
 

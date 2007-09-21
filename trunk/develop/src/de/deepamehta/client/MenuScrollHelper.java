@@ -1,10 +1,17 @@
 package de.deepamehta.client;
 
-import java.util.*;
-import java.awt.event.*;
-import java.awt.Component;
-import javax.swing.*;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 
 /**

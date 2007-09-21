@@ -10,11 +10,14 @@ import de.deepamehta.Directives;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableType;
-import de.deepamehta.service.CorporateTopicMap;		// ### avoid
-//
-import java.awt.*;
-import java.io.*;
-import java.util.*;
+import de.deepamehta.service.CorporateTopicMap;
+
+import java.awt.Color;
+import java.awt.Point;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Vector;
 
 
 

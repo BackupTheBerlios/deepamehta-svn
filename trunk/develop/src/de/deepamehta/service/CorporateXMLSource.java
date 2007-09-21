@@ -1,17 +1,20 @@
 package de.deepamehta.service;
 
-import com.ibm.xml.parsers.NonValidatingDOMParser;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-//
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-//
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import com.ibm.xml.parsers.NonValidatingDOMParser;
+
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 
 

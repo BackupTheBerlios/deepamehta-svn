@@ -1,17 +1,16 @@
 package de.deepamehta.topicmapviewer;
 
 import de.deepamehta.BaseTopic;
-import de.deepamehta.BaseAssociation;
-import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.service.Session;
 import de.deepamehta.service.web.DeepaMehtaServlet;
 import de.deepamehta.service.web.RequestParameter;
 import de.deepamehta.topics.TopicMapTopic;
-//
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-//
-import java.util.*;
 
 
 

@@ -1,10 +1,10 @@
 package de.deepamehta.service;
 
 import de.deepamehta.DeepaMehtaConstants;
-import de.deepamehta.DeepaMehtaUtils;
-//
-import java.io.*;
-import java.util.*;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 
 

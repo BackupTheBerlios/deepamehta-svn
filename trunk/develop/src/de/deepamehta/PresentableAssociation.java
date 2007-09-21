@@ -1,6 +1,8 @@
 package de.deepamehta;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.sql.ResultSet;
 
 
 

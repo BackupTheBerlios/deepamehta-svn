@@ -1,7 +1,10 @@
 package de.deepamehta;
 
-import java.util.*;
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 
@@ -121,7 +124,7 @@ public class BaseTopicMap implements TopicMap {
 	 * <P>
 	 * References checked: 30.3.2003 (2.0a18-pre8)
 	 *
-	 * @see		de.deepamehta.service.ApplicationService#createLiveTopic(BaseTopic topic, boolean override, Session session)
+	 * @see		de.deepamehta.service.ApplicationService#createLiveTopic(BaseTopic topic, boolean override, de.deepamehta.service.Session session)
 	 * @see		de.deepamehta.client.TopicmapEditorModel#showTopic
 	 */
 	public void addTopic(Topic topic) throws DeepaMehtaException {
@@ -187,7 +190,7 @@ public class BaseTopicMap implements TopicMap {
 	/**
 	 * @see		#addTopic
 	 * @see		de.deepamehta.service.ApplicationService#createLiveTopic
-	 * @see		de.deepamehta.client.PresentationTopicMap#initGeometry(PresentationTopic)
+	 * @see		de.deepamehta.client.PresentationTopicMap#initGeometry(de.deepamehta.client.PresentationTopic)
 	 */
 	public boolean topicExists(String id) {
 		// Note: dont use getTopic() because it throws DeepaMehtaException

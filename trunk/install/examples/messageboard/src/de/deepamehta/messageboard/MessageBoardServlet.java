@@ -3,18 +3,16 @@ package de.deepamehta.messageboard;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.DeepaMehtaUtils;
-import de.deepamehta.PresentableTopic;
+import de.deepamehta.messageboard.topics.MessageBoardTopic;
+import de.deepamehta.messageboard.topics.MessageTopic;
+import de.deepamehta.service.Session;
 import de.deepamehta.service.web.DeepaMehtaServlet;
 import de.deepamehta.service.web.RequestParameter;
 import de.deepamehta.service.web.TopicTree;
-import de.deepamehta.service.Session;
-import de.deepamehta.topics.LiveTopic;
-import de.deepamehta.messageboard.topics.MessageBoardTopic;
-import de.deepamehta.messageboard.topics.MessageTopic;
-//
+
+import java.util.Vector;
+
 import javax.servlet.ServletException;
-//
-import java.util.*;
 
 
 

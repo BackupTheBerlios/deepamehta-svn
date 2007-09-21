@@ -1,6 +1,7 @@
 package de.deepamehta.topics.personalweb;
 
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 

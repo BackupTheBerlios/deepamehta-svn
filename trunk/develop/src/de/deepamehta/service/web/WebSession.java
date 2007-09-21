@@ -5,10 +5,10 @@ import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.service.Session;
 import de.deepamehta.topics.helper.EmailChecker;
-//
+
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpSession;
-//
-import java.util.*;
 
 
 
@@ -149,7 +149,7 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 	/**
 	 * References checked: 17.12.2001 (2.0a14-pre5)
 	 *
-	 * @see		ServerConsole#updateSessions
+	 * @see		de.deepamehta.service.ServerConsole#updateSessions
 	 */
 	public String getHostname() {
 		return null;	// ###
@@ -158,14 +158,14 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 	/**
 	 * References checked: 17.12.2001 (2.0a14-pre5)
 	 *
-	 * @see		ApplicationService#runsAtServerHost
+	 * @see		de.deepamehta.service.ApplicationService#runsAtServerHost
 	 */
 	public String getAddress() {
 		return null;	// ###
 	}
 
 	/**
-	 * @see		CorporateDirectives#updateCorporateMemory
+	 * @see		de.deepamehta.service.CorporateDirectives#updateCorporateMemory
 	 * @see		de.deepamehta.topics.TopicMapTopic#openSharedTopicmap
 	 */
 	public boolean isDemo() {
@@ -188,8 +188,8 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 	}
 
 	/**
-	 * @see		ApplicationService#importTopicmap
-	 * @see		ApplicationService#importCM
+	 * @see		de.deepamehta.service.ApplicationService#importTopicmap
+	 * @see		de.deepamehta.service.ApplicationService#importCM
 	 * @see		de.deepamehta.topics.TopicMapTopic#executeChainedCommand
 	 * @see		de.deepamehta.topics.TopicMapTopic#openSharedTopicmap
 	 * @see		de.deepamehta.topics.TopicMapTopic#publish
@@ -213,38 +213,38 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 	}
 
 	/**
-	 * @see		ApplicationService#startSession	false
-	 * @see		ApplicationService#startDemo		true
+	 * @see		de.deepamehta.service.ApplicationService#startSession	false
+	 * @see		de.deepamehta.service.ApplicationService#startDemo		true
 	 */
 	public void setDemo(boolean isDemo) {
 		// ### this.isDemo = isDemo;
 	}
 
 	/**
-	 * @see		ApplicationService#startSession	true
-	 * @see		ApplicationService#startDemo		true
+	 * @see		de.deepamehta.service.ApplicationService#startSession	true
+	 * @see		de.deepamehta.service.ApplicationService#startDemo		true
 	 */
 	public void setLoggedIn(boolean loggedIn) {
 		// ### this.loggedIn = loggedIn;
 	}
 
 	/**
-	 * @see		ApplicationService#startSession
+	 * @see		de.deepamehta.service.ApplicationService#startSession
 	 */
 	public void setUserID(String userID) {
 		// ### this.userID = userID;
 	}
 
 	/**
-	 * @see		ApplicationService#startSession
-	 * @see		ApplicationService#startDemo
+	 * @see		de.deepamehta.service.ApplicationService#startSession
+	 * @see		de.deepamehta.service.ApplicationService#startDemo
 	 */
 	public void setUserName(String userName) {
 		// ### this.userName = userName;
 	}
 
 	/**
-	 * @see		ApplicationService#addPersonalWorkspace
+	 * @see		de.deepamehta.service.ApplicationService#addPersonalWorkspace
 	 */
 	public void setPersonalWorkspace(BaseTopic personalWorkspace) {
 		// ### this.personalWorkspace = personalWorkspace;

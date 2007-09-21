@@ -1,6 +1,5 @@
 package de.deepamehta.client;
 
-import de.deepamehta.Association;
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
@@ -10,24 +9,63 @@ import de.deepamehta.Detail;
 import de.deepamehta.Directive;
 import de.deepamehta.Directives;
 import de.deepamehta.FileServer;
-import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
-import de.deepamehta.Topic;
-import de.deepamehta.TopicMap;
-//
-import java.beans.PropertyVetoException;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.plaf.*;
+import de.deepamehta.service.DeepaMehta;
+
 import java.applet.Applet;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.swing.BoxLayout;
+import javax.swing.DefaultBoundedRangeModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JProgressBar;
+import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+import javax.swing.TransferHandler;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
+import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.FontUIResource;
 
 
 

@@ -1,16 +1,42 @@
 package de.deepamehta.topics.helper;
 
-import de.deepamehta.Topic;
-import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.BaseTopic;
+import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.service.ApplicationService;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
+
 import com.sun.mail.pop3.POP3Folder;
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.Vector;
+
+import javax.mail.Address;
+import javax.mail.FetchProfile;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Part;
+import javax.mail.Session;
+import javax.mail.Store;
+import javax.mail.UIDFolder;
+import javax.mail.URLName;
+import javax.mail.internet.InternetAddress;
 
 
 

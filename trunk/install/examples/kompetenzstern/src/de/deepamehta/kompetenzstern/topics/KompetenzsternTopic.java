@@ -1,37 +1,41 @@
 package de.deepamehta.kompetenzstern.topics;
 
-import de.deepamehta.kompetenzstern.KS;
-//
 import de.deepamehta.AmbiguousSemanticException;
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseTopicMap;
 import de.deepamehta.Commands;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.Detail;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PropertyDefinition;
-import de.deepamehta.service.Session;
+import de.deepamehta.assocs.LiveAssociation;
+import de.deepamehta.kompetenzstern.KS;
+import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.CorporateTopicMap;
 import de.deepamehta.service.DeepaMehtaServiceUtils;
-import de.deepamehta.service.ApplicationService;
+import de.deepamehta.service.Session;
 import de.deepamehta.topics.LiveTopic;
 import de.deepamehta.topics.TopicMapTopic;
 import de.deepamehta.topics.TypeTopic;
 import de.deepamehta.topics.helper.ArchiveFileCollector;
 import de.deepamehta.topics.helper.TopicMapExporter;
-import de.deepamehta.assocs.LiveAssociation;
-//
+
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-//
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 
 

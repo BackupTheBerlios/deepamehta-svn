@@ -1,18 +1,29 @@
 package de.deepamehta.client;
 
+import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PropertyDefinition;
-import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
-//
-import java.awt.Component;
+
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-import javax.swing.*;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.text.*;
-import java.io.*;
-import java.util.*;
 
 
 

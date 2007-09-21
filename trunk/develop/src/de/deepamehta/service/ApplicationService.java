@@ -15,32 +15,46 @@ import de.deepamehta.PresentableType;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Topic;
 import de.deepamehta.TopicInitException;
-import de.deepamehta.TopicMap;
 import de.deepamehta.assocs.LiveAssociation;
+import de.deepamehta.kompetenzstern.topics.KompetenzsternTopic;
+import de.deepamehta.service.web.DeepaMehtaServlet;
 import de.deepamehta.topics.AssociationTypeTopic;
 import de.deepamehta.topics.AuthentificationSourceTopic;
+import de.deepamehta.topics.ChatTopic;
 import de.deepamehta.topics.ContainerTopic;
 import de.deepamehta.topics.LiveTopic;
 import de.deepamehta.topics.LoginTopic;
-import de.deepamehta.topics.TypeTopic;
 import de.deepamehta.topics.TopicMapTopic;
 import de.deepamehta.topics.TopicTypeTopic;
-import de.deepamehta.topics.helper.TopicMapImporter;
-import de.deepamehta.topics.helper.EmailChecker;
+import de.deepamehta.topics.TypeTopic;
 import de.deepamehta.topics.helper.HTMLParser;
-//
+import de.deepamehta.topics.helper.TopicMapImporter;
+
 import com.google.soap.search.GoogleSearch;
+import com.google.soap.search.GoogleSearchFault;
 import com.google.soap.search.GoogleSearchResult;
 import com.google.soap.search.GoogleSearchResultElement;
-import com.google.soap.search.GoogleSearchFault;
-//
+
+import java.awt.Point;
+import java.io.CharArrayWriter;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
-import java.io.*;	// File
-import java.net.*;	// URL
-import java.awt.*;
-import java.util.*;
+import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.Vector;
 
 
 

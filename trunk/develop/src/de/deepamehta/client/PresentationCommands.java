@@ -1,13 +1,24 @@
 package de.deepamehta.client;
 
+import de.deepamehta.Commands;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.Commands;
-//
+import de.deepamehta.Directives;
+
 import java.awt.event.ActionListener;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+
+import javax.swing.Icon;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
 
 
 

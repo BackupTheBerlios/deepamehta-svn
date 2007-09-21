@@ -1,6 +1,6 @@
 package de.deepamehta;
 
-import java.util.*;
+import java.util.Hashtable;
 
 
 
