@@ -45,7 +45,6 @@ public class CorporateSQLSource implements CorporateDatasource {
 
 
 	/**
-	 * @param libs 
 	 * @see		de.deepamehta.topics.DataSourceTopic#openCorporateDatasource
 	 */
 	public CorporateSQLSource(String url, String dbtype) throws Exception {
@@ -160,7 +159,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 	public int getElementCount(String type) throws SQLException {
 		String query = "SELECT COUNT(*) AS Cnt FROM " + type;
 		//
-		// System.out.println("> 1 CorporateSQLSource.getElementCount(): \"" + query + "\"");
+		// ### System.out.println("> CorporateSQLSource.getElementCount(): \"" + query + "\"");
 		Statement stmt = provider.getStatement();
 		ResultSet result = stmt.executeQuery(query);
 		int count = queryCount(result);
@@ -172,7 +171,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 	public int getElementCount(String elementType, Hashtable attributes, boolean caseSensitiv) throws Exception {
 		String queryStr = buildQuery(elementType, attributes, caseSensitiv, "*", true);		// ### onlyCount=true
 		//
-		// System.out.println("> 2 CorporateSQLSource.getElementCount(): \"" + queryStr + "\"");
+		// ### System.out.println("> CorporateSQLSource.getElementCount(): \"" + queryStr + "\"");
 		Statement stmt = provider.getStatement();
 		ResultSet result = stmt.executeQuery(queryStr);
 		int count = queryCount(result);
@@ -184,7 +183,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 	public int getElementCount(String elementType, String id, String relatedElementType, String helperElementType) throws Exception {
 		String queryStr = buildQuery(elementType, id, relatedElementType, helperElementType, true);		// ### onlyCount=true
 		//
-		// System.out.println("> 3 CorporateSQLSource.getElementCount(): \"" + queryStr + "\"");
+		// ### System.out.println("> CorporateSQLSource.getElementCount(): \"" + queryStr + "\"");
 		Statement stmt = provider.getStatement();
 		ResultSet result = stmt.executeQuery(queryStr);
 		int count = queryCount(result);

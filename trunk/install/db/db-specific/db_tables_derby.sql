@@ -67,8 +67,8 @@ CREATE TABLE TopicProp (
     PropName VARCHAR(255) NOT NULL,
     PropValue VARCHAR(4096)
 );
-CREATE INDEX IDX_TopicProp ON TopicProp (
-    TopicID, TopicVersion, PropName
+ALTER TABLE TopicProp ADD PRIMARY KEY (
+	TopicID, TopicVersion, PropName
 );
 
 CREATE TABLE AssociationProp (
@@ -77,8 +77,8 @@ CREATE TABLE AssociationProp (
     PropName VARCHAR(255) NOT NULL,
     PropValue VARCHAR(4096)
 );
-CREATE INDEX IDX_AssociationProp ON AssociationProp (
-    AssociationID, AssociationVersion, PropName
+ALTER TABLE AssociationProp ADD PRIMARY KEY (
+	AssociationID, AssociationVersion, PropName
 );
 
 CREATE TABLE KeyGenerator (

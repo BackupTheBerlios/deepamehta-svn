@@ -1,25 +1,64 @@
-<project name="Movies" default="jar" basedir=".">
+<project name="Movies" default="build" basedir=".">
 
 	<description>
 		Movies
 	</description>
 
+	<if>
+		<not>
+			<istrue value="${do.dmdb.abort}" />
+		</not>
+		<then>
+			<var name="do.dmdb.abort" unset="true" />
+		</then>
+	</if>
+
 	<property name="jar" value="MoviesTopics.jar" />
 	<property name="build" location="build" />
 	<property name="dm.base-dir" location="../../.." />
 
+	<property file="config.properties" />
 	<import file="${dm.base-dir}/config.xml" />
-	<property file="config/movies-${dm.instance}.properties" />
+
+	<condition property="movies.dm.instance" value="${dm.instance}">
+		<not>
+			<isset property="movies.dm.instance" />
+		</not>
+	</condition>
+	<property name="movies.instance.config-property-file" value="config/config-${movies.dm.instance}.properties" />
+	<property name="movies.instance.property-file" value="config/movies-${movies.dm.instance}.properties" />
+	<property file="${movies.instance.config-property-file}" />
+	<property file="${movies.instance.property-file}" />
+	<property file="${config}/build-${movies.dm.instance}.properties" prefix="movies" />
+	<property file="${config}/db-${movies.db.type}.properties" prefix="movies" />
+
+	<condition property="do.movies.config.db.host" value="true">
+		<istrue value="${movies.config.db.host}" />
+	</condition>
+	<condition property="do.movies.config.db.name" value="true">
+		<istrue value="${movies.config.db.name}" />
+	</condition>
+	<condition property="do.movies.config.db.user" value="true">
+		<istrue value="${movies.config.db.user}" />
+	</condition>
+
+	<import file="${dm.base-dir}/setup.xml" />
+
+	<path id="movies.dblibs">
+		<fileset dir="${dm.base-dir}">
+			<include name="${movies.db.libs}" />
+		</fileset>
+	</path>
 
 	<condition property="db.syspass" value="${syspass}">
 		<istrue value="${withsyspass}" />
 	</condition>
 
-	<target name="init" description="create build directory">
+	<target name="-init" description="create build directory">
 		<mkdir dir="${build}" />
 	</target>
 
-	<target name="compile" depends="init">
+	<target name="-compile" depends="-init">
 		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
 			<classpath>
 				<pathelement location="${server}/DeepaMehtaService.jar" />
@@ -28,25 +67,32 @@
 		</javac>
 	</target>
 
-	<target name="jar" depends="compile">
+	<target name="-jar" depends="-compile">
 		<jar jarfile="${jar}" basedir="${build}">
 			<include name="de/deepamehta/movies/topics/*.class" />
 		</jar>
 	</target>
 
-	<target name="build" depends="jar"/>
-	
+	<target name="build" depends="-jar" />
+
 	<target name="cleanup" description="remove build directory">
 		<delete dir="${build}" />
 	</target>
 
 	<!-- example database "Movies" -->
 
-	<target name="install" depends="initdb" >
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
-			<fileset dir="${examples}">
-				<include name="movies/db/dmdb-movies.sql" />
-				<include name="movies/db/dmdb-movies-${dm.instance}.sql" />
+	<target name="uninstall" depends="-dropmoviesdb" />
+
+	<target name="install" depends="-initdb">
+		<!-- seperate call! -->
+		<ant target="-initmoviesdb" />
+	</target>
+
+	<target name="-initdb" unless="do.dmdb.abort">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="movies.dblibs" autocommit="${db.autocommit}">
+			<fileset dir=".">
+				<include name="db/dmdb-movies.sql" />
+				<include name="db/dmdb-movies-${movies.dm.instance}.sql" />
 			</fileset>
 			<fileset dir="${db-specific}">
 				<include name="${db.close-session}" />
@@ -54,17 +100,22 @@
 		</sql>
 	</target>
 
-	<target name="createmoviesdb">
-		<ant antfile="${movies.db.create-db}" target="createdb" inheritrefs="true">
-			<property name="db.sysurl" value="${movies.db.sysurl}" />
-			<property name="db.name" value="${movies.db.name}" />
-			<property name="db.user" value="${movies.db.user}" />
-			<property name="db.password" value="${movies.db.password}" />
-		</ant>
+	<import file="${db-specific}/${movies.db.create-db}" />
+
+	<target name="-createmoviesdb" depends="-testmoviessyspass">
+		<var name="db.libs" value="${movies.db.libs}" />
+		<var name="db.driver" value="${movies.db.driver}" />
+		<var name="db.sysurl" value="${movies.db.sysurl}" />
+		<var name="db.sysuser" value="${movies.db.sysuser}" />
+		<var name="db.name" value="${movies.db.name}" />
+		<var name="db.user" value="${movies.db.user}" />
+		<var name="db.password" value="${movies.db.password}" />
+		<var name="db.close-session" value="${movies.db.close-session}" />
+		<antcallback target="-createdb" inheritrefs="true" return="do.db.abort" />
 	</target>
 
-	<target name="createtables" depends="createmoviesdb">
-		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.user}" password="${movies.db.password}" classpathref="javalibs">
+	<target name="-createmoviestables" depends="-createmoviesdb" unless="do.db.abort">
+		<sql driver="${movies.db.driver}" url="${movies.db.url}" userid="${movies.db.user}" password="${movies.db.password}" classpathref="movies.dblibs" autocommit="${movies.db.autocommit}">
 			<fileset dir=".">
 				<include name="${movies.db.tables}" />
 			</fileset>
@@ -74,8 +125,8 @@
 		</sql>
 	</target>
 
-	<target name="initdb" depends="createtables">
-		<sql driver="${db.driver}" url="${movies.db.url}" userid="${movies.db.user}" password="${movies.db.password}" classpathref="javalibs">
+	<target name="-initmoviesdb" depends="-createmoviestables" unless="do.db.abort">
+		<sql driver="${movies.db.driver}" url="${movies.db.url}" userid="${movies.db.user}" password="${movies.db.password}" classpathref="javalibs" autocommit="${movies.db.autocommit}">
 			<fileset dir=".">
 				<include name="${movies.db.content}" />
 			</fileset>
@@ -85,13 +136,73 @@
 		</sql>
 	</target>
 
-	<target name="dropmoviesdb" >
-		<ant antfile="${movies.db.drop-db}" target="dropdb" inheritrefs="true">
+	<target name="-testmoviessyspass">
+		<var name="withsyspass" unset="true" />
+		<condition property="withsyspass" value="true">
+			<isset property="movies.db.syspass" />
+		</condition>
+	</target>
+
+	<target name="-dropmoviesdb" depends="-testmoviessyspass">
+		<ant antfile="${db-specific}/${movies.db.drop-db}" target="-dropdb" inheritrefs="true">
+			<property name="db.libs" value="${movies.db.libs}" />
+			<property name="db.driver" value="${movies.db.driver}" />
 			<property name="db.sysurl" value="${movies.db.sysurl}" />
+			<property name="db.sysuser" value="${movies.db.sysuser}" />
 			<property name="db.name" value="${movies.db.name}" />
 			<property name="db.user" value="${movies.db.user}" />
 			<property name="db.password" value="${movies.db.password}" />
+			<property name="db.close-session" value="${movies.db.close-session}" />
+			<property name="db.hsqldb.base-path" value="${movies.db.hsqldb.base-path}" />
 		</ant>
+	</target>
+
+	<target name="config" depends="-config-movies-instance">
+	</target>
+
+	<target name="-config-which-movies-instance" depends="-config-init">
+		<var name="path" value="config" />
+		<var name="prefix" value="movies" />
+		<var name="default" value="${movies.dm.instance}" />
+		<antcallback target="-config-which-generic-instance" return="return.instance" />
+		<var name="movies.dm.instance" value="${return.instance}" />
+		<propertyfile file="${config}/config-${dm.instance}.properties">
+			<entry key="movies.dm.instance" value="${movies.dm.instance}" />
+		</propertyfile>
+	</target>
+
+	<target name="-config-movies-instance-db.name" if="do.movies.config.db.name">
+		<input message="Please enter the name of your database:" addproperty="new.movies.db.name" defaultvalue="${movies.db.name}" />
+		<propertyfile file="${movies.instance.config-property-file}">
+			<entry key="movies.db.name" value="${new.movies.db.name}" />
+		</propertyfile>
+	</target>
+
+	<target name="-config-movies-instance-db.user" if="do.movies.config.db.user">
+		<echo>It is strongly advised to change the database user and password before creation!</echo>
+		<input message="Please enter the user to use:" addproperty="new.movies.db.user" defaultvalue="${movies.db.user}" />
+		<input message="Please enter the password to use:" addproperty="new.movies.db.password" defaultvalue="${movies.db.password}" />
+		<propertyfile file="${movies.instance.config-property-file}">
+			<entry key="movies.db.user" value="${new.movies.db.user}" />
+			<entry key="movies.db.password" value="${new.movies.db.password}" />
+		</propertyfile>
+	</target>
+
+	<target name="-config-movies-instance-db.host" if="do.movies.config.db.host">
+		<input message="Please enter the host of your database:" addproperty="new.movies.db.host" defaultvalue="${movies.db.host}" />
+		<propertyfile file="${movies.instance.config-property-file}">
+			<entry key="movies.db.host" value="${new.movies.db.host}" />
+		</propertyfile>
+	</target>
+
+	<target name="-config-movies-instance" depends="-config-which-movies-instance">
+		<echo>configuring now the Movies instance "${movies.dm.instance}"...</echo>
+		<ant target="-config-movies-instance2" inheritall="false" />
+	</target>
+
+	<target name="-config-movies-instance2" depends="-config-movies-instance-db.host,-config-movies-instance-db.name,-config-movies-instance-db.user">
+		<echo>completed configuring instance "${movies.dm.instance}"</echo>
+		<echo>Instance-related settings are stored in "${movies.instance.config-property-file}.</echo>
 	</target>
 
 </project>

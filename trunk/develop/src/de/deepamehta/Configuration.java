@@ -30,10 +30,12 @@ public class Configuration extends Properties {
 			if (null != name) {
 				setProperty(ConfigurationConstants.Instance.DM_INSTANCE, name);
 			} else {
+				loadProperties(getProperty(ConfigurationConstants.Instance.DM_CONFIG_PROPERTY_FILE));
 				name = getProperty(ConfigurationConstants.Instance.DM_INSTANCE);
 			}
 			resolveReferences();
 			loadProperties(getProperty(ConfigurationConstants.Instance.DM_INSTANCE_PROPERTY_FILE));
+			loadProperties(getProperty(ConfigurationConstants.Instance.DM_INSTANCE_CONFIG_PROPERTY_FILE));
 			resolveReferences();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -50,11 +52,11 @@ public class Configuration extends Properties {
 		c.resolveReferences();
 		try {
 			c.loadProperties(c.getProperty(ConfigurationConstants.Database.DB_TYPE_PROPERTY_FILE));
+			c.resolveReferences();
 		} catch (Exception e) {
 			System.out.println(">>> Unable to resolve config file for database specific settings.");
 			System.out.println(">>> You may have luck when only accessing global setting...");
 		}
-		c.resolveReferences();
 		return c;
 	}
 
@@ -64,6 +66,7 @@ public class Configuration extends Properties {
 
 	private void loadProperties(String configFile) throws IOException,
 			FileNotFoundException {
+		System.out.println("Loading Configuration properties "+configFile);
 		Properties p = new Properties();
 		p.load(new FileInputStream(configFile));
 		putAll(p);

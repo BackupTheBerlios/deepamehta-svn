@@ -392,7 +392,9 @@ public class PersonalWeb implements DeepaMehtaConstants {
 				encoded.append("%20");
 			} else if (ch == '?') {
 				encoded.append("%3F");
-			} else if (ch == '�') {
+			} else if (ch == 'Ä') {
+				// ### why ist there a test for Ä but none for ÖÜäöüß
+				// should test for any char > 127 and convert to HEX
 				encoded.append("%C4");
 			} else {
 				encoded.append(ch);

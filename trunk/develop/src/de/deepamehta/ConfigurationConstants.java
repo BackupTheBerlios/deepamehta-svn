@@ -6,11 +6,15 @@ public final class ConfigurationConstants {
 
 		public final static String DM_INSTANCE_PROPERTY_FILE = "dm.instance.property-file";
 
+		public final static String DM_INSTANCE_CONFIG_PROPERTY_FILE = "dm.instance.config-property-file";
+
 		public final static String DM_HOST = "dm.host";
 
 		public final static String DM_PORT = "dm.port";
 
 		public final static String DM_COPRORATE_MEMORY_CLASS = "dm.comporate-memory.class";
+
+		public static final String DM_CONFIG_PROPERTY_FILE = "dm.config.property-file";
 	}
 
 	public final class Database {

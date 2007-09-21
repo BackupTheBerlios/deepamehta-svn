@@ -115,8 +115,8 @@ INSERT INTO TopicProp VALUES ('tt-whois17', 1, 'Domains', 'fj');
 
 INSERT INTO Topic VALUES
  ('tt-whoistopic', 1, 1, 'tt-whois18','Whois Server 18');
-INSERT INTO TopicProp VALUES ('tt-whois6', 1, 'Server', 'whois.nic.fr');
-INSERT INTO TopicProp VALUES ('tt-whois6', 1, 'Domains', 'fr');
+INSERT INTO TopicProp VALUES ('tt-whois18', 1, 'Server', 'whois.nic.fr');
+INSERT INTO TopicProp VALUES ('tt-whois18', 1, 'Domains', 'fr');
 
 INSERT INTO Topic VALUES
  ('tt-whoistopic', 1, 1, 'tt-whois19','Whois Server 19');

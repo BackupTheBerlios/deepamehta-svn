@@ -257,15 +257,15 @@ public interface DeepaMehtaConstants {
 		{"Create Topic Type ...", "Topictyp erzeugen ..."},
 		{"Create Association Type ...", "Assoziationstyp erzeugen ..."},
 		{"Create \\1", "\\1 erzeugen"},
-		{"Delete", "L�schen"},
-		{"Delete", "L�schen"},
+		{"Delete", "Löschen"},
+		{"Delete", "Löschen"},
 		{"Remove", "Entfernen"},
 		{"Remove", "Entfernen"},
 		{"Hide", "Ausblenden"},
 		{"Hide", "Ausblenden"},
 		{"Hide all", "Alle ausblenden"},
-		{"Close", "Schlie�en"},
-		{"Publish to", "Freigeben f�r"},
+		{"Close", "Schließen"},
+		{"Publish to", "Freigeben für"},
 		{"Import Topic Map ...", "Topic Map importieren ..."},
 		{"Export", "Exportieren"},
 		{"Export Format", "Export-Format"},
@@ -281,7 +281,7 @@ public interface DeepaMehtaConstants {
 		{"Set \\1", "\\1 setzen"},
 		{"Edit \\1", "\\1 bearbeiten"},
 		{"Show \\1", "\\1 anzeigen"},
-		{"Choose \\1", "\\1 ausw�hlen"},
+		{"Choose \\1", "\\1 auswählen"},
 		{"Assign \\1", "\\1 zuordnen"},
 		{"Create \\1", "\\1 erzeugen"},
 		{"What is a \"\\1\"?", "Hilfe zu \"\\1\""},
@@ -298,7 +298,7 @@ public interface DeepaMehtaConstants {
 		{"Use", "Inhalt"},
 		{"Build", "Struktur"},
 		{"Messages", "Mitteilungen"},
-		{"Choose ...", "Ausw�hlen ..."},
+		{"Choose ...", "Auswählen ..."},
 		// --- "Workspace" commands ---
 		{"Join", "Beitreten"},
 		{"Leave", "Austreten"},
@@ -306,7 +306,7 @@ public interface DeepaMehtaConstants {
 		{"Assign Association Type", "Assoziationstyp zuordnen"},
 		// --- "User" commands ---
 		{"Set Standard Workspace", "Standard Workspace setzen"},
-		{"Choose ...", "Ausw�hlen ..."},
+		{"Choose ...", "Auswählen ..."},
 	};
 
 	static final int ITEM_NEW_TOPIC    = 0;

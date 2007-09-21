@@ -216,37 +216,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	}
 
 	public void logStatement(String arg0) {
-		return;
-		/* ### dblog.println(arg0);
-		// do not use the AutoFreeConnectionStatement
-		try {
-			Connection connection = getConnection();
-			try {
-				Statement statement = connection.createStatement();
-				ResultSet rs = statement.executeQuery("EXPLAIN PLAN FOR "
-						+ arg0);
-				ResultSetMetaData md = rs.getMetaData();
-				int cc = md.getColumnCount();
-				for (int i = 1; i <= cc; i++) {
-					dblog.print(md.getColumnName(i) + ";");
-				}
-				dblog.println();
-				while (rs.next()) {
-					for (int i = 1; i <= cc; i++) {
-						dblog.print(rs.getString(i) + ";");
-					}
-					dblog.println();
-				}
-				dblog.println();
-				statement.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				freeConnection(connection);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} */
+		dblog.println(arg0);
 	}
 
 }

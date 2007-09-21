@@ -480,7 +480,8 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 
 
 
-	/**
+	/* ### 
+	/ **
 	 * Adds a "Reihenfolge festlegen"/"Reihenfolge ändern" command to the specified
 	 * (topic) command set.
 	 * <P>
@@ -488,8 +489,8 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 	 *
 	 * @see		KriteriumTopic#contextCommands
 	 * @see		BewertungsebeneTopic#contextCommands
-	 */
-	/* ### static void addSetOrderCommand(BaseTopic topic, CorporateCommands commands,
+	 * /
+	static void addSetOrderCommand(BaseTopic topic, CorporateCommands commands,
 								CorporateDirectives directives, ApplicationService as) {
 		try {
 			BaseAssociation assoc = as.getAssociation(topic.getID(),
@@ -575,10 +576,10 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 	}
 
 	// ### see KriteriumTopic
-	// ### public String getSubkriteriumTypeID() {
-	// ### return kriteriumTypeID;
-	// ### return TOPICTYPE_BEWERTUNGS_KRITERIUM;
-	// ### }
+	// public String getSubkriteriumTypeID() {
+	//     return kriteriumTypeID;
+	//     return TOPICTYPE_BEWERTUNGS_KRITERIUM;
+	// }
 
 	// ---
 

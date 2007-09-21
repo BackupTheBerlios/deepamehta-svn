@@ -15,6 +15,6 @@ public class DeepaMehtaException extends RuntimeException {
     }
 
 	public DeepaMehtaException(String string, Exception e) {
-		super(string,e);
+		super(string, e);
 	}
 }

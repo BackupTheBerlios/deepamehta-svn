@@ -28,4 +28,8 @@
 	<target name="deploy" if="do.web.deploy">
         <copy file="${war}" todir="${web.deploy.dir}"/>
 	</target>
+	
+	<target name="cleanup">
+		<delete file="${war}"/>
+	</target>
 </project>

@@ -19,7 +19,6 @@ import java.util.*;
  */
 public interface CorporateMemory {
 
-	void release();
 
 
 	// -------------------------
@@ -292,4 +291,5 @@ public interface CorporateMemory {
 
 	int getModelVersion();
 	int getContentVersion();
+	void release();
 }

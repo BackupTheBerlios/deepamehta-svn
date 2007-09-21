@@ -69,7 +69,7 @@ public class ApplicationServiceInstance implements DeepaMehtaConstants {
 			}
 		} catch (NumberFormatException e) {
 			throw new DeepaMehtaException("Service \"" + name + "\" has " +
-				"invalid port \"" + port + "\"");
+				"invalid port \"" + port + "\"", e);
 		}
 	}
 
@@ -91,7 +91,7 @@ public class ApplicationServiceInstance implements DeepaMehtaConstants {
 	 */
 	public static ApplicationServiceInstance lookup(String[] args) throws DeepaMehtaException {
 		if (args.length == 0) {
-			return lookup((String)null);
+			return lookup((String) null);
 		} else if (args.length == 1) {
 			return lookup(args[0]);
 		} else {
@@ -162,14 +162,13 @@ public class ApplicationServiceInstance implements DeepaMehtaConstants {
             }
 		} catch (SQLException e) {	// ### not tested
 			String hint = e.getMessage().indexOf("Bad Handshake") != -1 ?
-				" -- Probably the driver is too old":"";
-			//	(dbDriverClass.equals("org.gjt.mm.mysql.Driver") ?
-				//".\n*** Get a new driver from www.gjt.org/download/. " +
-				//"Look for \"MM MySQL - JDBC Compliant Driver For MySQL\"." : "") : "";
-			throw new DeepaMehtaException(errText + " (" + e + ")" + hint);
+				" -- Probably the driver is too old" : "";
+			throw new DeepaMehtaException(errText + " (" + e + ")" + hint, e);
 		} catch (ClassNotFoundException e) {
 			throw new DeepaMehtaException(errText + ": " + "the driver class can't be found (" +
-                e.getMessage() + ")");
+                e.getMessage() + ")", e);
+		} catch (DeepaMehtaException e) {
+			throw e;
 		} catch (Throwable e) {
 			throw new DeepaMehtaException(errText + " (" + e + ")");
 		}

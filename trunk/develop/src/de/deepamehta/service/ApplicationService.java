@@ -153,22 +153,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		System.out.println(">    active installation: \"" + installation.getName() + "\"");
 	}
 
-	private class StatisticsThread extends TimerTask{
-	
-		// ******************************************************
-		// *** Implementation of interface java.util.TimerTask ***
-		// ******************************************************
 	
 	
-		/**
-		 * The body of the statistics thread.
-		 */
-		public void run() {
-			System.out.println(DeepaMehtaUtils.getDate() + " " + DeepaMehtaUtils.getTime() + " statistics: " +
-				cm.getTopicCount() + " topics, " + cm.getAssociationCount() + " associations");
-		}
-	}
-
 	// ***************
 	// *** Methods ***
 	// ***************
@@ -197,8 +183,6 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		System.out.println(">    service name: \"" + instance.name + "\"");
 		System.out.println("> Corporate Memory");
 		System.out.println(">    implementation: \"" + instance.cmClass + "\"");
-//		System.out.println(">    URL: \"" + instance.dbURL + "\"");
-//		System.out.println(">    driver: \"" + instance.dbDriverClass + "\"");
 		// establish access to corporate memory
 		CorporateMemory cm = instance.createCorporateMemory();	// throws DME
 		// create application service
@@ -1907,10 +1891,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	// ---
 
-	/**
+	/* ### 
+	/ **
 	 * @see		#createTopic
-	 */
-	/* ### void tiggerAddedToTopicmap(String topicmapID, BaseTopic topic, CorporateDirectives directives) {
+	 * /
+	void tiggerAddedToTopicmap(String topicmapID, BaseTopic topic, CorporateDirectives directives) {
 		try {
 			// --- trigger addedToTopicmap() hook ---
 			LiveTopic topicmap = getLiveTopic(topicmapID, 1);	// ### version 1
@@ -3586,7 +3571,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			out.write(buffer, 0, num);
 		}
 		in.close();
-		String html = new String(out.toCharArray());		// hibyte=0 ### deprecated, compare to DeepaMehtaUtils.readFile()
+		String html = new String(out.toCharArray());
 		System.out.println("  > \"" + url + "\" -- (" + html.length() + " bytes read)");
 		//
 		return html;
@@ -3746,6 +3731,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 					// the path have an extension -- it is considered as a directory
 					// if the extension is unknown ### list possibly incomplete
 					String extension = file.substring(pos2);
+
+					// TODO ### use static hashset for comparism
 					if (!extension.equalsIgnoreCase(".html") &&
 						!extension.equalsIgnoreCase(".htm") &&
 						!extension.equalsIgnoreCase(".phtml") &&
@@ -4816,10 +4803,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		}
 	}
 
-	/**
+	/* ### 
+	/ **
 	 * @see		#personalizeView
-	 */
-	/* ### private void personalizeAssociations(String topicmapID, int topicmapVersion, String viewMode, Enumeration assocs,
+	 * /
+	private void personalizeAssociations(String topicmapID, int topicmapVersion, String viewMode, Enumeration assocs,
 																					boolean performExistenceCheck) {
 		while (assocs.hasMoreElements()) {
 			PresentableAssociation assoc = (PresentableAssociation) assocs.nextElement();
@@ -5224,5 +5212,24 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	public String getConfigurationProperty(String property){
 		return applicationServiceInstance.getConfigurationProperty(property);
+	}
+
+
+
+	// ******************************************************
+	// *** Implementation of interface java.util.TimerTask ***
+	// ******************************************************
+
+
+
+	private class StatisticsThread extends TimerTask{
+
+		/**
+		 * The body of the statistics thread.
+		 */
+		public void run() {
+			System.out.println(DeepaMehtaUtils.getDate() + " " + DeepaMehtaUtils.getTime() + " statistics: " +
+				cm.getTopicCount() + " topics, " + cm.getAssociationCount() + " associations");
+		}
 	}
 }

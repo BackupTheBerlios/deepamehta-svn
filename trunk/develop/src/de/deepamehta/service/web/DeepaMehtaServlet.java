@@ -103,7 +103,7 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 		String service = sc.getInitParameter("service");
 		// Note: the current working directory is the directory from where tomcat was started
 		ApplicationServiceInstance instance = ApplicationServiceInstance.lookup(
-			service, home != null ? home + "/install/client/dm.properties" : "dm.properties");
+			service, home != null ? home + "/install/config/dm.properties" : "dm.properties");
 		as = ApplicationService.create(this, instance);		// throws DME ### servlet is not properly inited
 		cm = as.cm;
 		// --- create external connection ---

@@ -1,6 +1,8 @@
 package de.deepamehta.service.db;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
@@ -73,5 +75,39 @@ public class HsqlDatabaseProvider extends DefaultDatabaseProvider {
 	public void checkPointNeeded() {
 		super.checkPointNeeded();
 		doNextCheckPoint=true;
+	}
+
+	public void logStatement(String stmt) {
+		super.logStatement(stmt);
+		// do not use the AutoFreeConnectionStatement
+		// as it would result in an endless loop
+		try {
+			Connection connection = getConnection();
+			try {
+				Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery("EXPLAIN PLAN FOR "
+						+ stmt);
+				ResultSetMetaData md = rs.getMetaData();
+				int cc = md.getColumnCount();
+				for (int i = 1; i <= cc; i++) {
+					dblog.print(md.getColumnName(i) + ";");
+				}
+				dblog.println();
+				while (rs.next()) {
+					for (int i = 1; i <= cc; i++) {
+						dblog.print(rs.getString(i) + ";");
+					}
+					dblog.println();
+				}
+				dblog.println();
+				statement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				freeConnection(connection);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

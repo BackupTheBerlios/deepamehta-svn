@@ -1,5 +1,5 @@
 // PersonalWeb
-// by Jšrg Richter
+// by JÃ¶rg Richter
 // jri@prz.tu-berlin.de
 // 
 // 1.0b1	7.10.96		First release

@@ -4,8 +4,8 @@
 		DeepaMehta development build file
 	</description>
 
-	<import file="build.xml"/>
-	
+	<import file="build.xml" />
+
 	<!-- Build -->
 	<!-- create build directory -->
 	<target name="init">
@@ -73,9 +73,36 @@
 			<include name="de/deepamehta/assocs/**/*.class" />
 		</jar>
 	</target>
+
+	<target name="jdepend" depends="build" description="generates jdepend report">
+		<jdepend outputfile="jdepend-report.xml" format="xml">
+			<exclude name="java.*" />
+			<exclude name="javax.*" />
+			<exclude name="com.*" />
+			<exclude name="org.*" />
+			<classespath location="${build}" />
+			<classpath location="${build}" />
+		</jdepend>
+		<xslt in="jdepend-report.xml" out="jdepend-report.dot" style="ant/contrib/jdepend2dot.xsl" />
+		<exec executable="dot">
+			<arg value="-Tpng" />
+			<arg value="-odependencies.png" />
+			<arg value="jdepend-report.dot" />
+		</exec>
+		<echo>Image file is dependencies.png.</echo>
+	</target>
+
+	<target name="checkstyle">
+		<checkstyle config="checkstyle_config.xml">
+			<fileset dir="${sources}" includes="**/*.java" />
+			<formatter type="plain" />
+			<formatter type="xml" toFile="checkstyle_errors.xml" />
+		</checkstyle>
+	</target>
+
 	<target name="build" depends="-build-self" description="build jar files">
 		<ant target="-call-examples">
-			<property name="target" value="build"/>
+			<property name="target" value="build" />
 		</ant>
 	</target>
 
@@ -170,6 +197,10 @@
 
 	<target name="cleanup" description="remove build directory">
 		<delete dir="${build}" />
+		<mkdir dir="${build}" />
+		<ant target="-call-examples">
+			<property name="target" value="cleanup" />
+		</ant>
 	</target>
 
 </project>
