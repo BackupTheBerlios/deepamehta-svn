@@ -53,7 +53,7 @@ this file or call the config target again.
 		</propertyfile>
 	</target>
 
-	<target name="-config-web-root" if="new.do.web.deploy" depends="-config-web">
+	<target name="-config-web-root" if="do.web.deploy" depends="-config-web">
 		<input message="Please enter the root directory of your application server." addproperty="new.tomcat.root" defaultvalue="${tomcat.root}" />
 		<propertyfile file="${config.properties}">
 			<entry key="tomcat.root" value="${new.tomcat.root}" />
