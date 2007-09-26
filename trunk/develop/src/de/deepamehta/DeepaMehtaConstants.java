@@ -26,7 +26,7 @@ import java.util.Vector;
  * </OL>
  * <P>
  * <HR>
- * Last functional change: 17.9.2007 (2.0b8)<BR>
+ * Last functional change: 25.9.2007 (2.0b8)<BR>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -172,6 +172,9 @@ public interface DeepaMehtaConstants {
 	static final String DATE_SEPARATOR = "/";
 	static final String TIME_SEPARATOR = ":";
 	static final String[] monthNames = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+	static final String[] monthNamesLong = {"January", "February", "March", "April", "May", "June", "July",
+											"August", "September", "October", "November", "December"};
+	static final String[] dayNames = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 	static final int YEAR_MIN = 1850;
 	static final int YEAR_MAX = 2010;
 	static final String PARAM_SEPARATOR = "_";		// ### was "." clashed with "Course No."

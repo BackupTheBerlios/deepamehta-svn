@@ -21,7 +21,7 @@ import java.util.Vector;
 /**
  * <P>
  * <HR>
- * Last functional change: 29.8.2007 (2.0b8)<BR>
+ * Last functional change: 25.9.2007 (2.0b8)<BR>
  * Last documentation update: 28.7.2001 (2.0a11)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -628,9 +628,9 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 
 
 	public static Calendar getCalendar(String date) {
-		int year = Integer.parseInt(date.substring(0, 4));
-		int month = Integer.parseInt(date.substring(5, 7));
-		int day = Integer.parseInt(date.substring(8));
+		int year = getYear(date);
+		int month = getMonth(date);
+		int day = getDay(date);
 		Calendar cal = Calendar.getInstance();
 		cal.clear();
 		// ### cal.setFirstDayOfWeek(Calendar.MONDAY);	// ### european
@@ -702,6 +702,26 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		int hours = Integer.parseInt(time.substring(0, 2));
 		int minutes = Integer.parseInt(time.substring(3, 5));
 		return 60 * hours + minutes;
+	}
+
+	// ---
+
+	/**
+	 * @param	date	a date string in DeepaMehta format (yyyy/mm/dd)
+	 */
+	public static int getDay(String date) {
+		int day = Integer.parseInt(date.substring(8));
+		return day;
+	}
+
+	public static int getMonth(String date) {
+		int month = Integer.parseInt(date.substring(5, 7));
+		return month;
+	}
+
+	public static int getYear(String date) {
+		int year = Integer.parseInt(date.substring(0, 4));
+		return year;
 	}
 
 

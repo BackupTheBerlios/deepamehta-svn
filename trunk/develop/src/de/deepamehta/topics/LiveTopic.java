@@ -823,6 +823,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * @param	assocTypeID		the old association type
 	 * @param	relTopicID		the other involved topic
 	 *
+	 * @see		de.deepamehta.service.ApplicationService#deleteAssociation
 	 * @see		de.deepamehta.service.ApplicationService#changeAssociationType
 	 */
 	public void associationRemoved(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
