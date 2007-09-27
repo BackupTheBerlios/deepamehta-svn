@@ -377,7 +377,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 */
 	public LiveAssociation checkLiveAssociation(BaseAssociation assoc, Session session, CorporateDirectives directives) {
 		if (!liveAssociationExists(assoc)) {
-			createLiveAssociation(assoc, false, false, directives);
+			createLiveAssociation(assoc, false, false, session, directives);
 		}
 		return getLiveAssociation(assoc);
 	}
@@ -396,7 +396,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 					version + "\" not in corporate memory");
 			}
 			//
-			createLiveAssociation(assoc, false, false, directives);
+			createLiveAssociation(assoc, false, false, session, directives);
 		}
 		return getLiveAssociation(assocID, version);
 	}
@@ -425,40 +425,34 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// --- createLiveTopic (5 forms) ---
 
 	/**
-	 * Creates a {@link de.deepamehta.topics.LiveTopic} based on the specified
-	 * {@link de.deepamehta.BaseTopic} and adds it to this live corporate memory.
+	 * Instantiates a {@link de.deepamehta.topics.LiveTopic} based on the specified {@link de.deepamehta.BaseTopic},
+	 * stores it in the live corporate memory, and finally triggers the init() hook at init level 1.
+	 * <p>
+	 * Note: this is a private method. The application developer is supposed to use the other forms of this method, which
+	 * performs full initialization in terms of triggering the evoke() hook and the init() hook at init levels 2 and 3.
 	 * <P>
 	 * If a topic with same ID and version already exists in live corporate memory and the
 	 * <CODE>override</CODE> parameter is set to <CODE>false</CODE> nothing is performed.
 	 * <P>
-	 * If the topic has a custom implementation the corresponmding
-	 * class is instantiated (a direct or indirect subclass of
-	 * {@link de.deepamehta.topics.LiveTopic}), the actual classname
-	 * is determined by the "Implementing Class" property of the corresponding type
-	 * topic. If the "Implementing Class" property is empty, there is no custom
-	 * implementation and a generic {@link de.deepamehta.topics.LiveTopic} is
-	 * instantiated.
-	 * <P>
-	 * After creating an active topic, its life-cycle method <CODE>init()</CODE>
-	 * is triggered at INITLEVEL_1.
+	 * If the topic has a custom implementation the corresponmding class is instantiated (a direct or indirect subclass of
+	 * {@link de.deepamehta.topics.LiveTopic}), the actual classname is determined by the "Implementing Class" property of
+	 * the corresponding type topic. If the "Implementing Class" property is empty, there is no custom implementation and
+	 * a generic {@link de.deepamehta.topics.LiveTopic} is instantiated.
 	 * <P>
 	 * ### should return a LiveTopic and have "directives" as a parameter<BR>
-	 * ### should be package private
-	 *
-	 * <TABLE>
-	 * <TR><TD><B>Called by</B>																											<TD><CODE>override</CODE>
-	 * <TR><TD>{@link #loadDemoTopicmaps()}																								<TD><CODE>false</CODE>
-	 * <TR><TD>{@link #setAuthentificationSourceTopic()}																				<TD><CODE>false</CODE>
-	 * <TR><TD>{@link #createLiveTopics(Enumeration, CorporateDirectives, Session)}												<TD><CODE>false</CODE>
-	 * </TABLE>
+	 * <p>
+	 * References checked: 27.9.2007 (2.0b8)
 	 *
 	 * @param	session		passed to init() hook (init level 1)
 	 *
-	 * @return	If the topic has not been created because it exists already in live
-	 *			corporate memory <CODE>null</CODE> is returned. Otherwise possible error
-	 *			directives resulted from creation of an active topic are returned (may
-	 *			be emtpy). Note: if a live topic without custom implementation was
-	 *			created always empty CorporateDirectives are returned.
+	 * @return	If the topic has not been created because it exists already in live corporate memory <CODE>null</CODE> is
+	 *			returned. Otherwise possible error directives resulted from creation of an active topic are returned (may
+	 *			be emtpy). Note: if a live topic without custom implementation was created always empty CorporateDirectives
+	 *			are returned.
+	 *
+	 * @see		#checkLiveTopic
+	 * @see		#createLiveTopic
+	 * @see		#createLiveTopics
 	 */
 	private CorporateDirectives createLiveTopic(BaseTopic topic, boolean override, Session session)
 																		throws TopicInitException {
@@ -477,11 +471,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		}
 		//
 		CorporateDirectives directives = new CorporateDirectives();
-		// --- create live topic ---
+		// --- instantiate live topic ---
 		String implementingClass = getImplementingClass(topic);
 		if (LOG_LCM) {System.out.println("> (*) " + topic);}
 		LiveTopic newTopic = createCustomLiveTopic(topic, implementingClass, directives);
-		// --- add to live corporate memory ---
+		// --- store in live corporate memory ---
 		addTopic(newTopic);
 		// --- trigger init() hook ---
 		newTopic.init(INITLEVEL_1, session);	// throws TopicInitException
@@ -596,7 +590,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		CorporateDirectives directives = new CorporateDirectives();
 		//
 		// check weather retyping is allowed and which type is finally to be used
-		typeID = associationAllowed(typeID, null, topicID1, topicID2, session, directives);
+		typeID = triggerAssociationAllowed(typeID, topicID1, topicID2, session, directives);
 		if (typeID != null) {
 			String assocID = getNewAssociationID();
 			PresentableAssociation assoc = new PresentableAssociation(assocID, 1, typeID, 1, "", topicID1, 1, topicID2, 1);
@@ -690,55 +684,74 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	void createLiveAssociations(Enumeration assocs, boolean evoke, Session session, CorporateDirectives directives) {
 		while (assocs.hasMoreElements()) {
 			BaseAssociation assoc = (BaseAssociation) assocs.nextElement();
-			createLiveAssociation(assoc, false, evoke, directives);
+			createLiveAssociation(assoc, false, evoke, session, directives);
 		}
 	}
 
 	// --- createLiveAssociation (3 forms) ---
 
 	/**
-	 * References checked: 30.3.2003 (2.0a18-pre8)
+	 * Instantiates a {@link de.deepamehta.assocs.LiveAssociation} based on the specified {@link de.deepamehta.BaseAssociation},
+	 * stores it in the live corporate memory, and finally triggers its evoke() hook provided the evoke flag is set.
+	 * <p>
+	 * References checked: 27.9.2007 (2.0b8)
 	 *
 	 * @param	directives	may be <CODE>null</CODE>
 	 *
-	 * @see 	#checkLiveAssociation(BaseAssociation)														false
-	 * @see 	#checkLiveAssociation(String assocID, int version)											false
-	 * @see 	#createLiveAssociations(Enumeration, boolean)												variable
-	 * @see 	#createLiveAssociation(String assocID, String typeID, String topicID1, String topicID2)		true
-	 * @see 	CorporateDirectives#showAssociation()														variable
+	 * @see 	#checkLiveAssociation(BaseAssociation, Session, CorporateDirectives)									false	false
+	 * @see 	#checkLiveAssociation(String assocID, int version, Session, CorporateDirectives)						false	false
+	 * @see 	#createLiveAssociations(Enumeration, boolean evoke, Session, CorporateDirectives)						false	variable
+	 * @see 	#createLiveAssociation(String assocID, String typeID, String name, String topicID1, String topicID2)	false	true
+	 * @see 	CorporateDirectives#showAssociation																		false	variable
+	 * @see 	CorporateDirectives#changeAssociationType																true	true
 	 */
-	public void createLiveAssociation(BaseAssociation assoc, boolean override, boolean evoke,
-																				CorporateDirectives directives) {
+	public void createLiveAssociation(BaseAssociation assoc, boolean override, boolean evoke, Session session,
+																								CorporateDirectives directives) {
 		// ### compare to createLiveTopic(), topicmapID, viewmode, session, directives parameters?
-		// Note: associationExists() is from BaseTopicMap
 		if (!override && liveAssociationExists(assoc.getID(), assoc.getVersion())) {
 			// association exists and is not supposed to be overridden
 			if (LOG_LCM) {System.out.println("> (.) " + assoc);}
 			return;
 		}
-		// --- create live association ---
+		// --- instantiate live association ---
 		String implementingClass = type(assoc).getImplementingClass();
 		LiveAssociation newAssoc = createCustomLiveAssociation(assoc, implementingClass, directives);
 		// ### if (LOG_LCM) {System.out.println("> (*) " + assoc + " (" + newAssoc.getClass()  + ")");}
-		// --- add to live corporate memory ---
+		// --- store in live corporate memory ---
 		addAssociation(newAssoc);
-		// --- trigger evoke() hook ---
+		//
 		if (evoke) {
+			// --- trigger evoke() hook ---
 			newAssoc.evoke();
+			// --- trigger associated() hook ---
+			String topicID1 = assoc.getTopicID1();
+			String topicID2 = assoc.getTopicID2();
+			getLiveTopic(topicID1, 1).associated(assoc.getType(), topicID2, session, directives);
+			getLiveTopic(topicID2, 1).associated(assoc.getType(), topicID1, session, directives);
 		}
 	}
 
-	// 2 Utility wrapper for createLiveAssociation() above.
+	// 2 utility wrapper for createLiveAssociation() above.
 
-	public LiveAssociation createLiveAssociation(String assocID, String typeID, String topicID1, String topicID2) {
-		return createLiveAssociation(assocID, typeID, "", topicID1, topicID2);
+	/**
+	 * Utility method for the application developer.
+	 * Creates a new association. All hooks are triggered.
+	 * <p>
+	 * References checked: 27.9.2007 (2.0b8)
+	 *
+	 * @see 	de.deepamehta.topics.EmailTopic#evoke
+	 * @see 	de.deepamehta.service.web.DeepaMehtaServlet#processForm(String typeID, String assocID, Hashtable params,
+	 *														boolean doCreate, String topicID1, String topicID2, Session session)
+	 */
+	public LiveAssociation createLiveAssociation(String assocID, String typeID, String topicID1, String topicID2,
+																				Session session, CorporateDirectives directives) {
+		return createLiveAssociation(assocID, typeID, "", topicID1, topicID2, session, directives);
 	}
 
-	public LiveAssociation createLiveAssociation(String assocID, String typeID, String name,
-																			String topicID1, String topicID2) {
-		// ### compare to createLiveTopic(), topicmapID, viewmode, session, directives parameters?
+	public LiveAssociation createLiveAssociation(String assocID, String typeID, String name, String topicID1, String topicID2,
+																				Session session, CorporateDirectives directives) {
 		BaseAssociation assoc = new BaseAssociation(assocID, 1, typeID, 1, name, topicID1, 1, topicID2, 1);
-		createLiveAssociation(assoc, false, true, null);		// override=false, evoke=true, directives=null
+		createLiveAssociation(assoc, false, true, session, directives);		// override=false, evoke=true
 		LiveAssociation newAssoc = getLiveAssociation(assoc);
 		return newAssoc;
 	}
@@ -1439,7 +1452,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * The server side processing of {@link #DIRECTIVE_HIDE_ASSOCIATION} resp. {@link #DIRECTIVE_HIDE_ASSOCIATIONS}.
 	 * <p>
-	 * ### Should not be called directly by the application developer. Should be packacke private.
+	 * ### Should not be called directly by the application developer. Should be package private.
 	 * <p>
 	 * ### Deletes the specified association and returns the resulting directives.
 	 * <p>
@@ -1456,11 +1469,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			LiveAssociation assoc = checkLiveAssociation(assocID, version, null, directives);
 			LiveTopic topic1 = getLiveTopic(assoc.getTopicID1(), 1);
 			LiveTopic topic2 = getLiveTopic(assoc.getTopicID2(), 1);
+			// --- trigger die() hook ---
+			directives.add(assoc.die());
 			// --- trigger associationRemoved() hook ---
 			topic1.associationRemoved(assoc.getType(), topic2.getID(), session, directives);
 			topic2.associationRemoved(assoc.getType(), topic1.getID(), session, directives);
-			// --- trigger die() hook ---
-			directives.add(assoc.die());
 		} catch (DeepaMehtaException e) {
 			// ### add to directives
 			System.out.println("*** ApplicationService.deleteAssociation(): " +
@@ -1590,16 +1603,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		String topicID1 = assoc.getTopicID1();
 		String topicID2 = assoc.getTopicID2();
 		// check weather retyping is allowed and which type is finally to be used
-		typeID = associationAllowed(typeID, assoc.getType(), topicID1, topicID2, session, directives);
+		typeID = triggerAssociationAllowed(typeID, topicID1, topicID2, session, directives);
 		if (typeID != null) {
-			LiveTopic topic1 = getLiveTopic(topicID1, 1);
-			LiveTopic topic2 = getLiveTopic(topicID2, 1);
-			// --- trigger associationRemoved() hook ---
-			topic1.associationRemoved(assoc.getType(), topicID2, session, directives);
-			topic2.associationRemoved(assoc.getType(), topicID1, session, directives);
-			//
-			// perform the retyping
-			//
 			// --- trigger typeChanged() hook ---
 			directives.add(assoc.typeChanged(typeID));		// ### typeVersion not used
 		}
@@ -1851,7 +1856,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		} catch (DeepaMehtaException e) {
 			System.out.println("*** ApplicationService.showTopicMenu(): " + e + " -- topic commands not available");
 			directives.add(DIRECTIVE_SHOW_MESSAGE, "Menu for " + topic + " not available (" + e.getMessage() + ")",
-				new Integer(NOTIFICATION_WARNING));
+							new Integer(NOTIFICATION_WARNING));
 		}
 		return directives;
 	}
@@ -1867,7 +1872,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			// --- trigger contextCommands() hook ---
 			CorporateCommands commands = assoc.contextCommands(topicmapID, viewmode, session, directives);
 			//
-			// for every topic its type can be explained
+			// help
 			commands.addSeparator();
 			commands.addHelpCommand(assoc, session);
 			//
@@ -1875,7 +1880,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		} catch (DeepaMehtaException e) {
 			System.out.println("*** ApplicationService.showAssociationMenu(): " + e + " -- association commands not available");
 			directives.add(DIRECTIVE_SHOW_MESSAGE, "Menu for " + assoc + " not available (" + e.getMessage() + ")",
-				new Integer(NOTIFICATION_WARNING));
+							new Integer(NOTIFICATION_WARNING));
 		}
 		return directives;
 	}
@@ -1883,8 +1888,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * @see		de.deepamehta.topics.LiveTopic#executeCommand
 	 */
-	public CorporateDirectives showViewMenu(String topicmapID, String viewmode, int x, int y,
-																						Session session) {
+	public CorporateDirectives showViewMenu(String topicmapID, String viewmode, int x, int y, Session session) {
 		CorporateDirectives directives = new CorporateDirectives();
 		LiveTopic topicmap = getLiveTopic(topicmapID, 1);
 		try {
@@ -1893,32 +1897,67 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			directives.add(DIRECTIVE_SHOW_MENU, MENU_VIEW, commands, new Point(x, y));
 			//
 		} catch (DeepaMehtaException e) {
-			System.out.println("*** ApplicationService.showViewMenu(): " + e +
-				" -- view commands not available");
-			directives.add(DIRECTIVE_SHOW_MESSAGE, "Menu  for view \"" +
-				topicmap.getName() + "\" (" + topicmapID + ") not available (" +
-				e.getMessage() + ")", new Integer(NOTIFICATION_WARNING));
+			System.out.println("*** ApplicationService.showViewMenu(): " + e + " -- view commands not available");
+			directives.add(DIRECTIVE_SHOW_MESSAGE, "Menu  for view \"" + topicmap.getName() + "\" (" + topicmapID +
+											") not available (" + e.getMessage() + ")", new Integer(NOTIFICATION_WARNING));
 		}
 		return directives;
 	}
 
 	// ---
 
-	/* ### 
-	/ **
-	 * @see		#createTopic
-	 * /
-	void tiggerAddedToTopicmap(String topicmapID, BaseTopic topic, CorporateDirectives directives) {
-		try {
-			// --- trigger addedToTopicmap() hook ---
-			LiveTopic topicmap = getLiveTopic(topicmapID, 1);	// ### version 1
-			directives.add(topicmap.addedToTopicmap(topic));
-		} catch (DeepaMehtaException e) {
-			System.out.println("*** ApplicationService.tiggerAddedToTopicmap(): " +
-				"the target topicmap isn't in LCM (" + e.getMessage() + ") -- " +
-				"addedToTopicmap() hook not triggered");
+	/**
+	 * Checks weather a new association is allowed by triggering the associationAllowed() hook of both involved topics.
+	 * Called once an association is about to be created resp. to be retyped.
+	 * Both topics are asked to propose another association type to be used or to prohibit the operation at all.
+	 * <p>
+	 * References checked: 27.9.2007 (2.0b8)
+	 *
+	 * @param	assocTypeID		the association type of the association in question
+	 * @param	topicID1		first involved topic
+	 * @param	topicID2		second involved topic
+	 *
+	 * @return	the association type to be used, or <code>null</code> to prohibit the operation.
+	 *
+	 * @see		#createAssociation
+	 * @see		#changeAssociationType
+	 */
+	private String triggerAssociationAllowed(String assocTypeID, String topicID1, String topicID2, Session session,
+																						CorporateDirectives directives) {
+		LiveTopic topic1 = getLiveTopic(topicID1, 1);
+		LiveTopic topic2 = getLiveTopic(topicID2, 1);
+		// --- trigger associationAllowed() hook ---
+		String assocType1 = topic1.associationAllowed(assocTypeID, topicID2, directives);
+		String assocType2 = topic2.associationAllowed(assocTypeID, topicID1, directives);
+		//
+		if (assocType1 == null || assocType2 == null) {
+			directives.add(DIRECTIVE_SHOW_MESSAGE, "Association retyping not possible (prohibited by involved topic)",
+							new Integer(NOTIFICATION_WARNING));
+			return null;
 		}
-	} */
+		//
+		boolean retype1 = !assocType1.equals(assocTypeID);
+		boolean retype2 = !assocType2.equals(assocTypeID);
+		//
+		if (retype1 && retype2) {
+			if (assocType1.equals(assocType2)) {
+				System.out.println(">>> " + topic1 + " modified the assoc retyping (\"" + assocTypeID + "\" -> \"" + assocType1 + "\")");
+				assocTypeID = assocType1;
+			} else {
+				directives.add(DIRECTIVE_SHOW_MESSAGE, "Association retyping not possible (involved topics have contradictive bahavoir)",
+							new Integer(NOTIFICATION_WARNING));
+				return null;
+			}
+		} else if (retype1) {
+			System.out.println(">>> " + topic1 + " modified the assoc retyping (\"" + assocTypeID + "\" -> \"" + assocType1 + "\")");
+			assocTypeID = assocType1;
+		} else if (retype2) {
+			System.out.println(">>> " + topic2 + " modified the assoc retyping (\"" + assocTypeID + "\" -> \"" + assocType2 + "\")");
+			assocTypeID = assocType2;
+		}
+		//
+		return assocTypeID;
+	}
 
 	// ---
 
@@ -4939,58 +4978,6 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		}
 		//
 		return result;
-	}
-
-	// ---
-
-	/**
-	 * Checks weather an association of a certain type is allowed between certain two topics.
-	 * Called once an association is about to be created resp. to be retyped.
-	 * Both topics are asked to propose another association type to be used or to prohibit the operation at all.
-	 *
-	 * @param	currentAssocTypeID	the current association type in case of a retype operation.
-	 *								<code>null</code> in case of a create operation.
-	 * @return	the association type to be used, or <code>null</code> to prohibit the operation.
-	 *
-	 * @see		#createAssociation
-	 * @see		#changeAssociationType
-	 */
-	private String associationAllowed(String assocTypeID, String currentAssocTypeID, String topicID1, String topicID2,
-																	Session session, CorporateDirectives directives) {
-		LiveTopic topic1 = getLiveTopic(topicID1, 1);
-		LiveTopic topic2 = getLiveTopic(topicID2, 1);
-		// --- trigger associationAllowed() hook ---
-		String assocType1 = topic1.associationAllowed(assocTypeID, topicID2, directives);
-		String assocType2 = topic2.associationAllowed(assocTypeID, topicID1, directives);
-		//
-		if (assocType1 == null || assocType2 == null) {
-			directives.add(DIRECTIVE_SHOW_MESSAGE, "Association retyping not possible (prohibited by involved topic)", new Integer(NOTIFICATION_WARNING));
-			return null;
-		}
-		//
-		boolean retype1 = !assocType1.equals(assocTypeID);
-		boolean retype2 = !assocType2.equals(assocTypeID);
-		//
-		if (retype1 && retype2) {
-			if (assocType1.equals(assocType2)) {
-				System.out.println(">>> " + topic1 + " modified the assoc retyping (\"" + assocTypeID + "\" -> \"" + assocType1 + "\")");
-				assocTypeID = assocType1;
-			} else {
-				directives.add(DIRECTIVE_SHOW_MESSAGE, "Association retyping not possible (involved topics have contradictive bahavoir)", new Integer(NOTIFICATION_WARNING));
-				return null;
-			}
-		} else if (retype1) {
-			System.out.println(">>> " + topic1 + " modified the assoc retyping (\"" + assocTypeID + "\" -> \"" + assocType1 + "\")");
-			assocTypeID = assocType1;
-		} else if (retype2) {
-			System.out.println(">>> " + topic2 + " modified the assoc retyping (\"" + assocTypeID + "\" -> \"" + assocType2 + "\")");
-			assocTypeID = assocType2;
-		}
-		// --- trigger associated() hook ---
-		topic1.associated(assocTypeID, currentAssocTypeID, topicID2, session, directives);
-		topic2.associated(assocTypeID, currentAssocTypeID, topicID1, session, directives);
-		//
-		return assocTypeID;
 	}
 
 	// ---

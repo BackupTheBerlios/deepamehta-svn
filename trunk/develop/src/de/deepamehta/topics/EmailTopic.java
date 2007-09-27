@@ -35,7 +35,7 @@ import javax.mail.internet.MimeMultipart;
  * An email.
  * <P>
  * <HR>
- * Last sourcecode change: 16.8.2007 (2.0b8)<BR>
+ * Last sourcecode change: 27.9.2007 (2.0b8)<BR>
  * Last documentation update: 21.11.2001 (2.0a13-post1)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -96,14 +96,14 @@ public class EmailTopic extends LiveTopic {
 
 
 	public CorporateDirectives evoke(Session session, String topicmapID, String viewmode) {
-		CorporateDirectives cd = super.evoke(session, topicmapID, viewmode);
+		CorporateDirectives directives = super.evoke(session, topicmapID, viewmode);
 		setTopicData(PROPERTY_STATUS, EMAIL_STATE_DRAFT);
 		String author = as.getEmailAddress(session.getUserID());	// may return null
 		if (author != null) {
 			setTopicData(PROPERTY_FROM, author);
 		}
-		as.createLiveAssociation(as.getNewAssociationID(), ASSOCTYPE_SENDER, getID(), session.getUserID());
-		return cd;
+		as.createLiveAssociation(as.getNewAssociationID(), ASSOCTYPE_SENDER, getID(), session.getUserID(), session, directives);
+		return directives;
 	}
 
 

@@ -74,8 +74,7 @@ public class EventTopic extends LiveTopic {
 
 
 
-	public void associated(String assocTypeID, String oldTypeID, String relTopicID, Session session,
-																					CorporateDirectives directives) {
+	public void associated(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
 		LiveTopic topic = as.getLiveTopic(relTopicID, 1);
 		if (assocTypeID.equals(SEMANTIC_EVENT_ATTENDEE) && topic.getType().equals(TOPICTYPE_PERSON)) {
 			System.out.println(">>> EventTopic.associated(): " + this + " associated with " + topic + " -- update calendars");

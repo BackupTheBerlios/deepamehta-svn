@@ -47,7 +47,7 @@ import java.util.Vector;
  * their topics from <CODE>LiveTopic</CODE>.
  * <P>
  * <HR>
- * Last sourcecode change: 11.9.2007 (2.0b8)<BR>
+ * Last sourcecode change: 27.9.2007 (2.0b8)<BR>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -807,12 +807,11 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * The default implementation does nothing.
 	 *
 	 * @param	assocTypeID		the new association type
-	 * @param	oldTypeID		the type the association before retyping ### <code>null</code> for create operation
 	 * @param	relTopicID		the other involved topic
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#changeAssociationType
 	 */
-	public void associated(String assocTypeID, String oldTypeID, String relTopicID, Session session, CorporateDirectives directives) {
+	public void associated(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
 	}
 
 	/**
