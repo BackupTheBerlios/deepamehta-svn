@@ -1,8 +1,8 @@
 package de.deepamehta.client;
 
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PropertyDefinition;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.awt.Dimension;
 import java.awt.event.ActionListener;

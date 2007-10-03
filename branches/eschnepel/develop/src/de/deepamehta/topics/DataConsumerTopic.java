@@ -3,7 +3,6 @@ package de.deepamehta.topics;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.TopicInitException;
-import de.deepamehta.movies.topics.MovieTopic;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
@@ -43,7 +42,7 @@ import java.util.Vector;
  * more relation specifications as theirs <I>initialization</I> behavoir. Generally there
  * are 2 types of relations: <I>"to one"</I> and <I>"to many"</I>.
  * <P>
- * E.g. the {@link MovieTopic} registers a "to many" relation to specify how to retrieve
+ * E.g. the {@link de.deepamehta.movies.topics.MovieTopic} registers a "to many" relation to specify how to retrieve
  * the related actors for the respective movie.
  * <P>
  * <HR>

@@ -1,0 +1,33 @@
+<project name="Movies-db-sql">
+	<target name="dmdb-movies">
+		<echo file="tmp-dmdb.sql">
+------------------
+--- Datasource ---
+------------------
+
+--- SQL Datasource ---
+-- "Movies" datasource
+INSERT INTO Topic VALUES ('tt-datasource', 1, 1, 't-moviesdb', 'Movies (${movies.db.type}-DB)');
+INSERT INTO TopicProp VALUES ('t-moviesdb', 1, 'Name', 'Movies (${movies.db.type}-DB)');
+INSERT INTO TopicProp VALUES ('t-moviesdb', 1, 'URL', '${movies.db.url}');
+INSERT INTO TopicProp VALUES ('t-moviesdb', 1, 'Database Type', '${movies.db.type}');
+INSERT INTO TopicProp VALUES ('t-moviesdb', 1, 'Idle Elementtype', 'Movie');
+INSERT INTO TopicProp VALUES ('t-moviesdb', 1, 'Username', '${movies.db.user}');
+INSERT INTO TopicProp VALUES ('t-moviesdb', 1, 'Password', '${movies.db.password}');
+-- Associate types with datasource
+INSERT INTO Association VALUES ('at-association', 1, 1, 'a-514', '', 'tt-movie', 1, 't-moviesdb', 1);
+INSERT INTO Association VALUES ('at-association', 1, 1, 'a-515', '', 'tt-moviecontainer', 1, 't-moviesdb', 1);
+INSERT INTO Association VALUES ('at-association', 1, 1, 'a-516', '', 'tt-actor', 1, 't-moviesdb', 1);
+INSERT INTO Association VALUES ('at-association', 1, 1, 'a-517', '', 'tt-actorcontainer', 1, 't-moviesdb', 1);
+		</echo>
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="dblibs" autocommit="${db.autocommit}">
+			<fileset dir=".">
+				<include name="tmp-dmdb.sql" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+		<delete file="tmp-dmdb.sql"></delete>
+	</target>
+</project>

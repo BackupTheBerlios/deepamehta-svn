@@ -1,8 +1,8 @@
 package de.deepamehta.topics.personalweb;
 
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.topics.helper.HTMLParser;
 import de.deepamehta.topics.helper.SimpleHTMLParser;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;

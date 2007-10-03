@@ -4,7 +4,6 @@ import de.deepamehta.AmbiguousSemanticException;
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.OrderedItem;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Relation;
@@ -17,6 +16,7 @@ import de.deepamehta.service.DeepaMehtaServiceUtils;
 import de.deepamehta.service.Session;
 import de.deepamehta.topics.helper.ArchiveFileCollector;
 import de.deepamehta.topics.helper.TopicMapExporter;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

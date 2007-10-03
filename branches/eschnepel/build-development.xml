@@ -13,7 +13,7 @@
 	</target>
 
 	<target name="compile" depends="init" description="compile sources">
-		<javac srcdir="${sources}" destdir="${build}" debug="on" listfiles="yes" encoding="MacRoman">
+		<javac srcdir="${sources}" destdir="${build}" debug="on" listfiles="yes" encoding="UTF8">
 			<classpath refid="javalibs" />
 		</javac>
 	</target>
@@ -196,8 +196,7 @@
 	</target>
 
 	<target name="cleanup" description="remove build directory">
-		<delete dir="${build}" />
-		<mkdir dir="${build}" />
+		<delete dir="${build}" includes="**" />
 		<ant target="-call-examples">
 			<property name="target" value="cleanup" />
 		</ant>

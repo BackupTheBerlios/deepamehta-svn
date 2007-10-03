@@ -1,7 +1,6 @@
 package de.deepamehta.service;
 
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.Detail;
 import de.deepamehta.Directive;
 import de.deepamehta.Directives;
@@ -11,6 +10,7 @@ import de.deepamehta.PresentableType;
 import de.deepamehta.TopicInitException;
 import de.deepamehta.assocs.LiveAssociation;
 import de.deepamehta.topics.LiveTopic;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.awt.Point;
 import java.io.DataOutputStream;

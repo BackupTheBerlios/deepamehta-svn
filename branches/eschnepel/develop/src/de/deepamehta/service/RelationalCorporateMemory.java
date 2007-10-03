@@ -4,7 +4,6 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableType;
@@ -14,6 +13,8 @@ import de.deepamehta.service.db.DatabaseSweeper;
 import de.deepamehta.service.db.OracleDatabaseProvider;
 import de.deepamehta.service.db.DatabaseProvider.DbmsHint;
 import de.deepamehta.topics.LiveTopic;
+import de.deepamehta.util.CaseInsensitveHashtable;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.awt.Point;
 import java.sql.ResultSet;
@@ -237,7 +238,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		String query = "SELECT Topic.*, PropName FROM Topic, TopicProp " +
 			"WHERE TopicProp.PropValue LIKE '%" + searchString + "%' AND Topic.ID = TopicProp.TopicID";
 		System.out.println(">>> getTopicsByProperty(): \"" + query + "\"");
-		Hashtable result = new Hashtable();
+		Hashtable result = new CaseInsensitveHashtable();
 		try {
 			Statement stmt = createStatement();
 			ResultSet resultSet = stmt.executeQuery(query);
@@ -1770,7 +1771,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 * @see		#getAssociationData
 	 */
 	private Hashtable queryTopicData(String query) {
-		Hashtable topicData = new Hashtable();	// the result
+		Hashtable topicData = new CaseInsensitveHashtable();	// the result
 		try {
 			Statement stmt = createStatement();
 			ResultSet resultSet = stmt.executeQuery(query);

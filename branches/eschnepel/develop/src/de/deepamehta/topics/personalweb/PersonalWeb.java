@@ -42,13 +42,13 @@
 package de.deepamehta.topics.personalweb;
 
 import de.deepamehta.DeepaMehtaConstants;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.DeepaMehtaServiceUtils;
 import de.deepamehta.service.Session;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.io.DataOutputStream;
 import java.io.File;

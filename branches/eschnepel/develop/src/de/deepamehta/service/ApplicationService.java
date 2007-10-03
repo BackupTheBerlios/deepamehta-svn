@@ -7,7 +7,6 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseTopicMap;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableTopicMap;
@@ -16,7 +15,6 @@ import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Topic;
 import de.deepamehta.TopicInitException;
 import de.deepamehta.assocs.LiveAssociation;
-import de.deepamehta.kompetenzstern.topics.KompetenzsternTopic;
 import de.deepamehta.service.web.DeepaMehtaServlet;
 import de.deepamehta.topics.AssociationTypeTopic;
 import de.deepamehta.topics.AuthentificationSourceTopic;
@@ -29,6 +27,8 @@ import de.deepamehta.topics.TopicTypeTopic;
 import de.deepamehta.topics.TypeTopic;
 import de.deepamehta.topics.helper.HTMLParser;
 import de.deepamehta.topics.helper.TopicMapImporter;
+import de.deepamehta.util.CaseInsensitveHashtable;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import com.google.soap.search.GoogleSearch;
 import com.google.soap.search.GoogleSearchFault;
@@ -1620,7 +1620,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * <P>
 	 * References checked: 6.9.2002 (2.0a16-pre2)
 	 *
-	 * @see		KompetenzsternTopic#propertiesChanged
+	 * @see		de.deepamehta.kompetenzstern.topics.KompetenzsternTopic#propertiesChanged
 	 */
 	public CorporateDirectives setTopicProperty(String topicID, int version, String propName, String propValue,
 												String topicmapID, String viewmode, Session session) {

@@ -3,7 +3,6 @@ package de.deepamehta.topics;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseTopicMap;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableTopicMap;
@@ -17,6 +16,7 @@ import de.deepamehta.service.DeepaMehtaServiceUtils;
 import de.deepamehta.service.Session;
 import de.deepamehta.topics.helper.ArchiveFileCollector;
 import de.deepamehta.topics.helper.TopicMapExporter;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;

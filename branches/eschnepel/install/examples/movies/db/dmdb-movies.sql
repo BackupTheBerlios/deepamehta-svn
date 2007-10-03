@@ -102,8 +102,8 @@ INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-title', 'Title');
 INSERT INTO TopicProp VALUES ('pp-title', 1, 'Name', 'Title');
 INSERT INTO TopicProp VALUES ('pp-title', 1, 'Visualization', 'Input Field');
 
-INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-year', 'Year');
-INSERT INTO TopicProp VALUES ('pp-year', 1, 'Name', 'Year');
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-year', 'YearOfProduction');
+INSERT INTO TopicProp VALUES ('pp-year', 1, 'Name', 'YearOfProduction');
 INSERT INTO TopicProp VALUES ('pp-year', 1, 'Visualization', 'Input Field');
 
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-country', 'Country');

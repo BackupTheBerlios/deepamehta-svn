@@ -56,6 +56,8 @@ public class DataSourceTopic extends LiveTopic implements Runnable {
 	 * The idle thread.
 	 */
 	Thread idleThread;
+	private String username;
+	private String password;
 
 
 
@@ -213,6 +215,8 @@ public class DataSourceTopic extends LiveTopic implements Runnable {
 		this.dbtype = getProperty("Database Type");
 		this.elements = getProperty("Entities");
 		this.idleElement = getProperty("Idle Elementtype");
+		this.username=getProperty("Username");
+		this.password=getProperty("Password");
 		//
 		String text = "Datasource \"" + getName() + "\" not available ";
 		// error check 1
@@ -262,7 +266,7 @@ public class DataSourceTopic extends LiveTopic implements Runnable {
 														throws TopicInitException {
 		//  --- open SQL datasource ---
 		try {
-			CorporateDatasource source = new CorporateSQLSource(url, dbtype);
+			CorporateDatasource source = new CorporateSQLSource(url, dbtype, username, password);
 			startIdleThread();
 			return source;
 		} catch (ClassNotFoundException e) {

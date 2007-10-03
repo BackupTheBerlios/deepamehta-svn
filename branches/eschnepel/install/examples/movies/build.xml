@@ -73,10 +73,20 @@
 		</jar>
 	</target>
 
-	<target name="build" depends="-jar" />
+	<target name="-copy-images">
+		<copy todir="${client}">
+			<fileset dir=".">
+				<include name="images/**" />
+				<include name="icons/**" />
+				<include name="backgrounds/**" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="build" depends="-jar,-copy-images" />
 
 	<target name="cleanup" description="remove build directory">
-		<delete dir="${build}" />
+		<delete dir="${build}" includes="**" />
 	</target>
 
 	<!-- example database "Movies" -->
@@ -89,7 +99,7 @@
 	</target>
 
 	<target name="-initdb" unless="do.dmdb.abort">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="movies.dblibs" autocommit="${db.autocommit}">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="dblibs" autocommit="${db.autocommit}">
 			<fileset dir=".">
 				<include name="db/dmdb-movies.sql" />
 				<include name="db/dmdb-movies-${movies.dm.instance}.sql" />
@@ -98,6 +108,14 @@
 				<include name="${db.close-session}" />
 			</fileset>
 		</sql>
+		<trycatch property="exceptionProp">
+			<try>
+				<ant antfile="${movies.dmdb.content}" target="dmdb-movies" />
+			</try>
+			<catch>
+				<echo>${exceptionProp}</echo>
+			</catch>
+		</trycatch>
 	</target>
 
 	<import file="${db-specific}/${movies.db.create-db}" />
@@ -172,6 +190,13 @@
 	</target>
 
 	<target name="-config-movies-instance-db.name" if="do.movies.config.db.name">
+		<ant antfile="${db-specific}/${movies.db.list-names}" target="-listdb">
+			<property name="db.libs" value="${movies.db.libs}" />
+			<property name="db.driver" value="${movies.db.driver}" />
+			<property name="db.sysurl" value="${movies.db.sysurl}" />
+			<property name="db.sysuser" value="${movies.db.sysuser}" />
+			<property name="db.hsqldb.base-path" value="${movies.db.hsqldb.base-path}" />
+		</ant>
 		<input message="Please enter the name of your database:" addproperty="new.movies.db.name" defaultvalue="${movies.db.name}" />
 		<propertyfile file="${movies.instance.config-property-file}">
 			<entry key="movies.db.name" value="${new.movies.db.name}" />

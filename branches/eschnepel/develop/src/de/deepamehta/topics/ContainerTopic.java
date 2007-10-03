@@ -7,7 +7,6 @@ import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.Detail;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.TopicInitException;
-import de.deepamehta.movies.topics.MovieContainerTopic;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
@@ -80,7 +79,7 @@ import java.util.Vector;
  * programmer is required to subclass <CODE>ElementContainerTopic</CODE> in order to
  * specify the element access, topic creation and attribute replication.
  * <P>
- * E.g. the {@link MovieContainerTopic} specifies the topic types used for created
+ * E.g. the {@link de.deepamehta.movies.topics.MovieContainerTopic} specifies the topic types used for created
  * topics and containers as well as the attribute used for the name of created topics.
  * <P>
  * In the future the user resp. administrator will be able to provide these essential

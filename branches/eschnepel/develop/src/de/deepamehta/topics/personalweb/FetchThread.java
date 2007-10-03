@@ -1,7 +1,7 @@
 package de.deepamehta.topics.personalweb;
 
 import de.deepamehta.DeepaMehtaConstants;
-import de.deepamehta.DeepaMehtaUtils;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.io.File;
 import java.io.IOException;

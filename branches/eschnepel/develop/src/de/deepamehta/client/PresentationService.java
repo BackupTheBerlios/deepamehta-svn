@@ -4,13 +4,13 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.Detail;
 import de.deepamehta.Directive;
 import de.deepamehta.Directives;
 import de.deepamehta.FileServer;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.service.DeepaMehta;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.applet.Applet;
 import java.awt.BorderLayout;
