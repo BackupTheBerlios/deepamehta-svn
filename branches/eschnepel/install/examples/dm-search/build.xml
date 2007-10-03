@@ -48,7 +48,7 @@
 	</target>
 
 	<target name="cleanup" description="remove build directory">
-		<delete includes="${build}/**" />
+		<delete dir="${build}" includes="**"/>
 	</target>
 
 </project>

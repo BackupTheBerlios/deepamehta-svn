@@ -67,8 +67,7 @@
 	</target>
 
 	<target name="cleanup" description="remove build directory">
-		<delete dir="${build}" />
-		<mkdir dir="${build}" />
+		<delete dir="${build}" includes="**"/>
 	</target>
 
 	<target name="install" description="initialisation for the dm-db">
