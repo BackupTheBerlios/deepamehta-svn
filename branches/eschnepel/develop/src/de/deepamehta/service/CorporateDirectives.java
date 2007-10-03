@@ -27,7 +27,7 @@ import java.util.Vector;
  * with every constructor call).
  * <P>
  * <HR>
- * Last functional change: 7.6.2007 (2.0b8)<BR>
+ * Last functional change: 27.9.2007 (2.0b8)<BR>
  * Last documentation update: 17.11.2000 (2.0a7-pre3)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -180,7 +180,7 @@ public class CorporateDirectives extends Directives {
 		Enumeration e = directives.elements();
 		Directive directive = null;
 		int dirType = 0;
-		Object param1, param2, param3, param4;//, param5;
+		Object param1, param2, param3, param4;
 		// directive parameters
 		String topicmapID;
 		boolean evoke;
@@ -197,17 +197,15 @@ public class CorporateDirectives extends Directives {
 				param2 = directive.param2;
 				param3 = directive.param3;
 				param4 = directive.param4;
-				// param5 is currently not needed
-				// param5 = directive.param5;
-				
+				//
 				// switch by directive type
 				switch (dirType) {
 				case DIRECTIVE_SHOW_TOPIC:
 					evoke = ((Boolean) param2).booleanValue();
 					topicmapID = (String) param3;
-					// Note: if the server did not set the topicmap ID or viewmode ID, the client uses the
-					// topicmap resp. viewmode in which editing took place as the default.
-					// This must regarded also by the server because topicmap ID and viewmode are required here.
+					// Note: if the server did not set the topicmap ID, the client uses the
+					// topicmap in which editing took place as the default.
+					// This must regarded also by the server because topicmap ID is required here.
 					//
 					// see Directives
 					// see PresentationDirectives
@@ -225,9 +223,9 @@ public class CorporateDirectives extends Directives {
 				case DIRECTIVE_SHOW_ASSOCIATION:
 					evoke = ((Boolean) param2).booleanValue();
 					topicmapID = (String) param3;
-					// Note: if the server did not set the topicmap ID or viewmode ID, the client uses the
-					// topicmap resp. viewmode in which editing took place as the default.
-					// This must regarded also by the server because topicmap ID and viewmode are required here.
+					// Note: if the server did not set the topicmap ID, the client uses the
+					// topicmap in which editing took place as the default.
+					// This must regarded also by the server because topicmap ID is required here.
 					//
 					// see Directives
 					// see PresentationDirectives
@@ -330,8 +328,8 @@ public class CorporateDirectives extends Directives {
                     // ### which requires. These 2 params could be dropped from DIRECTIVE_SET_TOPIC_ICON definition
 					break;
 				case DIRECTIVE_SET_TOPIC_TYPE:
-					changeTopicType((String) param1, ((Integer) param3).intValue(), (String) param2, as,
-						session, topicMapID, viewMode);
+					changeTopicType((String) param1, ((Integer) param3).intValue(), (String) param2, as, session,
+																										topicMapID, viewMode);
 					break;
 				case DIRECTIVE_SET_TOPIC_NAME:
 					topicID = (String) param1;
@@ -351,7 +349,7 @@ public class CorporateDirectives extends Directives {
 					add(as.moveTopic((String) param3, 1, (String) param1, p.x, p.y, false, session));	// triggerMovedHook=false
 					break;
 				case DIRECTIVE_SET_ASSOC_TYPE:
-					changeAssociationType((String) param1, ((Integer) param3).intValue(), (String) param2, as);
+					changeAssociationType((String) param1, ((Integer) param3).intValue(), (String) param2, as, session);
 					break;
 				case DIRECTIVE_SET_ASSOC_NAME:
 					changeAssociationName((String) param1, ((Integer) param3).intValue(), (String) param2, as);
@@ -715,8 +713,8 @@ public class CorporateDirectives extends Directives {
 	/**
 	 * Called for {@link #DIRECTIVE_SHOW_ASSOCIATION} and {@link #DIRECTIVE_SHOW_ASSOCIATIONS} (indirectly).
 	 *
-	 * @see		#updateCorporateMemory		package
-	 * @see		#showAssociations		private
+	 * @see		#updateCorporateMemory
+	 * @see		#showAssociations
 	 */
 	private void showAssociation(ApplicationService as, Session session, PresentableAssociation assoc,
 									boolean evoke, String topicmapID, int topicmapVersion) {
@@ -734,7 +732,7 @@ public class CorporateDirectives extends Directives {
 			}
 		}
 		//
-		as.createLiveAssociation(assoc, false, evoke, this);
+		as.createLiveAssociation(assoc, false, evoke, session, this);
 	}
 
 	// ---
@@ -797,10 +795,12 @@ public class CorporateDirectives extends Directives {
 	 */
 	private void changeTopicType(String topicID, int version, String typeID, ApplicationService as, Session session,
 														String topicmapID, String viewmode) throws TopicInitException {
+		// read into memory
 		LiveTopic topic = as.getLiveTopic(topicID, version);
-		// recreate the topic
-		topic.setType(typeID);
+		// delete from corporate memmory
 		as.cm.deleteTopic(topicID);
+		// recreate
+		topic.setType(typeID);
 		as.createLiveTopic(topic, topicmapID, viewmode, session, this);		// Note: default is override=true, evoke=true
 	}
 
@@ -809,12 +809,21 @@ public class CorporateDirectives extends Directives {
 	 *
 	 * @see		#updateCorporateMemory
 	 */
-	private void changeAssociationType(String assocID, int version, String typeID, ApplicationService as) {
+	private void changeAssociationType(String assocID, int version, String typeID, ApplicationService as, Session session) {
+		// read into memory
 		LiveAssociation assoc = as.getLiveAssociation(assocID, version);
-		// recreate the association
-		assoc.setType(typeID);
+		// delete from corporate memmory
 		as.cm.deleteAssociation(assocID);
-		as.createLiveAssociation(assoc, true, true, this);			// override=true, evoke=true
+		//
+		// --- trigger associationRemoved() hook ---
+		String topicID1 = assoc.getTopicID1();
+		String topicID2 = assoc.getTopicID2();
+		as.getLiveTopic(topicID1, 1).associationRemoved(assoc.getType(), topicID2, session, this);
+		as.getLiveTopic(topicID2, 1).associationRemoved(assoc.getType(), topicID1, session, this);
+		//
+		// recreate
+		assoc.setType(typeID);
+		as.createLiveAssociation(assoc, true, true, session, this);			// override=true, evoke=true
 	}
 
 	// ---

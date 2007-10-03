@@ -28,7 +28,7 @@ import java.util.Vector;
  * this <CODE>WorkspaceTopic</CODE> is renamed.
  * <P>
  * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
+ * Last functional change: 27.9.2007 (2.0b8)<BR>
  * Last documentation update: 29.4.2001 (2.0a10-pre7)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -140,50 +140,6 @@ public class WorkspaceTopic extends LiveTopic {
 		}
 		//
 		return directives;
-	}
-
-	// ---
-
-	/**
-	 * Workspaces are reacting if a membership association is connected.
-	 */
-	public String associationAllowed(String assocTypeID, String relTopicID, CorporateDirectives directives) {
-		if (!assocTypeID.equals(SEMANTIC_MEMBERSHIP)) {
-			return super.associationAllowed(assocTypeID, relTopicID, directives);
-		}
-		/* ### not an error anymore
-		if (!as.getLiveTopic(relTopicID, 1).getType().equals(TOPICTYPE_USER)) {
-			System.out.println(">>> membership association rejected (involved topic is not a user)");
-			return null;
-		} */
-		//
-		return as.getMembershipType(getID(), directives);
-	}
-
-	public void associated(String assocTypeID, String oldTypeID, String relTopicID,
-												Session session, CorporateDirectives directives) {
-		boolean isMembership = as.type(assocTypeID, 1).hasSupertype(SEMANTIC_MEMBERSHIP);
-		boolean wasMembership = oldTypeID != null && as.type(oldTypeID, 1).hasSupertype(SEMANTIC_MEMBERSHIP);
-		if (isMembership && !wasMembership) {
-			// join
-			if (as.getLiveTopic(relTopicID, 1).getType().equals(TOPICTYPE_USER)) {
-				joinUser(relTopicID, REVEAL_MEMBERSHIP_NONE, false, session, directives);
-			}
-			// ### throw new DeepaMehtaException("invalid membership (involved topic is not a user)");
-		}
-	}
-
-	public void associationRemoved(String assocTypeID, String relTopicID,
-												Session session, CorporateDirectives directives) {
-		boolean isMembership = as.type(assocTypeID, 1).hasSupertype(SEMANTIC_MEMBERSHIP);
-		if (!isMembership) {
-			return;
-		}
-		// leave
-		if (as.getLiveTopic(relTopicID, 1).getType().equals(TOPICTYPE_USER)) {
-			leaveUser(relTopicID, null, null, session, directives);		// topicmapID=null, viewmode=null
-		}
-		// ### throw new DeepaMehtaException("invalid membership (involved topic is not a user)");
 	}
 
 
@@ -304,6 +260,47 @@ public class WorkspaceTopic extends LiveTopic {
 		}
 		//
 		return directives;
+	}
+
+
+
+	// -----------------------------
+	// --- Handling Associations ---
+	// -----------------------------
+
+
+
+	/**
+	 * Workspaces are reacting if a membership association is connected.
+	 */
+	public String associationAllowed(String assocTypeID, String relTopicID, CorporateDirectives directives) {
+		if (!assocTypeID.equals(SEMANTIC_MEMBERSHIP)) {
+			return super.associationAllowed(assocTypeID, relTopicID, directives);
+		}
+		//
+		return as.getMembershipType(getID(), directives);
+	}
+
+	public void associated(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
+		boolean isMembership = as.type(assocTypeID, 1).hasSupertype(SEMANTIC_MEMBERSHIP);
+		// ### boolean wasMembership = oldTypeID != null && as.type(oldTypeID, 1).hasSupertype(SEMANTIC_MEMBERSHIP);
+		if (isMembership /* ### && !wasMembership */) {
+			// join
+			if (as.getLiveTopic(relTopicID, 1).getType().equals(TOPICTYPE_USER)) {
+				joinUser(relTopicID, REVEAL_MEMBERSHIP_NONE, false, session, directives);
+			}
+		}
+	}
+
+	public void associationRemoved(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
+		boolean isMembership = as.type(assocTypeID, 1).hasSupertype(SEMANTIC_MEMBERSHIP);
+		if (!isMembership) {
+			return;
+		}
+		// leave
+		if (as.getLiveTopic(relTopicID, 1).getType().equals(TOPICTYPE_USER)) {
+			leaveUser(relTopicID, null, null, session, directives);		// topicmapID=null, viewmode=null
+		}
 	}
 
 

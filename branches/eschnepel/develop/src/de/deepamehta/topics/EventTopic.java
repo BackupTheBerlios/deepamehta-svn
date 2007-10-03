@@ -12,7 +12,7 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 17.7.2007 (2.0b8)<br>
+ * Last functional change: 25.9.2007 (2.0b8)<br>
  * Last documentation update: 6.7.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -61,13 +61,35 @@ public class EventTopic extends LiveTopic {
 		while (e.hasMoreElements()) {
 			BaseTopic person = (BaseTopic) e.nextElement();
 			Vector calendars = ((PersonTopic) as.getLiveTopic(person)).getCalendars();
-			Enumeration e2 = calendars.elements();
-			while (e2.hasMoreElements()) {
-				calendar = (BaseTopic) e2.nextElement();
-				((CalendarTopic) as.getLiveTopic(calendar)).updateView(directives);
-			}
+			updateCalendars(calendars, directives);
 		}
 		return directives;
+	}
+
+
+
+	// -----------------------------
+	// --- Handling Associations ---
+	// -----------------------------
+
+
+
+	public void associated(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
+		LiveTopic topic = as.getLiveTopic(relTopicID, 1);
+		if (assocTypeID.equals(SEMANTIC_EVENT_ATTENDEE) && topic.getType().equals(TOPICTYPE_PERSON)) {
+			System.out.println(">>> EventTopic.associated(): " + this + " associated with " + topic + " -- update calendars");
+			Vector calendars = ((PersonTopic) topic).getCalendars();
+			updateCalendars(calendars, directives);
+		}
+	}
+
+	public void associationRemoved(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
+		LiveTopic topic = as.getLiveTopic(relTopicID, 1);
+		if (assocTypeID.equals(SEMANTIC_EVENT_ATTENDEE) && topic.getType().equals(TOPICTYPE_PERSON)) {
+			System.out.println(">>> EventTopic.associationRemoved(): " + this + " disassociated from " + topic + " -- update calendars");
+			Vector calendars = ((PersonTopic) topic).getCalendars();
+			updateCalendars(calendars, directives);
+		}
 	}
 
 
@@ -84,5 +106,15 @@ public class EventTopic extends LiveTopic {
 
 	public Vector getAttendees() {
 		return cm.getRelatedTopics(getID(), SEMANTIC_EVENT_ATTENDEE, TOPICTYPE_PERSON, 2);
+	}
+
+	// ---
+
+	private void updateCalendars(Vector calendars, CorporateDirectives directives) {
+		Enumeration e = calendars.elements();
+		while (e.hasMoreElements()) {
+			BaseTopic calendar = (BaseTopic) e.nextElement();
+			((CalendarTopic) as.getLiveTopic(calendar)).updateView(directives);
+		}
 	}
 }

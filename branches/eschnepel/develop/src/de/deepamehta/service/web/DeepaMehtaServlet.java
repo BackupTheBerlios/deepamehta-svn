@@ -54,7 +54,7 @@ import javax.xml.transform.stream.StreamSource;
 /**
  * <P>
  * <HR>
- * Last functional change: 21.2.2007 (2.0b8)<BR>
+ * Last functional change: 27.9.2007 (2.0b8)<BR>
  * Last documentation update: 28.9.2002 (2.0a16-pre4)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -414,10 +414,8 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 		CorporateDirectives directives = new CorporateDirectives();
 		//
 		if (doCreate) {
-			as.createLiveAssociation(assocID, typeID, topicID1, topicID2);	// ### no session, no directives here
-		} /* ### else {
-			as.checkLiveAssociation(assocID, 1, null, directives);			// ### must be loaded
-		} */
+			as.createLiveAssociation(assocID, typeID, topicID1, topicID2, session, directives);
+		}
 		//
 		Hashtable props = getProperties(params, typeID);
 		// properties

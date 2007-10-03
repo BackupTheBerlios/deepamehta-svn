@@ -83,6 +83,8 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 	 * bring into live the very first time.
 	 * <P>
 	 * The default implementation creates the association in corporate memory.
+	 * <p>
+	 * References checked: 27.9.2007 (2.0b8)
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#createLiveAssociation
 	 */
@@ -115,6 +117,8 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 	 * <LI>all views
 	 * </UL>
 	 * ... and returns empty directives.
+	 * <p>
+	 * References checked: 27.9.2007 (2.0b8)
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#deleteAssociation
 	 */
