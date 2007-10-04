@@ -31,4 +31,6 @@ cd "$(dirname $0)"
 export ANT_HOME="$(pwd)/ant"
 #fi
 
+cd  "$current"
+
 ${ANT_HOME}/bin/ant $*

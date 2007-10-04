@@ -21,7 +21,7 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 26.9.2007 (2.0b8)<br>
+ * Last functional change: 30.9.2007 (2.0b8)<br>
  * Last documentation update: 6.7.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -185,7 +185,6 @@ public class CalendarTopic extends LiveTopic {
 
 
 
-	// ### to be dropped
 	public CorporateDirectives propertiesChanged(Hashtable newProps, Hashtable oldProps,
 											String topicmapID, String viewmode, Session session) {
 		CorporateDirectives directives = super.propertiesChanged(newProps, oldProps,
@@ -220,6 +219,32 @@ public class CalendarTopic extends LiveTopic {
 		props.addElement(PROPERTY_DISPLAY_DATE);
 		props.addElement(PROPERTY_ICON);
 		return props;
+	}
+
+
+
+	// -----------------------------
+	// --- Handling Associations ---
+	// -----------------------------
+
+
+
+	public void associated(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
+		LiveTopic topic = as.getLiveTopic(relTopicID, 1);
+		if (assocTypeID.equals(SEMANTIC_CALENDAR_PERSON) && (topic.getType().equals(TOPICTYPE_PERSON) ||
+															 topic.getType().equals(TOPICTYPE_EVENT))) {
+			System.out.println(">>> CalendarTopic.associated(): " + this + " associated with " + topic + " -- update this calendar");
+			updateView(directives);
+		}
+	}
+
+	public void associationRemoved(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
+		LiveTopic topic = as.getLiveTopic(relTopicID, 1);
+		if (assocTypeID.equals(SEMANTIC_CALENDAR_PERSON) && (topic.getType().equals(TOPICTYPE_PERSON) ||
+															 topic.getType().equals(TOPICTYPE_EVENT))) {
+			System.out.println(">>> CalendarTopic.associationRemoved(): " + this + " disassociated from " + topic + " -- update this calendar");
+			updateView(directives);
+		}
 	}
 
 
