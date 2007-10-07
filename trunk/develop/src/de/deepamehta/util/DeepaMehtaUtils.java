@@ -1,4 +1,15 @@
-package de.deepamehta;
+package de.deepamehta.util;
+
+import de.deepamehta.Association;
+import de.deepamehta.BaseAssociation;
+import de.deepamehta.BaseTopic;
+import de.deepamehta.BaseTopicMap;
+import de.deepamehta.DeepaMehtaConstants;
+import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.PresentableAssociation;
+import de.deepamehta.PresentableTopic;
+import de.deepamehta.PresentableTopicMap;
+import de.deepamehta.Topic;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -440,21 +451,22 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 	}
 
 	static public String replace(String str, char oldChar, String newStr) {
-		int pos = str.indexOf(oldChar);
-		if (pos == -1) {
-			return str;
-		}
-		//
-		StringBuffer result = new StringBuffer();
-		int pos0 = 0;
-		while (pos != -1) {
-			result.append(str.substring(pos0, pos));
-			result.append(newStr);
-			pos0 = pos + 1;
-			pos = str.indexOf(oldChar, pos0);
-		}
-		result.append(str.substring(pos0));
-		return result.toString();
+		return str.replaceAll(""+oldChar, newStr);
+//		int pos = str.indexOf(oldChar);
+//		if (pos == -1) {
+//			return str;
+//		}
+//		//
+//		StringBuffer result = new StringBuffer();
+//		int pos0 = 0;
+//		while (pos != -1) {
+//			result.append(str.substring(pos0, pos));
+//			result.append(newStr);
+//			pos0 = pos + 1;
+//			pos = str.indexOf(oldChar, pos0);
+//		}
+//		result.append(str.substring(pos0));
+//		return result.toString();
 	}
 
 	static public String replaceLF(String text) {
@@ -814,4 +826,34 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		}
 	}
 */
+
+
+
+	// -----------------
+	// --- Mics      ---
+	// -----------------
+
+
+
+	static public void printStackTrace() {
+		printStackTrace(10,1);
+	}
+
+	static public void printStackTrace(int depth) {
+		printStackTrace(depth,1);
+	}
+
+	static public void printStackTrace(int depth, int skip) {
+		if (false){
+			skip++;
+			System.err.println("----");
+			Exception e = new Exception();
+			e.fillInStackTrace();
+			StackTraceElement[] stackTrace = e.getStackTrace();
+			for (int i = skip; i < stackTrace.length && i < depth + skip; i++) {
+				System.err.println("    " + stackTrace[i].toString());
+			}
+			System.err.println("----");
+		}
+	}
 }

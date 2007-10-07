@@ -3,6 +3,7 @@ package de.deepamehta.service;
 import de.deepamehta.ConfigurationConstants;
 import de.deepamehta.service.db.DatabaseProvider;
 import de.deepamehta.service.db.DatabaseProviderFactory;
+import de.deepamehta.util.CaseInsensitveHashtable;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -52,13 +53,15 @@ public class CorporateSQLSource implements CorporateDatasource {
 	/**
 	 * @see		de.deepamehta.topics.DataSourceTopic#openCorporateDatasource
 	 */
-	public CorporateSQLSource(String url, String dbtype) throws Exception {
+	public CorporateSQLSource(String url, String dbtype, String user, String password) throws Exception {
 		// create database connection
 		System.out.println(">>> CorporateSQLSource(): connecting to database ... ");
 		System.out.println(">    URL: \"" + url + "\"\n>    dbtype: \"" + dbtype + "\"");
 		Properties conf = new Properties();
 		conf.setProperty(ConfigurationConstants.Database.DB_TYPE, dbtype);
 		conf.setProperty(ConfigurationConstants.Database.DB_URL, url);
+		conf.setProperty(ConfigurationConstants.Database.DB_USER, user);
+		conf.setProperty(ConfigurationConstants.Database.DB_PASSWORD, password);
 		provider = DatabaseProviderFactory.getProvider(conf);
 		Statement statement = provider.getStatement();
 		statement.close();
@@ -293,7 +296,7 @@ public class CorporateSQLSource implements CorporateDatasource {
 			int recNr = 0;
 			// loop through all the records
 			while (result.next()) {
-				elementData = new Hashtable();
+				elementData = new CaseInsensitveHashtable();
 				for (int c = 1; c <= cols; c++) {
 					fieldName = meta.getColumnName(c);
 					value = result.getString(c);

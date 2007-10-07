@@ -3,7 +3,7 @@ package de.deepamehta.client;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.awt.Color;
 import java.awt.Image;

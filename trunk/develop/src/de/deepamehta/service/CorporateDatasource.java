@@ -1,6 +1,7 @@
 package de.deepamehta.service;
 
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 

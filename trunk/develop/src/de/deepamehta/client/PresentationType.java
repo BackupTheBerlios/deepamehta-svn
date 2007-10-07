@@ -1,7 +1,7 @@
 package de.deepamehta.client;
 
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableType;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.awt.Color;
 import java.awt.Image;

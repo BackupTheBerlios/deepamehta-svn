@@ -4,7 +4,6 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.OrderedItem;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Relation;
@@ -12,6 +11,7 @@ import de.deepamehta.service.ApplicationService;
 import de.deepamehta.topics.AssociationTypeTopic;
 import de.deepamehta.topics.TopicTypeTopic;
 import de.deepamehta.topics.TypeTopic;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.text.ChoiceFormat;
 import java.text.Format;

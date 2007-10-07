@@ -1,7 +1,7 @@
 package de.deepamehta.messageboard;
 
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.service.ApplicationService;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 
 

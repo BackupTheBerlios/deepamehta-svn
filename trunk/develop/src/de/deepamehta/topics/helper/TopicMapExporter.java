@@ -4,12 +4,12 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.FileServer;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.Type;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.topics.TopicMapTopic;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import org.apache.avalon.framework.logger.ConsoleLogger;
 import org.apache.avalon.framework.logger.Logger;

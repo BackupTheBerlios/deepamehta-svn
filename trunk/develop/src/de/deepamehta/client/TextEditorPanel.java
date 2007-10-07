@@ -2,7 +2,7 @@ package de.deepamehta.client;
 
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.awt.BorderLayout;
 import java.awt.datatransfer.DataFlavor;

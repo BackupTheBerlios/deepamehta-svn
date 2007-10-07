@@ -1,4 +1,4 @@
-<project name="DeepaMehta-db-listdb-mysql">
+<project name="DeepaMehta-db-listdb-mysql5">
 	<import file="asksyspass.xml" />
 	<target name="-listdb" depends="-asksyspass">
 		<path id="dblibs">
@@ -6,7 +6,12 @@
 				<include name="${db.libs}" />
 			</fileset>
 		</path>
-		<var name="db.syspass" value="${return.syspass}" />
+		<if>
+			<isset property="return.syspass" />
+			<then>
+				<var name="db.syspass" value="${return.syspass}" />
+			</then>
+		</if>
 		<trycatch property="exceptionProp">
 			<try>
 				<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.syspass}" classpathref="dblibs" print="true" output="tmp-databases.txt" showheaders="false" onerror="continue">
@@ -18,6 +23,7 @@
 					AND		LOWER(schema_name) != 'information_schema';
 				</sql>
 				<loadfile srcFile="tmp-databases.txt" property="list" />
+				<delete file="tmp-databases.txt" />
 				<var name="elem" unset="true" />
 				<for param="listElem" list="${list}" delimiter=";" trim="true">
 					<sequential>
@@ -53,6 +59,8 @@
 			</try>
 			<catch>
 				<echo message="${exceptionProp}" />
+				<var name="db.syspass" unset="true" />
+				<var name="withsyspass" unset="true" />
 			</catch>
 		</trycatch>
 	</target>

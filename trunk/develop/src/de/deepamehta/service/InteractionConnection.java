@@ -3,7 +3,7 @@ package de.deepamehta.service;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

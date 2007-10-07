@@ -4,6 +4,7 @@
 		DeepaMehta setup build file
 	</description>
 
+	<import file="build.xml" optional="true"/>
 	<condition property="do.config.db.host" value="true">
 		<istrue value="${config.db.host}" />
 	</condition>
@@ -75,8 +76,8 @@ this file or call the config target again.
 	</target>
 
 	<target name="-config-dm-instance" depends="-config-which-dm-instance">
-		<echo>configuring now the DeepaMehta instance "${dm.instance}...</echo>
-		<ant target="-config-dm-instance2" inheritall="false" />
+		<echo>configuring now the DeepaMehta instance "${dm.instance}" ...</echo>
+		<antcallback target="-config-dm-instance2" inheritall="false" return="db.syspass"/>
 	</target>
 
 	<target name="-config-dm-instance2" depends="-config-instance-db.host,-config-instance-db.name,-config-instance-db.user">
@@ -91,8 +92,8 @@ this file or call the config target again.
 		</propertyfile>
 	</target>
 
-	<target name="-config-instance-db.name" if="do.config.db.name">
-		<ant antfile="${db-specific}/list-db-${db.type}.xml" target="-listdb" />
+	<import file="${db-specific}/${db.list-names}" />
+	<target name="-config-instance-db.name" if="do.config.db.name" depends="-listdb">
 		<input message="Please enter the name of your database:" addproperty="new.db.name" defaultvalue="${db.name}" />
 		<propertyfile file="${dm.instance.config-property-file}">
 			<entry key="db.name" value="${new.db.name}" />

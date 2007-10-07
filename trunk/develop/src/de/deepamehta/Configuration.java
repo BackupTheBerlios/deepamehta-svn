@@ -1,10 +1,13 @@
 package de.deepamehta;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
+
+
 
 public class Configuration extends Properties {
 
@@ -35,19 +38,19 @@ public class Configuration extends Properties {
 			}
 			resolveReferences();
 			loadProperties(getProperty(ConfigurationConstants.Instance.DM_INSTANCE_PROPERTY_FILE));
-			loadProperties(getProperty(ConfigurationConstants.Instance.DM_INSTANCE_CONFIG_PROPERTY_FILE));
-			resolveReferences();
+			loadProperties(new File(configFile).getAbsoluteFile().getParentFile().getAbsolutePath() + "/config.properties");
+			// loadProperties(getProperty(ConfigurationConstants.Instance.DM_INSTANCE_CONFIG_PROPERTY_FILE));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		resolveReferences();
 	}
 
-	public static Configuration getDbConfig(String dbType){
+	public static Configuration getDbConfig(String dbType) {
 		Configuration c = (Configuration) globalInstance.clone();
-		c.setProperty(ConfigurationConstants.Database.DB_TYPE_PROPERTY_FILE,
-				globalInstance.dbTypePropertyFile);
+		c.setProperty(ConfigurationConstants.Database.DB_TYPE_PROPERTY_FILE, globalInstance.dbTypePropertyFile);
 		c.setProperty(ConfigurationConstants.Database.DB_TYPE, dbType);
 		c.resolveReferences();
 		try {
@@ -64,9 +67,8 @@ public class Configuration extends Properties {
 		return globalInstance;
 	}
 
-	private void loadProperties(String configFile) throws IOException,
-			FileNotFoundException {
-		System.out.println("Loading Configuration properties "+configFile);
+	private void loadProperties(String configFile) throws IOException, FileNotFoundException {
+		System.out.println("Loading Configuration properties " + configFile);
 		Properties p = new Properties();
 		p.load(new FileInputStream(configFile));
 		putAll(p);
@@ -88,8 +90,7 @@ public class Configuration extends Properties {
 						String var = val.substring(from + 2, to);
 						String rep = (String) get(var);
 						if (null == rep) {
-							System.out.println("unable to resolve " + var
-									+ "! maybe later...");
+							System.out.println("unable to resolve " + var + "! maybe later...");
 							break;
 						}
 						val.replace(from, to + 1, rep);

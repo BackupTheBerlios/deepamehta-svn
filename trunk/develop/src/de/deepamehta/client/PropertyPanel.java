@@ -5,9 +5,9 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.Topic;
 import de.deepamehta.Type;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;

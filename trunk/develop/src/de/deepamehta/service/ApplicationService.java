@@ -7,7 +7,6 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseTopicMap;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableTopicMap;
@@ -28,6 +27,8 @@ import de.deepamehta.topics.TopicTypeTopic;
 import de.deepamehta.topics.TypeTopic;
 import de.deepamehta.topics.helper.HTMLParser;
 import de.deepamehta.topics.helper.TopicMapImporter;
+import de.deepamehta.util.CaseInsensitveHashtable;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import com.google.soap.search.GoogleSearch;
 import com.google.soap.search.GoogleSearchFault;

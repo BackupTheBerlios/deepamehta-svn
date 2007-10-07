@@ -2,8 +2,8 @@ package de.deepamehta.client;
 
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.Detail;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.awt.Point;
 import java.io.DataInputStream;

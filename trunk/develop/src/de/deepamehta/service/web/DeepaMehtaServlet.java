@@ -4,7 +4,6 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Relation;
 import de.deepamehta.service.ApplicationService;
@@ -14,6 +13,8 @@ import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.CorporateMemory;
 import de.deepamehta.service.Session;
 import de.deepamehta.topics.TypeTopic;
+import de.deepamehta.util.CaseInsensitveHashtable;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -756,8 +757,8 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 	 * @see		#processForm
 	 */
 	private final Hashtable getProperties(Hashtable params, String typeID) {
-		Hashtable props = new Hashtable();		// return object
-		Hashtable compProps = new Hashtable();	// intermediate table to compile the single values of composed properties
+		Hashtable props = new CaseInsensitveHashtable();		// return object
+		Hashtable compProps = new CaseInsensitveHashtable();	// intermediate table to compile the single values of composed properties
 		//
 		Enumeration e = params.keys();
 		while (e.hasMoreElements()) {

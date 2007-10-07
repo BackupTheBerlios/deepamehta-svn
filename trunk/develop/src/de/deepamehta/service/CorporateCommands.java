@@ -5,7 +5,6 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.Commands;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.Relation;
 import de.deepamehta.assocs.LiveAssociation;
@@ -13,6 +12,7 @@ import de.deepamehta.topics.AssociationTypeTopic;
 import de.deepamehta.topics.LiveTopic;
 import de.deepamehta.topics.TopicTypeTopic;
 import de.deepamehta.topics.TypeTopic;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.util.Enumeration;
 import java.util.Hashtable;

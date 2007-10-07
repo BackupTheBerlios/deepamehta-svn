@@ -1,8 +1,8 @@
 package de.deepamehta.service;
 
 import de.deepamehta.DeepaMehtaConstants;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableType;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

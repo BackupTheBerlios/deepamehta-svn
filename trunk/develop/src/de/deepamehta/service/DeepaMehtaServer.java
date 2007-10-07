@@ -2,7 +2,7 @@ package de.deepamehta.service;
 
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.awt.HeadlessException;
 import java.io.BufferedInputStream;

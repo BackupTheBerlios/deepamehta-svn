@@ -1,7 +1,6 @@
 package de.deepamehta.messageboard.topics;
 
 import de.deepamehta.BaseTopic;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.messageboard.MessageBoard;
 import de.deepamehta.service.ApplicationService;
@@ -9,6 +8,7 @@ import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
 import de.deepamehta.topics.LiveTopic;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.util.Vector;
 

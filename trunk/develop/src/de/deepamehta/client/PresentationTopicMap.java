@@ -2,11 +2,11 @@ package de.deepamehta.client;
 
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.Directives;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableTopicMap;
 import de.deepamehta.Topic;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.awt.Color;
 import java.awt.Image;

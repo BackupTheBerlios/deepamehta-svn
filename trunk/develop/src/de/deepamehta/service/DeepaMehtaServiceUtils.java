@@ -39,11 +39,12 @@ public class DeepaMehtaServiceUtils implements DeepaMehtaConstants {
 	 */
 	public static void createImageFile(RenderedImage image, File file) throws DeepaMehtaException {
 		try {
+			file.getParentFile().mkdirs();
 			String format = file.getPath().substring(file.getPath().lastIndexOf('.') + 1);
 			ImageIO.write(image, format, file);
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			System.out.println("*** DeepaMehtaServiceUtils.createImageFile(): " + e);			
-			throw new DeepaMehtaException("error while writing an image file (" + e + ")");
+			throw new DeepaMehtaException("error while writing an image file", e);
 		}
 	}
 

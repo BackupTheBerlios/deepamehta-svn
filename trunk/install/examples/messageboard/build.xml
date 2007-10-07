@@ -13,11 +13,11 @@
 
 	<import file="${dm.base-dir}/config.xml" />
 
-	<target name="init" description="create build directory">
+	<target name="-init">
 		<mkdir dir="${build}" />
 	</target>
 
-	<target name="compile" depends="init">
+	<target name="-compile" depends="-init">
 		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
 			<classpath>
 				<pathelement location="${server}/DeepaMehtaService.jar" />
@@ -28,7 +28,7 @@
 		</javac>
 	</target>
 
-	<target name="jar" depends="compile">
+	<target name="-jar" depends="-compile">
 		<jar jarfile="${jar}" basedir="${build}">
 			<include name="de/deepamehta/messageboard/MessageBoard.class" />
 			<include name="de/deepamehta/messageboard/topics/*.class" />
@@ -36,7 +36,7 @@
 		</jar>
 	</target>
 
-	<target name="war" depends="jar">
+	<target name="-war" depends="-jar">
 		<war warfile="${war}" webxml="config/web.xml">
 			<classes dir="${build}">
 				<include name="de/deepamehta/messageboard/*.class" />
@@ -48,14 +48,24 @@
 		</war>
 	</target>
 
-	<target name="build" depends="war"/>
+	<target name="-copy-images">
+		<copy todir="${client}">
+			<fileset dir=".">
+				<include name="images/**" />
+				<include name="icons/**" />
+				<include name="backgrounds/**" />
+			</fileset>
+		</copy>
+	</target>
 
-	<target name="deploy" if="do.web.deploy">
+	<target name="build" depends="-war,-copy-images" description="builds the application" />
+
+	<target name="deploy" if="do.web.deploy" description="deploys the application">
 		<copy file="${jar}" todir="${web.lib.dir}" />
 		<copy file="${war}" todir="${web.deploy.dir}" />
 	</target>
 
 	<target name="cleanup" description="remove build directory">
-		<delete dir="${build}" />
+		<delete dir="${build}" includes="**" />
 	</target>
 </project>

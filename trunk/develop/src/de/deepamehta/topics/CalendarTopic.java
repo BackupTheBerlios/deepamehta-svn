@@ -3,13 +3,13 @@ package de.deepamehta.topics;
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.text.DateFormat;
 import java.util.Calendar;

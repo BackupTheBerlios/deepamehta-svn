@@ -167,6 +167,8 @@ INSERT INTO TopicProp VALUES ('tt-datasource', 1, 'Custom Implementation', 'de.d
 -- assign properties
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-20', '', 'tt-datasource', 1, 'pp-url', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-21', '', 'tt-datasource', 1, 'pp-dbtype', 1);
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-21a', '', 'tt-datasource', 1, 'pp-dbuser', 1);
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-21b', '', 'tt-datasource', 1, 'pp-dbpassword', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-134', '', 'tt-datasource', 1, 'pp-idleelementtype', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-22', '', 'tt-datasource', 1, 'pp-entities', 1);
 INSERT INTO AssociationProp VALUES ('a-20', 1, 'Ordinal Number', '110');
@@ -1253,6 +1255,14 @@ INSERT INTO TopicProp VALUES ('pp-wit_domains', 1, 'Name', 'Domains');
 --- "Database Type" ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-dbtype', 'Database Type');
 INSERT INTO TopicProp VALUES ('pp-dbtype', 1, 'Visualization', 'Input Field');
+
+--- "Database Type" ---
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-dbuser', 'Username');
+INSERT INTO TopicProp VALUES ('pp-dbuser', 1, 'Visualization', 'Input Field');
+
+--- "Database Type" ---
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-dbpassword', 'Password');
+INSERT INTO TopicProp VALUES ('pp-dbpassword', 1, 'Visualization', 'Input Field');
 
 --- "Entities" ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-entities', 'Entities');

@@ -1,5 +1,7 @@
 package de.deepamehta;
 
+import de.deepamehta.util.DeepaMehtaUtils;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

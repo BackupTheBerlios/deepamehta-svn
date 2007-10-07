@@ -3,7 +3,6 @@ package de.deepamehta.client;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.Commands;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.DeepaMehtaUtils;
 import de.deepamehta.Detail;
 import de.deepamehta.Directive;
 import de.deepamehta.Directives;
@@ -11,6 +10,7 @@ import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableType;
 import de.deepamehta.service.CorporateTopicMap;
+import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.awt.Color;
 import java.awt.Point;
