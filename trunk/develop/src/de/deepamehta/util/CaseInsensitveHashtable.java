@@ -40,7 +40,12 @@ public class CaseInsensitveHashtable extends Hashtable {
 
 	public Object remove(Object key) {
 		Object upper = upper(key);
-		super.remove(findUpperKey(upper));
+		Object upperKey = findUpperKey(upper);
+		// if the key is not contained in the hashtable (null) it can't be removed
+		// maltito, 9.10.2007
+		if (upperKey != null) { 
+			super.remove(upperKey);
+		}
 		return upperKeysHash.remove(upper);
 	}
 
@@ -56,8 +61,9 @@ public class CaseInsensitveHashtable extends Hashtable {
 	}
 
 	static private Object upper(Object key) {
-		if (key instanceof String)
+		if (key instanceof String) {
 			key = ((String) key).toUpperCase();
+		}
 		return key;
 	}
 
