@@ -30,7 +30,7 @@ import java.util.Vector;
 /**
  * <p>
  * <hr>
- * Last sourcecode change: 14.10.2007 (2.0b8)<br>
+ * Last sourcecode change: 15.10.2007 (2.0b8)<br>
  * Last documentation update: 16.9.2002 (2.0a16-pre3)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -260,14 +260,13 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	// ---
 
 	public String info(TopicBean topicBean) {
-		StringBuffer html = new StringBuffer();
+		StringBuffer html = new StringBuffer("<table>\r");
 		Enumeration e = topicBean.fields.elements();
 		while (e.hasMoreElements()) {
 			TopicBean.Field field = (TopicBean.Field) e.nextElement();
-			html.append("<table>\r");
 			infoField(field, html);
-			html.append("</table>\r");
 		}
+		html.append("</table>\r");
 		return html.toString();
 	}
 
@@ -281,13 +280,13 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 			Enumeration e = field.values.elements();
 			while (e.hasMoreElements()) {
 				BaseTopic topic = (BaseTopic) e.nextElement();
-				html.append(topic.getName() + "<br>");
+				html.append(imageTag(topic) + " " + topic.getName() + "<br>");
 			}
 			break;
 		default:
 			throw new DeepaMehtaException("unexpected topic bean field type: " + field.type);
 		}
-		html.append("</td></tr>");
+		html.append("</td></tr>\r");
 	}
 
 	// --- form (8 forms) ---
@@ -515,7 +514,8 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	public String imageTag(BaseTopic topic, boolean withTooltip) {
 		String iconfile = as.getLiveTopic(topic).getIconfile();
 		return "<img src=\"" + as.getCorporateWebBaseURL() + FILESERVER_ICONS_PATH + iconfile + "\"" +
-			(withTooltip ? " alt=\"" + topic.getName() + "\"" : "") + " border=\"0\">";
+			" alt=\"" + topic.getName() + "\" border=\"0\"" + 
+			(withTooltip ? " title=\"" + topic.getName() + "\"" : "") + ">";
 	}
 
 	// ---
