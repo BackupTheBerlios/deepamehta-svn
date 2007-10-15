@@ -64,7 +64,7 @@ import java.util.Vector;
  * <IMG SRC="../../../../../images/3-tier-lcm.gif">
  * <P>
  * <HR>
- * Last functional change: 7.6.2007 (2.0b8)<BR>
+ * Last functional change: 14.10.2007 (2.0b8)<BR>
  * Last documentation update: 30.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -4704,6 +4704,16 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		} catch (ClassCastException e) {
 			throw new DeepaMehtaException("error while accessing the type \"" + typeID + ":" + typeVersion +"\": " + e);
 		}
+	}
+
+	// ---
+
+	public TopicTypeTopic getTopicType(String topicID, int version) {
+		return (TopicTypeTopic) getLiveTopic(getLiveTopic(topicID, version).getType(), 1);
+	}
+
+	public AssociationTypeTopic getAssocType(String assocID, int version) {
+		return (AssociationTypeTopic) getLiveTopic(getLiveAssociation(assocID, version).getType(), 1);
 	}
 
 	// ---

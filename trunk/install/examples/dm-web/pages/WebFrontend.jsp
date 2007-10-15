@@ -1,5 +1,6 @@
 <%@ page import="de.deepamehta.BaseTopic" %>
 <%@ page import="de.deepamehta.PresentableTopic" %>
+<%@ page import="de.deepamehta.service.TopicBean" %>
 <%@ page import="de.deepamehta.service.web.HTMLGenerator" %>
 
 <%@ page import="de.deepamehta.webfrontend.WebFrontend" %>

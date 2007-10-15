@@ -4,6 +4,7 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.service.Session;
+import de.deepamehta.service.TopicBean;
 import de.deepamehta.service.web.DeepaMehtaServlet;
 import de.deepamehta.service.web.RequestParameter;
 
@@ -39,7 +40,8 @@ public class WebFrontendServlet extends DeepaMehtaServlet implements WebFrontend
 		} else if (action.equals(ACTION_SHOW_TOPIC_INFO)) {
 			String topicID = params.getValue("topicID");
 			Vector relatedTopics = cm.getRelatedTopics(topicID);
-			session.setAttribute("topic", new Topic(cm.getTopic(topicID, 1), as));
+			session.setAttribute("topic", new Topic(cm.getTopic(topicID, 1), as));	// ### absolete
+			session.setAttribute("topicBean", new TopicBean(topicID, as));
 			session.setAttribute("relTopics", createRelatedTopicBeans(relatedTopics, topicID));
 			return PAGE_TOPIC_INFO;
 		} else if (action.equals(ACTION_SHOW_TOPICS)) {

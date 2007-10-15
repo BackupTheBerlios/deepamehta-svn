@@ -5,12 +5,14 @@
 	HTMLGenerator html = (HTMLGenerator) session.getAttribute("html");
 	String baseURL = (String) session.getAttribute("baseURL");
 	Topic topic = (Topic) session.getAttribute("topic");
+	TopicBean topicBean = (TopicBean) session.getAttribute("topicBean");
 	Vector relTopics = (Vector) session.getAttribute("relTopics");
 %>
 <%
 	out.println("<h3>" + topic.name + " <img src=\"" + baseURL + "icons/" + topic.icon + "\"/> " + 
 		"(<small>" + topic.typeName + "</small>)</h3>");
-	out.println(html.info(topic.id));
+	// ### out.println(html.info(topic.id));
+	out.println(html.info(topicBean));
 %>
 	<br>
 	<table border="0">
