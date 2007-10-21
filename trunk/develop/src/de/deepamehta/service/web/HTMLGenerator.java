@@ -9,6 +9,7 @@ import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Relation;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.TopicBean;
+import de.deepamehta.service.TopicBeanField;
 import de.deepamehta.topics.AssociationTypeTopic;
 import de.deepamehta.topics.TopicTypeTopic;
 import de.deepamehta.topics.TypeTopic;
@@ -30,7 +31,7 @@ import java.util.Vector;
 /**
  * <p>
  * <hr>
- * Last sourcecode change: 15.10.2007 (2.0b8)<br>
+ * Last sourcecode change: 20.10.2007 (2.0b8)<br>
  * Last documentation update: 16.9.2002 (2.0a16-pre3)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -263,20 +264,22 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		StringBuffer html = new StringBuffer("<table>\r");
 		Enumeration e = topicBean.fields.elements();
 		while (e.hasMoreElements()) {
-			TopicBean.Field field = (TopicBean.Field) e.nextElement();
+			TopicBeanField field = (TopicBeanField) e.nextElement();
 			infoField(field, html);
 		}
 		html.append("</table>\r");
 		return html.toString();
 	}
 
-	private void infoField(TopicBean.Field field, StringBuffer html) {
+	private void infoField(TopicBeanField field, StringBuffer html) {
 		html.append("<tr valign=\"top\"><td width=150><small>" + field.name + "</small></td><td>");
 		switch (field.type) {
-		case TopicBean.Field.TYPE_SINGLE:
-			html.append(field.value);
+		case TopicBeanField.TYPE_SINGLE:
+			if (field.value != null) {
+				html.append(field.value);
+			}
 			break;
-		case TopicBean.Field.TYPE_MULTI:
+		case TopicBeanField.TYPE_MULTI:
 			Enumeration e = field.values.elements();
 			while (e.hasMoreElements()) {
 				BaseTopic topic = (BaseTopic) e.nextElement();

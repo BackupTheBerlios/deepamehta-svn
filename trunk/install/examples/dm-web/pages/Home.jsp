@@ -7,10 +7,10 @@
 %>
 <html>
 <head>
-	<title>DeepaMehta</title>
+	<title>DeepaMehta Web Frontend</title>
 </head>
 <body>
-	<h2>DeepaMehta</h2>
+	<h2>DeepaMehta Web Frontend</h2>
 	Logged in as "<%= user.getName() %>".<br>
 	<h3>Your Workspaces</h3>
 	<% topicList(workspaces, session, out); %>

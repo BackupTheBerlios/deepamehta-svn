@@ -7,11 +7,13 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseTopicMap;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.OrderedItem;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableTopicMap;
 import de.deepamehta.PresentableType;
 import de.deepamehta.PropertyDefinition;
+import de.deepamehta.Relation;
 import de.deepamehta.Topic;
 import de.deepamehta.TopicInitException;
 import de.deepamehta.assocs.LiveAssociation;
@@ -64,7 +66,7 @@ import java.util.Vector;
  * <IMG SRC="../../../../../images/3-tier-lcm.gif">
  * <P>
  * <HR>
- * Last functional change: 14.10.2007 (2.0b8)<BR>
+ * Last functional change: 20.10.2007 (2.0b8)<BR>
  * Last documentation update: 30.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -3628,6 +3630,91 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		System.out.println("  > \"" + url + "\" -- (" + html.length() + " bytes read)");
 		//
 		return html;
+	}
+
+
+
+	// ----------------------------
+	// --- Creating Topic Beans ---
+	// ----------------------------
+
+
+
+	public TopicBean createTopicBean(String topicID, int version) {
+		TopicBean bean = new TopicBean();
+		//
+		LiveTopic topic = getLiveTopic(topicID, version);
+		TypeTopic type = getTopicType(topicID, version);
+		bean.id = topicID;
+		bean.name = topic.getName();
+		bean.typeID = type.getID();
+		bean.typeName = type.getName();
+		bean.icon = topic.getIconfile();
+		//
+		addFieldsToTopicBean(type, topicID, version, "", true, bean);
+		return bean;
+	}
+
+	/**
+	 * @param	topicID		may be null
+	 */
+	private void addFieldsToTopicBean(TypeTopic type, String topicID, int version, String fieldPrefix, boolean deep, TopicBean bean) {
+		// ### compare to HTMLGenerator.infoFields()
+   		Hashtable props = getTopicProperties(topicID, 1);
+		Enumeration items = type.getDefinition().elements();
+		while (items.hasMoreElements()) {
+			OrderedItem item = (OrderedItem) items.nextElement();
+			if (item instanceof PropertyDefinition) {
+				PropertyDefinition propDef = (PropertyDefinition) item;
+				String propName = propDef.getPropertyName();
+				String propValue = (String) props.get(propName);
+				bean.fields.addElement(new TopicBeanField(fieldPrefix + propName, propValue));
+			} else if (item instanceof Relation) {
+				if (deep) {
+					Relation rel = (Relation) item;
+					if (rel.webInfo.equals(WEB_INFO_TOPIC_NAME)) {
+						addRelationFieldToTopicBean(rel, topicID, fieldPrefix, bean);
+					} else if (rel.webInfo.equals(WEB_INFO) || rel.webInfo.equals(WEB_INFO_DEEP)) {
+						addRelationFieldsToTopicBean(rel, topicID, fieldPrefix, bean);
+					} else {
+						throw new DeepaMehtaException("unexpected web info mode: \"" + rel.webInfo + "\"");
+					}
+				}
+			} else {
+				throw new DeepaMehtaException("unexpected object in type definition: " + item);
+			}
+		}
+	}
+
+	private void addRelationFieldToTopicBean(Relation rel, String topicID, String fieldPrefix, TopicBean bean) {
+		// ### compare to HTMLGenerator.relationInfoField()
+		String relName = rel.name;
+		String relTopicTypeID = rel.relTopicTypeID;
+		String cardinality = rel.cardinality;
+		String assocTypeID = rel.assocTypeID;
+		//
+		TypeTopic relTopicType = type(relTopicTypeID, 1);
+		boolean many = cardinality.equals(CARDINALITY_MANY);
+		String fieldLabel = !relName.equals("") ? relName : many ? relTopicType.getPluralNaming() : relTopicType.getName();
+		//
+		Vector selectedTopics = getRelatedTopics(topicID, assocTypeID, relTopicTypeID, 2,
+			false, true);	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
+		bean.fields.addElement(new TopicBeanField(fieldPrefix + fieldLabel, selectedTopics));
+	}
+
+	private void addRelationFieldsToTopicBean(Relation rel, String topicID, String fieldPrefix, TopicBean bean) {
+		String relTopicTypeID = rel.relTopicTypeID;
+		Vector selectedTopics = getRelatedTopics(topicID, rel.assocTypeID, relTopicTypeID, 2,
+			false, true);	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
+		String relTopicID = null;
+		if (selectedTopics.size() > 0) {	// ### only the first related topic is considered
+			relTopicID = ((BaseTopic) selectedTopics.firstElement()).getID();
+		}
+		TypeTopic relTopicType = type(relTopicTypeID, 1);
+		String relTopicTypeName = relTopicType.getName();
+		String newFieldPrefix = fieldPrefix + relTopicTypeName + TopicBean.FIELD_SEPARATOR;
+		boolean newDeep = rel.webInfo.equals(WEB_INFO_DEEP);
+		addFieldsToTopicBean(relTopicType, relTopicID, 1, newFieldPrefix, newDeep, bean);	// recursive call ### version=1
 	}
 
 

@@ -19,8 +19,8 @@
 	<target name="compile" depends="init">
 		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
 			<classpath>
-				<pathelement location="${web.lib.dir}/DeepaMehtaService.jar"/>
-				<pathelement location="${web.lib.dir}/DeepaMehtaTopics.jar"/>
+				<pathelement location="${server}/DeepaMehtaService.jar"/>
+				<pathelement location="${server}/DeepaMehtaTopics.jar"/>
 				<pathelement location="${web.servlet.lib}"/>
 			</classpath>
 		</javac>

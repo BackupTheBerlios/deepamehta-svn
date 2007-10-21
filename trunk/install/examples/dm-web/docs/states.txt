@@ -4,7 +4,7 @@ DeepaMehta Web Frontend Documentation
 Web Session Attributes
 
 Jšrg Richter
-7.12.2006
+20.10.2007
 
 
 Global
@@ -23,7 +23,7 @@ workspaces		workspaces the user is a member of (Vector of Topic)
 PAGE_TOPIC_INFO
 ---------------
 
-topic			selected topic (Topic)
+topicBean		selected topic (TopicBean)
 relTopics		related topics (Vector of RelatedTopic)
 
 

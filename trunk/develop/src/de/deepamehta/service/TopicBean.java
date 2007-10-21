@@ -1,23 +1,30 @@
 package de.deepamehta.service;
 
-import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.OrderedItem;
-import de.deepamehta.PropertyDefinition;
-import de.deepamehta.Relation;
-import de.deepamehta.topics.TypeTopic;
 
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 
 
 
 /**
+ * A data container that holds all the content about one topic. The content comprises of the topics properties as well as
+ * the properties of related topics as defined by Relations. For creating topic beans the Application Service provides
+ * a {@link ApplicationService#createTopicBean factory method}.
+ * <p>
+ * The contents are modelled as a list of fields. A field has a name and a value component. In case of a property the
+ * field's name is the property-name and the value component is the property-value. In case of related topics that are
+ * included by name (the Relation's "Web Info" property is set to "Related Topic Name") the field's name is the type-name
+ * and the value component is a vector of BaseTopics.
+ * <p>
+ * The HTML Generator provides a {HTMLGenerator#info(TopicBean) rendering method} to layout a Topic Bean as a 2-column table.
+ * <p>
+ * This class provides a number of methods for manipulating the fields of a Topic Bean before rendering.
  * <p>
  * <hr>
- * Last sourcecode change: 15.10.2007 (2.0b8)<br>
+ * Last sourcecode change: 20.10.2007 (2.0b8)<br>
  * Last documentation update: 14.10.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -26,92 +33,102 @@ public class TopicBean implements DeepaMehtaConstants {
 
 	public static final String FIELD_SEPARATOR = " / ";
 
-	public Vector fields = new Vector();
-	private ApplicationService as;
-
-	public TopicBean(String topicID, ApplicationService as) {
-		this.as = as;
-		addFields(topicID, "", true);
-	}
+	public String id, name, typeID, typeName, icon;
+	public Vector fields = new Vector();	// element type is TopicBeanField
 
 	// ---
 
-	private void addFields(String topicID, String fieldPrefix, boolean deep) {
-   		Hashtable props = as.getTopicProperties(topicID, 1);
-		Enumeration items = as.getTopicType(topicID, 1).getDefinition().elements();
-		while (items.hasMoreElements()) {
-			OrderedItem item = (OrderedItem) items.nextElement();
-			if (item instanceof PropertyDefinition) {
-				PropertyDefinition propDef = (PropertyDefinition) item;
-				String propName = propDef.getPropertyName();
-				String propValue = (String) props.get(propName);
-				fields.addElement(new Field(fieldPrefix + propName, propValue));
-			} else if (item instanceof Relation) {
-				if (deep) {
-					Relation rel = (Relation) item;
-					if (rel.webInfo.equals(WEB_INFO_TOPIC_NAME)) {
-						addRelationField(rel, topicID, fieldPrefix);
-					} else if (rel.webInfo.equals(WEB_INFO) || rel.webInfo.equals(WEB_INFO_DEEP)) {
-						String relTopicTypeID = rel.relTopicTypeID;
-						Vector selectedTopics = as.getRelatedTopics(topicID, rel.assocTypeID, relTopicTypeID, 2,
-							false, true);	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
-						String relTopicID = null;
-						if (selectedTopics.size() > 0) {	// ### only the first related topic is considered
-							relTopicID = ((BaseTopic) selectedTopics.firstElement()).getID();
-						}
-						// recursive call
-						String relTopicTypeName = as.getLiveTopic(relTopicTypeID, 1).getName();
-						String newFieldPrefix = fieldPrefix + relTopicTypeName + FIELD_SEPARATOR;
-						boolean newDeep = rel.webInfo.equals(WEB_INFO_DEEP);
-						addFields(relTopicID, newFieldPrefix, newDeep);
-					} else {
-						throw new DeepaMehtaException("unexpected web info mode: \"" + rel.webInfo + "\"");
-					}
-				}
-			} else {
-				throw new DeepaMehtaException("unexpected object in type definition: " + item);
+	/**
+	 * Returns the value of the specified field. If there is no such field, <code>null</code> is returned.
+	 * If there are more than one fields, only the value of the first field is returned.
+	 * <p>
+	 * Use this method only for {@link TopicBeanField#TYPE_SINGLE TYPE_SINGLE} fields.
+	 * If used for a {@link TopicBeanField#TYPE_MULTI TYPE_MULTI} field an exception is thrown.
+	 *
+	 * @return	the field value.
+	 *
+	 * @throws	DeepaMehtaException	if the specified field is of type <code>TYPE_MULTI</code>. Note: fields that list
+	 *				related topics by name (the Relation's "Web Info" property is set to "Related Topic Name") are modelled
+	 *				as <code>TYPE_MULTI</code> fields, also if the Relation's "Cardinality" property is set to "one".
+	 *				To get the values of <code>TYPE_MULTI</code> fields, use {@link #getValues}.
+	 */
+	public String getValue(String fieldName) {
+		TopicBeanField field = getField(fieldName);
+		if (field == null) {
+			return null;
+		}
+		// error check
+		if (field.type == TopicBeanField.TYPE_MULTI) {
+			throw new DeepaMehtaException("field \"" + fieldName + "\" is a multi-value field. Use getValues() instead.");
+		}
+		//
+		return field.value;
+	}
+
+	/**
+	 * Returns the values of the specified field. If there is no such field, <code>null</code> is returned.
+	 * If there are more than one fields, only the values of the first field is returned.
+	 * <p>
+	 * Use this method only for {@link TopicBeanField#TYPE_MULTI TYPE_MULTI} fields.
+	 * If used for a {@link TopicBeanField#TYPE_SINGLE TYPE_SINGLE} field an exception is thrown.
+	 *
+	 * @return	the field values as vector of BaseTopics.
+	 *
+	 * @throws	DeepaMehtaException	if the specified field is of type <code>TYPE_SINGLE</code>.
+	 *				To get the value of <code>TYPE_SINGLE</code> fields, use {@link #getValue}.
+	 */
+	public Vector getValues(String fieldName) {
+		TopicBeanField field = getField(fieldName);
+		if (field == null) {
+			return null;
+		}
+		// error check
+		if (field.type == TopicBeanField.TYPE_SINGLE) {
+			throw new DeepaMehtaException("field \"" + fieldName + "\" is a single-value field. Use getValue() instead.");
+		}
+		//
+		return field.values;
+	}
+
+	/**
+	 * Gets a field by its name. By setting its <code>name</code> and <code>value</code> (or <code>values</code>) member
+	 * variables the field can be re-labeled or content-changed before rendering.
+	 *
+	 * @return	the field with the specified name. If there is no such field, <code>null</code> is returned.
+	 *			If there are more than one fields, the first is returned.
+	 */
+	public TopicBeanField getField(String fieldName) {
+		Enumeration e = fields.elements();
+		while (e.hasMoreElements()) {
+			TopicBeanField field = (TopicBeanField) e.nextElement();
+			if (field.name.equals(fieldName)) {
+				return field;
 			}
 		}
+		return null;
 	}
 
-	private void addRelationField(Relation rel, String topicID, String fieldPrefix) {
-		// ### compare to HTMLGenerator.relationInfoField()
-		String relName = rel.name;
-		String relTopicTypeID = rel.relTopicTypeID;
-		String cardinality = rel.cardinality;
-		String assocTypeID = rel.assocTypeID;
-		//
-		TypeTopic relTopicType = as.type(relTopicTypeID, 1);
-		boolean many = cardinality.equals(CARDINALITY_MANY);
-		String fieldLabel = !relName.equals("") ? relName : many ? relTopicType.getPluralNaming() : relTopicType.getName();
-		//
-		Vector selectedTopics = as.getRelatedTopics(topicID, assocTypeID, relTopicTypeID, 2,
-			false, true);	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
-		fields.addElement(new Field(fieldPrefix + fieldLabel, selectedTopics));
-	}
-
-	// ---
-
-	public class Field {
-
-		public static final int TYPE_SINGLE = 0;
-		public static final int TYPE_MULTI = 1;
-
-		public int type;
-		public String name;
-		public String value;
-		public Vector values;
-
-		Field(String name, String value) {
-			type = TYPE_SINGLE;
-			this.name = name;
-			this.value = value;
+	/**
+	 * Removes the field with the specified name. If there is no such field, nothing is done.
+	 * If there are more than one fields, only the first is removed.
+	 */
+	public void removeField(String fieldName) {
+		TopicBeanField field = getField(fieldName);
+		if (field != null) {
+			fields.removeElement(field);
 		}
+	}
 
-		Field(String name, Vector values) {
-			type = TYPE_MULTI;
-			this.name = name;
-			this.values = values;
+	/**
+	 * Removes all fields whose names contains the specified substring. If there is no such field, nothing is done.
+	 */
+	public void removeFieldsContaining(String partialFieldName) {
+		Iterator i = fields.iterator();
+		while (i.hasNext()) {
+			TopicBeanField field = (TopicBeanField) i.next();
+			if (field.name.indexOf(partialFieldName) != -1) {
+				i.remove();
+			}
 		}
 	}
 }
