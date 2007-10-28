@@ -11,10 +11,10 @@
 	<xsl:template match="/">
 		<html>
 			<head>
-				<title>DeepaMehta</title>
+				<title>DeepaMehta Browser</title>
 			</head>
 			<body>
-				<h2>DeepaMehta</h2>
+				<h2>DeepaMehta Browser</h2>
 				<xsl:if test="page/@name!='Login'">
 					Logged in as "<xsl:value-of select="page/param[@name='user']/topic/topname/basename"/>".<br/>
 					<xsl:if test="page/@name!='Home'">
@@ -30,23 +30,23 @@
 
 	<xsl:template match="page[@name='Login']">
 		<form>
-			<TABLE>
-				<TR>
-					<TD WIDTH="60"><SMALL>Username</SMALL></TD>
-					<TD><input TYPE="Text" NAME="Username"/></TD>
-				</TR>
-				<TR>
-					<TD><SMALL>Password</SMALL></TD>
-					<TD><input TYPE="Text" NAME="Password"/></TD>
-				</TR>
-				<TR>
-					<TD></TD>
-					<TD>
-						<input TYPE="Submit" VALUE="Login"/>
-						<input TYPE="Hidden" NAME="action" VALUE="tryLogin"/>
-					</TD>
-				</TR>
-			</TABLE>
+			<table>
+				<tr>
+					<td width="60"><small>Username</small></td>
+					<td><input type="text" name="Username"/></td>
+				</tr>
+				<tr>
+					<td><small>Password</small></td>
+					<td><input type="password" name="Password"/></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<input type="submit" value="Login"/>
+						<input type="hidden" name="action" value="tryLogin"/>
+					</td>
+				</tr>
+			</table>
 		</form>
 	</xsl:template>
 
@@ -57,9 +57,9 @@
 		</table>
 		<h3>Search</h3>
 		<form>
-			<input type="submit" VALUE="Search Topic"/>
+			<input type="submit" value="Search Topic"/>
 			<input type="text" name="search"/>
-			<input type="hidden" name="action" VALUE="search"/>
+			<input type="hidden" name="action" value="search"/>
 		</form>
 	</xsl:template>
 
