@@ -223,6 +223,7 @@
 	</target>
 
 	<target name="dmc" description="runs the DeepaMehta client, connects to local server">
+		<echo message="Connecte zu ${dm.host}:${dm.port}" />
 		<java classname="de.deepamehta.client.DeepaMehtaClient" dir="${client}" fork="true">
 			<classpath>
 				<pathelement location="${client}/DeepaMehtaClient.jar" />

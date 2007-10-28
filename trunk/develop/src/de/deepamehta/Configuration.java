@@ -30,16 +30,18 @@ public class Configuration extends Properties {
 			loadProperties(configFile);
 			dbTypePropertyFile = getProperty(ConfigurationConstants.Database.DB_TYPE_PROPERTY_FILE);
 			putAll(System.getProperties());
+			loadProperties(new File(configFile).getAbsoluteFile().getParentFile().getAbsolutePath() + "/config.properties");
+			putAll(System.getProperties());
 			if (null != name) {
 				setProperty(ConfigurationConstants.Instance.DM_INSTANCE, name);
 			} else {
-				loadProperties(getProperty(ConfigurationConstants.Instance.DM_CONFIG_PROPERTY_FILE));
+				// loadProperties(getProperty(ConfigurationConstants.Instance.DM_CONFIG_PROPERTY_FILE));
 				name = getProperty(ConfigurationConstants.Instance.DM_INSTANCE);
 			}
 			resolveReferences();
 			loadProperties(getProperty(ConfigurationConstants.Instance.DM_INSTANCE_PROPERTY_FILE));
-			loadProperties(new File(configFile).getAbsoluteFile().getParentFile().getAbsolutePath() + "/config.properties");
-			// loadProperties(getProperty(ConfigurationConstants.Instance.DM_INSTANCE_CONFIG_PROPERTY_FILE));
+			// loadProperties(new File(configFile).getAbsoluteFile().getParentFile().getAbsolutePath() + "/config.properties");
+			loadProperties(getProperty(ConfigurationConstants.Instance.DM_INSTANCE_CONFIG_PROPERTY_FILE));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
