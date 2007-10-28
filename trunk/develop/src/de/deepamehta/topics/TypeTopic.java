@@ -37,20 +37,20 @@ import java.util.Vector;
 /**
  * Abstract class as basis for types -- implementations are {@link TopicTypeTopic topic type} and
  * {@link AssociationTypeTopic association type}.
- * <P>
- * The active behavior of a <CODE>TypeTopic</CODE> is building its type definition.
+ * <p>
+ * The active behavior of a <code>TypeTopic</code> is building its type definition.
  * The type definition is made up by the composed {@link PropertyTopic}s.
- * <P>
- * Furthermore a <CODE>TypeTopic</CODE> maintains the data that describes the appearance
+ * <p>
+ * Furthermore a <code>TypeTopic</code> maintains the data that describes the appearance
  * of the type.
- * <P>
+ * <p>
  * ### this class is public because it is used in
- * {@link de.deepamehta.service.ApplicationService#initTypeTopic}<BR>
- * <P>
- * <HR>
- * Last functional change: 26.5.2006 (2.0b6-post3)<BR>
- * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
- * J&ouml;rg Richter<BR>
+ * {@link de.deepamehta.service.ApplicationService#initTypeTopic}<br>
+ * <p>
+ * <hr>
+ * Last functional change: 28.10.2007 (2.0b8)<br>
+ * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public abstract class TypeTopic extends LiveTopic implements Type {
@@ -96,20 +96,20 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 
 	/**
 	 * The type definition as ordered set of {@link de.deepamehta.PropertyDefinition}s.
-	 * <P>
-	 * Initialized by {@link #makeTypeDefinition}.<BR>
+	 * <p>
+	 * Initialized by {@link #makeTypeDefinition}.<br>
 	 * Accessed by {@link #getTypeDefinition}
-	 * which enumerates the single <CODE>PropertyDefinition</CODE>s.
+	 * which enumerates the single <code>PropertyDefinition</code>s.
 	 */
 	private Vector propDefinition;
 
 	/**
 	 * The type definition.
-	 * <P>
-	 * Key:   property name (<CODE>String</CODE>)<BR>
+	 * <p>
+	 * Key:   property name (<code>String</code>)<br>
 	 * Value: property definition ({@link de.deepamehta.PropertyDefinition})
-	 * <P>
-	 * Initialized by {@link #makeTypeDefinition}.<BR>
+	 * <p>
+	 * Initialized by {@link #makeTypeDefinition}.<br>
 	 * Accessed by {@link #getPropertyDefinition}
 	 */
 	private Hashtable propDefinitionTable;
@@ -122,16 +122,16 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 	 * Part of type definition.
 	 * <p>
 	 * Element type is {@link de.deepamehta.Relation}.
-	 * <P>
-	 * Initialized by {@link #makeTypeDefinition}.<BR>
+	 * <p>
+	 * Initialized by {@link #makeTypeDefinition}.<br>
 	 * Accessed by {@link #getRelations}
 	 */
 	private Vector relations;
 
 	/**
 	 * Part of type definition.
-	 * <P>
-	 * Key:   association ID (<CODE>String</CODE>)<BR>
+	 * <p>
+	 * Key:   association ID (<code>String</code>)<br>
 	 * Value: Relation ({@link de.deepamehta.Relation})
 	 */
 	private Hashtable relationsTable;
@@ -144,16 +144,16 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 
 	/**
 	 * Type IDs of all supertypes of this type, including this type.
-	 * <P>
-	 * Initialized by {@link #makeTypeDefinition}.<BR>
+	 * <p>
+	 * Initialized by {@link #makeTypeDefinition}.<br>
 	 * Accessed by {@link #hasSupertype}
 	 */
 	private Vector supertypes;
 
 	/**
 	 * Type IDs of all subtypes of this type, including this type
-	 * <P>
-	 * Initialized by {@link #makeTypeDefinition}.<BR>
+	 * <p>
+	 * Initialized by {@link #makeTypeDefinition}.<br>
 	 * Accessed by {@link #getSubtypeIDs}
 	 */
 	private Vector subtypes;
@@ -162,16 +162,16 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 
 	/**
 	 * Reflects the value of the "Custom Implementation" property.
-	 * <P>
-	 * Initialized by {@link #setCustomImplementation}.<BR>
+	 * <p>
+	 * Initialized by {@link #setCustomImplementation}.<br>
 	 * Accessed by {@link #getCustomImplementation}
 	 */
 	private String customImplementation;
 
 	/**
-	 * The (derived) implementing class resp. <CODE>null</CODE> if there is no (derived) implementation.
-	 * <P>
-	 * Initialized by {@link #setDerivedImplementation}.<BR>
+	 * The (derived) implementing class resp. <code>null</code> if there is no (derived) implementation.
+	 * <p>
+	 * Initialized by {@link #setDerivedImplementation}.<br>
 	 * Accessed by {@link #getDerivedImplementation}
 	 */
 	private String derivedImplementation;
@@ -180,17 +180,17 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 
 	/**
 	 * Reflects the value of the "Plural Name" property.
-	 * <P>
-	 * Initialized by {@link #setPluralName}.<BR>
-	 * Acessed by {@link #getPluralName}.<BR>
+	 * <p>
+	 * Initialized by {@link #setPluralName}.<br>
+	 * Acessed by {@link #getPluralName}.<br>
 	 */
 	private String pluralTypename;
 
 	/**
 	 * Reflects the value of the "Creation Icon" property.
-	 * <P>
-	 * Initialized by {@link #setCreationIcon}.<BR>
-	 * Acessed by {@link #getCreationIcon}.<BR>
+	 * <p>
+	 * Initialized by {@link #setCreationIcon}.<br>
+	 * Acessed by {@link #getCreationIcon}.<br>
 	 */
 	private String creationIcon;
 
@@ -206,24 +206,24 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 	// --- Appearance ---
 
 	/**
-	 * The type appearance mode<BR>
+	 * The type appearance mode<br>
 	 * ({@link #APPEARANCE_DEFAULT}, {@link #APPEARANCE_CUSTOM_COLOR} or
 	 * {@link #APPEARANCE_CUSTOM_ICON}). Note: the latter one is only used for topic types,
 	 * not for association types.
-	 * <P>
-	 * Initialized by <CODE>init()</CODE> of the <CODE>TypeTopic</CODE>'s subclasses
+	 * <p>
+	 * Initialized by <code>init()</code> of the <code>TypeTopic</code>'s subclasses
 	 * ({@link TopicTypeTopic#init} and {@link AssociationTypeTopic#init}).
-	 * <P>
+	 * <p>
 	 * Accessed by {@link #getTypeAppearanceMode}
 	 */
 	protected int typeAppMode;
 
 	/**
 	 * The type appearance parameter.
-	 * <P>
-	 * Initialized by <CODE>init()</CODE> of the <CODE>TypeTopic</CODE>'s subclasses
+	 * <p>
+	 * Initialized by <code>init()</code> of the <code>TypeTopic</code>'s subclasses
 	 * ({@link TopicTypeTopic#init} and {@link AssociationTypeTopic#init}).
-	 * <P>
+	 * <p>
 	 * Accessed by {@link #getTypeAppearanceParam}
 	 */
 	protected String typeAppParam;
@@ -231,7 +231,7 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 	/**
 	 * Initialized by sublass
 	 * {@link AssociationTypeTopic#setIconfile AssociationTypeTopic}.
-	 * <P>
+	 * <p>
 	 * Accessed by {@link #getAssocTypeColor}
 	 */
 	protected String assocTypeColor;
@@ -325,9 +325,19 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 	public CorporateDirectives evoke(Session session, String topicmapID, String viewmode) {
 		// --- assign type to user ---
 		String assocID = as.getNewAssociationID();
-		cm.createAssociation(assocID, 1, SEMANTIC_WORKSPACE_TYPES, 1, session.getUserID(), 1, getID(), 1);
+		String userID = session.getUserID();
+		cm.createAssociation(assocID, 1, SEMANTIC_WORKSPACE_TYPES, 1, userID, 1, getID(), 1);
 		cm.setAssociationData(assocID, 1, PROPERTY_ACCESS_PERMISSION, PERMISSION_CREATE);
-		//
+		cm.setAssociationData(assocID, 1, PROPERTY_OWNER_ID, userID);
+		// Note: programatically created "Type Access" associations (as here) get "create" permission by default
+		// whereas manually created "Type Access" associations get "view" permission by default (via corporate
+		// memory entry for "Default Value" property of the "Access Permission" property, see cm.sql). This is the
+		// intended behavoir.
+		// How this is realized: Corporate memory-based default values are set in LiveTopic.evoke() which is triggered here _after_
+		// setting the default here, and LiveTopic.evoke() doesn't set a default value if a custom implementation
+		// has already set another default value.
+		// ### Another solution to consider: perform evoke() first in this method and strip the "already set" check in
+		// LiveTopic.evoke().
 		return super.evoke(session, topicmapID, viewmode);
 	}
 
@@ -532,8 +542,8 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 	/**
 	 * Returns the supertype of this type.
 	 *
-	 * @return	The supertype as <CODE>LiveTopic</CODE> (type <CODE>tt-topictype</CODE>)
-	 *			or <CODE>null</CODE> if this type has no supertype
+	 * @return	The supertype as <code>LiveTopic</code> (type <code>tt-topictype</code>)
+	 *			or <code>null</code> if this type has no supertype
 	 *
 	 * @throws	DeepaMehtaException			if the supertype is missing in corporate memory
 	 * @throws	AmbiguousSemanticException	if this type has more than one supertype
@@ -562,8 +572,8 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 	/**
 	 * Returns the corresponding search type of this type.
 	 *
-	 * @return	The container type as <CODE>LiveTopic</CODE> (type <CODE>tt-topictype</CODE>)
-	 *			or <CODE>null</CODE> if this type has no container type
+	 * @return	The container type as <code>LiveTopic</code> (type <code>tt-topictype</code>)
+	 *			or <code>null</code> if this type has no container type
 	 *
 	 * @throws	DeepaMehtaException			### if the container type doesn't exist in live
 	 *											corporate memory
@@ -611,7 +621,7 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 
 	/**
 	 * ### bad
-	 * <P>
+	 * <p>
 	 * Finds the supertypes for the given typetopic (recursively)
 	 * and saves references in the given Hashtable. If the typetopic
 	 * is a TopicTypeTopic, the according containertype will be
@@ -810,7 +820,7 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 
 	/**
 	 * Builds the type definition for this type.
-	 * <P>
+	 * <p>
 	 * ### The {@link #propDefinition} field is cleared and rebuild according the aggregated
 	 * properties in corporate memory. Also the property definitions of all super types
 	 * are respected.
@@ -860,7 +870,7 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 	 *
 	 * @param	properties			the properties, enumeration of <code>BaseTopic</code>s of type <code>tt-property</code>
 	 * @param	typeTopic			the type the properties belong to
-	 * @param	hiddenProperties	may be <CODE>null</CODE>
+	 * @param	hiddenProperties	may be <code>null</code>
 	 *
 	 * @see		#makeTypeDefinition
 	 */

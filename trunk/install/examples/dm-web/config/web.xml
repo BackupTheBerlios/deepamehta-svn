@@ -19,16 +19,6 @@
     -->
 
     <context-param>
-      <param-name>service</param-name>
-      <param-value>mysql5</param-value>
-      <description>
-        Selects a DeepaMehta service.
-        If this parameter is not set the "default" service will be used.
-        To configure DeepaMehta services see the file install/client/dms.rc
-      </description>
-    </context-param>
-
-    <context-param>
       <param-name>generator</param-name>
       <param-value>jsp</param-value>
       <description>

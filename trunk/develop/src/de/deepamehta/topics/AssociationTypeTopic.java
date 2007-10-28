@@ -21,11 +21,11 @@ import java.util.Hashtable;
 
 
 /**
- * <P>
- * <HR>
- * Last functional change: 7.6.2005 (2.0b6)<BR>
- * Last documentation update: 13.11.2000 (2.0a7-pre2)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 28.10.2007 (2.0b6)<br>
+ * Last documentation update: 13.11.2000 (2.0a7-pre2)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class AssociationTypeTopic extends TypeTopic {
@@ -74,15 +74,18 @@ public class AssociationTypeTopic extends TypeTopic {
 	 *			BaseTopic topic, boolean evoke, boolean override, Session session)
 	 */
 	public CorporateDirectives evoke(Session session, String topicmapID, String viewmode) {
-		// ### try {
+		CorporateDirectives directives = super.evoke(session, topicmapID, viewmode);
+		// try { ### compare to TopicTypeTopic.evoke()
 		// --- derive type from "Association" ---
 		if (getSupertype() == null) {
-			cm.createAssociation(as.getNewAssociationID(), 1, ASSOCTYPE_DERIVATION, 1, ASSOCTYPE_GENERIC, 1, getID(), 1);
+			String assocID = as.getNewAssociationID();
+			cm.createAssociation(assocID, 1, ASSOCTYPE_DERIVATION, 1, ASSOCTYPE_GENERIC, 1, getID(), 1);
+			cm.setAssociationData(assocID, 1, PROPERTY_OWNER_ID, session.getUserID());
 		}
 		/* } catch (DeepaMehtaException e) {
 			throw new TopicInitException("No search type created for \"" + getName() + "\" (" + e.getMessage() + ")");
 		} */
-		return super.evoke(session, topicmapID, viewmode);
+		return directives;
 	}
 
 

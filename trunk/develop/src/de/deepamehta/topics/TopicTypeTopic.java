@@ -25,11 +25,11 @@ import java.util.Hashtable;
 
 /**
  * A Topic Type.
- * <P>
- * <HR>
- * Last functional change: 6.12.2005 (2.0b6-post3)<BR>
- * Last documentation update: 29.11.2000 (2.0a7)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 28.10.2007 (2.0b8)<br>
+ * Last documentation update: 29.11.2000 (2.0a7)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class TopicTypeTopic extends TypeTopic {
@@ -97,7 +97,7 @@ public class TopicTypeTopic extends TypeTopic {
 	/**
 	 * Overridden to perform some work when a topic type is bring into live the very
 	 * first time.
-	 * <P>
+	 * <p>
 	 * If a new topic type is created a corresponding search type is created too.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#createLiveTopic(
@@ -108,7 +108,9 @@ public class TopicTypeTopic extends TypeTopic {
 		try {
 			// --- derive type from "Topic" ---
 			if (getSupertype() == null) {
-				cm.createAssociation(as.getNewAssociationID(), 1, ASSOCTYPE_DERIVATION, 1, TOPICTYPE_TOPIC, 1, getID(), 1);
+				String assocID = as.getNewAssociationID();
+				cm.createAssociation(assocID, 1, ASSOCTYPE_DERIVATION, 1, TOPICTYPE_TOPIC, 1, getID(), 1);
+				cm.setAssociationData(assocID, 1, PROPERTY_OWNER_ID, session.getUserID());
 			}
 			// --- create search type ---
 			createSearchType(topicmapID, session, directives);

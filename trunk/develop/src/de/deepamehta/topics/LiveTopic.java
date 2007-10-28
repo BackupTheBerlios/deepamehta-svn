@@ -35,21 +35,21 @@ import java.util.Vector;
  * Live topics are created by the
  * {@link de.deepamehta.service.ApplicationService application service}
  * are living in memory for the lifetime of the service.
- * <P>
- * A <CODE>LiveTopic</CODE> has access to the {@link de.deepamehta.service.ApplicationService} and
+ * <p>
+ * A <code>LiveTopic</code> has access to the {@link de.deepamehta.service.ApplicationService} and
  * to the {@link CorporateMemory}.
- * <P>
+ * <p>
  * The baseclass of the DeepaMehta Application Framework.
  * This class provides the hooks where application programmers "hook in" the application
  * specific behavoir.
  * The custom implementations making up the application may be build upon DeepaMehta's standard
  * topics as building blocks, thus application programmers directly or indirectly derive
- * their topics from <CODE>LiveTopic</CODE>.
- * <P>
- * <HR>
- * Last sourcecode change: 27.9.2007 (2.0b8)<BR>
- * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
- * J&ouml;rg Richter<BR>
+ * their topics from <code>LiveTopic</code>.
+ * <p>
+ * <hr>
+ * Last sourcecode change: 27.9.2007 (2.0b8)<br>
+ * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
@@ -71,14 +71,14 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * A live topic can deploy a {@link de.deepamehta.service.CorporateDatasource}.
-	 * <P>
+	 * <p>
 	 * Initialized by {@link #setDataSource}.
 	 */
 	protected CorporateDatasource dataSource;
 
 	/**
 	 * The topic which represents the {@link de.deepamehta.service.CorporateDatasource}.
-	 * <P>
+	 * <p>
 	 * Initialized by {@link #setDataSource}.
 	 */
 	protected DataSourceTopic dataSourceTopic;
@@ -86,28 +86,28 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	// --- appearance model ---
 
 	/**
-	 * Individual appearance mode.<BR>
+	 * Individual appearance mode.<br>
 	 * {@link #APPEARANCE_DEFAULT} or {@link #APPEARANCE_CUSTOM_ICON}.
-	 * <P>
+	 * <p>
 	 * Initialized by {@link #setIndividualAppearance}.
 	 */
 	protected int appMode;
 
 	/**
 	 * Individual appearance parameter.
-	 * <P>
+	 * <p>
 	 * In case of {@link #APPEARANCE_CUSTOM_ICON} the name of the iconfile, in case of
 	 * {@link #APPEARANCE_DEFAULT} this field remains uninitialized.
-	 * <P>
+	 * <p>
 	 * Initialized by {@link #setIndividualAppearance}.
 	 */
 	protected String appParam;
 
 	/**
 	 * The name of the iconfile used to display this topic.
-	 * <P>
-	 * Initialized by {@link #setIconfile}.<BR>
-	 * Accessed by {@link #getIconfile}.<BR>
+	 * <p>
+	 * Initialized by {@link #setIconfile}.<br>
+	 * Accessed by {@link #getIconfile}.<br>
 	 */
 	protected String iconfile;
 
@@ -145,16 +145,16 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	/**
 	 * Subclasses can override this method to perform initialization at different
 	 * initialization levels.
-	 * <P>
-	 * ### The default implementation does nothing.<BR>
+	 * <p>
+	 * ### The default implementation does nothing.<br>
 	 * ### Think again about init levels.
-	 * <P>
-	 * <TABLE>
-	 * <TR><TD><B>Called by</B></TD><TD><CODE>initLevel</CODE></TD></TR>
-	 * <TR><TD>{@link de.deepamehta.service.ApplicationService#createLiveTopic}</TD><TD>1</TD></TR>
-	 * <TR><TD>{@link de.deepamehta.service.ApplicationService#initTopic}</TD><TD>variable</TD></TR>
-	 * <TR><TD>{@link de.deepamehta.service.ApplicationService#initTypeTopic}</TD><TD>3</TD></TR>
-	 * </TABLE>
+	 * <p>
+	 * <table>
+	 * <tr><td><B>Called by</B></td><td><code>initLevel</code></td></tr>
+	 * <tr><td>{@link de.deepamehta.service.ApplicationService#createLiveTopic}</td><td>1</td></tr>
+	 * <tr><td>{@link de.deepamehta.service.ApplicationService#initTopic}</td><td>variable</td></tr>
+	 * <tr><td>{@link de.deepamehta.service.ApplicationService#initTypeTopic}</td><td>3</td></tr>
+	 * </table>
 	 */
 	public CorporateDirectives init(int initLevel, Session session) throws TopicInitException {
 		CorporateDirectives directives = new CorporateDirectives();
@@ -174,7 +174,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	/**
 	 * Subclasses can override this method to perform some work when a topic is
 	 * bring into live the very first time.
-	 * <P>
+	 * <p>
 	 * The default implementation creates the topic in corporate memory and returns
 	 * empty directives.
 	 *
@@ -194,7 +194,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 			String defaultValue = propDef.getDefaultValue();
 			if (!defaultValue.equals("")) {
 				String propName = propDef.getPropertyName();
-				// existing values are not overridden
+				// existing values are not overridden ### see TypeTopic.evoke()
 				if (cm.getTopicData(getID(), getVersion(), propName).equals("")) {
 					cm.setTopicData(getID(), getVersion(), propName, defaultValue);
 				}
@@ -205,15 +205,14 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	}
 
 	/**
-	 * Active topics can override this method to perform some work when a topic dies
-	 * forever.
-	 * <P>
+	 * Subclasses can override this method to perform some work when a topic dies forever.
+	 * <p>
 	 * The default implementation deletes the topic from 3 spots ...
-	 * <UL>
-	 * <LI>corporate memory
-	 * <LI>live corporate memory
-	 * <LI>all views
-	 * </UL>
+	 * <ul>
+	 * <li>corporate memory
+	 * <li>live corporate memory
+	 * <li>all views
+	 * </ul>
 	 * ... and returns empty directives.
 	 *
 	 * @see		ApplicationService#deleteTopic
@@ -241,8 +240,8 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Subclasses can override this method to react upon publishing this topic.
-	 * <P>
-	 * The default implementation returns empty <CODE>CorporateDirectives</CODE>.
+	 * <p>
+	 * The default implementation returns empty <code>CorporateDirectives</code>.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#addPublishAction
 	 * @see		DocumentTopic#published
@@ -253,9 +252,9 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Subclasses can override this method to react upon renaming this topic.
-	 * <P>
-	 * The default implementation returns a <CODE>CorporateDirectives</CODE> containing
-	 * one <CODE>DIRECTIVE_SET_TOPIC_NAME</CODE> directive.
+	 * <p>
+	 * The default implementation returns a <code>CorporateDirectives</code> containing
+	 * one <code>DIRECTIVE_SET_TOPIC_NAME</code> directive.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#changeTopicName
 	 * @see		TopicMapTopic#nameChanged
@@ -269,7 +268,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	}
 
 	/**
-	 * The default implementation returns empty <CODE>CorporateDirectives</CODE>.
+	 * The default implementation returns empty <code>CorporateDirectives</code>.
 	 */
 	public CorporateDirectives nameChangedChained(String name, Session session, String result) {
 		return new CorporateDirectives();
@@ -277,7 +276,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Subclasses can override this method to react upon retyping this topic.
-	 * <P>
+	 * <p>
 	 * The default implementation performs the retyping, it should be called from subclassss.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#changeTopicType
@@ -318,11 +317,11 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 
 	/**
-	 * Active topics can override this method to reveal topic types on-the-fly.
-	 * <P>
+	 * Subclasses can override this method to reveal topic types on-the-fly.
+	 * <p>
 	 * The default implementation retrieves the topic types from corporate memory.
 	 *
-	 * @return	Vector of type IDs (<CODE>String</CODE>s)
+	 * @return	Vector of type IDs (<code>String</code>s)
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#revealTopicTypes
 	 */
@@ -331,11 +330,11 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	}
 
 	/**
-	 * Active topics can override this method to reveal association types on-the-fly.
-	 * <P>
+	 * Subclasses can override this method to reveal association types on-the-fly.
+	 * <p>
 	 * The default implementation retrieves the association types from corporate memory.
 	 *
-	 * @return	Vector of type IDs (<CODE>String</CODE>s)
+	 * @return	Vector of type IDs (<code>String</code>s)
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#revealAssociationTypes
 	 */
@@ -345,7 +344,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Subclasses can override this method to reveal topics and associations on the fly.
-	 * <P>
+	 * <p>
 	 * The default implementation does nothing.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#getRelatedTopics(
@@ -365,20 +364,20 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * This hook customizes the topic context menu.
-	 * <P>
+	 * <p>
 	 * ### The default implementation provides the standard topic commands, in case
-	 * the triggering topicmap represents a <I>view</I>:
-	 * <OL>
-	 * <LI>"Navigate By Topic"
-	 * <LI>"Navigate By Association"
-	 * <LI>"Hide"
-	 * <LI>"Retype"
-	 * <LI>"Delete"
-	 * </OL>
-	 * ### If the triggering topicmap represents a <I>workspace</I> an empty command set is
+	 * the triggering topicmap represents a <i>view</i>:
+	 * <ol>
+	 * <li>"Navigate By Topic"
+	 * <li>"Navigate By Association"
+	 * <li>"Hide"
+	 * <li>"Retype"
+	 * <li>"Delete"
+	 * </ol>
+	 * ### If the triggering topicmap represents a <i>workspace</i> an empty command set is
 	 * returned.
-	 * <P>
-	 * References checked: 30.12.2001 (2.0a14-pre5)<BR>
+	 * <p>
+	 * References checked: 30.12.2001 (2.0a14-pre5)<br>
 	 * Documentation updated: 11.10.2001 (2.0a12)
 	 *
 	 * @param	session		the triggering client session
@@ -401,12 +400,12 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Applications can use this hook to customize the personal workspace menu.
-	 * <P>
+	 * <p>
 	 * This hook is triggered for every type supposed being creatable in personal workspace.
-	 * <P>
+	 * <p>
 	 * The default implementation adds a command for creating a instance of the respective type
 	 * to the personal workspace menu.
-	 * <P>
+	 * <p>
 	 * References checked: 5.2.2002 (2.0a14-pre7)
 	 *
 	 * @see		de.deepamehta.service.CorporateCommands#addWorkspaceTopicTypeCommands(Vector types, Session session, CorporateDirectives directives)
@@ -421,7 +420,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * ### Subclasses can override this method to provide context commands.
-	 * <P>
+	 * <p>
 	 * The default implementation returns an empty command set.
 	 *
 	 * @param	session		the requesting client session
@@ -437,7 +436,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Subclasses can override this method to customize the topic property form.
-	 * <P>
+	 * <p>
 	 * ### The default implementation does nothing.
 	 *
 	 * @see		TypeTopic#makeTypeDefinition
@@ -461,7 +460,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Subclasses can override this method to handle custom commands.
-	 * <P>
+	 * <p>
 	 * The default implementation handles the standard commands.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#executeTopicCommand
@@ -559,9 +558,9 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	}
 
 	/**
-	 * Subclasses can override this method to process result of chanined actions.<BR>
+	 * Subclasses can override this method to process result of chanined actions.<br>
 	 * [### explain]
-	 * <P>
+	 * <p>
 	 * ### The default implementation returns null.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#performChainedTopicCommand
@@ -605,9 +604,9 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * [###]
-	 * <P>
+	 * <p>
 	 * To reject the new properties (means: preventing them from being
-	 * stored in corporate memory) the application must return <CODE>false</CODE>.
+	 * stored in corporate memory) the application must return <code>false</code>.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#setTopicProperties
 	 */
@@ -617,13 +616,13 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * The "properties changed" hook.
-	 * <P>
+	 * <p>
 	 * By this hook an application programmer can supply an "properties changed" behavoir.
 	 * This hook is triggered by the framework if one (### zero) or more properties of this topic
 	 * has been changed. The framework passes the old and the new (means: changed)
 	 * properties.
-	 * <P>
-	 * ### The default implementation returns empty <CODE>CorporateDirectives</CODE>.
+	 * <p>
+	 * ### The default implementation returns empty <code>CorporateDirectives</code>.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#setTopicProperties
 	 * @see		TopicMapTopic#propertiesChanged
@@ -681,7 +680,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Transfers element data retrieved from one data source entitiy into topic data.
-	 * <P>
+	 * <p>
 	 * Subclasses can override this method to supply topic data e.g. retrieved from more
 	 * than one data source entity. The default implementation returns the element data
 	 * directly.
@@ -693,19 +692,19 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	/**
 	 * Applications can use this hook to disable certain properties of this live topics
 	 * type definition. Disabled properties are visible but not editable by the user.
-	 * <P>
+	 * <p>
 	 * This hook can be utilized to implement an access control mechanism.
 	 * The default implementation realizes the following rule: a topic is only editable
 	 * if the current user
 	 * 1) is the owner of the topic, or<br>
 	 * 2) is a DeepaMehta administrator, or<br>
 	 * 3) has the "Editor" role within a workspace the resp. topic type is assigned to.
-	 * <P>
+	 * <p>
 	 * This hook is triggered every time this topic is selected.
 	 *
 	 * @see			de.deepamehta.service.ApplicationService#disabledProperties
 	 *
-	 * @return		A vector of property names (<CODE>String</CODE>s)
+	 * @return		A vector of property names (<code>String</code>s)
 	 */
 	public Vector disabledProperties(Session session) {
 		Vector disabledProps = new Vector();
@@ -729,13 +728,13 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * Applications can use this hook to hide certain properties of this live topics
 	 * type definition. Hidden properties are not visible to the user. Note: also
 	 * "derived" properties can be hidden by this hook.
-	 * <P>
+	 * <p>
 	 * The default implementation hides no properties.
-	 * <P>
+	 * <p>
 	 * This hook is triggered statically when the type definition for this live topic
 	 * is build.
 	 *
-	 * @return	Vector of property names (<CODE>String</CODE>s) or <code>null</code>
+	 * @return	Vector of property names (<code>String</code>s) or <code>null</code>
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#triggerHiddenProperties(TypeTopic type)
 	 */
@@ -755,7 +754,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Subclasses can override this method to rename derived properties.
-	 * <P>
+	 * <p>
 	 * ### The default implementation does nothing.
 	 *
 	 * @see		TypeTopic#setPropertyLabel
@@ -839,7 +838,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	/**
 	 * Subclasses can override this method to provide an additional label about to be
 	 * shown above the topic.
-	 * <P>
+	 * <p>
 	 * The default implementation returns the empty string.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#setTopicLabels(Enumeration topics)
@@ -858,7 +857,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Subclasses can override this method to provide topic details.
-	 * <P>
+	 * <p>
 	 * ### The default implementation returns the properties in a 1-row table format.
 	 *
 	 * @see		#executeCommand
@@ -927,17 +926,17 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * This hook can be used to modify the topicmap export behaviour.
-	 * <P>
+	 * <p>
 	 * The default implementation does nothing, the actual default implementation is
 	 * in {@link TopicMapTopic#exportTopicmap TopicMapTopic}.
-	 * <P>
+	 * <p>
 	 * The application KS-Editor modifies the default export behavoir.
-	 * <P>
+	 * <p>
 	 * References checked: 26.9.2003 (2.0b2)
 	 *
 	 * @param   handler     this object will get the generated SAX events
 	 * @param   collector   this object will collect document and icon files.
-	 *                      This parameter may be <CODE>null</CODE>, which signalizes
+	 *                      This parameter may be <code>null</code>, which signalizes
 	 *                      that this is an export to SVG or PDF.
 	 *
 	 * @see		de.deepamehta.topics.helper.TopicMapExporter#transformTopicmap
@@ -950,8 +949,8 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Applications can use this hook to modify the SVG rendering of a topicmap.
-	 * <P>
-	 * The default implementation returns <CODE>null</CODE>, the actual default
+	 * <p>
+	 * The default implementation returns <code>null</code>, the actual default
 	 * implementation is in {@link TopicMapTopic#getSVGStylesheetName TopicMapTopic}.
 	 *
 	 * @return	the name of the stylesheet for SVG creation
@@ -965,8 +964,8 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Applications can use this hook to modify the PDF layout of a topicmap.
-	 * <P>
-	 * The default implementation returns <CODE>null</CODE>, the actual default
+	 * <p>
+	 * The default implementation returns <code>null</code>, the actual default
 	 * implementation is in {@link TopicMapTopic#getFOStylesheetName TopicMapTopic}.
 	 *
 	 * @return	the name of the stylesheet for FO creation
@@ -982,8 +981,8 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	/**
 	 * Applications can use this hook to specify the type of the topic
 	 * representing the exported file.
-	 * <P>
-	 * The default implementation returns <CODE>null</CODE>, the actual default
+	 * <p>
+	 * The default implementation returns <code>null</code>, the actual default
 	 * implementation is in {@link TopicMapTopic#getExportDocumentType TopicMapTopic}.
 	 *
 	 * @return  the ID of the document type topic representing the exported file
@@ -1072,11 +1071,11 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Returns the name of the iconfile used to display this topic.
-	 * <P>
+	 * <p>
 	 * Throws a DeepaMehtaException if the iconfile is unknown, which means this
 	 * LiveTopic isn't initialized properly. Regularily the iconfile is initialized
 	 * by setIconfile which is called at initialization level 2 (see init() hook).
-	 * <P>
+	 * <p>
 	 * References checked: 27.9.2001 (2.0a12-pre6)
 	 *
 	 * @throws	DeepaMehtaException		if the iconfile is unknown, which means
@@ -1111,12 +1110,12 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	/**
 	 * Extends the specified directives to delete this topic as well as any associations
 	 * this topic is involed in.
-	 * <P>
+	 * <p>
 	 * Handles the {@link #CMD_DELETE_TOPIC} command.
-	 * <P>
+	 * <p>
 	 * ### Hypothesis: topicmapID and viewmode are only needed when called by client,
 	 * ### when called by servlet they can be set to null
-	 * <P>
+	 * <p>
 	 * References checked: 20.8.2007 (2.0b8)
 	 *
 	 * @see		#executeCommand
@@ -1129,12 +1128,12 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	/**
 	 * Extends the specified directives to hide/delete this topic as well as any associations
 	 * this topic is involed in.
-	 * <P>
+	 * <p>
 	 * Handles the {@link #CMD_HIDE_TOPIC} command.
-	 * <P>
+	 * <p>
 	 * ### Hypothesis: topicmapID and viewmode are only needed when called by client,
 	 * ### when called by servlet they can be set to null
-	 * <P>
+	 * <p>
 	 * References checked: 20.8.2007 (2.0b8)
 	 *
 	 * @see		#executeCommand
@@ -1195,7 +1194,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Sets the specified property for this topic.
-	 * <P>
+	 * <p>
 	 * Note: the property is changed "blind" in corporate memory directly, the client is
 	 * not notified in any way.
 	 */
@@ -1233,10 +1232,10 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * @param	relTopicPos		association position of the related topic (1 or 2), 0 if the postion doesn't natter
-	 * @param	semantic		association type, <CODE>null</CODE> if the association type doesn't natter
+	 * @param	semantic		association type, <code>null</code> if the association type doesn't natter
 	 */
 	public final CorporateDirectives navigateByTopictype(String topicTypeID, int relTopicPos, String semantic) {
-		// active topics have the opportunity to create topics and associations on the fly -- that means
+		// subclasses have the opportunity to create topics and associations on the fly -- that means
 		// before the related topics are retrieved from corporate memory (storage layer)
 		//
 		// --- trigger revealRelatedTopics() hook ---
@@ -1262,7 +1261,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * @see		#executeCommand
 	 */
 	protected final CorporateDirectives navigateByAssoctype(String assocTypeID) {
-		// active topics have the opportunity to create topics and associations on the fly -- that means
+		// subclasses have the opportunity to create topics and associations on the fly -- that means
 		// before the related topics are retrieved from corporate memory (storage layer)
 		//
 		// --- trigger revealRelatedTopics() hook ---
@@ -1318,13 +1317,13 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	/**
 	 * Extends the specified directives to create a new child topic to this topic. Creating a child
 	 * topic consists of 4 steps:
-	 * <OL>
-	 * <LI>Create a new topic of the specified type and reveal it in the near of this topic
-	 * <LI>Create a new association of the specified semantic from this topic to the child topic
-	 * <LI>Select the child topic
-	 * <LI>Setup GUI for naming the child topic (depends on user prefs)
-	 * </OL>
-	 * <P>
+	 * <ol>
+	 * <li>Create a new topic of the specified type and reveal it in the near of this topic
+	 * <li>Create a new association of the specified semantic from this topic to the child topic
+	 * <li>Select the child topic
+	 * <li>Setup GUI for naming the child topic (depends on user prefs)
+	 * </ol>
+	 * <p>
 	 * References checked: 24.7.2002 (2.0a15-pre11)
 	 *
 	 * @see		TypeTopic#executeCommand
@@ -1452,7 +1451,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * @param	path		the absolute path of the file, must not <code>null</code>
 	 * @param	filetype	specifies the local repository, see the 4 FILE_... constants
 	 *
-	 * @return	the filename (last component of path) resp. <CODE>null</CODE> if path is empty
+	 * @return	the filename (last component of path) resp. <code>null</code> if path is empty
 	 *
 	 * @see		#copyAndUpload
 	 * @see		TopicMapTopic#doImport
@@ -1511,7 +1510,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Returns a name for a topic created from specified element charactristics.
-	 * <P>
+	 * <p>
 	 * The topicname is determined by getting the value of the specified field of the
 	 * specified element data. If the element data doesn't contain such a field an error
 	 * is reported on the console and the empty string ("") is returned. If the specified
@@ -1545,7 +1544,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Handles the {@link #CMD_EDIT_TOPIC_PROPERTY} and {@link #CMD_VIEW_TOPIC_PROPERTY} commands.
-	 * <P>
+	 * <p>
 	 * Extend the specified directives to let the user edit/view the specified
 	 * property of this live topic.
 	 *
@@ -1647,9 +1646,9 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * ### to be dropped? (called only once)
-	 * <P>
+	 * <p>
 	 * Handles the {@link #CMD_CHANGE_TOPIC_NAME} command.
-	 * <P>
+	 * <p>
 	 * References checked: 23.6.2002 (2.0a15-pre8)
 	 *
 	 * @see		#executeCommand
@@ -1660,7 +1659,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Adds directives to initiate topic (re)naming.
-	 * <P>
+	 * <p>
 	 * References checked: 23.6.2002 (2.0a15-pre8)
 	 *
 	 * @param	session		is null when used by web interface
@@ -1704,7 +1703,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	/**
 	 * Initializes {@link #iconfile}.
-	 * <P>
+	 * <p>
 	 * Note: this method is overridden by {@link TopicTypeTopic#setIconfile TopicTypeTopic} and
 	 * {@link AssociationTypeTopic#setIconfile AssociationTypeTopic}.
 	 *
