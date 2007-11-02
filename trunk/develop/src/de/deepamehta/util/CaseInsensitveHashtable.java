@@ -7,11 +7,27 @@ import java.util.Map;
 
 
 /**
- * 
- * @author enrico
+ * An hashtable whose keys are handled case-insensitively.
+ * This is realized by maintaining a mirror-table with all-uppercase keys.
+ *
+ * @author	enrico
  */
 public class CaseInsensitveHashtable extends Hashtable {
+
+
+
+	/**
+	 * The mirror-table.
+	 */
 	Hashtable upperKeysHash = new Hashtable();
+
+
+
+	// ------------------------
+	// --- Override Methods ---
+	// ------------------------
+
+
 
 	public Object get(Object key) {
 		return upperKeysHash.get(upper(key));
@@ -41,30 +57,12 @@ public class CaseInsensitveHashtable extends Hashtable {
 	public Object remove(Object key) {
 		Object upper = upper(key);
 		Object upperKey = findUpperKey(upper);
-		// if the key is not contained in the hashtable (null) it can't be removed
+		// If the key is not contained in the hashtable (null) it can't be removed.
 		// maltito, 9.10.2007
 		if (upperKey != null) { 
 			super.remove(upperKey);
 		}
 		return upperKeysHash.remove(upper);
-	}
-
-	private Object findUpperKey(Object upper) {
-		Iterator iterator = this.keySet().iterator();
-		while (iterator.hasNext()) {
-			Object element = iterator.next();
-			if (upper.equals(upper(element))) {
-				return element;
-			}
-		}
-		return null;
-	}
-
-	static private Object upper(Object key) {
-		if (key instanceof String) {
-			key = ((String) key).toUpperCase();
-		}
-		return key;
 	}
 
 	public synchronized int hashCode() {
@@ -82,5 +80,40 @@ public class CaseInsensitveHashtable extends Hashtable {
 			return false;
 		}
 		return ciht.upperKeysHash.equals(upperKeysHash);
+	}
+
+	// When cloning this hashtable, the mirror-table must also be cloned.
+	// Note: cloning is done in ApplicationService.removeUnchangedProperties().
+	// jri, 2.11.2007
+	public Object clone() {
+		Object o = super.clone();
+		((CaseInsensitveHashtable) o).upperKeysHash = (Hashtable) upperKeysHash.clone();
+		return o;
+	}
+
+
+
+	// -----------------------
+	// --- Private Methods ---
+	// -----------------------
+
+
+
+	private Object findUpperKey(Object upper) {
+		Iterator iterator = this.keySet().iterator();
+		while (iterator.hasNext()) {
+			Object element = iterator.next();
+			if (upper.equals(upper(element))) {
+				return element;
+			}
+		}
+		return null;
+	}
+
+	static private Object upper(Object key) {
+		if (key instanceof String) {
+			key = ((String) key).toUpperCase();
+		}
+		return key;
 	}
 }

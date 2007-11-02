@@ -100,32 +100,33 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 	// ---
 
 	public static Hashtable readHashtable(DataInputStream in) throws IOException {
-		Hashtable topicData = new Hashtable();
-		String fieldName;
-		String value;
-		int fieldCount = in.readInt();
-		for (int i = 0; i < fieldCount; i++) {
-			fieldName = in.readUTF();
-			value = in.readUTF();
-			topicData.put(fieldName, value);
+		Hashtable hashtable = new Hashtable();
+		int entryCount = in.readInt();
+		for (int i = 0; i < entryCount; i++) {
+			String key = in.readUTF();
+			String value = in.readUTF();
+			hashtable.put(key, value);
 		}
-		return topicData;
+		return hashtable;
 	}
 
 	/**
+	 * Serializes a hashtable and writes it to an output stream for reconstructing it via {@link #readHashtable}.
+	 * <p>
+	 * Works only for hashtables where both, keys and values are strings.
+	 *
 	 * @see		de.deepamehta.client.InteractionConnection#changeTopicData
 	 * @see		de.deepamehta.service.CorporateDirectives#write
 	 */
-	public static void writeHashtable(Hashtable topicData, DataOutputStream out)
-																	throws IOException {
-		out.writeInt(topicData.size());
-		Enumeration e = topicData.keys();
-		String fieldName;
-		String value;
+	public static void writeHashtable(Hashtable hashtable, DataOutputStream out) throws IOException {
+		// ### System.out.println(">>> DeepaMehtaUtils.writeHashtable(): " + hashtable.size() + " entries");
+		out.writeInt(hashtable.size());
+		Enumeration e = hashtable.keys();
 		while (e.hasMoreElements()) {
-			fieldName = (String) e.nextElement();
-			value = (String) topicData.get(fieldName);
-			out.writeUTF(fieldName);
+			String key = (String) e.nextElement();
+			String value = (String) hashtable.get(key);
+			// ### System.out.println("        key=\"" + key + "\" value=\"" + value + "\"");
+			out.writeUTF(key);
 			out.writeUTF(value);
 		}
 	}

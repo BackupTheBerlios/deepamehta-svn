@@ -623,13 +623,11 @@ public class CorporateDirectives extends Directives {
 				}
 			} // end loop through all directives
 		} catch (NullPointerException e) {
-			throw new DeepaMehtaException("error while writing directive of type " +
-				type + " (" + e + " -- probably caused by wrong usage " +
-				"through application programmer)");
+			throw new DeepaMehtaException("error while writing directive of type " + type +
+				" -- probably caused by wrong usage through application programmer", e);
 		} catch (ClassCastException e) {
-			throw new DeepaMehtaException("error while writing directive of type " +
-				type + " (" + e + " -- probably caused by wrong usage " +
-				"through application programmer)");
+			throw new DeepaMehtaException("error while writing directive of type " + type +
+				" -- probably caused by wrong usage through application programmer", e);
 		}
 	}
 
