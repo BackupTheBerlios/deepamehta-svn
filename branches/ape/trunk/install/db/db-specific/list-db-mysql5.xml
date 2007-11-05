@@ -1,0 +1,67 @@
+<project name="DeepaMehta-db-listdb-mysql5">
+	<import file="asksyspass.xml" />
+	<target name="-listdb" depends="-asksyspass">
+		<path id="dblibs">
+			<fileset dir="${dm.base-dir}">
+				<include name="${db.libs}" />
+			</fileset>
+		</path>
+		<if>
+			<isset property="return.syspass" />
+			<then>
+				<var name="db.syspass" value="${return.syspass}" />
+			</then>
+		</if>
+		<trycatch property="exceptionProp">
+			<try>
+				<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.syspass}" classpathref="dblibs" print="true" output="tmp-databases.txt" showheaders="false" onerror="continue">
+					SELECT
+						CONCAT(schema_name, ';')
+					FROM
+						information_schema.schemata
+					WHERE	LOWER(schema_name) != 'mysql'
+					AND		LOWER(schema_name) != 'information_schema';
+				</sql>
+				<loadfile srcFile="tmp-databases.txt" property="list" />
+				<delete file="tmp-databases.txt" />
+				<var name="elem" unset="true" />
+				<for param="listElem" list="${list}" delimiter=";" trim="true">
+					<sequential>
+						<!--
+							this construct removes the last row which shows
+							only statistics about the sql statement!
+						-->
+						<if>
+							<isset property="elem" />
+							<then>
+								<if>
+									<not>
+										<isset property="header-printed" />
+									</not>
+									<then>
+										<echo>Existing databases:</echo>
+										<echo />
+										<property name="header-printed" value="true" />
+									</then>
+								</if>
+								<echo>* ${elem}</echo>
+							</then>
+						</if>
+						<var name="elem" value="@{listElem}" />
+					</sequential>
+				</for>
+				<if>
+					<isset property="header-printed" />
+					<then>
+						<echo />
+					</then>
+				</if>
+			</try>
+			<catch>
+				<echo message="${exceptionProp}" />
+				<var name="db.syspass" unset="true" />
+				<var name="withsyspass" unset="true" />
+			</catch>
+		</trycatch>
+	</target>
+</project>

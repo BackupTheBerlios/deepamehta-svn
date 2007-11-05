@@ -1,0 +1,17 @@
+<project name="DeepaMehta-db-dropdb-sql92" >
+	<import file="dropdb-ask.xml"/>
+	<import file="asksyspass.xml"/>
+	<target name="-dropdb" depends="-askdropdb,-asksyspass" unless="do.db.abort">
+		<path id="dblibs">
+			<fileset dir="${dm.base-dir}">
+				<include name="${db.libs}" />
+			</fileset>
+		</path>
+		<var name="db.syspass" value="${return.syspass}"/>
+		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.syspass}" classpathref="dblibs">
+			DROP DATABASE ${db.name};
+			DELETE FROM user where User='${db.user}';
+			DELETE FROM db where Db='${db.name}';
+		</sql>
+	</target>
+</project>

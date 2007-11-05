@@ -1,0 +1,22 @@
+ARTFACTS_PATH=install/examples/artfacts/src
+SOURCES=$ARTFACTS_PATH/de/deepamehta/artfacts/topics/*.java
+ARTFACTS=de/deepamehta/artfacts/topics/*.class\ de/deepamehta/artfacts/*.class
+
+echo "--- compiling application \"Artfacts\" ..."
+if javac -verbose -classpath develop/src:$ARTFACTS_PATH:\
+$JAVA_LIBS/servlet.jar:$JAVA_LIBS/mail.jar:$JAVA_LIBS/activation.jar:$JAVA_LIBS/jndi.jar:\
+$JAVA_LIBS/fop.jar:$JAVA_LIBS/xalan-2.0.0.jar:$JAVA_LIBS/xerces-1.2.3.jar:\
+$JAVA_LIBS/xml4j.jar:$JAVA_LIBS/AcmeGifEncoder.jar:$JAVA_LIBS/googleapi.jar \
+$SOURCES 2>&1 |\
+        egrep -v "(loading|checking|parsing completed)"; then
+
+	# the jaring must take place in ARTFACTS_PATH
+	cd $ARTFACTS_PATH
+	echo "--- making ArtfactsTopics.jar ..."
+	jar -cf ../ArtfactsTopics.jar $ARTFACTS
+	ls -l ../ArtfactsTopics.jar
+
+	echo ">>> application \"Artfacts\" complete <<<"
+else
+	echo "*** compilation of application \"Artfacts\" failed ***"
+fi

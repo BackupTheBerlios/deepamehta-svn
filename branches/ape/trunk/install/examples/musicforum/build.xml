@@ -1,0 +1,51 @@
+<project name="Music-Forum" default="build" basedir=".">
+
+	<description>
+		Music-Forum based on DeepaMehta MessageBoard Servlet
+	</description>
+
+	<property name="project.name" value="musicforum"/>
+	<property name="war" value="${project.name}.war"/>
+
+	<property name="dm.base-dir" location="../../.." />
+
+	<import file="${dm.base-dir}/config.xml" />
+
+	<target name="-war">
+   	    <war warfile="${war}" webxml="config/web.xml">
+		    <classes dir="../messageboard/build">
+				<include name="de/deepamehta/messageboard/*.class" />
+            </classes>
+         	<fileset dir="../messageboard">
+            	<include name="pages/MessageBoard.jsp"/>
+            	<include name="images/*"/>
+         	</fileset>
+         	<fileset dir=".">
+            	<include name="pages/messageboard.css"/>
+         	</fileset>
+		</war>
+	</target>
+
+	<target name="build" depends="-war"/>
+
+	<target name="deploy" if="do.web.deploy">
+        <copy file="${war}" todir="${web.deploy.dir}"/>
+	</target>
+
+	<target name="install" depends="-initdb"/>
+
+	<target name="-initdb">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${examples}">
+				<include name="musicforum/music.sql" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+	</target>
+
+	<target name="cleanup">
+		<delete file="${war}"/>
+	</target>
+</project>

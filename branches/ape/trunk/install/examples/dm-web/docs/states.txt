@@ -1,0 +1,43 @@
+DeepaMehta Web Frontend Documentation
+=====================================
+
+Web Session Attributes
+
+Jšrg Richter
+20.10.2007
+
+
+Global
+------
+
+user			the logged in user (BaseTopic)
+baseURL
+
+
+PAGE_HOME
+---------
+
+workspaces		workspaces the user is a member of (Vector of Topic)
+
+
+PAGE_TOPIC_INFO
+---------------
+
+topicBean		selected topic (TopicBean)
+relTopics		related topics (Vector of RelatedTopic)
+
+
+PAGE_TOPIC_LIST
+---------------
+
+topics			topics to list (Vector of Topic)
+mode			MODE_BY_NAME or MODE_BY_TYPE
+search			search term (String), only used for MODE_BY_NAME
+typeID			selected type (String), only used for MODE_BY_TYPE
+
+
+PAGE_TOPIC_FORM
+---------------
+
+typeID			type for wich the form is shown (String)
+topicID			if set, a "update" form is shown, otherwise a "create" form is shown (String)

@@ -1,0 +1,10 @@
+<project name="DeepaMehta-db-dropdb-hsqldb">
+	<import file="dropdb-ask.xml"/>
+	<target name="-dropdb" depends="-askdropdb" unless="do.abort">
+		<delete>
+			<fileset dir="${db.hsqldb.base-path}">
+				<include name="${db.name}.*" />
+			</fileset>
+		</delete>
+	</target>
+</project>
