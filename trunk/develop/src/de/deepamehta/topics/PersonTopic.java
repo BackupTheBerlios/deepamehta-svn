@@ -15,9 +15,9 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 17.9.2007 (2.0b8)<BR>
- * Last documentation update: 7.3.2004 (2.0b3-pre1)<BR>
- * J&ouml;rg Richter<BR>
+ * Last functional change: 5.11.2007 (2.0b8)<br>
+ * Last documentation update: 7.3.2004 (2.0b3-pre1)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class PersonTopic extends LiveTopic {
@@ -27,7 +27,11 @@ public class PersonTopic extends LiveTopic {
 	private static final String ITEM_SEND_TO_PERSON = "Compose Email";
 	private static final String ICON_SEND_TO_PERSON = "composeEmail.gif";
 	private static final String CMD_SEND_TO_PERSON = "createNewMail";
-	
+
+	private static final String ITEM_MAKE_APPOINTMENT = "Make Appointment";
+	private static final String ICON_MAKE_APPOINTMENT = "makeAppointment.gif";
+	private static final String CMD_MAKE_APPOINTMENT = "makeAppointment";
+
 	
 	
 	// *******************
@@ -56,15 +60,16 @@ public class PersonTopic extends LiveTopic {
 
 	public CorporateCommands contextCommands(String topicmapID, String viewmode, Session session, CorporateDirectives directives) {
 		CorporateCommands commands = new CorporateCommands(as);
-		// add standard commands
+		// navigation commands
 		int editorContext = as.editorContext(topicmapID);
 		commands.addNavigationCommands(this, editorContext, session);
 		//
 		// custom commands
 		commands.addSeparator();
 		commands.addCommand(ITEM_SEND_TO_PERSON, CMD_SEND_TO_PERSON, FILESERVER_IMAGES_PATH, ICON_SEND_TO_PERSON);
+		commands.addCommand(ITEM_MAKE_APPOINTMENT, CMD_MAKE_APPOINTMENT, FILESERVER_IMAGES_PATH, ICON_MAKE_APPOINTMENT);
 		//
-		// add standard commands
+		// standard commands
 		commands.addStandardCommands(this, editorContext, viewmode, session, directives);
 		//
 		return commands;
@@ -94,11 +99,16 @@ public class PersonTopic extends LiveTopic {
 			}
 			//
 			String assocID = as.getNewAssociationID();
-			PresentableAssociation assoc = new PresentableAssociation(assocID, 1, ASSOCTYPE_RECIPIENT, 1, "", emailID, 1, personID, 1 );
+			PresentableAssociation assoc = new PresentableAssociation(assocID, 1, ASSOCTYPE_RECIPIENT, 1, "",
+																	  emailID, 1, personID, 1 );
 			directives.add(DIRECTIVE_SHOW_TOPIC, email, Boolean.TRUE);
 			directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, Boolean.TRUE);
 			directives.add(DIRECTIVE_SELECT_TOPIC, emailID);
 			//
+			return directives;
+		} else if (command.equals(CMD_MAKE_APPOINTMENT)) {
+			CorporateDirectives directives = new CorporateDirectives();
+			createChildTopic(TOPICTYPE_EVENT, SEMANTIC_EVENT_ATTENDEE, true, session, directives);	// reverseAssocDir=true
 			return directives;
 		} else {
 			return super.executeCommand(command, session, topicmapID, viewmode);

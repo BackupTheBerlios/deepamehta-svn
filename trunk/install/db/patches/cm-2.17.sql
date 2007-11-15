@@ -43,7 +43,7 @@ INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-95', '', 'tt-generic',
 -- search type
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-calendar-search', 'Calendar Search');
 INSERT INTO TopicProp VALUES ('tt-calendar-search', 1, 'Name', 'Calendar Search');
--- INSERT INTO TopicProp VALUES ('tt-calendar-search', 1, 'Icon', 'KompetenzsternContainer.gif');
+INSERT INTO TopicProp VALUES ('tt-calendar-search', 1, 'Icon', 'calendar-search.gif');
 -- derive search type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-96', '', 'tt-topiccontainer', 1, 'tt-calendar-search', 1);
 -- assign search type to type
@@ -99,7 +99,7 @@ INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-98', '', 'tt-generic',
 -- search type
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-event-search', 'Event Search');
 INSERT INTO TopicProp VALUES ('tt-event-search', 1, 'Name', 'Event Search');
--- INSERT INTO TopicProp VALUES ('tt-event-search', 1, 'Icon', 'KompetenzsternContainer.gif');
+INSERT INTO TopicProp VALUES ('tt-event-search', 1, 'Icon', 'event-search.gif');
 -- derive search type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-99', '', 'tt-topiccontainer', 1, 'tt-event-search', 1);
 -- assign search type to type
@@ -166,15 +166,15 @@ INSERT INTO TopicProp VALUES ('tt-whois18', 1, 'Domains', 'fr');
 
 
 --- *** UPDATE DATA DEFINITION *** ---
-ALTER TABLE				TopicProp
-     CHANGE				PropName PropName CHAR(255) NOT NULL
-     DROP	INDEX		TopicID,
-     ADD	PRIMARY KEY ( TopicID, TopicVersion, PropName )
+ALTER TABLE             TopicProp
+     CHANGE             PropName PropName CHAR(255) NOT NULL,
+     DROP   INDEX       TopicID,
+     ADD    PRIMARY KEY (TopicID, TopicVersion, PropName)
 ;
-ALTER TABLE				AssociationProp
-     CHANGE				PropName PropName CHAR(255) NOT NULL
-     DROP	INDEX		AssociationID,
-     ADD	PRIMARY KEY ( AssociationID, AssociationVersion, PropName )
+ALTER TABLE             AssociationProp
+     CHANGE             PropName PropName CHAR(255) NOT NULL,
+     DROP   INDEX       AssociationID,
+     ADD    PRIMARY KEY (AssociationID, AssociationVersion, PropName)
 ;
 
 ---
@@ -184,13 +184,13 @@ DELETE FROM TopicProp                                     WHERE TopicID='t-deepa
 INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Customer Icon', 'deepamehta-logo-tiny.png');
 
 --- Version Change
-UPDATE TopicProp SET PropValue='DeepaMehta 2.0b8'         WHERE TopicID='t-deepamehtainstallation' AND PropName='Client Name';
-UPDATE TopicProp SET PropValue='DeepaMehtaServer 2.0b8'   WHERE TopicID='t-deepamehtainstallation' AND PropName='Server Name';
+UPDATE TopicProp SET PropValue='DeepaMehta 2.0b8-preview3'         WHERE TopicID='t-deepamehtainstallation' AND PropName='Client Name';
+UPDATE TopicProp SET PropValue='DeepaMehtaServer 2.0b8-preview3'   WHERE TopicID='t-deepamehtainstallation' AND PropName='Server Name';
 
 ---
 --- Update DB content version
 ---
-UPDATE KeyGenerator SET NextKey=17 WHERE Relation='DB-Content Version';
+-- UPDATE KeyGenerator SET NextKey=17 WHERE Relation='DB-Content Version';
 
 
 
@@ -198,17 +198,17 @@ UPDATE KeyGenerator SET NextKey=17 WHERE Relation='DB-Content Version';
 SELECT *
 FROM TopicProp
 JOIN (
-	SELECT TopicID, TopicVersion, PropName
-	FROM TopicProp GROUP BY TopicID, TopicVersion, PropName
-	HAVING COUNT( * ) > 1 ) tp
+    SELECT TopicID, TopicVersion, PropName
+    FROM TopicProp GROUP BY TopicID, TopicVersion, PropName
+    HAVING COUNT( * ) > 1 ) tp
 USING ( TopicID, TopicVersion, PropName );
 
 SELECT *
 FROM AssociationProp
 JOIN (
-	SELECT AssociationID, AssociationVersion, PropName
-	FROM AssociationProp GROUP BY AssociationID, AssociationVersion, PropName
-	HAVING COUNT( * ) > 1 ) ap
+    SELECT AssociationID, AssociationVersion, PropName
+    FROM AssociationProp GROUP BY AssociationID, AssociationVersion, PropName
+    HAVING COUNT( * ) > 1 ) ap
 USING ( AssociationID, AssociationVersion, PropName );
 
 

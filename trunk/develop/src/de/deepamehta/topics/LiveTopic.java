@@ -47,7 +47,7 @@ import java.util.Vector;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last sourcecode change: 27.9.2007 (2.0b8)<br>
+ * Last sourcecode change: 6.11.2007 (2.0b8)<br>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -1302,7 +1302,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		}
 	}
 
-	// --- createChildTopic (2 forms) ---
+	// --- createChildTopic (3 forms) ---
 
 	/**
 	 * Creates a child topic directly in corporate memory ### must create live topic instead (evoke())
@@ -1312,6 +1312,10 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		String assocID = as.getNewAssociationID();
 		cm.createTopic(childID, 1, typeID, 1, "");
 		cm.createAssociation(assocID, 1, semantic, 1, getID(), 1, childID, 1);
+	}
+
+	public final void createChildTopic(String typeID, String semantic, Session session, CorporateDirectives directives) {
+		createChildTopic(typeID, semantic, false, session, directives);
 	}
 
 	/**
@@ -1329,13 +1333,23 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * @see		TypeTopic#executeCommand
 	 * @see		PropertyTopic#executeCommand
 	 */
-	public final void createChildTopic(String typeID, String semantic, Session session, CorporateDirectives directives) {
+	public final void createChildTopic(String typeID, String semantic, boolean reverseAssocDir,
+																	Session session, CorporateDirectives directives) {
 		String childID = as.getNewTopicID();
 		//
+		String topicID1, topicID2;
+		if (reverseAssocDir) {
+			topicID1 = childID;
+			topicID2 = getID();
+		} else {
+			topicID1 = getID();
+			topicID2 = childID;
+		}
+		//
 		PresentableTopic child = new PresentableTopic(childID, 1, typeID, 1, "", getID(), "");
-		PresentableAssociation assoc = as.createPresentableAssociation(semantic, getID(), getVersion(), childID, 1, false);
+		PresentableAssociation assoc = as.createPresentableAssociation(semantic, topicID1, getVersion(), topicID2, 1, false);
 		// Note: the association must be created directly in corporate memory, to let childs evoke() logic rely on the association
-		cm.createAssociation(assoc.getID(), 1, semantic, 1, getID(), 1, childID, 1);
+		cm.createAssociation(assoc.getID(), 1, semantic, 1, topicID1, 1, topicID2, 1);
 		cm.setAssociationData(assoc.getID(), 1, PROPERTY_OWNER_ID, session.getUserID());
 		//
 		directives.add(DIRECTIVE_SHOW_TOPIC, child, Boolean.TRUE);

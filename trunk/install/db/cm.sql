@@ -916,7 +916,7 @@ INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-95', '', 'tt-generic',
 -- search type
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-calendar-search', 'Calendar Search');
 INSERT INTO TopicProp VALUES ('tt-calendar-search', 1, 'Name', 'Calendar Search');
--- INSERT INTO TopicProp VALUES ('tt-calendar-search', 1, 'Icon', 'KompetenzsternContainer.gif');
+INSERT INTO TopicProp VALUES ('tt-calendar-search', 1, 'Icon', 'calendar-search.gif');
 -- derive search type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-96', '', 'tt-topiccontainer', 1, 'tt-calendar-search', 1);
 -- assign search type to type
@@ -939,7 +939,7 @@ INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-98', '', 'tt-generic',
 -- search type
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-event-search', 'Event Search');
 INSERT INTO TopicProp VALUES ('tt-event-search', 1, 'Name', 'Event Search');
--- INSERT INTO TopicProp VALUES ('tt-event-search', 1, 'Icon', 'KompetenzsternContainer.gif');
+INSERT INTO TopicProp VALUES ('tt-event-search', 1, 'Icon', 'event-search.gif');
 -- derive search type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-99', '', 'tt-topiccontainer', 1, 'tt-event-search', 1);
 -- assign search type to type
