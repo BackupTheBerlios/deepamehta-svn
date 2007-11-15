@@ -26,16 +26,18 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 
 /**
  * <P>
  * <HR>
- * Last functional change: 25.9.2007 (2.0b8)<BR>
+ * Last functional change: 15.11.2007 (2.0b8)<BR>
  * Last documentation update: 28.7.2001 (2.0a11)<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * Malte Rei&szlig;ig<BR>
+ * mre@deepamehta.de
  */
 public class DeepaMehtaUtils implements DeepaMehtaConstants {
 
@@ -477,6 +479,53 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		// ### text = DeepaMehtaUtils.replace(text, '\r', "<br>");		// originates from web
 		// ### text = DeepaMehtaUtils.replace(text, '\n', "<br>");		// originates from graphical client
 		return text;
+	}
+	
+	static public String emailToHtml(String text) {
+		String emailRegEx = "(\\w)*?([-_.])*?(\\w+)@(\\w+)([\\-\\_\\.])*(\\w+)(\\.\\w+)*";
+		// Compile and get a reference to a Pattern object.
+	    Pattern pattern = Pattern.compile(emailRegEx);
+	    // Get a matcher object - we cover this next.
+	    Matcher matcher = pattern.matcher(text);
+	    int lastIndex = 0;
+	    StringBuffer html = new StringBuffer();
+	    while (matcher.find()) {
+	    	//
+	    	html.append(text.substring(lastIndex, matcher.start()));
+	    	int before = matcher.start()-13;
+	    	if (before >= 0 && "href=\"mailto:".equals(text.substring(before, matcher.start()))) {
+	    		html.append(matcher.group());
+	    	} else {
+	    		html.append("<a href=\"mailto:" + matcher.group() + "\">" + matcher.group() + "</a>");
+	    	}	    	
+	    	lastIndex = matcher.end();
+	    }
+	    html.append(text.substring(lastIndex));
+	    return html.toString();
+		
+	}
+	
+	static public String weblinksToHtml(String text) {
+		String regEx = "(http://+)(\\w+?)([-_]*)(\\w*?)(\\.+)(\\w+)([-_]*)(\\w*)(\\.+)(\\w+)(/*)(\\w*)(\\.*)(\\w*)";
+		//String simpleButConvenient = "(http://+)(\\w*[-_./]*)([\\t\\n\\x0B\\f\\r]+?)";
+		//String test = "(http://+)(\\w*[-_./]*)";
+		Pattern pattern = Pattern.compile(regEx);
+	    Matcher matcher = pattern.matcher(text);
+	    int lastIndex = 0;
+	    StringBuffer html = new StringBuffer();
+	    while (matcher.find()) {
+	    	//
+	    	html.append(text.substring(lastIndex, matcher.start()));
+	    	int before = matcher.start()-6;
+	    	if (before >= 0 && "href=\"".equals(text.substring(before, matcher.start()))) {
+	    		html.append(matcher.group());
+	    	} else {
+	    		html.append("<a href=\"" + matcher.group() + "\">" + matcher.group() + "</a>");
+	    	}	    	
+	    	lastIndex = matcher.end();
+	    }
+	    html.append(text.substring(lastIndex));
+	    return html.toString();
 	}
 
 	// ---

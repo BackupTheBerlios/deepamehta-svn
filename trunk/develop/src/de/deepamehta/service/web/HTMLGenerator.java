@@ -31,10 +31,10 @@ import java.util.Vector;
 /**
  * <p>
  * <hr>
- * Last sourcecode change: 20.10.2007 (2.0b8)<br>
+ * Last sourcecode change: 15.11.2007 (2.0b8)<br>
  * Last documentation update: 16.9.2002 (2.0a16-pre3)<br>
- * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * J&ouml;rg Richter / Malte Rei&szlig;ig<br><br>
+ * jri@freenet.de / mre@deepamehta.de
  */
 public class HTMLGenerator implements DeepaMehtaConstants {
 
@@ -257,39 +257,162 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		//
 		return html.toString();
 	}
-
 	// ---
-
+	
 	public String info(TopicBean topicBean) {
-		StringBuffer html = new StringBuffer("<table>\r");
-		Enumeration e = topicBean.fields.elements();
-		while (e.hasMoreElements()) {
-			TopicBeanField field = (TopicBeanField) e.nextElement();
-			infoField(field, html);
-		}
-		html.append("</table>\r");
-		return html.toString();
+		return info(topicBean, DeepaMehtaConstants.BEAN_LAYOUT_2COLUMN);
 	}
-
-	private void infoField(TopicBeanField field, StringBuffer html) {
-		html.append("<tr valign=\"top\"><td width=150><small>" + field.name + "</small></td><td>");
+	
+	public String info(TopicBean topicBean, int layoutStyle) {
+		StringBuffer html = new StringBuffer("");
+		// don´t want to touch the original info method, resulting in more redundancy
+		if (layoutStyle == DeepaMehtaConstants.BEAN_LAYOUT_BOX) {
+			// render Modern Box Layout
+			html.append("<div class=\"wholeInfo\" id=\"container\">\r");
+			Enumeration e = topicBean.fields.elements();
+			while (e.hasMoreElements()) {
+				TopicBeanField field = (TopicBeanField) e.nextElement();
+				// specific field render method
+				infoBoxField(field, html);
+			}
+			html.append("</div><br/> \r");
+			return html.toString();
+		} else if (layoutStyle == DeepaMehtaConstants.BEAN_LAYOUT_FLOW) {
+			// render Classic KiezAtlas Flow Layout
+			html.append("<div class=\"wholeInfo\" id=\"container\" align=\"left\">\r");
+			Enumeration e = topicBean.fields.elements();
+			while (e.hasMoreElements()) {
+				TopicBeanField field = (TopicBeanField) e.nextElement();
+				// specific field render method
+				infoFlowField(field, html);
+			}
+			html.append("</div><br/> \r");
+			return html.toString();
+		} else if (layoutStyle == DeepaMehtaConstants.BEAN_LAYOUT_2COLUMN){
+			// render 2 Column Table Layout
+			html.append("<table border=\"0\">\r");
+			Enumeration e = topicBean.fields.elements();
+			while (e.hasMoreElements()) {
+				TopicBeanField field = (TopicBeanField) e.nextElement();
+				// specific field render method
+				info2ColumnField(field, html);
+			}
+			html.append("</table>\r");
+			return html.toString();
+		} else {
+			throw new DeepaMehtaException("unxepected Bean Layout: " + layoutStyle);
+		}
+	}
+	
+	private void infoFlowField(TopicBeanField field, StringBuffer html) {
+		// special field render method for Classic Flow Layout
+		html.append("<span class=\"label\"> " + field.name + ": </span>\r");
 		switch (field.type) {
 		case TopicBeanField.TYPE_SINGLE:
 			if (field.value != null) {
-				html.append(field.value);
+				String text = field.value;
+				text = DeepaMehtaUtils.emailToHtml(text);
+				text = DeepaMehtaUtils.weblinksToHtml(text);
+				text = DeepaMehtaUtils.replaceLF(text);
+				html.append("<span class=\"content\">"
+		            			+ text + "<br>" +
+							"</span>\r");
 			}
 			break;
 		case TopicBeanField.TYPE_MULTI:
 			Enumeration e = field.values.elements();
+			html.append("<span class=\"content\">");
 			while (e.hasMoreElements()) {
 				BaseTopic topic = (BaseTopic) e.nextElement();
-				html.append(imageTag(topic) + " " + topic.getName() + "<br>");
+				//parse for links
+				String text = topic.getName();
+				text = DeepaMehtaUtils.emailToHtml(text);
+				text = DeepaMehtaUtils.weblinksToHtml(text);			
+				html.append("" + imageTag(topic) + " " + text + "</br>");
 			}
+			html.append("</span>\r");
 			break;
 		default:
 			throw new DeepaMehtaException("unexpected topic bean field type: " + field.type);
 		}
-		html.append("</td></tr>\r");
+		html.append("<br/>\r");
+	}	
+	
+	private void infoBoxField(TopicBeanField field, StringBuffer html) {
+		// special field render method for Modern Box Layout
+		html.append("<span class=\"label\"> " + field.name + ": </span>");
+		switch (field.type) {
+		case TopicBeanField.TYPE_SINGLE:
+			if (field.value != null) {
+				String text = field.value;
+				text = DeepaMehtaUtils.emailToHtml(text);
+				text = DeepaMehtaUtils.weblinksToHtml(text);
+				text = DeepaMehtaUtils.replaceLF(text);
+				html.append("<span class=\"content\">"
+				            	+ text + "<br>" +
+							"</span>");
+			}
+			break;
+		case TopicBeanField.TYPE_MULTI:
+			Enumeration e = field.values.elements();
+			html.append("<div class=\"multiBox\" id=\"containerBox\">");
+			while (e.hasMoreElements()) {
+				BaseTopic topic = (BaseTopic) e.nextElement();
+				html.append("<span class=\"content\">");
+				//parse for links
+				String text = topic.getName();
+				text = DeepaMehtaUtils.emailToHtml(text);
+				text = DeepaMehtaUtils.weblinksToHtml(text);
+				html.append(imageTag(topic) + " " + text + "<br>");
+				html.append("</span>");
+			}
+			html.append("</div>");
+			break;
+		default:
+			throw new DeepaMehtaException("unexpected topic bean field type: " + field.type);
+		}
+		html.append("<br/>\r");
+	}	
+
+	private void info2ColumnField(TopicBeanField field, StringBuffer html) {
+		// special field render method for Table 2 Column Layout
+		html.append("<tr valign=\"top\">" +
+		            	"<td width=150>" +
+							"<span class=\"label\">" 
+								+ field.name + 
+							"</span>" +
+						"</td>" +
+						"<td>");
+		switch (field.type) {
+		case TopicBeanField.TYPE_SINGLE:
+			if (field.value != null) {
+				String text = field.value;
+				text = DeepaMehtaUtils.emailToHtml(text);
+				text = DeepaMehtaUtils.weblinksToHtml(text);
+				text = DeepaMehtaUtils.replaceLF(text);
+				html.append("<span class=\"content\">"
+			            		+ text + "<br>" +
+							"</span>");
+			}
+			break;
+		case TopicBeanField.TYPE_MULTI:
+			Enumeration e = field.values.elements();
+			html.append("<span class=\"content\">");
+			while (e.hasMoreElements()) {
+				BaseTopic topic = (BaseTopic) e.nextElement();
+				//parse for links
+				String text = topic.getName();
+				text = DeepaMehtaUtils.emailToHtml(text);
+				text = DeepaMehtaUtils.weblinksToHtml(text);
+				text = DeepaMehtaUtils.replaceLF(text);
+				html.append(imageTag(topic) + " " + text + "<br>");
+			}
+			html.append("</span>");break;
+		default:
+			throw new DeepaMehtaException("unexpected topic bean field type: " + field.type);
+		}
+		html.append(	"</td>" +
+					"</tr>\r");
 	}
 
 	// --- form (8 forms) ---
@@ -440,7 +563,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		Enumeration e = topics.elements();
 		while (e.hasMoreElements()) {
 			BaseTopic topic = (BaseTopic) e.nextElement();	// ### was E0E0D0
-			html.append("<tr" + (selectedTopicIDs.contains(topic.getID()) ? " bgcolor=\"#E0D8D0\"" : "") + "><td>" +
+			html.append("<tr" + (selectedTopicIDs.contains(topic.getID()) ? " bgcolor=\"#E0D8D0\"" : "") + "><td class=\"small\">" +
 				"<a href=\"controller?action=" + imageAction + "&id=" + topic.getID() + "\">" +
 				imageTag(topic) + "</a></td><td>" +
 				"<a href=\"controller?action=" + action + "&id=" + topic.getID() + "\">" + topic.getName() +
