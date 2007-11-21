@@ -482,10 +482,9 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 	}
 	
 	static public String emailToHtml(String text) {
-		String emailRegEx = "(\\w)*?([-_.])*?(\\w+)@(\\w+)([\\-\\_\\.])*(\\w+)(\\.\\w+)*";
 		// Compile and get a reference to a Pattern object.
-	    Pattern pattern = Pattern.compile(emailRegEx);
-	    // Get a matcher object - we cover this next.
+		String emailRegex = "[\\w\\d-_/\\.]*@+[\\w\\d-_/\\.]*";
+	    Pattern pattern = Pattern.compile(emailRegex);
 	    Matcher matcher = pattern.matcher(text);
 	    int lastIndex = 0;
 	    StringBuffer html = new StringBuffer();
@@ -506,10 +505,9 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 	}
 	
 	static public String weblinksToHtml(String text) {
-		String regEx = "(http://+)(\\w+?)([-_]*)(\\w*?)(\\.+)(\\w+)([-_]*)(\\w*)(\\.+)(\\w+)(/*)(\\w*)(\\.*)(\\w*)";
-		//String simpleButConvenient = "(http://+)(\\w*[-_./]*)([\\t\\n\\x0B\\f\\r]+?)";
-		//String test = "(http://+)(\\w*[-_./]*)";
-		Pattern pattern = Pattern.compile(regEx);
+		// not conform to rfc uri; regex not for java found under http://www.faqs.org/rfcs/rfc2396.html, sufficient until now
+		String test = "http://[\\w\\d-_/\\.\\?\\%\\@\\$\\;\\&\\=\\\"\\#]*";
+		Pattern pattern = Pattern.compile(test);
 	    Matcher matcher = pattern.matcher(text);
 	    int lastIndex = 0;
 	    StringBuffer html = new StringBuffer();
@@ -520,7 +518,7 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 	    	if (before >= 0 && "href=\"".equals(text.substring(before, matcher.start()))) {
 	    		html.append(matcher.group());
 	    	} else {
-	    		html.append("<a href=\"" + matcher.group() + "\">" + matcher.group() + "</a>");
+	    		html.append("<a href=\"" + matcher.group() + "\" target=\"blank\">" + matcher.group() + "</a>");
 	    	}	    	
 	    	lastIndex = matcher.end();
 	    }
