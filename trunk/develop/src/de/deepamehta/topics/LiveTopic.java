@@ -143,17 +143,16 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 
 	/**
-	 * Subclasses can override this method to perform initialization at different
-	 * initialization levels.
+	 * Subclasses can override this method to perform initialization at different initialization levels.
 	 * <p>
-	 * ### The default implementation does nothing.<br>
 	 * ### Think again about init levels.
 	 * <p>
 	 * <table>
-	 * <tr><td><B>Called by</B></td><td><code>initLevel</code></td></tr>
-	 * <tr><td>{@link de.deepamehta.service.ApplicationService#createLiveTopic}</td><td>1</td></tr>
-	 * <tr><td>{@link de.deepamehta.service.ApplicationService#initTopic}</td><td>variable</td></tr>
-	 * <tr><td>{@link de.deepamehta.service.ApplicationService#initTypeTopic}</td><td>3</td></tr>
+	 * <tr><td><b>Called by</b></td><td><code>initLevel</code></td></tr>
+	 * <tr><td>{@link de.deepamehta.service.ApplicationService#createLiveTopic(BaseTopic topic, boolean override, Session session)}</td><td>1</td></tr>
+	 * <tr><td>{@link de.deepamehta.service.ApplicationService#createLiveTopic(String topicID, String typeID, String name, boolean override, boolean evoke, String topicmapID, String viewmode, Session session, CorporateDirectives directives)}</td><td>2, 3</td></tr>
+	 * <tr><td>{@link de.deepamehta.service.ApplicationService#initTopic}</td><td><i>variable</i></td></tr>
+	 * <tr><td>{@link de.deepamehta.service.ApplicationService#initTypeTopic}</td><td>1, 2, 3</td></tr>
 	 * </table>
 	 */
 	public CorporateDirectives init(int initLevel, Session session) throws TopicInitException {

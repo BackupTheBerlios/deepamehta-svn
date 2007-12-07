@@ -15,6 +15,10 @@
 	<path id="dmapps">
 		<pathelement location="${examples}/movies/MoviesTopics.jar" />
 		<!-- configure this -->
+		<pathelement location="${examples}/artfacts/ArtfactsTopics.jar" />
+		<!-- configure this -->
+		<pathelement location="${examples}/hilfelotse/HilfelotseTopics.jar" />
+		<!-- configure this -->
 		<pathelement location="${examples}/messageboard/messageboard.jar" />
 		<!-- configure this -->
 		<pathelement location="${examples}/kompetenzstern/kompetenzstern.jar" />
@@ -83,8 +87,10 @@
 				<include name="${db.libs}" />
 			</fileset>
 		</copy>
-		<copy file="${libpath}/googleapi.jar" todir="${web.lib.dir}" />
+		<copy file="${libpath}/avalon-framework.jar" todir="${web.lib.dir}" />
 		<copy file="${libpath}/commons-fileupload-1.0.jar" todir="${web.lib.dir}" />
+		<copy file="${libpath}/spring-core.jar" todir="${web.lib.dir}" />
+		<copy file="${libpath}/googleapi.jar" todir="${web.lib.dir}" />
 		<!-- deploy web applications -->
 		<ant target="-call-examples-web">
 			<property name="target" value="deploy" />

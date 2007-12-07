@@ -145,6 +145,40 @@ INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-115', '', 't-corporategroup'
 INSERT INTO AssociationProp VALUES ('a-115', 1, 'Access Permission', 'create');
 INSERT INTO AssociationProp VALUES ('a-115', 1, 'Ordinal Number', '55');
 
+
+
+-----------------------------------------
+--- Redefine Topic Type "Data Source" ---
+-----------------------------------------
+
+-- create 3 new properties "Database Type", "Username", "Password"
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-dbtype', 'Database Type');
+INSERT INTO TopicProp VALUES ('pp-dbtype', 1, 'Name', 'Database Type');
+INSERT INTO TopicProp VALUES ('pp-dbtype', 1, 'Visualization', 'Input Field');
+
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-dbuser', 'Username');
+INSERT INTO TopicProp VALUES ('pp-dbuser', 1, 'Name', 'Username');
+INSERT INTO TopicProp VALUES ('pp-dbuser', 1, 'Visualization', 'Input Field');
+
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-dbpassword', 'Password');
+INSERT INTO TopicProp VALUES ('pp-dbpassword', 1, 'Name', 'Password');
+INSERT INTO TopicProp VALUES ('pp-dbpassword', 1, 'Visualization', 'Input Field');
+
+-- remove "Driver" property
+DELETE FROM Association WHERE ID='a-21';
+DELETE FROM AssociationProp WHERE AssociationID='a-21';
+DELETE FROM ViewAssociation WHERE AssociationID='a-21';
+
+-- assign 3 new properties
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-21', '', 'tt-datasource', 1, 'pp-dbtype', 1);
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-21a', '', 'tt-datasource', 1, 'pp-dbuser', 1);
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-21b', '', 'tt-datasource', 1, 'pp-dbpassword', 1);
+INSERT INTO AssociationProp VALUES ('a-21', 1, 'Ordinal Number', '105');
+INSERT INTO AssociationProp VALUES ('a-21a', 1, 'Ordinal Number', '120');
+INSERT INTO AssociationProp VALUES ('a-21b', 1, 'Ordinal Number', '125');
+
+
+
 ---
 --- delete "City" and "Country" assignments from workspace "DeepaMehta"
 ---
@@ -165,18 +199,6 @@ INSERT INTO TopicProp VALUES ('tt-whois18', 1, 'Domains', 'fr');
 
 
 
---- *** UPDATE DATA DEFINITION *** ---
-ALTER TABLE             TopicProp
-     CHANGE             PropName PropName CHAR(255) NOT NULL,
-     DROP   INDEX       TopicID,
-     ADD    PRIMARY KEY (TopicID, TopicVersion, PropName)
-;
-ALTER TABLE             AssociationProp
-     CHANGE             PropName PropName CHAR(255) NOT NULL,
-     DROP   INDEX       AssociationID,
-     ADD    PRIMARY KEY (AssociationID, AssociationVersion, PropName)
-;
-
 ---
 --- Update standard installation
 ---
@@ -192,6 +214,19 @@ UPDATE TopicProp SET PropValue='DeepaMehtaServer 2.0b8-preview3'   WHERE TopicID
 ---
 -- UPDATE KeyGenerator SET NextKey=17 WHERE Relation='DB-Content Version';
 
+
+
+--- *** UPDATE DATA DEFINITION *** ---
+ALTER TABLE             TopicProp
+     CHANGE             PropName PropName CHAR(255) NOT NULL,
+     DROP   INDEX       TopicID,
+     ADD    PRIMARY KEY (TopicID, TopicVersion, PropName)
+;
+ALTER TABLE             AssociationProp
+     CHANGE             PropName PropName CHAR(255) NOT NULL,
+     DROP   INDEX       AssociationID,
+     ADD    PRIMARY KEY (AssociationID, AssociationVersion, PropName)
+;
 
 
 
@@ -210,5 +245,3 @@ JOIN (
     FROM AssociationProp GROUP BY AssociationID, AssociationVersion, PropName
     HAVING COUNT( * ) > 1 ) ap
 USING ( AssociationID, AssociationVersion, PropName );
-
-

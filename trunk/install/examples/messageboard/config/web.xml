@@ -18,6 +18,7 @@
          installing your application.
     -->
 
+	<!--
     <context-param>
       <param-name>service</param-name>
       <param-value>default</param-value>
@@ -27,6 +28,7 @@
         To configure DeepaMehta services see the file install/client/dms.rc
       </description>
     </context-param>
+    -->
 
     <context-param>
       <param-name>messageboard</param-name>

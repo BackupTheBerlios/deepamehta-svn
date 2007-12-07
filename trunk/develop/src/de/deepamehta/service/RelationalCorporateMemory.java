@@ -78,7 +78,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 */
 	RelationalCorporateMemory(DatabaseProvider dbProvider) throws Exception {
 		provider=dbProvider;
-		new DatabaseSweeper(provider).sweep();
+		// new DatabaseSweeper(provider).sweep();	// ### temporarily switched off
 		provider.getDatabaseOptimizer().optimize();
 
 		this.dbmsHint = dbProvider.getDbmsHint();

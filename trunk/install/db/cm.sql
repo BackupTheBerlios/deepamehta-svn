@@ -172,7 +172,9 @@ INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-21b', '', 'tt-datasou
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-134', '', 'tt-datasource', 1, 'pp-idleelementtype', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-22', '', 'tt-datasource', 1, 'pp-entities', 1);
 INSERT INTO AssociationProp VALUES ('a-20', 1, 'Ordinal Number', '110');
-INSERT INTO AssociationProp VALUES ('a-21', 1, 'Ordinal Number', '120');
+INSERT INTO AssociationProp VALUES ('a-21', 1, 'Ordinal Number', '105');
+INSERT INTO AssociationProp VALUES ('a-21a', 1, 'Ordinal Number', '120');
+INSERT INTO AssociationProp VALUES ('a-21b', 1, 'Ordinal Number', '125');
 INSERT INTO AssociationProp VALUES ('a-134', 1, 'Ordinal Number', '130');
 INSERT INTO AssociationProp VALUES ('a-22', 1, 'Ordinal Number', '140');
 -- super type
@@ -1252,16 +1254,19 @@ INSERT INTO TopicProp VALUES ('pp-wit_server', 1, 'Name', 'Server');
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-wit_domains', 'Domains');
 INSERT INTO TopicProp VALUES ('pp-wit_domains', 1, 'Name', 'Domains');
 
---- "Database Type" ---
+--- "Database Type" (Data Source) ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-dbtype', 'Database Type');
+INSERT INTO TopicProp VALUES ('pp-dbtype', 1, 'Name', 'Database Type');
 INSERT INTO TopicProp VALUES ('pp-dbtype', 1, 'Visualization', 'Input Field');
 
---- "Database Type" ---
+--- "Username" (Data Source) ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-dbuser', 'Username');
+INSERT INTO TopicProp VALUES ('pp-dbuser', 1, 'Name', 'Username');
 INSERT INTO TopicProp VALUES ('pp-dbuser', 1, 'Visualization', 'Input Field');
 
---- "Database Type" ---
+--- "Password" (Data Source) ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-dbpassword', 'Password');
+INSERT INTO TopicProp VALUES ('pp-dbpassword', 1, 'Name', 'Password');
 INSERT INTO TopicProp VALUES ('pp-dbpassword', 1, 'Visualization', 'Input Field');
 
 --- "Entities" ---

@@ -66,7 +66,7 @@ import java.util.Vector;
  * <IMG SRC="../../../../../images/3-tier-lcm.gif">
  * <P>
  * <HR>
- * Last functional change: 20.10.2007 (2.0b8)<BR>
+ * Last functional change: 4.12.2007 (2.0b8)<BR>
  * Last documentation update: 30.12.2001 (2.0a14-pre5)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -481,7 +481,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		// --- store in live corporate memory ---
 		addTopic(newTopic);
 		// --- trigger init() hook ---
-		newTopic.init(INITLEVEL_1, session);	// throws TopicInitException
+		directives.add(newTopic.init(INITLEVEL_1, session));	// throws TopicInitException
 		//
 		return directives;
 	}
@@ -552,8 +552,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			}
 			// --- init(2) and init(3) ---
 			newTopic = getLiveTopic(topic);
-			newTopic.init(INITLEVEL_2, session);	// throws TopicInitException ### adding init directives
-			newTopic.init(INITLEVEL_3, session);	// throws TopicInitException ### adding init directives
+			directives.add(newTopic.init(INITLEVEL_2, session));	// throws TopicInitException
+			directives.add(newTopic.init(INITLEVEL_3, session));	// throws TopicInitException
 		} catch (TopicInitException e) {
 			System.out.println("*** ApplicationService.createLiveTopic(): " + e);
 			directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(), new Integer(NOTIFICATION_ERROR));
@@ -1290,7 +1290,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	public void initTopic(String topicID, int version, int initLevel, Session session) throws TopicInitException {
 		try {
 			// --- trigger init() hook ---
-			getLiveTopic(topicID, version).init(initLevel, session);	// throws TopicInitException
+			getLiveTopic(topicID, version).init(initLevel, session);	// throws TopicInitException ### directives returned by init() are ignored
 		} catch (DeepaMehtaException e) {
 			throw new TopicInitException(e.getMessage());
 		} catch (AmbiguousSemanticException e) {
@@ -2296,9 +2296,9 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			type = type(typeTopic.getID(), 1);
 			// --- trigger init() hook ---
 			if (triggerInit) {
-				type.init(INITLEVEL_1, session); // may throw TopicInitException
-				type.init(INITLEVEL_2, session); // may throw TopicInitException
-				type.init(INITLEVEL_3, session); // may throw TopicInitException
+				type.init(INITLEVEL_1, session); // may throw TopicInitException ### directives returned by init() are ignored
+				type.init(INITLEVEL_2, session); // may throw TopicInitException ### directives returned by init() are ignored
+				type.init(INITLEVEL_3, session); // may throw TopicInitException ### directives returned by init() are ignored
 			}
 			// --- initialize presentable type ---
 			typeTopic.setTypeDefinition(type.getTypeDefinition());		// may throw DeepaMehtaException
