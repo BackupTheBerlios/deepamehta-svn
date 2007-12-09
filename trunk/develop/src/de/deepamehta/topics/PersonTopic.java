@@ -15,7 +15,7 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 5.11.2007 (2.0b8)<br>
+ * Last functional change: 9.12.2007 (2.0b8)<br>
  * Last documentation update: 7.3.2004 (2.0b3-pre1)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -29,7 +29,7 @@ public class PersonTopic extends LiveTopic {
 	private static final String CMD_SEND_TO_PERSON = "createNewMail";
 
 	private static final String ITEM_MAKE_APPOINTMENT = "Make Appointment";
-	private static final String ICON_MAKE_APPOINTMENT = "makeAppointment.gif";
+	private static final String ICON_MAKE_APPOINTMENT = "appointment.gif";
 	private static final String CMD_MAKE_APPOINTMENT = "makeAppointment";
 
 	
@@ -67,7 +67,7 @@ public class PersonTopic extends LiveTopic {
 		// custom commands
 		commands.addSeparator();
 		commands.addCommand(ITEM_SEND_TO_PERSON, CMD_SEND_TO_PERSON, FILESERVER_IMAGES_PATH, ICON_SEND_TO_PERSON);
-		commands.addCommand(ITEM_MAKE_APPOINTMENT, CMD_MAKE_APPOINTMENT, FILESERVER_IMAGES_PATH, ICON_MAKE_APPOINTMENT);
+		commands.addCommand(ITEM_MAKE_APPOINTMENT, CMD_MAKE_APPOINTMENT, FILESERVER_ICONS_PATH, ICON_MAKE_APPOINTMENT);
 		//
 		// standard commands
 		commands.addStandardCommands(this, editorContext, viewmode, session, directives);
@@ -108,7 +108,7 @@ public class PersonTopic extends LiveTopic {
 			return directives;
 		} else if (command.equals(CMD_MAKE_APPOINTMENT)) {
 			CorporateDirectives directives = new CorporateDirectives();
-			createChildTopic(TOPICTYPE_EVENT, SEMANTIC_EVENT_ATTENDEE, true, session, directives);	// reverseAssocDir=true
+			createChildTopic(TOPICTYPE_APPOINTMENT, SEMANTIC_APPOINTMENT_ATTENDEE, true, session, directives);	// reverseAssocDir=true
 			return directives;
 		} else {
 			return super.executeCommand(command, session, topicmapID, viewmode);
@@ -173,7 +173,7 @@ public class PersonTopic extends LiveTopic {
 		return cm.getRelatedTopics(getID(), SEMANTIC_CALENDAR_PERSON, TOPICTYPE_CALENDAR, 1);
 	}
 
-	public Vector getCalendarEvents() {
-		return cm.getRelatedTopics(getID(), SEMANTIC_EVENT_ATTENDEE, TOPICTYPE_EVENT, 1);
+	public Vector getCalendarAppointments() {
+		return cm.getRelatedTopics(getID(), SEMANTIC_APPOINTMENT_ATTENDEE, TOPICTYPE_APPOINTMENT, 1);
 	}
 }

@@ -26,7 +26,7 @@ import java.util.Vector;
  * </OL>
  * <P>
  * <HR>
- * Last functional change: 15.11.2007 (2.0b8)<BR>
+ * Last functional change: 9.12.2007 (2.0b8)<BR>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -519,7 +519,7 @@ public interface DeepaMehtaConstants {
 	static final String TOPICTYPE_EMAIL_ADDRESS = "tt-emailaddress";
 	static final String TOPICTYPE_EMAIL = "tt-email";
 	static final String TOPICTYPE_CALENDAR = "tt-calendar";
-	static final String TOPICTYPE_EVENT = "tt-event";
+	static final String TOPICTYPE_APPOINTMENT = "tt-event";	// topic type "Appointment" has ID "tt-event" for historical reasons
 	static final String TOPICTYPE_DOCUMENT = "tt-document";
 	static final String TOPICTYPE_IMAGE = "tt-image";
 	static final String TOPICTYPE_WEBPAGE = "tt-webpage";
@@ -670,14 +670,14 @@ public interface DeepaMehtaConstants {
 
 	// *** Calendar ***
 
-	// direction is from calendar to event
-	static final String SEMANTIC_CALENDAR_EVENT = ASSOCTYPE_ASSOCIATION;
+	// direction is from calendar to appointment
+	static final String SEMANTIC_CALENDAR_APPOINTMENT = ASSOCTYPE_ASSOCIATION;
 
 	// direction is from calendar to person
 	static final String SEMANTIC_CALENDAR_PERSON = ASSOCTYPE_ASSOCIATION;
 
-	// direction is from event to person
-	static final String SEMANTIC_EVENT_ATTENDEE = ASSOCTYPE_ASSOCIATION;
+	// direction is from appointment to person
+	static final String SEMANTIC_APPOINTMENT_ATTENDEE = ASSOCTYPE_ASSOCIATION;
 
 
 

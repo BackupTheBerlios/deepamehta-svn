@@ -17,7 +17,7 @@ import java.util.Vector;
  * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
-public class EventTopic extends LiveTopic {
+public class AppointmentTopic extends LiveTopic {
 
 
 
@@ -27,7 +27,7 @@ public class EventTopic extends LiveTopic {
 
 
 
-	public EventTopic(BaseTopic topic, ApplicationService as) {
+	public AppointmentTopic(BaseTopic topic, ApplicationService as) {
 		super(topic, as);
 	}
 
@@ -49,12 +49,12 @@ public class EventTopic extends LiveTopic {
 											String topicmapID, String viewmode, Session session) {
 		CorporateDirectives directives = super.propertiesChanged(newProps, oldProps,
 			topicmapID, viewmode, session);
-		// 1) update the calendar directly connected to this event
+		// 1) update the calendar directly connected to this appointment
 		BaseTopic calendar = getCalendar();
 		if (calendar != null) {
 			((CalendarTopic) as.getLiveTopic(calendar)).updateView(directives);
 		}
-		// 2) update the calendars of the attendees of this event
+		// 2) update the calendars of the attendees of this appointment
 		// ### Note: this way most calendars are updated more than once. Possible optimization: collect the
 		// calendars first, remove the doublettes, and update only the remaining calendars
 		Enumeration e = getAttendees().elements();
@@ -76,8 +76,8 @@ public class EventTopic extends LiveTopic {
 
 	public void associated(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
 		LiveTopic topic = as.getLiveTopic(relTopicID, 1);
-		if (assocTypeID.equals(SEMANTIC_EVENT_ATTENDEE) && topic.getType().equals(TOPICTYPE_PERSON)) {
-			System.out.println(">>> EventTopic.associated(): " + this + " associated with " + topic + " -- update calendars");
+		if (assocTypeID.equals(SEMANTIC_APPOINTMENT_ATTENDEE) && topic.getType().equals(TOPICTYPE_PERSON)) {
+			System.out.println(">>> AppointmentTopic.associated(): " + this + " associated with " + topic + " -- update calendars");
 			Vector calendars = ((PersonTopic) topic).getCalendars();
 			updateCalendars(calendars, directives);
 		}
@@ -85,8 +85,8 @@ public class EventTopic extends LiveTopic {
 
 	public void associationRemoved(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
 		LiveTopic topic = as.getLiveTopic(relTopicID, 1);
-		if (assocTypeID.equals(SEMANTIC_EVENT_ATTENDEE) && topic.getType().equals(TOPICTYPE_PERSON)) {
-			System.out.println(">>> EventTopic.associationRemoved(): " + this + " disassociated from " + topic + " -- update calendars");
+		if (assocTypeID.equals(SEMANTIC_APPOINTMENT_ATTENDEE) && topic.getType().equals(TOPICTYPE_PERSON)) {
+			System.out.println(">>> AppointmentTopic.associationRemoved(): " + this + " disassociated from " + topic + " -- update calendars");
 			Vector calendars = ((PersonTopic) topic).getCalendars();
 			updateCalendars(calendars, directives);
 		}
@@ -101,11 +101,11 @@ public class EventTopic extends LiveTopic {
 
 
 	private BaseTopic getCalendar() {
-		return as.getRelatedTopic(getID(), SEMANTIC_CALENDAR_EVENT, TOPICTYPE_CALENDAR, 1, true);	// emptyAllowed=true
+		return as.getRelatedTopic(getID(), SEMANTIC_CALENDAR_APPOINTMENT, TOPICTYPE_CALENDAR, 1, true);	// emptyAllowed=true
 	}
 
 	public Vector getAttendees() {
-		return cm.getRelatedTopics(getID(), SEMANTIC_EVENT_ATTENDEE, TOPICTYPE_PERSON, 2);
+		return cm.getRelatedTopics(getID(), SEMANTIC_APPOINTMENT_ATTENDEE, TOPICTYPE_PERSON, 2);
 	}
 
 	// ---
