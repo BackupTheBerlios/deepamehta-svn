@@ -83,23 +83,23 @@ INSERT INTO AssociationProp VALUES ('a-190', 1, 'Web Form', 'Related Topic Selec
 INSERT INTO AssociationProp VALUES ('a-190', 1, 'Ordinal Number', '150');
 
 ---
---- create topic type "Event" ---
+--- create topic type "Appointment" ---
 ---
-INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-event', 'Event');
-INSERT INTO TopicProp VALUES ('tt-event', 1, 'Name', 'Event');
-INSERT INTO TopicProp VALUES ('tt-event', 1, 'Plural Name', 'Events');
-INSERT INTO TopicProp VALUES ('tt-event', 1, 'Description', '<html><head></head><body><p>An <i>Event</i> is ...</p></body></html>');
-INSERT INTO TopicProp VALUES ('tt-event', 1, 'Description Query', 'What is an "Event"?');
-INSERT INTO TopicProp VALUES ('tt-event', 1, 'Icon', 'event.png');
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-event', 'Appointment');
+INSERT INTO TopicProp VALUES ('tt-event', 1, 'Name', 'Appointment');
+INSERT INTO TopicProp VALUES ('tt-event', 1, 'Plural Name', 'Appointments');
+INSERT INTO TopicProp VALUES ('tt-event', 1, 'Description', '<html><head></head><body><p>An <i>Appointment</i> is ...</p></body></html>');
+INSERT INTO TopicProp VALUES ('tt-event', 1, 'Description Query', 'What is an "Appointment"?');
+INSERT INTO TopicProp VALUES ('tt-event', 1, 'Icon', 'appointment.gif');
 -- INSERT INTO TopicProp VALUES ('tt-event', 1, 'Creation Icon', 'createKompetenzstern.gif');
 -- INSERT INTO TopicProp VALUES ('tt-event', 1, 'Unique Topic Names', 'on');
-INSERT INTO TopicProp VALUES ('tt-event', 1, 'Custom Implementation', 'de.deepamehta.topics.EventTopic');
+INSERT INTO TopicProp VALUES ('tt-event', 1, 'Custom Implementation', 'de.deepamehta.topics.AppointmentTopic');
 -- super type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-98', '', 'tt-generic', 1, 'tt-event', 1);
 -- search type
-INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-event-search', 'Event Search');
-INSERT INTO TopicProp VALUES ('tt-event-search', 1, 'Name', 'Event Search');
-INSERT INTO TopicProp VALUES ('tt-event-search', 1, 'Icon', 'event-search.gif');
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-event-search', 'Appointment Search');
+INSERT INTO TopicProp VALUES ('tt-event-search', 1, 'Name', 'Appointment Search');
+INSERT INTO TopicProp VALUES ('tt-event-search', 1, 'Icon', 'appointmentcontainer.gif');
 -- derive search type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-99', '', 'tt-topiccontainer', 1, 'tt-event-search', 1);
 -- assign search type to type
@@ -134,6 +134,34 @@ INSERT INTO AssociationProp VALUES ('a-323', 1, 'Association Type ID', 'at-assoc
 INSERT INTO AssociationProp VALUES ('a-323', 1, 'Web Info', 'Related Topic Name');
 INSERT INTO AssociationProp VALUES ('a-323', 1, 'Web Form', 'Related Topic Selector');
 INSERT INTO AssociationProp VALUES ('a-323', 1, 'Ordinal Number', '150');
+
+---
+--- create topic type "Event" ---
+---
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-alldayevent', 'Event');
+INSERT INTO TopicProp VALUES ('tt-alldayevent', 1, 'Name', 'Event');
+INSERT INTO TopicProp VALUES ('tt-alldayevent', 1, 'Plural Name', 'Events');
+INSERT INTO TopicProp VALUES ('tt-alldayevent', 1, 'Description', '<html><head></head><body><p>An <i>Event</i> is ...</p></body></html>');
+INSERT INTO TopicProp VALUES ('tt-alldayevent', 1, 'Description Query', 'What is an "Event"?');
+INSERT INTO TopicProp VALUES ('tt-alldayevent', 1, 'Icon', 'event.png');
+-- INSERT INTO TopicProp VALUES ('tt-alldayevent', 1, 'Creation Icon', 'createKompetenzstern.gif');
+-- INSERT INTO TopicProp VALUES ('tt-alldayevent', 1, 'Unique Topic Names', 'on');
+INSERT INTO TopicProp VALUES ('tt-alldayevent', 1, 'Custom Implementation', 'de.deepamehta.topics.EventTopic');
+-- super type
+INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-324', '', 'tt-generic', 1, 'tt-alldayevent', 1);
+-- search type
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-alldayevent-search', 'Event Search');
+INSERT INTO TopicProp VALUES ('tt-alldayevent-search', 1, 'Name', 'Event Search');
+INSERT INTO TopicProp VALUES ('tt-alldayevent-search', 1, 'Icon', 'event-search.gif');
+-- derive search type
+INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-325', '', 'tt-topiccontainer', 1, 'tt-alldayevent-search', 1);
+-- assign search type to type
+INSERT INTO Association VALUES ('at-aggregation', 1, 1, 'a-330', '', 'tt-alldayevent-search', 1, 'tt-alldayevent', 1);
+-- assign properties to topic type
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-331', '', 'tt-alldayevent', 1, 'pp-begindate', 1);
+INSERT INTO AssociationProp VALUES ('a-331', 1, 'Ordinal Number', '110');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-332', '', 'tt-alldayevent', 1, 'pp-enddate', 1);
+INSERT INTO AssociationProp VALUES ('a-332', 1, 'Ordinal Number', '130');
 
 ---
 --- assign topic types to workspace "DeepaMehta"
