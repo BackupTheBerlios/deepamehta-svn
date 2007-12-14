@@ -110,6 +110,7 @@ public class AppointmentTopic extends LiveTopic {
 
 	// ---
 
+	// ### copy in EventTopic
 	private void updateCalendars(Vector calendars, CorporateDirectives directives) {
 		Enumeration e = calendars.elements();
 		while (e.hasMoreElements()) {

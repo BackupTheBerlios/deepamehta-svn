@@ -172,6 +172,9 @@ INSERT INTO AssociationProp VALUES ('a-114', 1, 'Ordinal Number', '50');
 INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-115', '', 't-corporategroup', 1, 'tt-event', 1);
 INSERT INTO AssociationProp VALUES ('a-115', 1, 'Access Permission', 'create');
 INSERT INTO AssociationProp VALUES ('a-115', 1, 'Ordinal Number', '55');
+INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-333', '', 't-corporategroup', 1, 'tt-alldayevent', 1);
+INSERT INTO AssociationProp VALUES ('a-333', 1, 'Access Permission', 'create');
+INSERT INTO AssociationProp VALUES ('a-333', 1, 'Ordinal Number', '60');
 
 
 
@@ -208,7 +211,7 @@ INSERT INTO AssociationProp VALUES ('a-21b', 1, 'Ordinal Number', '125');
 
 
 ---
---- delete "City" and "Country" assignments from workspace "DeepaMehta"
+--- delete "City", "Country" and "Appointment" assignments from workspace "DeepaMehta"
 ---
 DELETE FROM Association WHERE ID='a-324';
 DELETE FROM AssociationProp WHERE AssociationID='a-324';
@@ -216,6 +219,11 @@ DELETE FROM ViewAssociation WHERE AssociationID='a-324';
 DELETE FROM Association WHERE ID='a-325';
 DELETE FROM AssociationProp WHERE AssociationID='a-325';
 DELETE FROM ViewAssociation WHERE AssociationID='a-325';
+DELETE FROM Association WHERE ID='a-186';
+DELETE FROM AssociationProp WHERE AssociationID='a-186';
+DELETE FROM ViewAssociation WHERE AssociationID='a-186';
+
+
 
 --- fixing some Typos in whois.sql
 UPDATE Association SET TopicID1='tt-whoistopic' WHERE TopicID1='tt-whoisTopic';

@@ -520,6 +520,7 @@ public interface DeepaMehtaConstants {
 	static final String TOPICTYPE_EMAIL = "tt-email";
 	static final String TOPICTYPE_CALENDAR = "tt-calendar";
 	static final String TOPICTYPE_APPOINTMENT = "tt-event";	// topic type "Appointment" has ID "tt-event" for historical reasons
+	static final String TOPICTYPE_EVENT = "tt-alldayevent";
 	static final String TOPICTYPE_DOCUMENT = "tt-document";
 	static final String TOPICTYPE_IMAGE = "tt-image";
 	static final String TOPICTYPE_WEBPAGE = "tt-webpage";
@@ -670,7 +671,7 @@ public interface DeepaMehtaConstants {
 
 	// *** Calendar ***
 
-	// direction is from calendar to appointment
+	// direction is from calendar to appointment ### to be dropped
 	static final String SEMANTIC_CALENDAR_APPOINTMENT = ASSOCTYPE_ASSOCIATION;
 
 	// direction is from calendar to person
