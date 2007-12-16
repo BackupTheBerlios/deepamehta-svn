@@ -21,7 +21,7 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 9.12.2007 (2.0b8)<br>
+ * Last functional change: 15.12.2007 (2.0b8)<br>
  * Last documentation update: 6.7.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -50,12 +50,12 @@ public class CalendarTopic extends LiveTopic {
 	private static final String ICON_CREATE_APPOINTMENT = "appointment.gif";
 
 	// actions
-	private static final String ACTION_REVEAL_APPOINTMENT = "revealAppointment";
 	private static final String ACTION_SELECT_DAY_MODE = "selectDayMode";
 	private static final String ACTION_SELECT_WEEK_MODE = "selectWeekMode";
 	private static final String ACTION_SELECT_MONTH_MODE = "selectMonthMode";
 	private static final String ACTION_GO_BACK = "goBack";
 	private static final String ACTION_GO_FORWARD = "goForward";
+	private static final String ACTION_REVEAL_TOPIC = "revealTopic";
 
 	// properties
 	private static final String PROPERTY_DISPLAY_MODE = "Display Mode";
@@ -154,9 +154,9 @@ public class CalendarTopic extends LiveTopic {
 				return directives;
 			}
 			String action = url.substring(urlPrefix.length());
-			if (action.startsWith(ACTION_REVEAL_APPOINTMENT)) {
-				String appointmentID = action.substring(ACTION_REVEAL_APPOINTMENT.length() + 1);	// +1 to skip /
-				revealAppointment(appointmentID, directives);
+			if (action.startsWith(ACTION_REVEAL_TOPIC)) {
+				String topicID = action.substring(ACTION_REVEAL_TOPIC.length() + 1);	// +1 to skip /
+				revealTopic(topicID, directives);
 			} else if (action.equals(ACTION_SELECT_DAY_MODE)) {
 				selectDayMode(directives);
 			} else if (action.equals(ACTION_SELECT_WEEK_MODE)) {
@@ -340,17 +340,41 @@ public class CalendarTopic extends LiveTopic {
 				for (int slot = 0; slot < daySlots.size(); slot++) {
 					WeekAppointmentModel[] daySlot = (WeekAppointmentModel[]) daySlots.elementAt(slot);
 					WeekAppointmentModel cell = daySlot[seg];
-					if (cell == null) {
-						html.append("<td></td>");
-					} else if (cell.type == WeekAppointmentModel.BEGIN_OF_APPOINTMENT) {
-						html.append("<td class=\"appointment\" rowspan=\"" + cell.occupiedSegments + "\">");
-						html.append("<b>" + cell.appointmentBegin + "</b><br>");
-						html.append("<a href=\"http://" + ACTION_REVEAL_APPOINTMENT + "/" + cell.appointmentID + "\">" + cell.appointmentName + "</a>");
-						html.append("</td>");
-					}
+					renderWeekAppointment(cell, html);
 				}
 			}
 			html.append("</tr>");
+		}
+	}
+
+	private void renderWeekAppointment(WeekAppointmentModel cell, StringBuffer html) {
+		if (cell == null) {
+			html.append("<td></td>");
+		} else if (cell.type == WeekAppointmentModel.BEGIN_OF_APPOINTMENT) {
+			html.append("<td class=\"appointment\" rowspan=\"" + cell.occupiedSegments + "\">");
+			html.append("<b>" + cell.appointmentBegin + "</b><br>");
+			html.append("<a href=\"http://" + ACTION_REVEAL_TOPIC + "/" + cell.appointmentID + "\">" +
+				cell.appointmentName + "</a>");
+			// --- location ---
+			BaseTopic location = cell.location;
+			if (location != null) {
+				html.append("<p><a href=\"http://" + ACTION_REVEAL_TOPIC + "/" + location.getID() + "\">" +
+					location.getName() + "</a></p>");
+			}
+			// --- attendees ---
+			Vector attendees = cell.attendees;
+			if (attendees.size() > 0) {
+				html.append("<p>");
+				Enumeration e = attendees.elements();
+				while (e.hasMoreElements()) {
+					BaseTopic attendee = (BaseTopic) e.nextElement();
+					html.append("<a href=\"http://" + ACTION_REVEAL_TOPIC + "/" + attendee.getID() + "\">" +
+						attendee.getName() + "</a><br>");
+				}
+				html.append("</p>");
+			}
+			//
+			html.append("</td>");
 		}
 	}
 
@@ -366,7 +390,7 @@ public class CalendarTopic extends LiveTopic {
 				} else if (cell.type == WeekEventModel.BEGIN_OF_EVENT) {
 					int daySlotCount = daySlotCount(day, cell.dayCount, weekAppointmentModel);
 					html.append("<td class=\"appointment\" colspan=\"" + daySlotCount + "\">");
-					html.append("<a href=\"http://" + ACTION_REVEAL_APPOINTMENT + "/" + cell.eventID + "\">" + cell.eventName + "</a>");
+					html.append("<a href=\"http://" + ACTION_REVEAL_TOPIC + "/" + cell.eventID + "\">" + cell.eventName + "</a>");
 					html.append("</td>");
 				}
 			}
@@ -413,7 +437,7 @@ public class CalendarTopic extends LiveTopic {
 					Enumeration e = dayAppointments.elements();
 					while (e.hasMoreElements()) {
 						MonthAppointmentModel dayAppointment = (MonthAppointmentModel) e.nextElement();
-						html.append("<li><a href=\"http://" + ACTION_REVEAL_APPOINTMENT + "/" + dayAppointment.appointmentID + "\">" +
+						html.append("<li><a href=\"http://" + ACTION_REVEAL_TOPIC + "/" + dayAppointment.appointmentID + "\">" +
 							dayAppointment.appointmentName + "</a></li>");
 					}
 					html.append("</ul>");
@@ -519,10 +543,14 @@ public class CalendarTopic extends LiveTopic {
 			WeekAppointmentModel[] daySlot = findFreeDaySlot(weekAppointmentModel, dayOfWeek, beginSegment, segmentCount);
 			// 1) add beginning segment to model
 			String appointmentName = getProperty(appointment, PROPERTY_NAME);
+			AppointmentTopic at = (AppointmentTopic) as.getLiveTopic(appointment);
+			BaseTopic location = at.getLocation();
+			Vector attendees = at.getAttendees();
 			// Note: appointment.getName() doesn't work here, because the propertiesChanged() hook is triggered after
 			// the properties are updated in CM but _before_ the topic name is updated in CM.
 			System.out.println("add appointment \"" + appointmentName + "\"");
-			daySlot[beginSegment] = new WeekAppointmentModel(appointment.getID(), appointmentName, beginTime, segmentCount);
+			daySlot[beginSegment] = new WeekAppointmentModel(appointment.getID(), appointmentName, beginTime, location,
+				attendees, segmentCount);
 			// 2) add ocupied segments to model
 			for (int seg = beginSegment + 1; seg < beginSegment + segmentCount; seg++) {
 				daySlot[seg] = new WeekAppointmentModel();
@@ -720,24 +748,26 @@ public class CalendarTopic extends LiveTopic {
 
 	// ---
 
-	private void revealAppointment(String appointmentID, CorporateDirectives directives) {
-		PresentableTopic appointment = new PresentableTopic(as.getLiveTopic(appointmentID, 1), getID());
-		BaseAssociation a = cm.getAssociation(SEMANTIC_CALENDAR_APPOINTMENT, getID(), appointmentID);
+	/**
+	 * Reveals a calender realted topic in the near of this calendar.
+	 *
+	 * @param	topicID		the topic ID of an appointment, an event, or an attendee.
+	 */
+	private void revealTopic(String topicID, CorporateDirectives directives) {
+		PresentableTopic topic = new PresentableTopic(as.getLiveTopic(topicID, 1), getID());
 		Boolean evoke = Boolean.FALSE;
+		// create a "virtual" association of type "Search Result" if not yet exist
+		BaseAssociation a = cm.getAssociation(SEMANTIC_CONTAINER_HIERARCHY, getID(), topicID);
 		if (a == null) {
-			// create a "virtual" association of type "Search Result" if not yet exist
-			a = cm.getAssociation(SEMANTIC_CONTAINER_HIERARCHY, getID(), appointmentID);
-			if (a == null) {
-				String assocID = as.getNewAssociationID();
-				a = new BaseAssociation(assocID, 1, SEMANTIC_CONTAINER_HIERARCHY, 1, "", getID(), 1, appointmentID, 1);
-				evoke = Boolean.TRUE;
-			}
+			String assocID = as.getNewAssociationID();
+			a = new BaseAssociation(assocID, 1, SEMANTIC_CONTAINER_HIERARCHY, 1, "", getID(), 1, topicID, 1);
+			evoke = Boolean.TRUE;
 		}
 		//
 		PresentableAssociation assoc = new PresentableAssociation(a);
-		directives.add(DIRECTIVE_SHOW_TOPIC, appointment);
+		directives.add(DIRECTIVE_SHOW_TOPIC, topic);
 		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, evoke);
-		directives.add(DIRECTIVE_SELECT_TOPIC, appointmentID);
+		directives.add(DIRECTIVE_SELECT_TOPIC, topicID);
 	}
 
 	// ---
@@ -842,17 +872,22 @@ public class CalendarTopic extends LiveTopic {
 
 		int type;
 		String appointmentID, appointmentName, appointmentBegin;
+		BaseTopic location;		// may be null
+		Vector attendees;		// may be empty
 		int occupiedSegments;
 
 		WeekAppointmentModel() {
 			type = OCCUPIED_BY_APPOINTMENT;
 		}
 
-		WeekAppointmentModel(String appointmentID, String appointmentName, String appointmentBegin, int occupiedSegments) {
+		WeekAppointmentModel(String appointmentID, String appointmentName, String appointmentBegin,
+									BaseTopic location, Vector attendees, int occupiedSegments) {
 			type = BEGIN_OF_APPOINTMENT;
 			this.appointmentID = appointmentID;
 			this.appointmentName = appointmentName;
 			this.appointmentBegin = appointmentBegin;
+			this.location = location;
+			this.attendees = attendees;
 			this.occupiedSegments = occupiedSegments;
 		}
 	}

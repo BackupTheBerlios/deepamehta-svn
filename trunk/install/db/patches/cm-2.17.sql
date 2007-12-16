@@ -134,6 +134,14 @@ INSERT INTO AssociationProp VALUES ('a-323', 1, 'Association Type ID', 'at-assoc
 INSERT INTO AssociationProp VALUES ('a-323', 1, 'Web Info', 'Related Topic Name');
 INSERT INTO AssociationProp VALUES ('a-323', 1, 'Web Form', 'Related Topic Selector');
 INSERT INTO AssociationProp VALUES ('a-323', 1, 'Ordinal Number', '150');
+-- create relation to "Location"
+INSERT INTO Association VALUES ('at-relation', 1, 1, 'a-338', '', 'tt-event', 1, 'tt-location', 1);
+INSERT INTO AssociationProp VALUES ('a-338', 1, 'Name', '');
+INSERT INTO AssociationProp VALUES ('a-338', 1, 'Cardinality', 'one');
+INSERT INTO AssociationProp VALUES ('a-338', 1, 'Association Type ID', 'at-association');
+INSERT INTO AssociationProp VALUES ('a-338', 1, 'Web Info', 'Related Topic Name');
+INSERT INTO AssociationProp VALUES ('a-338', 1, 'Web Form', 'Related Topic Selector');
+INSERT INTO AssociationProp VALUES ('a-338', 1, 'Ordinal Number', '150');
 
 ---
 --- create topic type "Event" ---
@@ -162,6 +170,37 @@ INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-331', '', 'tt-alldaye
 INSERT INTO AssociationProp VALUES ('a-331', 1, 'Ordinal Number', '110');
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-332', '', 'tt-alldayevent', 1, 'pp-enddate', 1);
 INSERT INTO AssociationProp VALUES ('a-332', 1, 'Ordinal Number', '130');
+
+---
+--- create topic type "Location" ---
+---
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-location', 'Location');
+INSERT INTO TopicProp VALUES ('tt-location', 1, 'Name', 'Location');
+INSERT INTO TopicProp VALUES ('tt-location', 1, 'Plural Name', 'Locations');
+INSERT INTO TopicProp VALUES ('tt-location', 1, 'Description', '<html><head></head><body><p>A <i>Location</i> is ...</p></body></html>');
+INSERT INTO TopicProp VALUES ('tt-location', 1, 'Description Query', 'What is a "Location"?');
+INSERT INTO TopicProp VALUES ('tt-location', 1, 'Icon', 'location.png');
+-- INSERT INTO TopicProp VALUES ('tt-location', 1, 'Creation Icon', 'createKompetenzstern.gif');
+-- INSERT INTO TopicProp VALUES ('tt-location', 1, 'Unique Topic Names', 'on');
+-- INSERT INTO TopicProp VALUES ('tt-location', 1, 'Custom Implementation', 'de.deepamehta.topics.EventTopic');
+-- super type
+INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-334', '', 'tt-generic', 1, 'tt-location', 1);
+-- search type
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-location-search', 'Location Search');
+INSERT INTO TopicProp VALUES ('tt-location-search', 1, 'Name', 'Location Search');
+-- INSERT INTO TopicProp VALUES ('tt-location-search', 1, 'Icon', 'event-search.gif');
+-- derive search type
+INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-335', '', 'tt-topiccontainer', 1, 'tt-location-search', 1);
+-- assign search type to type
+INSERT INTO Association VALUES ('at-aggregation', 1, 1, 'a-336', '', 'tt-location-search', 1, 'tt-location', 1);
+-- create relation to "Address"
+INSERT INTO Association VALUES ('at-relation', 1, 1, 'a-337', '', 'tt-location', 1, 'tt-address', 1);
+INSERT INTO AssociationProp VALUES ('a-337', 1, 'Name', '');
+INSERT INTO AssociationProp VALUES ('a-337', 1, 'Cardinality', 'one');
+INSERT INTO AssociationProp VALUES ('a-337', 1, 'Association Type ID', 'at-association');
+INSERT INTO AssociationProp VALUES ('a-337', 1, 'Web Info', 'Related Topic Name');
+INSERT INTO AssociationProp VALUES ('a-337', 1, 'Web Form', 'Related Topic Selector');
+INSERT INTO AssociationProp VALUES ('a-337', 1, 'Ordinal Number', '150');
 
 ---
 --- assign topic types to workspace "DeepaMehta"
