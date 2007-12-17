@@ -21,7 +21,7 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 15.12.2007 (2.0b8)<br>
+ * Last functional change: 16.12.2007 (2.0b8)<br>
  * Last documentation update: 6.7.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -261,8 +261,6 @@ public class CalendarTopic extends LiveTopic {
 		System.out.println(">>> Update calender \"" + getName() + "\" (" + appointments.size() + " appointments, " +
 			events.size() + " events)");
 		// ### String html = renderListView(appointments);
-		// ### setTopicData(PROPERTY_DESCRIPTION, html);
-		// ### directives.add(as.setTopicProperty(getID(), 1, PROPERTY_DESCRIPTION, html, topicmapID, viewmode, session));
 		String html;
 		String displayMode = getProperty(PROPERTY_DISPLAY_MODE);
 		if (displayMode.equals(DISPLAY_MODE_DAY)) {
@@ -270,7 +268,7 @@ public class CalendarTopic extends LiveTopic {
 		} else if (displayMode.equals(DISPLAY_MODE_WEEK)) {
 			html = renderWeekView(appointments, events);
 		} else if (displayMode.equals(DISPLAY_MODE_MONTH)) {
-			html = renderMonthView(appointments);
+			html = renderMonthView(appointments, events);
 		} else {
 			throw new DeepaMehtaException("unexpected calendar display mode: \"" + displayMode + "\"");
 		}
@@ -282,11 +280,13 @@ public class CalendarTopic extends LiveTopic {
 
 	private String renderDayView(Vector appointments) {
 		String displayDateString = getProperty(PROPERTY_DISPLAY_DATE);
+		Calendar displayDate = DeepaMehtaUtils.getCalendar(displayDateString);
 		StringBuffer html = new StringBuffer("<html><head><link href=\"stylesheets/calendar.css\" rel=\"stylesheet\" " +
 			"type=\"text/css\"></head><body>");
 		html.append(renderTimeControls());
 		html.append("<p>The day view is not yet implemented. But you already can scroll the date day-wise.</p>");
 		html.append("<p>Current date: " + displayDateString + "</p>");
+		html.append("<p>Week of Month: " + displayDate.get(Calendar.WEEK_OF_MONTH) + "</p>");
 		html.append("</body></html>");
 		return html.toString();
 	}
@@ -316,7 +316,7 @@ public class CalendarTopic extends LiveTopic {
 		// - heading -
 		DateFormat df = DateFormat.getDateInstance();
 		Calendar cal = (Calendar) displayDate.clone();
-		html.append("<table><tr><td>Mon-Sun</td>");
+		html.append("<table><tr valign=\"top\"><td>Mon-Sun</td>");
 		for (int day = 0; day < 7; day++) {
 			int daySlotCount = daySlotCount(day, weekAppointmentModel);
 			html.append("<td colspan=\"" + daySlotCount + "\">" + df.format(cal.getTime()) + "</td>");
@@ -380,14 +380,14 @@ public class CalendarTopic extends LiveTopic {
 
 	private void renderWeekEvents(Vector weekEventModel, Vector[] weekAppointmentModel, StringBuffer html) {
 		for (int slot = 0; slot < weekEventModel.size(); slot++) {
-			WeekEventModel[] eventSlot = (WeekEventModel[]) weekEventModel.elementAt(slot);
+			EventModel[] eventSlot = (EventModel[]) weekEventModel.elementAt(slot);
 			html.append("<tr valign=\"top\"><td></td>");
 			for (int day = 0; day < 7; day++) {
-				WeekEventModel cell = eventSlot[day];
+				EventModel cell = eventSlot[day];
 				if (cell == null) {
 					int daySlotCount = daySlotCount(day, weekAppointmentModel);
 					html.append("<td colspan=\"" + daySlotCount + "\"></td>");
-				} else if (cell.type == WeekEventModel.BEGIN_OF_EVENT) {
+				} else if (cell.type == EventModel.BEGIN_OF_EVENT) {
 					int daySlotCount = daySlotCount(day, cell.dayCount, weekAppointmentModel);
 					html.append("<td class=\"appointment\" colspan=\"" + daySlotCount + "\">");
 					html.append("<a href=\"http://" + ACTION_REVEAL_TOPIC + "/" + cell.eventID + "\">" + cell.eventName + "</a>");
@@ -398,11 +398,35 @@ public class CalendarTopic extends LiveTopic {
 		}
 	}
 
-	private String renderMonthView(Vector appointments) {
+	private void renderMonthEvents(Vector monthEventModel, StringBuffer html) {
+		for (int slot = 0; slot < monthEventModel.size(); slot++) {
+			EventModel[] eventSlot = (EventModel[]) monthEventModel.elementAt(slot);
+			html.append("<tr valign=\"top\">");
+			for (int day = 0; day < 7; day++) {
+				EventModel cell = eventSlot[day];
+				if (cell == null) {
+					html.append("<td></td>");
+				} else if (cell.type == EventModel.BEGIN_OF_EVENT) {
+					html.append("<td class=\"appointment\" colspan=\"" + cell.dayCount + "\">");
+					html.append("<a href=\"http://" + ACTION_REVEAL_TOPIC + "/" + cell.eventID + "\">" + cell.eventName + "</a>");
+					html.append("</td>");
+				}
+			}
+			html.append("</tr>");
+		}
+	}
+
+	private String renderMonthView(Vector appointments, Vector events) {
 		String displayDateString = getProperty(PROPERTY_DISPLAY_DATE);
 		Calendar displayDate = DeepaMehtaUtils.getCalendar(displayDateString);
 		// --- make model ---
-		Vector[] monthModel = makeMonthModel(appointments, displayDate);
+		Vector[] monthAppointmentModel = makeMonthAppointmentModel(appointments, displayDate);
+		//
+		displayDate.set(Calendar.DAY_OF_MONTH, 1);
+		int dayOfWeek = (displayDate.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// Mon=0 ... Sun=6
+		int weekCount = (monthAppointmentModel.length + dayOfWeek + 6) / 7;	// number of weeks to render
+		//
+		Vector[] monthEventModel = makeMonthEventModel(events, displayDate, dayOfWeek, weekCount);
 		// --- rendering ---
 		StringBuffer html = new StringBuffer("<html><head><link href=\"stylesheets/calendar.css\" rel=\"stylesheet\" " +
 											 "type=\"text/css\"></head><body>");
@@ -417,21 +441,35 @@ public class CalendarTopic extends LiveTopic {
 		}
 		html.append("</tr>");
 		// - body -
-		displayDate.set(Calendar.DAY_OF_MONTH, 1);
-		int dayOfWeek = (displayDate.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// Mon=0 ... Sun=6
-		int weekCount = (monthModel.length + dayOfWeek + 6) / 7;
 		int i = -dayOfWeek;
 		for (int week = 0; week < weekCount; week++) {
 			html.append("<tr valign=\"top\">");
 			for (int day = 0; day < 7; day++) {
-				if (i < 0 || i >= monthModel.length) {
+				if (i < 0 || i >= monthAppointmentModel.length) {
 					html.append("<td class=\"out-of-range\"></td>");
 					i++;
 					continue;
 				}
-				Vector dayAppointments = monthModel[i];
+				Vector dayAppointments = monthAppointmentModel[i];
 				html.append("<td" + (dayAppointments != null ? " class=\"appointment\"" : "") + ">");
 				html.append("<div class=\"day-of-month\">" + (i + 1) + "</div>");
+				html.append("</td>");
+				i++;
+			}
+			html.append("</tr>");
+			i -= 7;
+			//
+			renderMonthEvents(monthEventModel[week], html);
+			//
+			html.append("<tr valign=\"top\">");
+			for (int day = 0; day < 7; day++) {
+				if (i < 0 || i >= monthAppointmentModel.length) {
+					html.append("<td class=\"out-of-range\"></td>");
+					i++;
+					continue;
+				}
+				Vector dayAppointments = monthAppointmentModel[i];
+				html.append("<td" + (dayAppointments != null ? " class=\"appointment\"" : "") + ">");
 				if (dayAppointments != null) {
 					html.append("<ul>");
 					Enumeration e = dayAppointments.elements();
@@ -450,6 +488,8 @@ public class CalendarTopic extends LiveTopic {
 		html.append("</table></body></html>");
 		return html.toString();
 	}
+
+	// ---
 
 	private String renderListView(Vector appointments) {
 		StringBuffer html = new StringBuffer("<html><body>");
@@ -593,20 +633,8 @@ public class CalendarTopic extends LiveTopic {
 			Calendar eventBegin = DeepaMehtaUtils.getCalendar(beginDate);
 			Calendar eventEnd   = DeepaMehtaUtils.getCalendar(endDate);
 			int beginDay = (eventBegin.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// Mon=0 ... Sun=6
-			int endDay   = (eventEnd.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// Mon=0 ... Sun=6
-			int dayCount = endDay - beginDay + 1;
-			// find free event slot (a row)
-			WeekEventModel[] eventSlot = findFreeEventSlot(weekEventModel, beginDay, endDay);
-			// 1) add beginning day to model
-			String eventName = getProperty(event, PROPERTY_NAME);
-			// Note: event.getName() doesn't work here, because the propertiesChanged() hook is triggered after
-			// the properties are updated in CM but _before_ the topic name is updated in CM.
-			System.out.println("add event \"" + eventName + "\"");
-			eventSlot[beginDay] = new WeekEventModel(event.getID(), eventName, dayCount);
-			// 2) add ocupied days to model
-			for (int day = beginDay + 1; day < beginDay + dayCount; day++) {
-				eventSlot[day] = new WeekEventModel();
-			}
+			int endDay   =   (eventEnd.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// Mon=0 ... Sun=6
+			addEventToModel(event, beginDay, endDay, weekEventModel);
 		}
 		System.out.println("=> displayed events:                               " + eventsDisplayed);
 		//
@@ -621,6 +649,15 @@ public class CalendarTopic extends LiveTopic {
 			weekAppointmentModel[i].addElement(new WeekAppointmentModel[CALENDAR_DAY_SEGMENTS]);
 		}
 		return weekAppointmentModel;
+	}
+
+	private Vector[] initMonthEventModel(int weekCount) {
+		Vector[] monthEventModel = new Vector[weekCount];
+		// for every day add one slot
+		for (int i = 0; i < weekCount; i++) {
+			monthEventModel[i] = new Vector();
+		}
+		return monthEventModel;
 	}
 
 	// ---
@@ -648,10 +685,10 @@ public class CalendarTopic extends LiveTopic {
 		return daySlot;
 	}
 
-	private WeekEventModel[] findFreeEventSlot(Vector weekEventModel, int beginDay, int endDay) {
+	private EventModel[] findFreeEventSlot(Vector weekEventModel, int beginDay, int endDay) {
 		Enumeration e = weekEventModel.elements();
 		while (e.hasMoreElements()) {
-			WeekEventModel[] eventSlot = (WeekEventModel[]) e.nextElement();
+			EventModel[] eventSlot = (EventModel[]) e.nextElement();
 			boolean isEventSlotFree = true;
 			for (int i = beginDay; i <= endDay; i++) {
 				if (eventSlot[i] != null) {
@@ -664,7 +701,7 @@ public class CalendarTopic extends LiveTopic {
 			}
 		}
 		// no free event slot found -- create new event slot
-		WeekEventModel[] eventSlot = new WeekEventModel[7];
+		EventModel[] eventSlot = new EventModel[7];
 		weekEventModel.addElement(eventSlot);
 		System.out.println("     create a new event slot. Event slots now: " + weekEventModel.size());
 		return eventSlot;
@@ -686,9 +723,9 @@ public class CalendarTopic extends LiveTopic {
 
 	// ---
 
-	private Vector[] makeMonthModel(Vector appointments, Calendar displayDate) {
+	private Vector[] makeMonthAppointmentModel(Vector appointments, Calendar displayDate) {
 		int daysPerMonth = displayDate.getActualMaximum(Calendar.DAY_OF_MONTH);
-		Vector[] monthModel = new Vector[daysPerMonth];
+		Vector[] monthAppointmentModel = new Vector[daysPerMonth];
 		//
 		String displayDateString = DeepaMehtaUtils.getDate(displayDate);
 		//
@@ -709,15 +746,79 @@ public class CalendarTopic extends LiveTopic {
 			String appointmentName = getProperty(appointment, PROPERTY_NAME);	// note: appointment.getName() doesn't work here, because the
 			// propertiesChanged() hook is triggered after the properties are updated in CM but _before_ the topic name
 			// is updated in CM.
-			Vector dayModel = monthModel[dayOfMonth - 1];
+			Vector dayModel = monthAppointmentModel[dayOfMonth - 1];
 			if (dayModel == null) {
 				dayModel = new Vector();
-				monthModel[dayOfMonth - 1] = dayModel;
+				monthAppointmentModel[dayOfMonth - 1] = dayModel;
 			}
 			dayModel.addElement(new MonthAppointmentModel(appointment.getID(), appointmentName));		// ### could sort appointments by begin time
 		}
 		//
-		return monthModel;
+		return monthAppointmentModel;
+	}
+
+	/**
+	 * @param	displayDate	the date to display. Only year and month are relevant.
+	 * @param	dayOfWeek	weekday of the 1st day of display month, Mon=0 ... Sun=6
+	 */
+	private Vector[] makeMonthEventModel(Vector events, Calendar displayDate, int dayOfWeek, int weekCount) {
+		Vector[] monthEventModel = initMonthEventModel(weekCount);
+		//
+		String displayDateString = DeepaMehtaUtils.getDate(displayDate);
+		//
+		int eventsDisplayed = 0;	// for diagnostics only
+		//
+		Enumeration e = events.elements();
+		while (e.hasMoreElements()) {
+			BaseTopic event = (BaseTopic) e.nextElement();
+			String beginDate = getProperty(event, PROPERTY_BEGIN_DATE);
+			String endDate   = getProperty(event, PROPERTY_END_DATE);
+			// ignore events with unset date fields
+			if (!isSet(beginDate) || !isSet(endDate)) {
+				continue;
+			}
+			// ignore events outside current month
+			if (!beginDate.substring(0, 7).equals(displayDateString.substring(0, 7)) ||
+				  !endDate.substring(0, 7).equals(displayDateString.substring(0, 7))) {
+				continue;
+			}
+			// --- add event to model ---
+			eventsDisplayed++;
+			Calendar eventBegin = DeepaMehtaUtils.getCalendar(beginDate);
+			Calendar eventEnd   = DeepaMehtaUtils.getCalendar(endDate);
+			int beginDay = (eventBegin.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// Mon=0 ... Sun=6
+			int endDay   =   (eventEnd.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// Mon=0 ... Sun=6
+			int beginWeek = (DeepaMehtaUtils.getDay(beginDate) + dayOfWeek - 1) / 7;
+			int endWeek   =   (DeepaMehtaUtils.getDay(endDate) + dayOfWeek - 1) / 7;
+			System.out.println("following event spans " + (endWeek - beginWeek + 1) + " weeks:");
+			for (int week = beginWeek; week <= endWeek; week++) {
+				int weekBeginDay = week == beginWeek ? beginDay : 0;
+				int weekEndDay   =   week == endWeek ? endDay : 6;
+				// find free event slot (a row)
+				addEventToModel(event, weekBeginDay, weekEndDay, monthEventModel[week]);
+			}
+		}
+		System.out.println("=> displayed events:                               " + eventsDisplayed);
+		//
+		return monthEventModel;
+	}
+
+	// ---
+
+	private void addEventToModel(BaseTopic event, int beginDay, int endDay, Vector eventModel) {
+		// find free event slot (a row)
+		EventModel[] eventSlot = findFreeEventSlot(eventModel, beginDay, endDay);
+		// 1) add beginning day to model
+		String eventName = getProperty(event, PROPERTY_NAME);
+		int dayCount = endDay - beginDay + 1;
+		// Note: event.getName() doesn't work here, because the propertiesChanged() hook is triggered after
+		// the properties are updated in CM but _before_ the topic name is updated in CM.
+		System.out.println("add event \"" + eventName + "\"");
+		eventSlot[beginDay] = new EventModel(event.getID(), eventName, dayCount);
+		// 2) add ocupied days to model
+		for (int day = beginDay + 1; day < beginDay + dayCount; day++) {
+			eventSlot[day] = new EventModel();
+		}
 	}
 
 	// ---
@@ -895,7 +996,7 @@ public class CalendarTopic extends LiveTopic {
 	/**
 	 * Data model for rendering one event in the week view.
 	 */
-	private class WeekEventModel {
+	private class EventModel {
 
 		static final int BEGIN_OF_EVENT = 0;
 		static final int OCCUPIED_BY_EVENT = 1;
@@ -904,11 +1005,11 @@ public class CalendarTopic extends LiveTopic {
 		String eventID, eventName;
 		int dayCount;
 
-		WeekEventModel() {
+		EventModel() {
 			type = OCCUPIED_BY_EVENT;
 		}
 
-		WeekEventModel(String eventID, String eventName, int dayCount) {
+		EventModel(String eventID, String eventName, int dayCount) {
 			type = BEGIN_OF_EVENT;
 			this.eventID = eventID;
 			this.eventName = eventName;
