@@ -26,7 +26,7 @@ import java.util.Vector;
  * </OL>
  * <P>
  * <HR>
- * Last functional change: 15.12.2007 (2.0b8)<BR>
+ * Last functional change: 20.12.2007 (2.0b8)<BR>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -176,7 +176,7 @@ public interface DeepaMehtaConstants {
 											"August", "September", "October", "November", "December"};
 	static final String[] dayNames = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 	static final int YEAR_MIN = 1850;
-	static final int YEAR_MAX = 2010;
+	static final int YEAR_MAX = 2014;
 	static final String PARAM_SEPARATOR = "_";		// ### was "." clashed with "Course No."
 	static final String LEVEL_SEPARATOR = ":";
 	static final String PARAM_RELATION = "Rel";
@@ -671,9 +671,6 @@ public interface DeepaMehtaConstants {
 	static final String SEMANTIC_CHAT = ASSOCTYPE_ASSOCIATION;
 
 	// *** Calendar ***
-
-	// direction is from calendar to appointment ### to be dropped
-	static final String SEMANTIC_CALENDAR_APPOINTMENT = ASSOCTYPE_ASSOCIATION;
 
 	// direction is from calendar to person
 	static final String SEMANTIC_CALENDAR_PERSON = ASSOCTYPE_ASSOCIATION;

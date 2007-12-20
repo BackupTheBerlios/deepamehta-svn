@@ -21,7 +21,7 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 16.12.2007 (2.0b8)<br>
+ * Last functional change: 20.12.2007 (2.0b8)<br>
  * Last documentation update: 6.7.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -43,11 +43,6 @@ public class CalendarTopic extends LiveTopic {
 	//
 	private static final int CALENDAR_SEGMENT_SIZE = 60 / CALENDAR_HOUR_SEGMENTS;
 	private static final int CALENDAR_DAY_SEGMENTS = CALENDAR_HOUR_SEGMENTS * (CALENDAR_DAY_END_HOUR - CALENDAR_DAY_START_HOUR);
-
-	// commands
-	private static final String ITEM_CREATE_APPOINTMENT = "Create Appointment";
-	private static final String  CMD_CREATE_APPOINTMENT = "createAppointment";
-	private static final String ICON_CREATE_APPOINTMENT = "appointment.gif";
 
 	// actions
 	private static final String ACTION_SELECT_DAY_MODE = "selectDayMode";
@@ -80,9 +75,9 @@ public class CalendarTopic extends LiveTopic {
 
 
 
-	// **********************
-	// *** Defining Hooks ***
-	// **********************
+	// ************************
+	// *** Overriding Hooks ***
+	// ************************
 
 
 
@@ -106,31 +101,6 @@ public class CalendarTopic extends LiveTopic {
 
 
 	// --------------------------
-	// --- Providing Commands ---
-	// --------------------------
-
-
-
-	public CorporateCommands contextCommands(String topicmapID, String viewmode, Session session,
-																	CorporateDirectives directives) {
-		CorporateCommands commands = new CorporateCommands(as);
-		int editorContext = as.editorContext(topicmapID);
-		//
-		commands.addNavigationCommands(this, editorContext, session);
-		// --- "Create Appointment" command ---
-		commands.addSeparator();
-		int cmdState = session.isDemo() ? COMMAND_STATE_DISABLED : COMMAND_STATE_DEFAULT;
-		commands.addCommand(ITEM_CREATE_APPOINTMENT, CMD_CREATE_APPOINTMENT,
-			FILESERVER_ICONS_PATH, ICON_CREATE_APPOINTMENT, cmdState);
-		//
-		commands.addStandardCommands(this, editorContext, viewmode, session, directives);
-		//
-		return commands;
-	}
-
-
-
-	// --------------------------
 	// --- Executing Commands ---
 	// --------------------------
 
@@ -142,10 +112,7 @@ public class CalendarTopic extends LiveTopic {
 		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		//
-		if (cmd.equals(CMD_CREATE_APPOINTMENT)) {
-			createChildTopic(TOPICTYPE_APPOINTMENT, SEMANTIC_CALENDAR_APPOINTMENT, session, directives);
-			return directives;
-		} else if (cmd.equals(CMD_FOLLOW_HYPERLINK)) {
+		if (cmd.equals(CMD_FOLLOW_HYPERLINK)) {
 			String url = st.nextToken();
 			String urlPrefix = "http://";
 			if (!url.startsWith(urlPrefix)) {
@@ -293,12 +260,6 @@ public class CalendarTopic extends LiveTopic {
 
 	private String renderWeekView(Vector appointments, Vector events) {
 		String displayDateString = getProperty(PROPERTY_DISPLAY_DATE);
-		// error check ### to be droppped
-		if (!isSet(displayDateString)) {
-			System.out.println("  > \"Display Date\" not set completely -- rendering not yet possible");
-			return "<html><body></body></html>";
-		}
-		//
 		Calendar displayDate = DeepaMehtaUtils.getCalendar(displayDateString);
 		// display range: begin date
 		int delta = (displayDate.get(Calendar.DAY_OF_WEEK) + 5) % 7;
@@ -419,14 +380,14 @@ public class CalendarTopic extends LiveTopic {
 	private String renderMonthView(Vector appointments, Vector events) {
 		String displayDateString = getProperty(PROPERTY_DISPLAY_DATE);
 		Calendar displayDate = DeepaMehtaUtils.getCalendar(displayDateString);
+		// display range: begin date
+		displayDate.set(Calendar.DAY_OF_MONTH, 1);
+		// display range: end date
+		Calendar lastDisplayDate = (Calendar) displayDate.clone();
+		lastDisplayDate.set(Calendar.DAY_OF_MONTH, lastDisplayDate.getActualMaximum(Calendar.DAY_OF_MONTH));
 		// --- make model ---
 		Vector[] monthAppointmentModel = makeMonthAppointmentModel(appointments, displayDate);
-		//
-		displayDate.set(Calendar.DAY_OF_MONTH, 1);
-		int dayOfWeek = (displayDate.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// Mon=0 ... Sun=6
-		int weekCount = (monthAppointmentModel.length + dayOfWeek + 6) / 7;	// number of weeks to render
-		//
-		Vector[] monthEventModel = makeMonthEventModel(events, displayDate, dayOfWeek, weekCount);
+		Vector[] monthEventModel = makeMonthEventModel(events, displayDate, lastDisplayDate);
 		// --- rendering ---
 		StringBuffer html = new StringBuffer("<html><head><link href=\"stylesheets/calendar.css\" rel=\"stylesheet\" " +
 											 "type=\"text/css\"></head><body>");
@@ -441,6 +402,8 @@ public class CalendarTopic extends LiveTopic {
 		}
 		html.append("</tr>");
 		// - body -
+		int dayOfWeek = (displayDate.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// weekday of 1st day of month, Mon=0 ... Sun=6
+		int weekCount = (lastDisplayDate.get(Calendar.DAY_OF_MONTH) + dayOfWeek + 6) / 7;	// number of weeks to render
 		int i = -dayOfWeek;
 		for (int week = 0; week < weekCount; week++) {
 			html.append("<tr valign=\"top\">");
@@ -518,7 +481,7 @@ public class CalendarTopic extends LiveTopic {
 		String displayMode = getProperty(PROPERTY_DISPLAY_MODE);
 		StringBuffer html = new StringBuffer();
 		html.append("<a href=\"http://" + ACTION_GO_BACK + "\"><img src=\"images/button-arrow-left.png\" border=\"0\"></a>");
-		html.append("<a href=\"http://" + ACTION_SELECT_DAY_MODE + "\"><img src=\"images/button-day" + (displayMode.equals(DISPLAY_MODE_DAY) ? "-activated" : "") + ".png\" border=\"0\"></a>");
+		// ### html.append("<a href=\"http://" + ACTION_SELECT_DAY_MODE + "\"><img src=\"images/button-day" + (displayMode.equals(DISPLAY_MODE_DAY) ? "-activated" : "") + ".png\" border=\"0\"></a>");
 		html.append("<a href=\"http://" + ACTION_SELECT_WEEK_MODE + "\"><img src=\"images/button-week" + (displayMode.equals(DISPLAY_MODE_WEEK) ? "-activated" : "") + ".png\" border=\"0\"></a>");
 		html.append("<a href=\"http://" + ACTION_SELECT_MONTH_MODE + "\"><img src=\"images/button-month" + (displayMode.equals(DISPLAY_MODE_MONTH) ? "-activated" : "") + ".png\" border=\"0\"></a>");
 		html.append("<a href=\"http://" + ACTION_GO_FORWARD + "\"><img src=\"images/button-arrow-right.png\" border=\"0\"></a>");
@@ -622,18 +585,30 @@ public class CalendarTopic extends LiveTopic {
 			if (!isSet(beginDate) || !isSet(endDate)) {
 				continue;
 			}
-			// ignore events outside display range
-			int c1 = beginDate.compareTo(displayDateString);
-			int c2 = endDate.compareTo(lastDisplayDateString);
-			if (c1 < 0 || c2 > 0) {
+			// ignore events completely outside display range
+			int c1 = beginDate.compareTo(lastDisplayDateString);
+			int c2 = endDate.compareTo(displayDateString);
+			if (c1 > 0 || c2 < 0) {
 				continue;
 			}
 			// --- add event to model ---
 			eventsDisplayed++;
+			// adjust event begin date
+			c1 = beginDate.compareTo(displayDateString);
+			if (c1 < 0) {
+				beginDate = displayDateString;
+			}
+			// adjust event end date
+			c2 = endDate.compareTo(lastDisplayDateString);
+			if (c2 > 0) {
+				endDate = lastDisplayDateString;
+			}
+			//
 			Calendar eventBegin = DeepaMehtaUtils.getCalendar(beginDate);
 			Calendar eventEnd   = DeepaMehtaUtils.getCalendar(endDate);
 			int beginDay = (eventBegin.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// Mon=0 ... Sun=6
 			int endDay   =   (eventEnd.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// Mon=0 ... Sun=6
+			//
 			addEventToModel(event, beginDay, endDay, weekEventModel);
 		}
 		System.out.println("=> displayed events:                               " + eventsDisplayed);
@@ -758,13 +733,16 @@ public class CalendarTopic extends LiveTopic {
 	}
 
 	/**
-	 * @param	displayDate	the date to display. Only year and month are relevant.
-	 * @param	dayOfWeek	weekday of the 1st day of display month, Mon=0 ... Sun=6
+	 * @param	displayDate		the date to display. Set to 1st day of month.
+	 * @param	lastDisplayDate	the date to display. Set to last day of month.
 	 */
-	private Vector[] makeMonthEventModel(Vector events, Calendar displayDate, int dayOfWeek, int weekCount) {
+	private Vector[] makeMonthEventModel(Vector events, Calendar displayDate, Calendar lastDisplayDate) {
+		int dayOfWeek = (displayDate.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// weekday of 1st day of month, Mon=0 ... Sun=6
+		int weekCount = (lastDisplayDate.get(Calendar.DAY_OF_MONTH) + dayOfWeek + 6) / 7;	// number of weeks to render
 		Vector[] monthEventModel = initMonthEventModel(weekCount);
 		//
-		String displayDateString = DeepaMehtaUtils.getDate(displayDate);
+		String displayDateString     = DeepaMehtaUtils.getDate(displayDate);
+		String lastDisplayDateString = DeepaMehtaUtils.getDate(lastDisplayDate);
 		//
 		int eventsDisplayed = 0;	// for diagnostics only
 		//
@@ -777,13 +755,25 @@ public class CalendarTopic extends LiveTopic {
 			if (!isSet(beginDate) || !isSet(endDate)) {
 				continue;
 			}
-			// ignore events outside current month
-			if (!beginDate.substring(0, 7).equals(displayDateString.substring(0, 7)) ||
-				  !endDate.substring(0, 7).equals(displayDateString.substring(0, 7))) {
+			// ignore events completely outside current month
+			int c1 = beginDate.compareTo(lastDisplayDateString);
+			int c2 = endDate.compareTo(displayDateString);
+			if (c1 > 0 || c2 < 0) {
 				continue;
 			}
 			// --- add event to model ---
 			eventsDisplayed++;
+			// adjust event begin date
+			c1 = beginDate.compareTo(displayDateString);
+			if (c1 < 0) {
+				beginDate = displayDateString;
+			}
+			// adjust event end date
+			c2 = endDate.compareTo(lastDisplayDateString);
+			if (c2 > 0) {
+				endDate = lastDisplayDateString;
+			}
+			//
 			Calendar eventBegin = DeepaMehtaUtils.getCalendar(beginDate);
 			Calendar eventEnd   = DeepaMehtaUtils.getCalendar(endDate);
 			int beginDay = (eventBegin.get(Calendar.DAY_OF_WEEK) + 5) % 7;	// Mon=0 ... Sun=6
@@ -794,7 +784,7 @@ public class CalendarTopic extends LiveTopic {
 			for (int week = beginWeek; week <= endWeek; week++) {
 				int weekBeginDay = week == beginWeek ? beginDay : 0;
 				int weekEndDay   =   week == endWeek ? endDay : 6;
-				// find free event slot (a row)
+				//
 				addEventToModel(event, weekBeginDay, weekEndDay, monthEventModel[week]);
 			}
 		}
@@ -824,12 +814,8 @@ public class CalendarTopic extends LiveTopic {
 	// ---
 
 	private Vector getAppointments() {
-		Vector appointments;
-		// 1) add appointments directly connected to this calendar
-		// ### sorting not needed anymore
-		String[] sortProps = {PROPERTY_BEGIN_DATE, PROPERTY_BEGIN_TIME};
-		appointments = cm.getRelatedTopics(getID(), SEMANTIC_CALENDAR_APPOINTMENT, TOPICTYPE_APPOINTMENT, 2, sortProps, false);	// descending=false
-		// 2) add appointments of the persons connected to this calendar
+		Vector appointments = new Vector();
+		// add appointments of the persons connected to this calendar
 		Enumeration e = getCalendarPersons().elements();
 		while (e.hasMoreElements()) {
 			BaseTopic person = (BaseTopic) e.nextElement();
