@@ -9,6 +9,8 @@
 
 	<property file="${config.properties}" />
 	<property file="${dm.base-dir}/build.properties" />
+	<property file="${config}/config.properties" />
+	<property file="${config}/build.properties" />
 	<property file="${dm.instance.config-property-file}" />
 	<property file="${dm.instance.property-file}" />
 	<property file="${dm.instance.build-property-file}" />

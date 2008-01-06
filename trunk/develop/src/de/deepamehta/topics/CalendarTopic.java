@@ -21,7 +21,7 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 20.12.2007 (2.0b8)<br>
+ * Last functional change: 21.12.2007 (2.0b8)<br>
  * Last documentation update: 6.7.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -820,7 +820,13 @@ public class CalendarTopic extends LiveTopic {
 		while (e.hasMoreElements()) {
 			BaseTopic person = (BaseTopic) e.nextElement();
 			Vector personAppointments = ((PersonTopic) as.getLiveTopic(person)).getCalendarAppointments();
-			appointments.addAll(personAppointments);
+			Enumeration e2 = personAppointments.elements();
+			while (e2.hasMoreElements()) {
+				BaseTopic appointment = (BaseTopic) e2.nextElement();
+				if (!containsID(appointments, appointment)) {
+					appointments.addElement(appointment);
+				}
+			}
 		}
 		return appointments;
 	}
@@ -934,6 +940,17 @@ public class CalendarTopic extends LiveTopic {
 			throw new DeepaMehtaException("no HTML body content found in \"" + html + "\"");
 		}
 		return html.substring(i1 + 6, i2);
+	}
+
+	private boolean containsID(Vector topics, BaseTopic topic) {
+		Enumeration e = topics.elements();
+		while (e.hasMoreElements()) {
+			BaseTopic t = (BaseTopic) e.nextElement();
+			if (t.getID().equals(topic.getID())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean isSet(String dateOrTime) {

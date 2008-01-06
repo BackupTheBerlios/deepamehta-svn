@@ -66,13 +66,29 @@ this file or call the config target again.
 		<var name="prefix" value="dm" />
 		<var name="default" value="${dm.instance}" />
 		<antcallback target="-config-which-generic-instance" return="return.instance" />
+		<if>
+			<not>
+				<or>
+					<equals arg1="${return.instance}" arg2="${dm.instance}" />
+					<isset property="example.execute" />
+				</or>
+			</not>
+			<then>
+				<input message="Setup ${return.instance} as default instance?" addproperty="setup.default-instance" defaultvalue="y" validargs="y,n"/>
+				<if>
+					<equals arg1="${setup.default-instance}" arg2="y" />
+					<then>
+<!--						<propertyfile file="${config.properties}">
+							<entry key="dm.instance" value="${dm.instance}" />
+						</propertyfile>
+-->						<propertyfile file="${config}/config.properties">
+							<entry key="dm.instance" value="${return.instance}" />
+						</propertyfile>
+					</then>
+				</if>
+			</then>
+		</if>
 		<var name="dm.instance" value="${return.instance}" />
-		<propertyfile file="${config.properties}">
-			<entry key="dm.instance" value="${dm.instance}" />
-		</propertyfile>
-		<propertyfile file="${config}/config.properties">
-			<entry key="dm.instance" value="${dm.instance}" />
-		</propertyfile>
 	</target>
 
 	<target name="-config-dm-instance" depends="-config-which-dm-instance">

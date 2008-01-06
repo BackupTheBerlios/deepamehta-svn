@@ -191,9 +191,7 @@
 		</condition>
 		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] patchdb'" />
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}" onerror="continue">
-			<fileset dir=".">
-				<include name="${patch}" />
-			</fileset>
+			<fileset file="${patch}" />
 			<fileset dir="${db-specific}">
 				<include name="${db.close-session}" />
 			</fileset>
@@ -312,6 +310,7 @@
 		<trycatch property="exceptionProp">
 			<try>
 				<ant antfile="build.xml" dir="${examples}/${example}" target="${target}" inheritall="false">
+					<property name="dm.instance" value="${dm.instance}" />
 					<property name="do.dmdb.abort" value="${do.db.abort}" />
 					<property name="db.syspass" value="${db.syspass}" />
 					<property name="withsyspass" value="${withsyspass}" />
@@ -330,6 +329,7 @@
 		<trycatch property="exceptionProp">
 			<try>
 				<ant antfile="build.xml" dir="${app-dir}" target="${target}" inheritall="false">
+					<property name="dm.instance" value="${dm.instance}" />
 					<property name="do.dmdb.abort" value="${do.db.abort}" />
 					<property name="db.syspass" value="${db.syspass}" />
 					<property name="withsyspass" value="${withsyspass}" />
