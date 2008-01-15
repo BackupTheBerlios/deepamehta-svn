@@ -24,7 +24,7 @@ import java.util.Vector;
  * Utility class for building {@link de.deepamehta.Commands topic commands / association commands}.
  * <P>
  * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
+ * Last functional change: 15.1.2008 (2.0b8)<BR>
  * Last documentation update: 9.10.2001 (2.0a12)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -382,6 +382,12 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 */
 	public void addDeleteAssociationCommand(String label, String iconPath, String iconfile) {
 		addCommand(label, CMD_DELETE_ASSOC, iconPath, iconfile, COMMAND_STATE_DEFAULT);
+	}
+
+	// ---
+
+	public void addDeleteTopicmapCommand() {
+		addCommand(as.string(ITEM_DELETE_TOPIC), CMD_DELETE_TOPICMAP, FILESERVER_IMAGES_PATH, ICON_DELETE_TOPIC);
 	}
 
 	// ---
@@ -794,91 +800,6 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 
 	/**
-	 * @see		#addTopicTypeCommands
-	 */
-	private void addBuildmodeTopicTypeCommands(Commands cmdGroup, String command,
-															boolean usePluralName) {
-		addTypeCommand(cmdGroup, TOPICTYPE_TOPICTYPE, command, usePluralName);
-		addTypeCommand(cmdGroup, TOPICTYPE_ASSOCTYPE, command, usePluralName);
-		addTypeCommand(cmdGroup, TOPICTYPE_PROPERTY, command, usePluralName);
-		addTypeCommand(cmdGroup, TOPICTYPE_PROPERTY_VALUE, command, usePluralName);
-		addTypeCommand(cmdGroup, "tt-datasource", command, usePluralName);
-	}
-
-	// --- addTopicPropertyCommand (2 forms) ---
-
-	/**
-	 * @see		#addTopicPropertyCommands
-	 */
-	/* ### private boolean addTopicPropertyCommand(PropertyDefinition propDef, boolean enabled,
-																			LiveTopic topic, Session session) {
-		boolean added = false;
-		//
-		String propName = propDef.getPropertyName();
-		String propLabel = propDef.getPropertyLabel();
-		String visualization = propDef.getVisualization();
-		String editIconfile = propDef.getEditIconfile();
-		//
-		if (visualization.equals(VISUAL_FIELD)) {
-			addTopicPropertyCommand(propName, propLabel, editIconfile, enabled, false, false, session);
-			added = true;
-		} else if (visualization.equals(VISUAL_AREA)) {
-			addTopicPropertyCommand(propName, propLabel, editIconfile, enabled, false, true, session);
-			added = true;
-		} else if (visualization.equals(VISUAL_TEXT_EDITOR)) {
-			addTopicPropertyCommand(propName, propLabel, editIconfile, enabled, true, true, session);
-			added = true;
-		} else if (visualization.equals(VISUAL_CHOICE) ||
-				   visualization.equals(VISUAL_RADIOBUTTONS)) {
-			String value = topic.getProperty(propName);
-			addOptionsMenuCommands(propName, propLabel, editIconfile, value, propDef.getOptions(), session);
-			added = true;
-		} else if (visualization.equals(VISUAL_SWITCH)) {
-			String value = topic.getProperty(propName);
-			addSwitchCommand(propName, propLabel, editIconfile, value, session);
-			added = true;
-		} else if (visualization.equals(VISUAL_FILE_CHOOSER)) {
-			addFileCommand(propName, propLabel, "chooseFile.gif" // ### editIconfile //, session);
-			added = true;
-		} else {
-			// ### System.out.println(">>> no command for property \"" + propName + "\" (" +
-				"visualization: \"" + visualization + "\")");
-		}
-		// Note: hidden properties (VISUAL_HIDDEN) are not respected
-		// ### pending: VISUAL_DATE_CHOOSER
-		// ### pending: VISUAL_TIME_CHOOSER
-		// ### pending: VISUAL_PASSWORD_FIELD
-		//
-		return added;
-	} */
-
-	/**
-	 * @see		#addTopicPropertyCommand	(above)
-	 */
-	/* ### private void addTopicPropertyCommand(String propName, String propLabel, String iconfile,
-									boolean editable, boolean styled, boolean multiline, Session session) {
-		int item = editable ? ITEM_EDIT_PROPERTY : ITEM_VIEW_PROPERTY;
-		String cmd = editable ? CMD_EDIT_TOPIC_PROPERTY : CMD_VIEW_TOPIC_PROPERTY;
-		String param = COMMAND_SEPARATOR + propName + COMMAND_SEPARATOR + propLabel + COMMAND_SEPARATOR + styled + COMMAND_SEPARATOR + multiline;
-		addCommand(as.string(item, propLabel), cmd + param, FILESERVER_IMAGES_PATH, iconfile);
-	} */
-
-	// ---
-
-	/**
-	 * @see		#addAssocPropertyCommands
-	 */
-	private void addAssociationPropertyCommand(String propName, String iconfile,
-									boolean editable, boolean styled, boolean multiline, Session session) {
-		int item = editable ? ITEM_EDIT_PROPERTY : ITEM_VIEW_PROPERTY;
-		String cmd = editable ? CMD_EDIT_ASSOC_PROPERTY : CMD_VIEW_ASSOC_PROPERTY;
-		String param = COMMAND_SEPARATOR + propName + COMMAND_SEPARATOR + styled + COMMAND_SEPARATOR + multiline;
-		addCommand(as.string(item, propName), cmd + param, FILESERVER_IMAGES_PATH, iconfile);
-	}
-
-	// ---
-
-	/**
 	 * @param	types		types to add as vector of {@link de.deepamehta.BaseTopic} ### or as vector of typeIDs (Strings)
 	 *
 	 * @see		#addTopicTypeCommands(int groupID, String command, boolean usePluralName,
@@ -886,12 +807,6 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 */
 	public void addTopicTypeCommands(Commands cmdGroup, Vector types, String command, boolean usePluralName) {
 		// --- add "generic" type first ---
-		/* ### boolean add;
-		if (types.size() > 0 && types.firstElement() instanceof String) {
-			add = types.contains(TOPICTYPE_TOPIC);
-		} else {
-			add = DeepaMehtaServiceUtils.findIndexByID(types, TOPICTYPE_TOPIC) != -1;
-		} */
 		if (DeepaMehtaServiceUtils.findIndexByID(types, TOPICTYPE_TOPIC) != -1) {
 			addTypeCommand(cmdGroup, TOPICTYPE_TOPIC, command, usePluralName);
 		}

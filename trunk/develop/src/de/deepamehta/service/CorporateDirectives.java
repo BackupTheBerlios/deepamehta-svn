@@ -27,7 +27,7 @@ import java.util.Vector;
  * with every constructor call).
  * <P>
  * <HR>
- * Last functional change: 27.9.2007 (2.0b8)<BR>
+ * Last functional change: 8.1.2008 (2.0b8)<BR>
  * Last documentation update: 17.11.2000 (2.0a7-pre3)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -243,7 +243,7 @@ public class CorporateDirectives extends Directives {
 					boolean die = ((Boolean) param2).booleanValue();
 					if (die) {
 						// ### the version is set to 1
-						add(deleteTopic(topicID, 1, as));
+						add(deleteTopic(topicID, 1, as, session));
 						// Note: param3 (topicmapID) is not respected for "delete"
 					} else {
 						as.deleteViewTopic((String) param3, topicID);
@@ -264,7 +264,7 @@ public class CorporateDirectives extends Directives {
 					Vector topicIDs = (Vector) param1;
 					die = ((Boolean) param2).booleanValue();
 					if (die) {
-						add(deleteLiveTopics(topicIDs, as));
+						add(deleteLiveTopics(topicIDs, as, session));
 						// Note: param3 (topicmapID) is not respected for "delete"
 					} else {
 						as.deleteViewTopics((String) param3, topicIDs);
@@ -861,12 +861,12 @@ public class CorporateDirectives extends Directives {
 	 *
 	 * @see		#updateCorporateMemory
 	 */
-	private CorporateDirectives deleteLiveTopics(Vector topicIDs, ApplicationService as) {
+	private CorporateDirectives deleteLiveTopics(Vector topicIDs, ApplicationService as, Session session) {
 		CorporateDirectives directives = new CorporateDirectives();
 		Enumeration e = topicIDs.elements();
 		while (e.hasMoreElements()) {
 			// ### the version is set to 1
-			directives.add(deleteTopic((String) e.nextElement(), 1, as));
+			directives.add(deleteTopic((String) e.nextElement(), 1, as, session));
 		}
 		return directives;
 	}
@@ -900,11 +900,11 @@ public class CorporateDirectives extends Directives {
 	 * @see		CorporateDirectives#updateCorporateMemory
 	 * @see		CorporateDirectives#deleteLiveTopics
 	 */
-	private CorporateDirectives deleteTopic(String topicID, int version, ApplicationService as) {
+	private CorporateDirectives deleteTopic(String topicID, int version, ApplicationService as, Session session) {
 		CorporateDirectives directives = new CorporateDirectives();
 		try {
 			// --- trigger die() hook ---
-			directives.add(as.getLiveTopic(topicID, version).die());
+			directives.add(as.getLiveTopic(topicID, version).die(session));
 		} catch (DeepaMehtaException e) {
 			// ### add to directives
 			System.out.println("*** ApplicationService.deleteTopic(): " + e);

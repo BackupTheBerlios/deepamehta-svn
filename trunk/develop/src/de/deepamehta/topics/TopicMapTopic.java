@@ -84,7 +84,7 @@ import javax.swing.ImageIcon;
  *     ({@link #importFromFile})</LI>
  * </OL>
  * <HR>
- * Last functional change: 13.9.2007 (2.0b8)<BR>
+ * Last functional change: 15.1.2008 (2.0b8)<BR>
  * Last documentation update: 11.12.2001 (2.0a14-pre4)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -217,15 +217,16 @@ public class TopicMapTopic extends LiveTopic {
 
 
 
-	public CorporateDirectives die() {
+	public CorporateDirectives die(Session session) {
 		CorporateDirectives directives = new CorporateDirectives();
 		// causes the client to close this view in case it has opened it
-		directives.add(DIRECTIVE_CLOSE_EDITOR, getID());
+		// ### directives.add(DIRECTIVE_CLOSE_EDITOR, getID());
+		close(session, directives);
 		// delete view from corporate memory
 		as.deleteUserView(getID(), getVersion());
 		// delete this topic from corporate memory and from live corporate memory
 		// Note: super.die() must perform after
-		directives.add(super.die());
+		directives.add(super.die(session));
 		//
 		return directives;
 	}
@@ -299,8 +300,9 @@ public class TopicMapTopic extends LiveTopic {
 			commands.addCreateCommands(viewmode, session, directives);
 			commands.addSeparator();
 			//
-			commands.addHideAllCommands(topicmapID, viewmode, session);
 			commands.addCloseCommand(session);
+			commands.addHideAllCommands(topicmapID, viewmode, session);
+			commands.addDeleteTopicmapCommand();
 			commands.addSeparator();
 			//
 			commands.addPublishCommand(getID(), session, directives);
@@ -401,6 +403,10 @@ public class TopicMapTopic extends LiveTopic {
 			String userID = session.getUserID();
 			String formatID = st.nextToken();
 			setExportFormat(userID, formatID, directives);
+		// --- delete topicmap ---
+		} else if (cmd.equals(CMD_DELETE_TOPICMAP)) {
+			delete(session.getPersonalWorkspace().getID(), VIEWMODE_USE, directives);
+		//
 		} else if (cmd.equals(CMD_ASSIGN_BACKGROUND)) {
 			directives.add(DIRECTIVE_CHOOSE_FILE);
 		} else if (cmd.equals(CMD_PROCESS_FILELIST)) {

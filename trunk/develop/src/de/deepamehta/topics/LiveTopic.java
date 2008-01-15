@@ -47,7 +47,7 @@ import java.util.Vector;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last sourcecode change: 6.11.2007 (2.0b8)<br>
+ * Last sourcecode change: 8.1.2008 (2.0b8)<br>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -216,7 +216,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 *
 	 * @see		ApplicationService#deleteTopic
 	 */
-	public CorporateDirectives die() {
+	public CorporateDirectives die(Session session) {
 		// --- delete topic from all views ---
 		as.deleteViewTopic(getID());
 		// --- delete topic and its properties from corporate memory ---
@@ -464,8 +464,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#executeTopicCommand
 	 */
-	public CorporateDirectives executeCommand(String command, Session session,
-													String topicmapID, String viewmode) {
+	public CorporateDirectives executeCommand(String command, Session session, String topicmapID, String viewmode) {
 		// >>> compare to LiveAssociation.executeCommand()
 		CorporateDirectives directives = new CorporateDirectives();
 		//
@@ -1128,7 +1127,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * Extends the specified directives to hide/delete this topic as well as any associations
 	 * this topic is involed in.
 	 * <p>
-	 * Handles the {@link #CMD_HIDE_TOPIC} command.
+	 * Handles the commands {@link #CMD_HIDE_TOPIC} and {@link #CMD_DELETE_TOPIC} (indirectly).
 	 * <p>
 	 * ### Hypothesis: topicmapID and viewmode are only needed when called by client,
 	 * ### when called by servlet they can be set to null

@@ -13,7 +13,7 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 20.12.2007 (2.0b8)<br>
+ * Last functional change: 8.1.2008 (2.0b8)<br>
  * Last documentation update: 14.12.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -54,8 +54,8 @@ public class EventTopic extends LiveTopic {
 		return directives;
 	}
 
-	public CorporateDirectives die() {
-		CorporateDirectives directives = super.die();
+	public CorporateDirectives die(Session session) {
+		CorporateDirectives directives = super.die(session);
 		//
 		updateCalendars(getCalendars(), directives);
 		//

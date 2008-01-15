@@ -26,7 +26,7 @@ import java.util.Vector;
  * </OL>
  * <P>
  * <HR>
- * Last functional change: 20.12.2007 (2.0b8)<BR>
+ * Last functional change: 15.1.2008 (2.0b8)<BR>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -404,6 +404,7 @@ public interface DeepaMehtaConstants {
 	static final String CMD_HIDE_ASSOC   = "hideAssociation";
 	static final String CMD_DELETE_TOPIC = "deleteTopic";
 	static final String CMD_DELETE_ASSOC = "deleteAssociation";
+	static final String CMD_DELETE_TOPICMAP = "deleteTopicmap";
 	static final String CMD_SET_PROPERTY = "setProperty";				// changes model
 	static final String CMD_EDIT_TOPIC_PROPERTY = "editTopicProperty";	// opens detail
 	static final String CMD_VIEW_TOPIC_PROPERTY = "viewTopicProperty";	// opens detail
@@ -1075,9 +1076,8 @@ public interface DeepaMehtaConstants {
 
 
 	static final int EDITOR_CONTEXT_PERSONAL = 1;	// personal workspace topicmap 
-	static final int EDITOR_CONTEXT_WORKGROUP = 2;	// workspace topicmap
-	// ### static final int EDITOR_CONTEXT_CORPORATE = 3;	// corporate workspace ### not needed anymore
-	static final int EDITOR_CONTEXT_VIEW = 4;		// topicmap
+	static final int EDITOR_CONTEXT_WORKGROUP = 2;	// shared workspace topicmap
+	static final int EDITOR_CONTEXT_VIEW = 3;		// open topicmap
 
 
 
