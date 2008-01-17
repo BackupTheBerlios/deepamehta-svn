@@ -199,6 +199,18 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		//
 		return html.toString();
 	}
+	
+	public String listTopicBeans(Vector topicBeans) {
+		//
+		StringBuffer html = new StringBuffer();
+		html.append("</br>");
+		for (int i = 0; i < topicBeans.size(); i++) {
+			TopicBean topic = (TopicBean) topicBeans.elementAt(i);
+			html.append(topic.getValue("Name"));
+			html.append("</br>");
+		}
+		return html.toString();
+	}
 
 	// ---
 
@@ -640,9 +652,10 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	}
 
 	public String imageTag(BaseTopic topic, boolean withTooltip) {
+		//alt=\"" + topic.getName() + "\" removed for kiezatlas, list servlet excel updates
 		String iconfile = as.getLiveTopic(topic).getIconfile();
 		return "<img src=\"" + as.getCorporateWebBaseURL() + FILESERVER_ICONS_PATH + iconfile + "\"" +
-			" alt=\"" + topic.getName() + "\" border=\"0\"" + 
+			" border=\"0\"" + 
 			(withTooltip ? " title=\"" + topic.getName() + "\"" : "") + ">";
 	}
 
