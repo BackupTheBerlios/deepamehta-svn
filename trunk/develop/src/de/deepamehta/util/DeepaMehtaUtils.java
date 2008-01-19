@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 /**
  * <P>
  * <HR>
- * Last functional change: 15.11.2007 (2.0b8)<BR>
+ * Last functional change: 19.1.2008 (2.0b8)<BR>
  * Last documentation update: 28.7.2001 (2.0a11)<BR>
  * Malte Rei&szlig;ig<BR>
  * mre@deepamehta.de
@@ -454,22 +454,26 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 	}
 
 	static public String replace(String str, char oldChar, String newStr) {
-		return str.replaceAll(""+oldChar, newStr);
-//		int pos = str.indexOf(oldChar);
-//		if (pos == -1) {
-//			return str;
-//		}
-//		//
-//		StringBuffer result = new StringBuffer();
-//		int pos0 = 0;
-//		while (pos != -1) {
-//			result.append(str.substring(pos0, pos));
-//			result.append(newStr);
-//			pos0 = pos + 1;
-//			pos = str.indexOf(oldChar, pos0);
-//		}
-//		result.append(str.substring(pos0));
-//		return result.toString();
+		// ### return str.replaceAll(""+oldChar, newStr);
+		// ###
+		// ### replaceAll() works with regexps and ist NOT compatible with the following regexp-less solution
+		// ### The difference regards Quoting: a backslash in a Java string must be quoted: \\
+		// ### BUT within regexps each backslash must be quoted again: \\\\
+		int pos = str.indexOf(oldChar);
+		if (pos == -1) {
+			return str;
+		}
+		//
+		StringBuffer result = new StringBuffer();
+		int pos0 = 0;
+		while (pos != -1) {
+			result.append(str.substring(pos0, pos));
+			result.append(newStr);
+			pos0 = pos + 1;
+			pos = str.indexOf(oldChar, pos0);
+		}
+		result.append(str.substring(pos0));
+		return result.toString();
 	}
 
 	static public String replaceLF(String text) {
