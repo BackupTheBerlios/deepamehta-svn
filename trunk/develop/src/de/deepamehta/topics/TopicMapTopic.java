@@ -84,7 +84,7 @@ import javax.swing.ImageIcon;
  *     ({@link #importFromFile})</LI>
  * </OL>
  * <HR>
- * Last functional change: 15.1.2008 (2.0b8)<BR>
+ * Last functional change: 22.1.2008 (2.0b8)<BR>
  * Last documentation update: 11.12.2001 (2.0a14-pre4)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -246,6 +246,10 @@ public class TopicMapTopic extends LiveTopic {
 		directives.add(DIRECTIVE_RENAME_EDITOR, getID(), name);
 		//
 		return directives;
+	}
+
+	public boolean retypeAllowed(Session session) {
+		return false;
 	}
 
 

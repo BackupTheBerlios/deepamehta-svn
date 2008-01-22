@@ -116,9 +116,8 @@ public class AssociationTypeTopic extends TypeTopic {
 		int editorContext = as.editorContext(topicmapID);
 		//
 		// --- "Update" command ---
-		// ### int cmdState = viewmode.equals(VIEWMODE_BUILD) && !session.isDemo() ? COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
 		commands.addSeparator();
-		commands.addCommand(ITEM_UPDATE_TYPEDEF, CMD_UPDATE_TYPEDEF, FILESERVER_ICONS_PATH, ICON_UPDATE_TYPEDEF /* ###, cmdState */);
+		commands.addCommand(ITEM_UPDATE_TYPEDEF, CMD_UPDATE_TYPEDEF, FILESERVER_ICONS_PATH, ICON_UPDATE_TYPEDEF);
 		//
 		commands.addStandardCommands(this, editorContext, viewmode, session, directives);
 		//

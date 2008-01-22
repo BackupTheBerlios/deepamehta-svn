@@ -1144,18 +1144,30 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Consulted while server side processing of <CODE>DIRECTIVE_SELECT_TOPIC</CODE>.
+	 * <p>
+	 * References checked: 22.1.2008 (2.0b8)
 	 *
 	 * @see		CorporateDirectives#updateCorporateMemory
 	 * @see		CorporateCommands#addRetypeTopicCommand
 	 */
 	boolean retypeTopicIsAllowed(String topicID, int version, Session session) {
-		TypeTopic type = type(getLiveTopic(topicID, version));
-		boolean isSearch = type.isSearchType();
-		boolean isTopicmap = type.hasSupertype(TOPICTYPE_TOPICMAP);
+		// --- trigger retypeAllowed() hook ---
+		LiveTopic topic = getLiveTopic(topicID, version);
+		boolean allowed = topic.retypeAllowed(session);
+		//
+		boolean isSearch = type(topic).isSearchType();
 		String userID = session.getUserID();
-		return !isSearch && !isTopicmap && (isTopicOwner(topicID, session) || isAdministrator(userID));
+		return allowed && !isSearch && (isTopicOwner(topicID, session) || isAdministrator(userID));
 	}
 
+	/**
+	 * Consulted while server side processing of <CODE>DIRECTIVE_SELECT_ASSOCIATION</CODE>.
+	 * <p>
+	 * References checked: 22.1.2008 (2.0b8)
+	 *
+	 * @see		CorporateDirectives#updateCorporateMemory
+	 * @see		CorporateCommands#addRetypeAssociationCommand
+	 */
 	boolean retypeAssociationIsAllowed(String assocID, int version, Session session) {
 		boolean isSearch = type(getLiveAssociation(assocID, version)).isSearchType();
 		String userID = session.getUserID();
@@ -1164,6 +1176,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	// ---
 
+	/**
+	 * References checked: 22.1.2008 (2.0b8)
+	 *
+	 * @see		CorporateCommands#addDeleteTopicCommand
+	 */
 	boolean deleteTopicIsAllowed(BaseTopic topic, Session session) {
 		// --- trigger deleteAllowed() hook ---
 		boolean allowed = getLiveTopic(topic).deleteAllowed(session);

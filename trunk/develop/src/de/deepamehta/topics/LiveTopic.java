@@ -47,7 +47,7 @@ import java.util.Vector;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last sourcecode change: 8.1.2008 (2.0b8)<br>
+ * Last sourcecode change: 22.1.2008 (2.0b8)<br>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -298,6 +298,10 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * @see		de.deepamehta.service.ApplicationService#deleteTopicIsAllowed
 	 */
 	public boolean deleteAllowed(Session session) {
+		return true;
+	}
+
+	public boolean retypeAllowed(Session session) {
 		return true;
 	}
 

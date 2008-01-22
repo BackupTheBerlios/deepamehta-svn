@@ -48,7 +48,7 @@ import java.util.Vector;
  * {@link de.deepamehta.service.ApplicationService#initTypeTopic}<br>
  * <p>
  * <hr>
- * Last functional change: 28.10.2007 (2.0b8)<br>
+ * Last functional change: 22.1.2007 (2.0b8)<br>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -339,6 +339,18 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 		// ### Another solution to consider: perform evoke() first in this method and strip the "already set" check in
 		// LiveTopic.evoke().
 		return super.evoke(session, topicmapID, viewmode);
+	}
+
+
+
+	// ------------------------------------------
+	// --- Reacting upon dedicated situations ---
+	// ------------------------------------------
+
+
+
+	public boolean retypeAllowed(Session session) {
+		return false;
 	}
 
 
