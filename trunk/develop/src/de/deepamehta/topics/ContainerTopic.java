@@ -88,7 +88,7 @@ import java.util.Vector;
  * </OL>
  * <P>
  * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
+ * Last functional change: 29.1.2008 (2.0b8)<BR>
  * Last documentation update: 13.3.2001 (2.0a10-pre1)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -246,8 +246,9 @@ public abstract class ContainerTopic extends LiveTopic {
 			}
 		}
 		// "Remove"
+		String cmd = as.isContainedInPublishedTopicmap(getID()) ? CMD_HIDE_TOPIC : CMD_DELETE_TOPIC;
 		commands.addSeparator();
-		commands.addDeleteTopicCommand(as.string(ITEM_REMOVE_TOPIC), FILESERVER_IMAGES_PATH, ICON_HIDE_TOPIC);
+		commands.addCommand(as.string(ITEM_REMOVE_TOPIC), cmd, FILESERVER_IMAGES_PATH, ICON_HIDE_TOPIC);
 		//
 		return commands;
 	}

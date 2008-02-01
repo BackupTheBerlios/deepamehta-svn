@@ -61,14 +61,14 @@ import java.util.Vector;
 
 
 /**
- * The <CODE>ApplicationService</CODE> serves application logic that is encoded into live topics.
- * <P>
- * <IMG SRC="../../../../../images/3-tier-lcm.gif">
- * <P>
- * <HR>
- * Last functional change: 4.12.2007 (2.0b8)<BR>
- * Last documentation update: 30.12.2001 (2.0a14-pre5)<BR>
- * J&ouml;rg Richter<BR>
+ * The <code>ApplicationService</code> serves application logic that is encoded into live topics.
+ * <p>
+ * <img src="../../../../../images/3-tier-lcm.gif">
+ * <p>
+ * <hr>
+ * Last functional change: 31.1.2008 (2.0b8)<br>
+ * Last documentation update: 30.12.2001 (2.0a14-pre5)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public final class ApplicationService extends BaseTopicMap implements LoginCheck, DeepaMehtaConstants {
@@ -85,9 +85,9 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * The IP address of the server machine.
-	 * <P>
+	 * <p>
 	 * Initialized by {@link #ApplicationService constructor}.
-	 * Accessed by {@link #runsAtServerHost}.<BR>
+	 * Accessed by {@link #runsAtServerHost}.<br>
 	 */
 	private String hostAddress;
 
@@ -102,18 +102,18 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// ---
 
 	/**
-	 * The active installation (type <CODE>tt-installation</CODE>)
-	 * <P>
-	 * Initialized by by {@link #ApplicationService constructor}.<BR>
+	 * The active installation (type <code>tt-installation</code>)
+	 * <p>
+	 * Initialized by by {@link #ApplicationService constructor}.<br>
 	 * The installation name is accessed by {@link #getInstallationName}.
 	 */
 	private BaseTopic installation;
 
 	/**
 	 * The properties of the active installation.
-	 * <P>
-	 * Initialized by {@link #ApplicationService constructor}.<BR>
-	 * Accessed by {@link #getInstallationProps}.<BR>
+	 * <p>
+	 * Initialized by {@link #ApplicationService constructor}.<br>
+	 * Accessed by {@link #getInstallationProps}.<br>
 	 * Written to stream by {@link #writeInstallationProps}.
 	 */
 	private Hashtable installationProps;
@@ -122,8 +122,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * The datasource used for user authentification.
-	 * <P>
-	 * Initialized by {@link #setAuthentificationSourceTopic}.<BR>
+	 * <p>
+	 * Initialized by {@link #setAuthentificationSourceTopic}.<br>
 	 * Accessed by {@link #getAuthentificationSourceTopic}.
 	 */
 	private AuthentificationSourceTopic authSourceTopic;
@@ -322,7 +322,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * ### should have parameters "topicID" and "version" instead of "topic"
-	 * <P>
+	 * <p>
 	 * References checked: 14.12.2001 (2.0a14-pre4)
 	 *
 	 * @param	session		passed to init() hook (init levels 1-3)
@@ -433,22 +433,22 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * <p>
 	 * Note: this is a private method. The application developer is supposed to use the other forms of this method, which
 	 * performs full initialization in terms of triggering the evoke() hook and the init() hook at init levels 2 and 3.
-	 * <P>
+	 * <p>
 	 * If a topic with same ID and version already exists in live corporate memory and the
-	 * <CODE>override</CODE> parameter is set to <CODE>false</CODE> nothing is performed.
-	 * <P>
+	 * <code>override</code> parameter is set to <code>false</code> nothing is performed.
+	 * <p>
 	 * If the topic has a custom implementation the corresponmding class is instantiated (a direct or indirect subclass of
 	 * {@link de.deepamehta.topics.LiveTopic}), the actual classname is determined by the "Implementing Class" property of
 	 * the corresponding type topic. If the "Implementing Class" property is empty, there is no custom implementation and
 	 * a generic {@link de.deepamehta.topics.LiveTopic} is instantiated.
-	 * <P>
-	 * ### should return a LiveTopic and have "directives" as a parameter<BR>
+	 * <p>
+	 * ### should return a LiveTopic and have "directives" as a parameter<br>
 	 * <p>
 	 * References checked: 27.9.2007 (2.0b8)
 	 *
 	 * @param	session		passed to init() hook (init level 1)
 	 *
-	 * @return	If the topic has not been created because it exists already in live corporate memory <CODE>null</CODE> is
+	 * @return	If the topic has not been created because it exists already in live corporate memory <code>null</code> is
 	 *			returned. Otherwise possible error directives resulted from creation of an active topic are returned (may
 	 *			be emtpy). Note: if a live topic without custom implementation was created always empty CorporateDirectives
 	 *			are returned.
@@ -515,7 +515,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * The topic is created, loaded, evoked and fully inited.
 	 * No existence check is performed. All Exceptions are catched.
-	 * <P>
+	 * <p>
 	 * References checked: 6.7.2002 (2.0a15-pre9)
 	 *
 	 * @param	topicmapID	passed to evoke() hook
@@ -609,11 +609,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * Creates a topic with specified type and name directly in corporate memory and returns the topic ID.
 	 * Before an existence check is performed. If the topic exists already its ID is returned.
-	 * <P>
+	 * <p>
 	 * ### Note: the topic is NOT evoked here -> can be only called for types which have no evoke() implementation
 	 * ### should create a live topic instead
 	 * ### This method is to be dropped
-	 * <P>
+	 * <p>
 	 * References checked: 21.3.2003 (2.0a18-pre7)
 	 *
 	 * @see		de.deepamehta.topics.WebpageTopic#propertiesChanged
@@ -641,7 +641,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * Creates an association with specified type and topic IDs directly in corporate memory and returns the association ID.
 	 * Before an existence check is performed. If the association exists already its ID is returned.
-	 * <P>
+	 * <p>
 	 * ### no evoke() is triggered ### method is to be dropped
 	 *
 	 * @see		de.deepamehta.topics.WebpageTopic#propertiesChanged
@@ -699,7 +699,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * <p>
 	 * References checked: 27.9.2007 (2.0b8)
 	 *
-	 * @param	directives	may be <CODE>null</CODE>
+	 * @param	directives	may be <code>null</code>
 	 *
 	 * @see 	#checkLiveAssociation(BaseAssociation, Session, CorporateDirectives)									false	false
 	 * @see 	#checkLiveAssociation(String assocID, int version, Session, CorporateDirectives)						false	false
@@ -814,7 +814,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Parametric semantic.
-	 * <P>
+	 * <p>
 	 * References checked: 5.5.2002 (2.0a15-pre1)
 	 *
 	 * @throws	DeepaMehtaException			if no matching topics were found
@@ -887,12 +887,12 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * @param	relTopicTypeID	the ID of the topic type to match,
-	 *							if <CODE>null</CODE> is passed all topic types are matching
+	 *							if <code>null</code> is passed all topic types are matching
 	 *
 	 * @return	the topics as vector of {@see de.deepamehta.BaseTopic}s
 	 *
 	 * @throws	DeepaMehtaException	if no matching topics were found in corporate
-	 *							memory while <CODE>emptyAllowed</CODE> is not set.
+	 *							memory while <code>emptyAllowed</code> is not set.
 	 */
 	public Vector getRelatedTopics(String topicID, String assocTypeID,
 									String relTopicTypeID, int relTopicPos,
@@ -914,13 +914,13 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * ### Creates a container with standard name.
-	 * <P>
-	 * <TABLE>
-	 * <TR><TD><B>Called by</B></TD>												<TD><CODE>evokeContent</CODE></TD></TR>
-	 * <TR><TD>{@link #performGoogleSearch}</TD>									<TD><CODE>false</CODE></TD></TR>
-	 * <TR><TD>{@link de.deepamehta.topics.TopicContainerTopic#processQuery}</TD>	<TD><CODE>false</CODE></TD></TR>
-	 * <TR><TD>{@link de.deepamehta.topics.ElementContainerTopic#processQuery}</TD>	<TD><CODE>true</CODE></TD></TR>
-	 * </TABLE>
+	 * <p>
+	 * <table>
+	 * <tr><td><b>Called by</b></td>												<td><code>evokeContent</code></td></tr>
+	 * <tr><td>{@link #performGoogleSearch}</td>									<td><code>false</code></td></tr>
+	 * <tr><td>{@link de.deepamehta.topics.TopicContainerTopic#processQuery}</td>	<td><code>false</code></td></tr>
+	 * <tr><td>{@link de.deepamehta.topics.ElementContainerTopic#processQuery}</td>	<td><code>true</code></td></tr>
+	 * </table>
 	 */
 	public CorporateDirectives createNewContainer(LiveTopic relatedTopic, String containerType, String nameFilter,
 											Hashtable propertyFilter, String relatedTopicID, String relatedTopicSemantic,
@@ -931,29 +931,29 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * ### Creates a container with a custom name.
-	 * <P>
+	 * <p>
 	 * Creates and returns the client directives to perform the following task: create a new container, associate
-	 * the container with the specified <CODE>relatedTopic</CODE> by means of an association of type
+	 * the container with the specified <code>relatedTopic</code> by means of an association of type
 	 * {@link #SEMANTIC_CONTAINER_HIERARCHY} and reveal the contents of the container if they are sufficiently small.
 	 * "Revealing the contents" means showing the contained topics and associating them with the container by means
 	 * of associations of type {@link #SEMANTIC_CONTAINER_HIERARCHY}.
-	 * <P>
-	 * If the <CODE>relatedTopic</CODE> is itself a container and it has the same content no new container is created,
+	 * <p>
+	 * If the <code>relatedTopic</code> is itself a container and it has the same content no new container is created,
 	 * but the content is revealed as described.
-	 * <P>
-	 * <TABLE>
-	 * <TR><TD><B>Called by</B></TD>													<TD><CODE>evokeContent</CODE></TD></TR>
-	 * <TR><TD>{@link de.deepamehta.topics.LiveTopic#navigateByTopictype}</TD>			<TD><CODE>false</CODE></TD></TR>
-	 * <TR><TD>{@link de.deepamehta.topics.LiveTopic#navigateByAssoctype}</TD>			<TD><CODE>false</CODE></TD></TR>
-	 * </TABLE>
+	 * <p>
+	 * <table>
+	 * <tr><td><b>Called by</b></td>													<td><code>evokeContent</code></td></tr>
+	 * <tr><td>{@link de.deepamehta.topics.LiveTopic#navigateByTopictype}</td>			<td><code>false</code></td></tr>
+	 * <tr><td>{@link de.deepamehta.topics.LiveTopic#navigateByAssoctype}</td>			<td><code>false</code></td></tr>
+	 * </table>
 	 *
 	 * @param	relatedTopic			the topic the container is visually associated.
 	 *									Note: don't confuse this paramter with the relation filter
 	 * @param	containerTypeID			type ID of the container to be created
-	 * @param	nameFilter				name filter, if <CODE>null</CODE> no name filter is set
-	 * @param	propertyFilter			property filter, if empty no property filter is set ### must not be <CODE>null</CODE>
-	 * @param	relatedTopicID			relation filter, if <CODE>null</CODE> no relation filter is set
-	 * @param	relatedTopicSemantic	part of relation filter, if <CODE>null</CODE> the association type doesn't matter
+	 * @param	nameFilter				name filter, if <code>null</code> no name filter is set
+	 * @param	propertyFilter			property filter, if empty no property filter is set ### must not be <code>null</code>
+	 * @param	relatedTopicID			relation filter, if <code>null</code> no relation filter is set
+	 * @param	relatedTopicSemantic	part of relation filter, if <code>null</code> the association type doesn't matter
 	 * @param	topicCount				number of topics contained in the container
 	 * @param	topics					topics contained in the container (vector of {@link de.deepamehta.PresentableTopic}s),
 	 *									Note: only used if topicCount <= MAX_REVEALING
@@ -1073,11 +1073,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * Triggers the {@link de.deepamehta.topics.LiveTopic#disabledProperties disabledProperties() hook}
 	 * and returns the resulting property names.
 	 * <p>
-	 * Called for <CODE>DIRECTIVE_SELECT_TOPIC</CODE> and <CODE>DIRECTIVE_SELECT_TOPICMAP</CODE>.
+	 * Called for <code>DIRECTIVE_SELECT_TOPIC</code> and <code>DIRECTIVE_SELECT_TOPICMAP</code>.
 	 * <p>
 	 * References checked: 7.6.2007 (2.0b8)
 	 *
-	 * @return	A vector of property names (<CODE>String</CODE>s)
+	 * @return	A vector of property names (<code>String</code>s)
 	 *
 	 * @see		CorporateDirectives#updateCorporateMemory
 	 */
@@ -1092,11 +1092,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * Triggers the {@link de.deepamehta.assocs.LiveAssociation#disabledProperties disabledProperties() hook}
 	 * and returns the resulting property names.
 	 * <p>
-	 * Called for <CODE>DIRECTIVE_SELECT_ASSOCIATION</CODE>.
+	 * Called for <code>DIRECTIVE_SELECT_ASSOCIATION</code>.
 	 * <p>
 	 * References checked: 7.6.2007 (2.0b8)
 	 *
-	 * @return	A vector of property names (<CODE>String</CODE>s)
+	 * @return	A vector of property names (<code>String</code>s)
 	 *
 	 * @see		CorporateDirectives#updateCorporateMemory
 	 */
@@ -1143,7 +1143,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// ---
 
 	/**
-	 * Consulted while server side processing of <CODE>DIRECTIVE_SELECT_TOPIC</CODE>.
+	 * Consulted while server side processing of <code>DIRECTIVE_SELECT_TOPIC</code>.
 	 * <p>
 	 * References checked: 22.1.2008 (2.0b8)
 	 *
@@ -1161,7 +1161,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
-	 * Consulted while server side processing of <CODE>DIRECTIVE_SELECT_ASSOCIATION</CODE>.
+	 * Consulted while server side processing of <code>DIRECTIVE_SELECT_ASSOCIATION</code>.
 	 * <p>
 	 * References checked: 22.1.2008 (2.0b8)
 	 *
@@ -1319,7 +1319,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Evokes the specified live topic.
-	 * <P>
+	 * <p>
 	 * Accesses the specified topic in live corporate memory and triggers its
 	 * {@link de.deepamehta.topics.LiveTopic#evoke evoke()} hook with the
 	 * specified parameters.
@@ -1448,7 +1448,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * Returns the directives to delete the specified topic as well as any associations
 	 * this topic is involed in.
-	 * <P>
+	 * <p>
 	 * Used by DeepaMehtaServlet.
 	 */
 	public CorporateDirectives deleteTopic(String topicID, int version) {
@@ -1506,7 +1506,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Triggers the nameChanged() hook of the specified topic.
-	 * <P>
+	 * <p>
 	 * References checked: 4.3.2003 (2.0a18-pre4)
 	 *
 	 * @see		#setTopicProperties
@@ -1529,7 +1529,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Triggers the nameChanged() hook of the specified association.
-	 * <P>
+	 * <p>
 	 * @see		#setAssocProperties
 	 */
 	public CorporateDirectives changeAssociationName(String assocID, int version, String name) {
@@ -1641,7 +1641,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Sets a topic property.
-	 * <P>
+	 * <p>
 	 * References checked: 6.9.2002 (2.0a16-pre2)
 	 *
 	 * @see		de.deepamehta.kompetenzstern.topics.KompetenzsternTopic#propertiesChanged
@@ -1655,7 +1655,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Sets topic properties.
-	 * <P>
+	 * <p>
 	 * References checked: 13.2.2005 (2.0b5)
 	 *
 	 * @param	topicmapID						### may be null
@@ -1712,7 +1712,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Sets association properties.
-	 * <P>
+	 * <p>
 	 * References checked: 6.9.2002 (2.0a16-pre2)
 	 *
 	 * @see		CorporateDirectives#setAssociationProperties
@@ -1761,7 +1761,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * References checked: 26.9.2002 (2.0a16-pre4)
 	 *
-	 * @return	may return <CODE>null</CODE>
+	 * @return	may return <code>null</code>
 	 *
 	 * @see		de.deepamehta.topics.TypeTopic#makeTypeDefinition
 	 */
@@ -1776,7 +1776,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * References checked: 26.9.2002 (2.0a16-pre4)
 	 *
-	 * @return	may return <CODE>null</CODE>
+	 * @return	may return <code>null</code>
 	 *
 	 * @see		de.deepamehta.service.web.HTMLGenerator#formFields
 	 * @see		de.deepamehta.service.web.HTMLGenerator#infoFields
@@ -1809,7 +1809,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// ---
 
 	/**
-	 * @return	may return <CODE>null</CODE>
+	 * @return	may return <code>null</code>
 	 *
 	 * @see		de.deepamehta.topics.ElementContainerTopic#createTopicFromElement
 	 * @see		de.deepamehta.topics.DataConsumerTopic#createTopicFromElement
@@ -2043,7 +2043,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 *
 	 * @param	topicmap		view to duplicate
 	 * @param	topicmapID		original view ID
-	 * @param	viewMode		view mode of <CODE>topicmap</CODE> to duplicate
+	 * @param	viewMode		view mode of <code>topicmap</code> to duplicate
 	 * @param	destTopicmapID	destination view ID
 	 *
 	 * @see		CorporateTopicMap#personalize(String topicmapID)
@@ -2256,8 +2256,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * Initializes the type definition and appearance of the specified enumerated
 	 * presentable type topics.
 	 *
-	 * @param	triggerInit		if <CODE>true</CODE> the <CODE>init(2)</CODE> and
-	 *							<CODE>init(3)</CODE> hooks of the corresponding proxy
+	 * @param	triggerInit		if <code>true</code> the <code>init(2)</code> and
+	 *							<code>init(3)</code> hooks of the corresponding proxy
 	 *							type topics are triggered ###
 	 *
 	 * @see		#loadKernelTopics							2x	true
@@ -2291,13 +2291,13 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Initializes the type definition, the type appearance and the 2
-	 * <CODE>disabled</CODE>, <CODE>hiddenTopicNames</CODE> flags of the
+	 * <code>disabled</code>, <code>hiddenTopicNames</code> flags of the
 	 * specified presentable type topic.
-	 * <P>
+	 * <p>
 	 * References checked: 8.4.2003 (2.0a18-pre9)
 	 *
-	 * @param	session		the client session (passed to <CODE>init()</CODE> hook).
-	 *						Note: can be <CODE>null</CODE> if <CODE>triggerInit</CODE>
+	 * @param	session		the client session (passed to <code>init()</code> hook).
+	 *						Note: can be <code>null</code> if <code>triggerInit</code>
 	 *						is not set.
 	 *
 	 * @see		#initTypeTopics (above)											variable
@@ -2419,11 +2419,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Returns all workspaces the specified user is a member of.
-	 * <P>
+	 * <p>
 	 * References checked: 7.6.2007 (2.0b8)
 	 *
 	 * @return	The workspaces as vector of {@link de.deepamehta.BaseTopic}s
-	 *			(type <CODE>tt-workspace</CODE>)
+	 *			(type <code>tt-workspace</code>)
 	 *
 	 * @see		#addGroupWorkspaces
 	 * @see		CorporateCommands#addPublishCommand
@@ -2444,11 +2444,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Returns all members of the specified workspace.
-	 * <P>
+	 * <p>
 	 * References checked: 15.2.2005 (2.0b5)
 	 *
 	 * @return	The members as vector of {@link de.deepamehta.BaseTopic}s
-	 *			(type <CODE>tt-user</CODE>)
+	 *			(type <code>tt-user</code>)
 	 *
 	 * @see		#activeWorkspaceSessions
 	 * @see		de.deepamehta.topics.TopicMapTopic#publish
@@ -2463,7 +2463,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Returns the accessible topic types of the specified user resp. workspace.
-	 * <P>
+	 * <p>
 	 * References checked: 9.10.2001 (2.0a12)
 	 *
 	 * @param	id					topic ID of a user resp. workspace
@@ -2472,7 +2472,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 *								{@link #PERMISSION_CREATE_IN_WORKSPACE}
 	 *
 	 * @return	The topic types as vector of {@link de.deepamehta.BaseTopic}s
-	 *			(type <CODE>tt-topictype</CODE>)
+	 *			(type <code>tt-topictype</code>)
 	 *
 	 * @see		CorporateCommands#addTopicTypeCommands						3x
 	 * @see		CorporateCommands#addWorkspaceTopicTypeCommands				3x
@@ -2492,7 +2492,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Returns the accessible association types of the specified user resp. workspace.
-	 * <P>
+	 * <p>
 	 * References checked: 10.8.2001 (2.0a11)
 	 *
 	 * @param	id					the topic ID of the user resp. workspace
@@ -2501,7 +2501,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 *								{@link #PERMISSION_CREATE_IN_WORKSPACE} (not used for association types)
 	 *
 	 * @return	The association types as vector of {@link de.deepamehta.BaseTopic}s
-	 *			(type <CODE>tt-assoctype</CODE>)
+	 *			(type <code>tt-assoctype</code>)
 	 *
 	 * @see		CorporateCommands#addAssocTypeCommands	3x
 	 */
@@ -2523,7 +2523,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * Returns all views in use of the specified user.
 	 *
 	 * @return	The views as vector of {@link de.deepamehta.BaseTopic}s
-	 *			(type <CODE>tt-topicmap</CODE>)
+	 *			(type <code>tt-topicmap</code>)
 	 *
 	 * @see		InteractionConnection#addViewsInUse
 	 */
@@ -2650,7 +2650,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Returns the sessions of the specified user.
-	 * <P>
+	 * <p>
 	 * Note: a user can login from different client machines.
 	 *
 	 * @return	The sessions as vector of {@link Session}s
@@ -2722,7 +2722,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// --- getChatboard (2 forms) ---
 
 	/**
-	 * Returns the chatboard (type <CODE>tt-chatboard</CODE>) of the specified workspace.
+	 * Returns the chatboard (type <code>tt-chatboard</code>) of the specified workspace.
 	 * <p>
 	 * References checked: 8.4.2007 (2.0b8)
 	 *
@@ -2780,7 +2780,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// --- getMessageboard (2 forms) ---
 
 	/**
-	 * Returns the messageboard (type <CODE>tt-messageboard</CODE>) of the specified workspace.
+	 * Returns the messageboard (type <code>tt-messageboard</code>) of the specified workspace.
 	 * <p>
 	 * References checked: 8.4.2007 (2.0b8)
 	 *
@@ -2838,15 +2838,15 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// --- getWorkspaceTopicmap (2 forms) ---
 
 	/**
-	 * Returns the workspace topicmap (type <CODE>tt-topicmap</CODE>) of the specified user
-	 * resp. workspace or <CODE>null</CODE> if the specified user resp. workspace has no
+	 * Returns the workspace topicmap (type <code>tt-topicmap</code>) of the specified user
+	 * resp. workspace or <code>null</code> if the specified user resp. workspace has no
 	 * workspace topicmap.
 	 * <p>
 	 * References checked: 8.4.2007 (2.0b8)
 	 *
-	 * @param	id		The ID of a user (<CODE>type tt-user</CODE>) resp. workspace (type <CODE>tt-workspace</CODE>)
+	 * @param	id		The ID of a user (<code>type tt-user</code>) resp. workspace (type <code>tt-workspace</code>)
 	 *
-	 * @return	the workspace topicmap (type <CODE>tt-topicmap</CODE>)
+	 * @return	the workspace topicmap (type <code>tt-topicmap</code>)
 	 *
 	 * @throws	DeepaMehtaException		if the specified user resp. workspace is not in ApplicationService resp.
 	 *									is not properly initialized (iconfile is unknown)
@@ -2884,7 +2884,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * <p>
 	 * References checked: 8.4.2007 (2.0b8)
 	 *
-	 * @param	id		The ID of a user (<CODE>type tt-user</CODE>) resp. workspace (type <CODE>tt-workspace</CODE>)
+	 * @param	id		The ID of a user (<code>type tt-user</code>) resp. workspace (type <code>tt-workspace</code>)
 	 *
 	 * @see		de.deepamehta.topics.UserTopic#nameChanged
 	 * @see		de.deepamehta.topics.WorkspaceTopic#nameChanged
@@ -2930,8 +2930,30 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
+	 * Returns <code>true</code> if the specified topic is contained in a published topicmap, <code>false</code> otherwise.
+	 * <p>
+	 * References checked: 29.1.2008 (2.0b8)
+	 *
+	 * @param	topicID		the ID of the topic.
+	 *
+	 * @see		de.deepamehta.topics.ContainerTopic#contextCommands
+	 */
+	public boolean isContainedInPublishedTopicmap(String topicID) {
+		Enumeration e = cm.getViews(topicID, 1, VIEWMODE_USE).elements();
+		while (e.hasMoreElements()) {
+			BaseTopic topicmap = (BaseTopic) e.nextElement();
+			BaseTopic owner = getTopicmapOwner(topicmap.getID());
+			if (owner != null && owner.getType().equals(TOPICTYPE_WORKSPACE)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Returns the owner of the specified topicmap. The specified topicmap is expected to exist either
-	 * in a personal workspace or in a shared workspace. Otherwise <CODE>null</CODE> is returned.
+	 * in a personal workspace or in a shared workspace. Otherwise <code>null</code> is returned, which
+	 * is the case e.g. for personalized demo topicmaps.
 	 * <p>
 	 * References checked: 24.8.2006 (2.0b8)
 	 *
@@ -2940,7 +2962,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 *						not used in this fashion.
 	 *
 	 * @return	The user resp. workspace as {@link de.deepamehta.BaseTopic}
-	 *			(type <CODE>tt-user</CODE> resp. <CODE>tt-workspace</CODE>)
+	 *			(type <code>tt-user</code> resp. <code>tt-workspace</code>)
 	 *
 	 * @see		de.deepamehta.topics.ChatTopic#initWorkspace
 	 * @see		de.deepamehta.topics.TopicMapTopic#updateOwnership
@@ -2979,13 +3001,15 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Returns the user resp. workspace who deploys the specified workspace topicmap
-	 * (type <CODE>tt-topicmap</CODE>) resp. <CODE>null</CODE> if the specified
+	 * (type <code>tt-topicmap</code>) resp. <code>null</code> if the specified
 	 * topicmap doesn't represent a workspace topicmap.
 	 * <p>
 	 * References checked: 24.8.2006 (2.0b8)
 	 *
+	 * @param	the ID of the workspace topicmap.
+	 *
 	 * @return	The the user resp. workspace as {@link de.deepamehta.BaseTopic}
-	 *			(type <CODE>tt-user</CODE> resp. <CODE>tt-workspace</CODE>)
+	 *			(type <code>tt-user</code> resp. <code>tt-workspace</code>)
 	 *
 	 * @see		#editorContext
 	 * @see		#getTopicmapOwner
@@ -3008,7 +3032,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * Returns the view the specified topic is involved in.
 	 *
 	 * @return	The view as {@link de.deepamehta.BaseTopic}
-	 *			(type <CODE>tt-topicmap</CODE>)
+	 *			(type <code>tt-topicmap</code>)
 	 */
 	public BaseTopic getView(String topicID, int version, String viewmode) {
 		Vector views = cm.getViews(topicID, version, viewmode);
@@ -3048,7 +3072,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
-	 * @return	the matching association or <CODE>null</CODE> if <CODE>emptyAllowed</CODE>
+	 * @return	the matching association or <code>null</code> if <code>emptyAllowed</code>
 	 *			is set and no matching association is found
 	 *
 	 * @see		de.deepamehta.topics.TopicMapTopic#executeCommand
@@ -3072,7 +3096,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * Wrapper for {@link CorporateMemory#getTopics(String type, Hashtable propertyFilter, String topicmapID)}
 	 * which throws semantical exceptions.
-	 * <P>
+	 * <p>
 	 * References checked: 30.12.2001 (2.0a14-pre5)
 	 *
 	 * @throws	DeepaMehtaException			if no matching topic is found in corporate
@@ -3100,15 +3124,15 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * Wrapper for {@link CorporateMemory#getRelatedAssociations(String topicID, String assocTypeID, int relTopicPos, String relTopicTypeID)}
 	 * which throws semantical exceptions.
-	 * <P>
+	 * <p>
 	 * References checked: 30.12.2001 (2.0a14-pre5)
 	 *
 	 * @param	emptyAllowed	### required? -- currently null is passed always
 	 *
-	 * @return	the matching association or <CODE>null</CODE> if <CODE>emptyAllowed</CODE>
+	 * @return	the matching association or <code>null</code> if <code>emptyAllowed</code>
 	 *			is set and no matching association is found
 	 *
-	 * @throws	DeepaMehtaException			if <CODE>emptyAllowed</CODE> is not set and
+	 * @throws	DeepaMehtaException			if <code>emptyAllowed</code> is not set and
 	 *										no matching association is found
 	 * @throws	AmbiguousSemanticException	if more than one matching association are
 	 *										found
@@ -3184,28 +3208,35 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Returns the users default workspace resp. null if the user has no one.
+	 * <p>
+	 * References checked: 31.1.2008 (2.0b8)
 	 *
 	 * @return	the users default workspace as {@link de.deepamehta.BaseTopic}
-	 *			(type <CODE>tt-workspace</CODE>) or <code>null</code>
+	 *			(type <code>tt-workspace</code>) or <code>null</code>
 	 *
 	 * @see		CorporateCommands#addPublishCommand
 	 * @see		CorporateCommands#addTopicTypeCommands
 	 * @see		CorporateCommands#addAssocTypeCommands
 	 * @see		CorporateCommands#addWorkspaceTopicTypeCommands
 	 */
-	public BaseTopic getUsersDefaultWorkspace(String userID, CorporateDirectives directives) throws DeepaMehtaException {
+	public BaseTopic getUsersDefaultWorkspace(Session session, CorporateDirectives directives) throws DeepaMehtaException {
 		try {
-			BaseTopic workspace = getRelatedTopic(userID, SEMANTIC_PREFERENCE, TOPICTYPE_WORKSPACE, 2, true);	// emptyAllowed=true
-			//
-			// fallback: the system-wide default workspace is used, provided the user is a member
-			if (workspace == null) {
-				BaseTopic dws = getDefaultWorkspace(directives);
-				if (dws != null && isMemberOf(userID, dws.getID())) {
-					workspace = dws;
+			if (session.isDemo()) {
+				return getTopicmapOwner(session.getDemoTopicmapID());
+			} else {
+				String userID = session.getUserID();
+				BaseTopic workspace = getRelatedTopic(userID, SEMANTIC_PREFERENCE, TOPICTYPE_WORKSPACE, 2, true);	// emptyAllowed=true
+				//
+				// fallback: the system-wide default workspace is used, provided the user is a member
+				if (workspace == null) {
+					BaseTopic dws = getDefaultWorkspace(directives);
+					if (dws != null && isMemberOf(userID, dws.getID())) {
+						workspace = dws;
+					}
 				}
+				//
+				return workspace;
 			}
-			//
-			return workspace;
 		} catch (AmbiguousSemanticException e) {
 			System.out.println("*** ApplicationService.getUsersDefaultWorkspace(): " + e);
 			directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(), new Integer(NOTIFICATION_WARNING));
@@ -3224,7 +3255,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * References checked: 3.8.2004 (2.0b3)
 	 *
 	 * @return	the system-wide default workspace as {@link de.deepamehta.BaseTopic}
-	 *			(type <CODE>tt-workspace</CODE>) or <code>null</code>
+	 *			(type <code>tt-workspace</code>) or <code>null</code>
 	 *
 	 * @see		#getUsersDefaultWorkspace
 	 * @see		de.deepamehta.topics.UserTopic#evoke
@@ -3322,11 +3353,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Returns the workspace from which the specified topicmap was opened or
-	 * <CODE>null</CODE> if the specified topicmap was never published.
+	 * <code>null</code> if the specified topicmap was never published.
 	 * <p>
 	 * References checked: 24.8.2008 (2.0b8)
 	 *
-	 * @return	the workspace as a {@link de.deepamehta.BaseTopic} (type <CODE>tt-workspace</CODE>)
+	 * @return	the workspace as a {@link de.deepamehta.BaseTopic} (type <code>tt-workspace</code>)
 	 *
 	 * @see		CorporateCommands#addPublishCommand
 	 * @see		de.deepamehta.topics.TopicMapTopic#publish
@@ -3380,7 +3411,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Returns the shell command for opening the specified file for the specified user,
-	 * resp. throws a <CODE>DeepaMehtaException</CODE> if an error occurs.
+	 * resp. throws a <code>DeepaMehtaException</code> if an error occurs.
 	 *
 	 * @see		de.deepamehta.service.FileserverConnection#performDownload
 	 * @see		de.deepamehta.topics.DocumentTopic#executeCommand
@@ -3504,8 +3535,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * @return	The corresponding container-type to the specfied type as a
-	 *			{@link de.deepamehta.BaseTopic} (type <CODE>tt-topictype</CODE>)
-	 *			or <CODE>null</CODE> if no container-type exists.
+	 *			{@link de.deepamehta.BaseTopic} (type <code>tt-topictype</code>)
+	 *			or <code>null</code> if no container-type exists.
 	 *
 	 * @throws	AmbiguousSemanticException	if more than one container-type exists
 	 *
@@ -3534,7 +3565,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * References checked: 15.2.2005 (2.0b5)
 	 * 
 	 * @return	The membership association-type to use for joining a user to the specified
-	 *			workgroup as {@link de.deepamehta.BaseTopic} (type <CODE>tt-topictype</CODE>).
+	 *			workgroup as {@link de.deepamehta.BaseTopic} (type <code>tt-topictype</code>).
 	 *
 	 * @throws	AmbiguousSemanticException	if more than one association-type is assigned
 	 *
@@ -3562,7 +3593,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * Returns all topics types that consumes from the specified data source.
 	 *
 	 * @return	The types as vector of {@link de.deepamehta.BaseTopic}s
-	 *			(type <CODE>tt-topictype</CODE>).
+	 *			(type <code>tt-topictype</code>).
 	 *
 	 * @see		de.deepamehta.topics.DataSourceTopic#propertiesChanged
 	 */
@@ -3787,7 +3818,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 *
 	 * @see		de.deepamehta.topics.ChatTopic#executeCommand
 	 *
-	 * @return	vector of <CODE>Session</CODE> elements
+	 * @return	vector of <code>Session</code> elements
 	 */
 	/* ### public Vector getAllSessions() {
 		Vector sessions = new Vector();
@@ -3962,8 +3993,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 
 	/**
-	 * Returns a new session ID or <CODE>-1</CODE> if the server is overloaded.
-	 * Valid session are in the range of <CODE>1</CODE> to
+	 * Returns a new session ID or <code>-1</code> if the server is overloaded.
+	 * Valid session are in the range of <code>1</code> to
 	 * {@link DeepaMehtaConstants#MAX_CLIENTS}.
 	 *
 	 * @see		DeepaMehtaServer#runServer
@@ -4029,10 +4060,10 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Extends the specified directives to let the client create the initial GUI.
-	 * <P>
+	 * <p>
 	 * The initial GUI consists of the users <I>workspaces</I> as well as the <I>views</I>
 	 * from previous session.
-	 * <P>
+	 * <p>
 	 * Called once a user logged in sucessfully.
 	 *
 	 * @return	The user preferences of the specified user.
@@ -4046,7 +4077,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		session.setLoggedIn(true);
 		session.setUserID(userID);
 		session.setUserName(userTopic.getName());
-		// ### email checking is disabled. ### threads are not stopped / creates to many threads on the server
+		// ### email checking is disabled. ### threads are not stopped / creates too many threads on the server
 		// ### session.setEmailChecker(new EmailChecker(userID, 1, this));
 		// --- report on server console ---
 		updateServerConsole();
@@ -4063,6 +4094,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		// --- initialize session ---
 		String userName = "Guest " + session.getSessionID();
 		session.setDemo(true);
+		session.setDemoTopicmapID(demoMapID);
 		session.setLoggedIn(true);
 		// Note: a demo user has no ID (there is no tt-user topic for a demo user)
 		session.setUserName(userName);
@@ -4100,8 +4132,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * @throws	DeepaMehtaException	if the specified message is unknown,
-	 *								known messages are <CODE>import</CODE>,
-	 *								<CODE>export</CODE> and <CODE>importCM</CODE>
+	 *								known messages are <code>import</code>,
+	 *								<code>export</code> and <code>importCM</code>
 	 *
 	 * @see		MessagingConnection#processMessage
 	 */
@@ -4478,13 +4510,13 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
-	 * <TABLE>
-	 * <TR><TD><B>Called by</B><TD><CODE>performExistenceCheck</CODE>
-	 * <TR><TD>{@link #createNewContainer}<TD><CODE>false</CODE>
-	 * <TR><TD>{@link #createPresentableAssociations}<TD><CODE>true</CODE>
-	 * <TR><TD>{@link de.deepamehta.topics.ElementContainerTopic#autoSearch}<TD><CODE>false</CODE>
-	 * <TR><TD>{@link de.deepamehta.topics.ElementContainerTopic#revealTopic}<TD><CODE>false</CODE>
-	 * </TABLE>
+	 * <table>
+	 * <tr><td><b>Called by</b><td><code>performExistenceCheck</code>
+	 * <tr><td>{@link #createNewContainer}<td><code>false</code>
+	 * <tr><td>{@link #createPresentableAssociations}<td><code>true</code>
+	 * <tr><td>{@link de.deepamehta.topics.ElementContainerTopic#autoSearch}<td><code>false</code>
+	 * <tr><td>{@link de.deepamehta.topics.ElementContainerTopic#revealTopic}<td><code>false</code>
+	 * </table>
 	 */
 	public PresentableAssociation createPresentableAssociation(String assocTypeID, String assocName,
 									String topicID1, int topicVersion1,
@@ -4630,7 +4662,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * Returns a string containing the comma separated property names
 	 * involved in the specified query.
-	 * <P>
+	 * <p>
 	 * This value is used for the "QueryElements" property.
 	 * The value may be the empty string.
 	 *
@@ -4660,7 +4692,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * Returns a string containing the comma separated property values
 	 * involved in the specified query.
-	 * <P>
+	 * <p>
 	 * This string is used as container name.
 	 *
 	 * @see		#createNewContainer
@@ -4725,8 +4757,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Returns the type name of the specified topic.
-	 * <P>
-	 * May be empty, but never <CODE>null</CODE>.
+	 * <p>
+	 * May be empty, but never <code>null</code>.
 	 */
 	public String typeName(String typeID) {
 		return type(typeID, 1).getName();
@@ -4734,8 +4766,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Returns the type name of the specified topic.
-	 * <P>
-	 * May be empty, but never <CODE>null</CODE>.
+	 * <p>
+	 * May be empty, but never <code>null</code>.
 	 */
 	public String typeName(BaseTopic topic) {
 		return type(topic).getName();
@@ -4744,7 +4776,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// --- type (3 forms) ---
 
 	/**
-	 * Returns the type of the specified topic as live topic (type <CODE>tt-topictype</CODE>).
+	 * Returns the type of the specified topic as live topic (type <code>tt-topictype</code>).
 	 *
 	 * @see		#typeName
 	 * @see		#types
@@ -4767,7 +4799,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
-	 * Returns the type of the specified association as live topic (type <CODE>tt-assoctype</CODE>).
+	 * Returns the type of the specified association as live topic (type <code>tt-assoctype</code>).
 	 *
 	 * @see		de.deepamehta.topics.TopicMapTopic#makeAssociationsXML
 	 */
@@ -4786,7 +4818,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
-	 * Returns the specified type as live topic (type <CODE>tt-topictype</CODE> or <CODE>tt-assoctype</CODE>).
+	 * Returns the specified type as live topic (type <code>tt-topictype</code> or <code>tt-assoctype</code>).
 	 *
 	 * @see		CorporateCommands#addTypeCommands
 	 * @see		CorporateCommands#addTypeCommand
@@ -4836,7 +4868,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * Collect the type definitions for the given elements (topics or associations).
-	 * <P>
+	 * <p>
 	 * References checked: 18.4.2002 (2.0a14-post1)
 	 *
 	 * @param   elements    an enumeration of BaseTopics or BaseAssociations
@@ -5164,7 +5196,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
-	 * @param	directives	may be <CODE>null</CODE>
+	 * @param	directives	may be <code>null</code>
 	 *
 	 * @see		#createLiveAssociation
 	 */
@@ -5187,7 +5219,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// ---
 
 	/**
-	 * @param	directives	may be <CODE>null</CODE>
+	 * @param	directives	may be <code>null</code>
 	 *
 	 * @see		#createCustomLiveTopic
 	 * @see		#createCustomLiveAssociation
@@ -5262,7 +5294,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
-	 * @param	directives	may be <CODE>null</CODE>
+	 * @param	directives	may be <code>null</code>
 	 *
 	 * @see		#createCustomLiveTopic
 	 */
@@ -5290,7 +5322,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
-	 * @param	directives	may be <CODE>null</CODE>
+	 * @param	directives	may be <code>null</code>
 	 *
 	 * @see		#createCustomLiveTopic
 	 */

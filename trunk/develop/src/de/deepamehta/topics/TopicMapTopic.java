@@ -84,7 +84,7 @@ import javax.swing.ImageIcon;
  *     ({@link #importFromFile})</LI>
  * </OL>
  * <HR>
- * Last functional change: 22.1.2008 (2.0b8)<BR>
+ * Last functional change: 29.1.2008 (2.0b8)<BR>
  * Last documentation update: 11.12.2001 (2.0a14-pre4)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -306,7 +306,7 @@ public class TopicMapTopic extends LiveTopic {
 			//
 			commands.addCloseCommand(session);
 			commands.addHideAllCommands(topicmapID, viewmode, session);
-			commands.addDeleteTopicmapCommand();
+			commands.addDeleteTopicmapCommand(session);
 			commands.addSeparator();
 			//
 			commands.addPublishCommand(getID(), session, directives);

@@ -16,7 +16,7 @@ import java.util.Enumeration;
  * Note: the same user can login from different client machines at the same time.
  * <P>
  * <HR>
- * Last functional change: 24.4.2003 (2.0a18-pre10)<BR>
+ * Last functional change: 31.1.2008 (2.0b8)<BR>
  * Last documentation update: 13.12.2002 (2.0a17-pre3)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -30,6 +30,7 @@ public interface Session {
 	String getHostname();
 	String getAddress();
 	boolean isDemo();
+	String getDemoTopicmapID();
 	boolean loggedIn();
 	String getUserID();
 	String getUserName();
@@ -39,6 +40,7 @@ public interface Session {
 	public void setAttribute(String name, Object value);
 	public void removeAttribute(String name);
 	void setDemo(boolean isDemo);
+	void setDemoTopicmapID(String demoTopicmapID);
 	void setLoggedIn(boolean loggedIn);
 	void setUserID(String userID);
 	void setUserName(String userName);

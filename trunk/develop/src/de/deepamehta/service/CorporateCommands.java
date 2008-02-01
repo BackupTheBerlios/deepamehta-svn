@@ -24,7 +24,7 @@ import java.util.Vector;
  * Utility class for building {@link de.deepamehta.Commands topic commands / association commands}.
  * <P>
  * <HR>
- * Last functional change: 15.1.2008 (2.0b8)<BR>
+ * Last functional change: 1.2.2008 (2.0b8)<BR>
  * Last documentation update: 9.10.2001 (2.0a12)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -80,13 +80,13 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	/**
 	 * Adds a "Search by Topic Type" command group to this (view) command set.
 	 * <P>
-	 * References checked: 16.6.2002 (2.0a15-pre8)
+	 * References checked: 31.1.2008 (2.0b8)
 	 *
 	 * @see		de.deepamehta.topics.TopicMapTopic#viewCommands
 	 */
-	public void addSearchByTopictypeCommand(String viewmode, Session session,
-													CorporateDirectives directives) {
-		Commands showGroup = addCommandGroup(as.string(ITEM_SEARCH_BY_TOPICTYPE), FILESERVER_IMAGES_PATH, ICON_SEARCH_BY_TOPICTYPE);
+	public void addSearchByTopictypeCommand(String viewmode, Session session, CorporateDirectives directives) {
+		Commands showGroup = addCommandGroup(as.string(ITEM_SEARCH_BY_TOPICTYPE), FILESERVER_IMAGES_PATH,
+																					ICON_SEARCH_BY_TOPICTYPE);
 		addTopicTypeCommands(showGroup, CMD_SEARCH_BY_TOPICTYPE, PERMISSION_VIEW, false, session, directives);
 	}
 
@@ -125,39 +125,52 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 * @see		de.deepamehta.topics.ChatBoardTopic#viewCommands
 	 */
 	public void addPublishCommand(String topicmapID, Session session, CorporateDirectives directives) {
-		String userID = session.getUserID();
-		String workspaceID;
-		int cmdState;
 		Commands commandGroup = addCommandGroup(as.string(ITEM_PUBLISH), FILESERVER_IMAGES_PATH, ICON_PUBLISH);
+		if (session.isDemo()) {
+			return;
+		}
+		//
+		String userID = session.getUserID();
 		BaseTopic workspace = as.getOriginWorkspace(topicmapID);
 		if (workspace == null) {
 			// this topicmap has been created in the users personal workspace originally -- it was never
 			// published. Publishing policy is as follows: it can be published to all workspaces the user
 			// is a member of and has the "Publisher" role.
 			//
+			// Note: although demo topicmaps are always published topicmaps they are regarded as personal topicmaps.
+			// See TopicMapTopic.openSharedTopicmap().
+			//
 			// enable publishing to users default workspace first
-			BaseTopic defaultWorkspace = as.getUsersDefaultWorkspace(userID, directives);
+			BaseTopic defaultWorkspace = as.getUsersDefaultWorkspace(session, directives);
 			String defaultWorkspaceID = null;
 			if (defaultWorkspace != null) {
-				workspaceID = defaultWorkspace.getID();
+				String workspaceID = defaultWorkspace.getID();
 				defaultWorkspaceID = workspaceID;
-				cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
+				int cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
 					COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
 				commandGroup.addCommand(defaultWorkspace.getName(), CMD_PUBLISH + COMMAND_SEPARATOR + workspaceID,
 					FILESERVER_ICONS_PATH, as.getIconfile(defaultWorkspace), cmdState);
-				commandGroup.addSeparator();	// ### conditional
 			}
 			// enable publishing to other workspaces the user is a member of
 			Vector workspaces = as.getWorkspaces(userID);
 			Enumeration e = workspaces.elements();
+			boolean isFirst = true;
 			while (e.hasMoreElements()) {
 				BaseTopic workspaceTopic = (BaseTopic) e.nextElement();
-				workspaceID = workspaceTopic.getID();
+				String workspaceID = workspaceTopic.getID();
 				// skip default workspace
 				if (workspaceID.equals(defaultWorkspaceID)) {
 					continue;
 				}
-				cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
+				// add separator
+				if (isFirst) {
+					if (!commandGroup.isEmpty()) {
+						commandGroup.addSeparator();
+					}
+					isFirst = false;
+				}
+				//
+				int cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
 					COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
 				commandGroup.addCommand(workspaceTopic.getName(), CMD_PUBLISH + COMMAND_SEPARATOR + workspaceID,
 					FILESERVER_ICONS_PATH, as.getIconfile(workspaceTopic), cmdState);
@@ -165,8 +178,8 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 		} else {
 			// this topicmap is a personalized view originating from a shared workspace -- it can be published
 			// "back" to its original workspace.
-			workspaceID = workspace.getID();
-			cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
+			String workspaceID = workspace.getID();
+			int cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
 				COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
 			commandGroup.addCommand(workspace.getName(), CMD_PUBLISH + COMMAND_SEPARATOR + workspaceID,
 				FILESERVER_ICONS_PATH, as.getIconfile(workspace), cmdState);
@@ -187,8 +200,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	public void addExportCommand(Session session, CorporateDirectives directives) {
 		// --- export command ---
 		int state = session.isDemo() ? COMMAND_STATE_DISABLED : COMMAND_STATE_DEFAULT;
-		addCommand(as.string(ITEM_EXPORT_TOPICMAP), CMD_EXPORT_TOPICMAP,
-			FILESERVER_IMAGES_PATH, ICON_EXPORT_TOPICMAP, state);
+		addCommand(as.string(ITEM_EXPORT_TOPICMAP), CMD_EXPORT_TOPICMAP, FILESERVER_IMAGES_PATH, ICON_EXPORT_TOPICMAP, state);
 		// --- preferences submenu ---
 		Commands prefsGroup = addCommandGroup(as.string(ITEM_PREFERENCES_EXPORT), FILESERVER_ICONS_PATH, ICON_PREFERENCES);
 		if (!session.isDemo()) {
@@ -326,7 +338,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 		addCommand(as.string(ITEM_HIDE_ASSOC), CMD_HIDE_ASSOC, FILESERVER_IMAGES_PATH, ICON_HIDE_ASSOC);
 	}
 
-	// --- addDeleteTopicCommand (4 forms) ---
+	// --- addDeleteTopicCommand (3 forms) ---
 
 	/**
 	 * Adds a "Delete" command to this (topic) command set.
@@ -346,15 +358,6 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	public void addDeleteTopicCommand(String label, int state) {
 		addCommand(label, CMD_DELETE_TOPIC, FILESERVER_IMAGES_PATH, ICON_DELETE_TOPIC, state);
-	}
-
-	/**
-	 * References checked: 17.2.2005 (2.0b5)
-	 *
-	 * @see		de.deepamehta.topics.ContainerTopic#contextCommands
-	 */
-	public void addDeleteTopicCommand(String label, String iconPath, String iconfile) {
-		addCommand(label, CMD_DELETE_TOPIC, iconPath, iconfile, COMMAND_STATE_DEFAULT);		// ### permission check
 	}
 
 	// --- addDeleteAssociationCommand (3 forms) ---
@@ -386,8 +389,15 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	// ---
 
-	public void addDeleteTopicmapCommand() {
-		addCommand(as.string(ITEM_DELETE_TOPIC), CMD_DELETE_TOPICMAP, FILESERVER_IMAGES_PATH, ICON_DELETE_TOPIC);
+	/**
+	 * References checked: 29.1.2008 (2.0b8)
+	 *
+	 * @see		de.deepamehta.topics.TopicMapTopic#viewCommands
+	 * @see		de.kiezatlas.deepamehta.topics.CityMapTopic#viewCommands
+	 */
+	public void addDeleteTopicmapCommand(Session session) {
+		int state = session.isDemo() ? COMMAND_STATE_DISABLED : COMMAND_STATE_DEFAULT;
+		addCommand(as.string(ITEM_DELETE_TOPIC), CMD_DELETE_TOPICMAP, FILESERVER_IMAGES_PATH, ICON_DELETE_TOPIC, state);
 	}
 
 	// ---
@@ -601,7 +611,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 * <P>
 	 * Used for "Retype", "Create", "Search" and workspace's "Assign Topic Type" commands.
 	 * <P>
-	 * References checked: 19.7.2003 (2.0b2)
+	 * References checked: 31.1.2008 (2.0b8)
 	 *
 	 * @see		#addCreateCommands
 	 * @see		#addSearchByTopictypeCommand
@@ -615,7 +625,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 		String defaultWorkspaceID = null;
 		Vector types;
 		// --- add default types ---
-		defaultWorkspace = as.getUsersDefaultWorkspace(userID, directives);
+		defaultWorkspace = as.getUsersDefaultWorkspace(session, directives);
 		if (defaultWorkspace != null) {
 			defaultWorkspaceID = defaultWorkspace.getID();
 			types = as.getTopicTypes(defaultWorkspaceID, permissionMode);
@@ -632,7 +642,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 		// --- add workspace types ---
 		Vector workspaces = as.getWorkspaces(userID);
 		Enumeration e = workspaces.elements();
-		boolean first = true;
+		boolean isFirst = true;
 		while (e.hasMoreElements()) {
 			BaseTopic workspace = (BaseTopic) e.nextElement();
 			// skip default workspace
@@ -642,11 +652,11 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			//
 			types = as.getTopicTypes(workspace.getID(), permissionMode);
 			if (!types.isEmpty()) {
-				if (first) {
+				if (isFirst) {
 					if (!commandsGroup.isEmpty()) {
 						commandsGroup.addSeparator();
 					}
-					first = false;
+					isFirst = false;
 				}
 				// create sub menu
 				Commands cmdGroup = commandsGroup.addCommandGroup(workspace.getName(),
@@ -673,7 +683,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 		String defaultWorkspaceID = null;
 		Vector types;
 		// --- add default types ---
-		defaultWorkspace = as.getUsersDefaultWorkspace(userID, directives);
+		defaultWorkspace = as.getUsersDefaultWorkspace(session, directives);
 		if (defaultWorkspace != null) {
 			defaultWorkspaceID = defaultWorkspace.getID();
 			types = as.getAssociationTypes(defaultWorkspaceID, permissionMode);
@@ -690,7 +700,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 		// --- add workspace types ---
 		Vector workspaces = as.getWorkspaces(userID);
 		Enumeration e = workspaces.elements();
-		boolean first = true;
+		boolean isFirst = true;
 		while (e.hasMoreElements()) {
 			BaseTopic workspace = (BaseTopic) e.nextElement();
 			// skip default workspace
@@ -699,11 +709,11 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			}
 			types = as.getAssociationTypes(workspace.getID(), permissionMode);
 			if (!types.isEmpty()) {
-				if (first) {
+				if (isFirst) {
 					if (!commandsGroup.isEmpty()) {
 						commandsGroup.addSeparator();
 					}
-					first = false;
+					isFirst = false;
 				}
 				// create sub menu
 				Commands cmdGroup = commandsGroup.addCommandGroup(workspace.getName(),
@@ -727,7 +737,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 		String defaultWorkspaceID = null;
 		Vector types;
 		// --- add default types ---
-		BaseTopic defaultWorkspace = as.getUsersDefaultWorkspace(userID, directives);
+		BaseTopic defaultWorkspace = as.getUsersDefaultWorkspace(session, directives);
 		if (defaultWorkspace != null) {
 			defaultWorkspaceID = defaultWorkspace.getID();
 			types = as.getTopicTypes(defaultWorkspaceID, PERMISSION_CREATE_IN_WORKSPACE);

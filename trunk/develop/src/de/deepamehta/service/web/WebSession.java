@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
  * Note: the same user can login from different client machines at the same time.
  * <P>
  * <HR>
- * Last functional change: 9.7.2004 (2.0b3)<BR>
+ * Last functional change: 31.1.2008 (2.0b8)<BR>
  * Last documentation update: 17.5.2001 (2.0a10-post3)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -60,6 +60,8 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 	 * Initialized by {@link #setDemo}.
 	 */
 	// ### private boolean isDemo;
+
+	// ### private String demoTopicmapID;
 
 	/**
 	 * Once logged in, set to (<CODE>true</CODE>).
@@ -172,6 +174,10 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 		return false;	// ###
 	}
 
+	public String getDemoTopicmapID() {
+		return null;	// ###
+	}
+
 	public boolean loggedIn() {
 		return false;	// ###
 	}
@@ -218,6 +224,10 @@ public final class WebSession implements Session, DeepaMehtaConstants {
 	 */
 	public void setDemo(boolean isDemo) {
 		// ### this.isDemo = isDemo;
+	}
+
+	public void setDemoTopicmapID(String demoTopicmapID) {
+		// ### this.demoTopicmapID = demoTopicmapID;
 	}
 
 	/**
