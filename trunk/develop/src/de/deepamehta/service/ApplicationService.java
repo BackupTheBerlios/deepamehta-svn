@@ -3774,7 +3774,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 
 	/**
-	 * Sends the specified directives <I>asynchronously</I> to every enumerated user.
+	 * Sends the specified directives <i>asynchronously</i> to every enumerated user.
 	 *
 	 * @param	storeForLaterDelivery		### not yet used
 	 *
@@ -3797,7 +3797,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
-	 * Sends the specified directives <I>asynchronously</I> to every enumerated session.
+	 * Sends the specified directives <i>asynchronously</i> to every enumerated session.
 	 *
 	 * @param	storeForLaterDelivery		### not yet used
 	 *
@@ -4061,7 +4061,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * Extends the specified directives to let the client create the initial GUI.
 	 * <p>
-	 * The initial GUI consists of the users <I>workspaces</I> as well as the <I>views</I>
+	 * The initial GUI consists of the users <i>workspaces</i> as well as the <i>views</i>
 	 * from previous session.
 	 * <p>
 	 * Called once a user logged in sucessfully.
@@ -4432,7 +4432,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * ### Actually creates an PresentableTopic based on the specified BaseTopic
-	 * <I>and</I> initializes its appearance. Note: the appearance initialization
+	 * <i>and</i> initializes its appearance. Note: the appearance initialization
 	 * is based on the corresponding LiveTopic, thus an DeepaMehtaException is
 	 * thrown if the topic dosn't exist in live corporate memory. The geometry of
 	 * the created PresentableTopic remains uninitialized.

@@ -24,14 +24,14 @@ import java.util.Vector;
 /**
  * A server-side proxy association for a client-side presented association that "lives"
  * in {@link de.deepamehta.service.ApplicationService}.
- * <P>
- * A <CODE>LiveAssociation</CODE> has access to the {@link de.deepamehta.service.ApplicationService} and
+ * <p>
+ * A <code>LiveAssociation</code> has access to the {@link de.deepamehta.service.ApplicationService} and
  * to the {@link CorporateMemory}.
- * <P>
- * <HR>
- * Last sourcecode change: 11.9.2007 (2.0b8)<BR>
- * Last documentation update: 11.12.2000 (2.0a8-pre3)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last sourcecode change: 3.2.2008 (2.0b8)<br>
+ * Last documentation update: 11.12.2000 (2.0a8-pre3)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class LiveAssociation extends BaseAssociation implements DeepaMehtaConstants {
@@ -81,7 +81,7 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 	/**
 	 * Subclasses can override this method to perform some work when an association is
 	 * bring into live the very first time.
-	 * <P>
+	 * <p>
 	 * The default implementation creates the association in corporate memory.
 	 * <p>
 	 * References checked: 27.9.2007 (2.0b8)
@@ -109,13 +109,13 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 
 	/**
 	 * Triggered when an association dies.
-	 * <P>
+	 * <p>
 	 * The default implementation deletes the association from 3 spots ...
-	 * <UL>
-	 * <LI>corporate memory
-	 * <LI>live corporate memory
-	 * <LI>all views
-	 * </UL>
+	 * <ul>
+	 * <li>corporate memory
+	 * <li>live corporate memory
+	 * <li>all views
+	 * </ul>
 	 * ... and returns empty directives.
 	 * <p>
 	 * References checked: 27.9.2007 (2.0b8)
@@ -151,7 +151,7 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 
 	/**
 	 * Subclasses can override this method to react upon retyping this association.
-	 * <P>
+	 * <p>
 	 * The default implementation performs the retyping, it should be called from subclassss.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#changeAssociationType
@@ -173,11 +173,11 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 
 	/**
 	 * Returns the set of standard association commands:
-	 * <OL>
-	 * <LI>"Retype"
-	 * <LI>"Hide"
-	 * <LI>"Delete"
-	 * </OL>
+	 * <ol>
+	 * <li>"Retype"
+	 * <li>"Hide"
+	 * <li>"Delete"
+	 * </ol>
 	 * Documentation updated: 11.10.2001 (2.0a12)
 	 *
 	 * @param	session		the triggering client session
@@ -214,8 +214,8 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 	/**
 	 * Subclasses can override this method to supply an action behavoir.
 	 * An action is user triggered.
-	 * <P>
-	 * ### The default implementation returns empty <CODE>CorporateDirectives</CODE>.
+	 * <p>
+	 * ### The default implementation returns empty <code>CorporateDirectives</code>.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#performAssociationAction
 	 */
@@ -252,12 +252,6 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 			String prop = st.nextToken();
 			String value = st.nextToken();
 			directives.add(setAssociationData(prop, value, topicmapID, viewmode));
-		} else if (cmd.equals(CMD_EDIT_ASSOC_PROPERTY) || cmd.equals(CMD_VIEW_ASSOC_PROPERTY)) {
-			String prop = st.nextToken();
-			boolean styled = new Boolean(st.nextToken()).booleanValue();
-			boolean multiline = new Boolean(st.nextToken()).booleanValue();
-			boolean editable = cmd.equals(CMD_EDIT_ASSOC_PROPERTY);
-			openTextEditor(prop, styled, multiline, editable, directives, command);
 		} else if (cmd.equals(CMD_SHOW_HELP)) {
 			String typeID = st.nextToken();
 			showTypeHelp(typeID, session, directives);
@@ -271,9 +265,9 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 	}
 
 	/**
-	 * Subclasses can override this method to process result of chanined actions.<BR>
+	 * Subclasses can override this method to process result of chanined actions.<br>
 	 * [### explain]
-	 * <P>
+	 * <p>
 	 * ### The default implementation returns null.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#performChainedAssociationCommand
@@ -294,9 +288,9 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 
 	/**
 	 * [###]
-	 * <P>
+	 * <p>
 	 * To reject the new properties (means: preventing them from being
-	 * stored in corporate memory) the application must return <CODE>false</CODE>.
+	 * stored in corporate memory) the application must return <code>false</code>.
 	 */
 	public boolean propertiesChangeAllowed(Hashtable oldData, Hashtable newData,
 														CorporateDirectives directives) {
@@ -305,11 +299,11 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 
 	/**
 	 * The "properties changed" hook.
-	 * <P>
+	 * <p>
 	 * By this hook an application programmer can supply an "properties changed" behavoir. This hook
 	 * is triggered by the framework if one (### zero) or more properties of this association has
 	 * been changed. The framework passes the old and the new (means: changed) properties.
-	 * <P>
+	 * <p>
 	 * The default implementation returns empty directives.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#setTopicProperties
@@ -342,19 +336,19 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 	/**
 	 * Applications can use this hook to disable certain properties of this association.
 	 * Disabled properties are visible but not editable by the user.
-	 * <P>
+	 * <p>
 	 * This hook can be utilized to implement an access control mechanism.
 	 * The default implementation realizes the following rule: an association is only editable
 	 * if the current user
 	 * 1) is the owner of the association, or<br>
 	 * 2) is a DeepaMehta administrator, or<br>
 	 * 3) has the "Editor" role within a workspace the resp. association type is assigned to.
-	 * <P>
+	 * <p>
 	 * This hook is triggered every time this association is selected.
 	 *
 	 * @see			de.deepamehta.service.ApplicationService#disabledProperties
 	 *
-	 * @return		A vector of property names (<CODE>String</CODE>s)
+	 * @return		A vector of property names (<code>String</code>s)
 	 */
 	public Vector disabledProperties(Session session) {
 		// ### almost identical to LiveTopic.disabledProperties()
@@ -390,7 +384,7 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 
 	/**
 	 * Subclasses can override this method to provide topic details.
-	 * <P>
+	 * <p>
 	 * ### The default implementation returns the properties in a 1-row table format.
 	 *
 	 * @see		#executeCommand
@@ -468,33 +462,6 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 		// through the superclasses -- finally LiveAssociation.die() will delete the
 		// association from corporate memory as well as from live corporate memory.
 		// ### directives.add(die());
-	}
-
-	// ---
-
-	/**
-	 * Extend the specified directives to let the user edit/view the specified
-	 * property of this live association.
-	 * <P>
-	 * Called to handle {@link #CMD_EDIT_ASSOC_PROPERTY} and
-	 * {@link #CMD_VIEW_ASSOC_PROPERTY} commands.
-	 *
-	 * @see		#executeCommand
-	 */
-	private void openTextEditor(String propName, boolean styled, boolean multiline,
-					boolean editable, CorporateDirectives directives, String command) {
-		// ### compare to LiveTopic.openTextEditor()
-		// ### compare to KompetenzsternTopic.openTextEditor()
-		Detail detail;
-		String title = propName;
-		if (styled) {
-			detail = new Detail(DETAIL_ASSOCIATION, DETAIL_CONTENT_HTML,
-            	getAssociationData(propName), new Boolean(editable), title, command);
-		} else {
-			detail = new Detail(DETAIL_ASSOCIATION, DETAIL_CONTENT_TEXT,
-            	getAssociationData(propName), new Boolean(multiline), title, command);
-		}
-		directives.add(DIRECTIVE_SHOW_DETAIL, getID(), detail);
 	}
 
 	// ---

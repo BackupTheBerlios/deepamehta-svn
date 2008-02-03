@@ -37,19 +37,20 @@ import javax.swing.JPopupMenu;
 
 
 /**
- * ### An interactive <I>view</I> of a graph that consists of nodes and edges.
- * <P>
- * ### The <I>controler</I> is passed to the <CODE>GraphPanel</CODE>
- * {@link #GraphPanel constructor}. The <I>model</I> is supplied by the controler.
- * <P>
+ * An interactive <i>view</i> of a graph that consists of nodes and edges.
+ * The <i>controler</i> is passed to the <code>GraphPanel</code> {@link #GraphPanel constructor}.
+ * <p>
+ * This is a singleton. The graphical DeepaMehta client (namely the {@link PresentationService}) instantiates only one
+ * <code>GraphPanel</code> and switches the <i>model</i> on-the-fly by means of {@link #setModel}.
+ * <p>
  * A controler class must implement the {@link GraphPanelControler} interface.
  * A node class must implement the {@link GraphNode} interface.
  * An edge class must implement the {@link GraphEdge} interface.
- * <P>
- * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
- * Last documentation update: 25.6.2001 (2.0a11-pre6)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 3.2.2008 (2.0b8)<br>
+ * Last documentation update: 3.2.2008 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConstants {
@@ -71,16 +72,16 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 
 	/**
 	 * The graph's nodes.
-	 * <P>
-	 * Key: node id (<CODE>String</CODE>)<BR>
+	 * <p>
+	 * Key: node id (<code>String</code>)<br>
 	 * Value: node ({@link GraphNode})
 	 */
 	private Hashtable nodes;
 
 	/**
 	 * The graph's edges.
-	 * <P>
-	 * Key: edge id (<CODE>String</CODE>)<BR>
+	 * <p>
+	 * Key: edge id (<code>String</code>)<br>
 	 * Value: edge ({@link GraphEdge})
 	 */
 	private Hashtable edges;
@@ -94,7 +95,7 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 	// --- Controler ---
 
 	/**
-	 * The controler of this <CODE>GraphPanel</CODE>.
+	 * The controler of this <code>GraphPanel</code>.
 	 */
 	private GraphPanelControler controler;
 
@@ -106,11 +107,11 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 
 	/**
 	 * Displayed node/edge details.
-	 * <P>
+	 * <p>
  	 * ### The hashkey is composed by topicID/assocID AND detail command (one topic may have many
 	 * details open at the same time, but no two of the same processing command)
- 	 * <P>
-	 * Key: "topicID:command" (<CODE>String</CODE>)<BR>
+ 	 * <p>
+	 * Key: "topicID:command" (<code>String</code>)<br>
 	 * Value: detail ({@link PresentationDetail})
 	 */
 	private Hashtable details;
@@ -154,7 +155,7 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 
 
 	/**
-	 * @see		TopicMapEditorPanel#TopicMapEditorPanel		2x
+	 * @see		PresentationService#createMainGUI
 	 */
 	GraphPanel(final GraphPanelControler controler) {
 		this.controler = controler;
@@ -238,25 +239,30 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 				while (e.hasMoreElements()) {
 					String key = (String) e.nextElement();
 					PresentationDetail pd = getDetail(key);
-					String nodeID = DeepaMehtaUtils.explode(key)[0];
+					String objectID = DeepaMehtaUtils.explode(key)[0];
 					// ### copy in PresentationService.showDetail()
 					int x, y;
 					switch (pd.getType()) {
 					case DETAIL_TOPIC:
-						Point p = getNode(nodeID).getGeometry();
+						Point p = getNode(objectID).getGeometry();
 						x = p.x;
 						y = p.y;
 						break;
 					case DETAIL_ASSOCIATION:
-						GraphEdge edge = getEdge(nodeID);	// ### throws DME
+						GraphEdge edge = getEdge(objectID);	// ### throws DME
 						Point p1 = edge.getNode1().getGeometry();
 						Point p2 = edge.getNode2().getGeometry();
 						x = (p1.x + p2.x) / 2;
 						y = (p1.y + p2.y) / 2;
 						break;
+					case DETAIL_TOPICMAP:
+						x = pd.getGuideAnchor().x;
+						y = pd.getGuideAnchor().y;
+						break;
 					default:
 						throw new DeepaMehtaException("unexpected detail type: " + pd.getType());
 					}
+					//
 					pd.paintGuide(g, x + translation.x, y + translation.y);
 				}
 			}
@@ -344,9 +350,9 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 		} else if (menuID.equals(MENU_ASSOC)) {
 			controler.processEdgeCommand(topicmap, selection.assoc, command);
 		} else if (menuID.equals(MENU_VIEW)) {
-			// Note: the parameters of view commands are extended by the
-			// click coordinates
-			controler.processGraphCommand(topicmap, command + COMMAND_SEPARATOR + (mX - translation.x) + COMMAND_SEPARATOR + (mY - translation.y));
+			// Note: the parameters of view commands are extended by the click coordinates
+			controler.processGraphCommand(topicmap, command + COMMAND_SEPARATOR +
+				(mX - translation.x) + COMMAND_SEPARATOR + (mY - translation.y));
 		} else {
 			throw new DeepaMehtaException("unexpected popup menu: " + menu + " (menuID: \"" + menuID +
 				"\") -- command \"" + command + "\" not processed");
@@ -828,7 +834,7 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 
 	/**
 	 * Informs the controler about a node selection.
-	 * <P>
+	 * <p>
 	 * ### This is only performed if the specified node is not already the selected node.
 	 *
 	 * @see		#nodeClicked
@@ -841,7 +847,7 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 
 	/**
 	 * Informs the controler about an edge selection.
-	 * <P>
+	 * <p>
 	 * ### This is only performed if the specified edge is not already the selected edge.
 	 *
 	 * @see		#edgeClicked
@@ -854,7 +860,7 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 
 	/**
 	 * Informs the controler about graph selection.
-	 * <P>
+	 * <p>
 	 * ### This is only performed if the graph is not already selected.
 	 *
 	 * @see		#graphClicked
@@ -873,8 +879,8 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 
 	/**
 	 * Checks weather the specified mouse event represents a popup trigger.
-	 * <P>
-	 * ### This is a workaround because <CODE>InputEvent.isPopupTrigger()</CODE>
+	 * <p>
+	 * ### This is a workaround because <code>InputEvent.isPopupTrigger()</code>
 	 * doesn't work on Windows platform.
 	 *
 	 * @see		#nodeClicked
@@ -1017,7 +1023,7 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 	/**
 	 * References checked: 9.8.2001 (2.0a11)
 	 *
-	 * @return	the node at a given position or <CODE>null</CODE> if there is no node.
+	 * @return	the node at a given position or <code>null</code> if there is no node.
 	 *
 	 * @see		#thisPanelPressed
 	 * @see		#thisPanelDragged
@@ -1076,7 +1082,7 @@ class GraphPanel extends JDesktopPane implements ActionListener, DeepaMehtaConst
 	/**
 	 * @see		#thisPanelPressed
 	 *
-	 * @return	The edge at the specified position or <CODE>null</CODE> if there is no edge.
+	 * @return	The edge at the specified position or <code>null</code> if there is no edge.
 	 */
 	private GraphEdge findEdge(int x, int y) {
 		x -= translation.x;

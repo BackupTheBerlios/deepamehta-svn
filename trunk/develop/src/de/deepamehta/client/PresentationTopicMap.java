@@ -19,14 +19,14 @@ import java.util.Enumeration;
 
 /**
  * Topicmap model as instantiated by the graphical DeepaMehta frontend.
- * <P>
- * A <CODE>PresentationTopicMap</CODE> is cpomosed by
+ * <p>
+ * A <code>PresentationTopicMap</code> is cpomosed by
  * {@link PresentationTopic}'s, {@link PresentationAssociation}'s and {@link PresentationType}'s.
- * <P>
- * <HR>
- * Last functional change: 7.4.2007 (2.0b8)<BR>
- * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 7.4.2007 (2.0b8)<br>
+ * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class PresentationTopicMap extends PresentableTopicMap implements DeepaMehtaConstants {
@@ -40,36 +40,36 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 
 
 	/**
-	 * ### The client who deploys this <CODE>PresentationTopicMap</CODE>
+	 * ### The client who deploys this <code>PresentationTopicMap</code>
 	 */
 	PresentationService ps;		// accessed by TopicmapEditorModel.normalViewActivated()
 
 	/**
-	 * The ID of the topic (type <CODE>tt-topicmap</CODE>) representing this topicmap.
-	 * <P>
-	 * <B>Initialized by</B>
-	 * <UL>
-	 *     <LI><CODE>PresentationTopicMap()</CODE></LI>
-	 * </UL>
-	 * <B>Accessed by</B>
-	 * <UL>
-	 *     <LI><CODE>getID()</CODE></LI>
-	 *     <LI><CODE>hideTopic()</CODE></LI>
-	 *     <LI><CODE>createNewTopic()</CODE></LI>
-	 *     <LI><CODE>createNewAssociation()</CODE></LI>
-	 *     <LI><CODE>createNewTopicType()</CODE></LI>
-	 *     <LI><CODE>createNewAssociationType()</CODE></LI>
-	 *     <LI><CODE>showRelatedTopics()</CODE></LI>
-	 *     <LI><CODE>processTopicCommand()</CODE></LI>
-	 * </UL>
+	 * The ID of the topic (type <code>tt-topicmap</code>) representing this topicmap.
+	 * <p>
+	 * <b>Initialized by</b>
+	 * <ul>
+	 *     <li><code>PresentationTopicMap()</code></li>
+	 * </ul>
+	 * <b>Accessed by</b>
+	 * <ul>
+	 *     <li><code>getID()</code></li>
+	 *     <li><code>hideTopic()</code></li>
+	 *     <li><code>createNewTopic()</code></li>
+	 *     <li><code>createNewAssociation()</code></li>
+	 *     <li><code>createNewTopicType()</code></li>
+	 *     <li><code>createNewAssociationType()</code></li>
+	 *     <li><code>showRelatedTopics()</code></li>
+	 *     <li><code>processTopicCommand()</code></li>
+	 * </ul>
 	 */
 	private String topicmapID;
 
 	/**
-	 * The viewmode this <CODE>PresentationTopicMap</CODE> is deployed for
+	 * The viewmode this <code>PresentationTopicMap</code> is deployed for
 	 * ({@link #VIEWMODE_USE} resp. {@link #VIEWMODE_BUILD}).
-	 * <P>
-	 * Initialized by {@link #PresentationTopicMap constructor}.<BR>
+	 * <p>
+	 * Initialized by {@link #PresentationTopicMap constructor}.<br>
 	 * Accessed by {@link #getViewmode}.
 	 */
 	private String viewMode;
@@ -100,7 +100,7 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 
 	/**
 	 * Part of reading DIRECTIVE_SHOW_WORKSPACE and DIRECTIVE_SHOW_VIEW.
-	 * <P>
+	 * <p>
 	 * References checked: 7.4.2007 (2.0b8)
 	 *
 	 * @see		PresentationDirectives#PresentationDirectives(Directives, PresentationService)
@@ -120,9 +120,9 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 
 	/**
 	 * Stream constructor.
-	 * <P>
+	 * <p>
 	 * Part of reading DIRECTIVE_SHOW_WORKSPACE and DIRECTIVE_SHOW_VIEW.
-	 * <P>
+	 * <p>
 	 * References checked: 7.4.2007 (2.0b8)
 	 *
 	 * @see		PresentationDirectives#PresentationDirectives(DataInputStream, PresentationService)
@@ -218,11 +218,11 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 
 	/**
 	 * Initialites the geometry of the specified topic.
-	 * <P>
+	 * <p>
 	 * References checked: 29.1.2002 (2.0a14-pre7)
 	 *
-	 * @return	<CODE>true</CODE> if the geometry has been initialized,
-	 *			<CODE>false</CODE> if the topic already have a geometry.
+	 * @return	<code>true</code> if the geometry has been initialized,
+	 *			<code>false</code> if the topic already have a geometry.
 	 *
 	 * @see		TopicmapEditorModel#showTopic
 	 */

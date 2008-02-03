@@ -17,15 +17,15 @@ import javax.swing.JTable;
 
 
 /**
- * Extends the topic/association detail model by a view.
- * <P>
+ * Extends the detail window model by a view.
+ * <p>
  * The view consists of an internal window and "guides" which visually couple the window
- * with the origin topic.
- * <P>
- * <HR>
- * Last functional change: 10.9.2007 (2.0b8)<BR>
- * Last documentation update: 12.10.2001 (2.0a13-pre1)<BR>
- * J&ouml;rg Richter<BR>
+ * with the origin topic/association/topicmap.
+ * <p>
+ * <hr>
+ * Last functional change: 10.9.2007 (2.0b8)<br>
+ * Last documentation update: 3.2.2008 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 class PresentationDetail extends Detail {
@@ -57,14 +57,14 @@ class PresentationDetail extends Detail {
 
 	/**
 	 * The window used to show the detail.
-	 * <P>
+	 * <p>
 	 * Note: remains uninitialized for {@link #DETAIL_CONTENT_NONE}.
 	 */
 	private JInternalFrame detailWindow;
 	
 	/**
 	 * The contents of the detail window.
-	 * <P>
+	 * <p>
 	 * Note: remains uninitialized for {@link #DETAIL_CONTENT_NONE}.
 	 */
 	private Component content;
@@ -89,9 +89,12 @@ class PresentationDetail extends Detail {
 
 
 	/**
-	 * References checked: 30.10.2001 (2.0a13-pre3)
+	 * References checked: 3.2.2008 (2.0b8)
 	 *
-	 * @see		GraphPanel#showNodeDetail
+	 * @param	x	anchor coordinate for the guiding polygon
+	 * @param	y	anchor coordinate for the guiding polygon
+	 *
+	 * @see		PresentationService#showDetail
 	 */
 	PresentationDetail(Detail detail, int x, int y, GraphPanelControler controler) {
 		super(detail);
@@ -194,6 +197,9 @@ class PresentationDetail extends Detail {
 	// ---
 
 	/**
+	 * @param	x	anchor coordinate
+	 * @param	y	anchor coordinate
+	 *
 	 * @see		GraphPanel
 	 */
 	void paintGuide(Graphics g, int x, int y) {

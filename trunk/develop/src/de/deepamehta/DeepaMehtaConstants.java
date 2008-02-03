@@ -7,28 +7,28 @@ import java.util.Vector;
 
 /**
  * A collection of constants.
- * <P>
+ * <p>
  * There are two types of constants:
- * <OL>
- * <LI>Settings
- * <P>
+ * <ol>
+ * <li>Settings
+ * <p>
  * These constants are meant to be changed to configure the server, e.g. port number,
  * log status, max number of clients, default database host, used JDBC-driver as well as
  * the client e.g. default server, labels appearing in GUI, default geometry and colors
  * ...
- * <P>
- * <LI>Symbolic constants
- * <P>
+ * <p>
+ * <li>Symbolic constants
+ * <p>
  * These constants are not meant to be changed. They serve as symbolic to make the
  * sourcecode both easier to write and easier to read. E.g. crucial for application
  * programmers are the {@link #DIRECTIVE_SHOW_TOPIC DIRECTIVE_XXX} constants which
  * denotes the existing client directives.
- * </OL>
- * <P>
- * <HR>
- * Last functional change: 15.1.2008 (2.0b8)<BR>
- * Last documentation update: 7.12.2000 (2.0a8-pre2)<BR>
- * J&ouml;rg Richter<BR>
+ * </ol>
+ * <p>
+ * <hr>
+ * Last functional change: 3.2.2008 (2.0b8)<br>
+ * Last documentation update: 7.12.2000 (2.0a8-pre2)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public interface DeepaMehtaConstants {
@@ -406,10 +406,10 @@ public interface DeepaMehtaConstants {
 	static final String CMD_DELETE_ASSOC = "deleteAssociation";
 	static final String CMD_DELETE_TOPICMAP = "deleteTopicmap";
 	static final String CMD_SET_PROPERTY = "setProperty";				// changes model
-	static final String CMD_EDIT_TOPIC_PROPERTY = "editTopicProperty";	// opens detail
-	static final String CMD_VIEW_TOPIC_PROPERTY = "viewTopicProperty";	// opens detail
-	static final String CMD_EDIT_ASSOC_PROPERTY = "editAssocProperty";	// opens detail
-	static final String CMD_VIEW_ASSOC_PROPERTY = "viewAssocProperty";	// opens detail
+	// ### static final String CMD_EDIT_TOPIC_PROPERTY = "editTopicProperty";	// opens detail
+	// ### static final String CMD_VIEW_TOPIC_PROPERTY = "viewTopicProperty";	// opens detail
+	// ### static final String CMD_EDIT_ASSOC_PROPERTY = "editAssocProperty";	// opens detail
+	// ### static final String CMD_VIEW_ASSOC_PROPERTY = "viewAssocProperty";	// opens detail
 	static final String CMD_ASSIGN_TOPIC = "assignTopic";
 	static final String CMD_ASSIGN_NEW_TOPIC = "assignNewTopic";
 	static final String CMD_SHOW_HELP = "showHelp";						// changes model
@@ -957,6 +957,7 @@ public interface DeepaMehtaConstants {
 
 	static final int DETAIL_TOPIC = 1;
 	static final int DETAIL_ASSOCIATION = 2;
+	static final int DETAIL_TOPICMAP = 3;
 
 
 

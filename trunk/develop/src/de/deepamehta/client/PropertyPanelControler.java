@@ -12,11 +12,11 @@ import javax.swing.ImageIcon;
 
 /**
  * This interface specifies the controler for a {@link PropertyPanel}.
- * <P>
- * <HR>
- * Last functional change: 8.12.2002 (2.0a17-pre2)<BR>
- * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 8.12.2002 (2.0a17-pre2)<br>
+ * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 interface PropertyPanelControler {

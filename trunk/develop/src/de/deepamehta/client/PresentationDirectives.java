@@ -22,11 +22,11 @@ import java.util.Vector;
 
 
 /**
- * <P>
- * <HR>
- * Last functional change: 7.6.2007 (2.0b8)<BR>
- * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 7.6.2007 (2.0b8)<br>
+ * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class PresentationDirectives extends Directives {

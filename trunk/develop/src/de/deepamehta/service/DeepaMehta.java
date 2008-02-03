@@ -53,7 +53,7 @@ public class DeepaMehta extends JApplet implements ApplicationServiceHost, Deepa
 	public void sendDirectives(Session session, CorporateDirectives directives,
 							   ApplicationService as, String topicmapID, String viewmode) {
 		directives.updateCorporateMemory(as, session, topicmapID, viewmode);
-		// ### the monolitih application knows topicmapID, viewmode, the client not!!!
+		// ### the monolitic application knows topicmapID, viewmode, the client not!!!
 		ps.processDirectives(new PresentationDirectives(directives, ps) /* ###, topicmapID, viewmode */);
 	}
 

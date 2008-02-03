@@ -22,11 +22,11 @@ import javax.swing.event.InternalFrameEvent;
 
 /**
  * Editor model for an opened topicmap.
- * <P>
- * <HR>
- * Last functional change: 3.1.2005 (2.0b4)<BR>
- * Last documentation update: 7.6.2001 (2.0a11-pre4)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 3.2.2008 (2.0b8)<br>
+ * Last documentation update: 7.6.2001 (2.0a11-pre4)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 class TopicmapEditorModel implements DeepaMehtaConstants {
@@ -42,24 +42,24 @@ class TopicmapEditorModel implements DeepaMehtaConstants {
 	private PresentationTopicMap topicMap;
 
 	/**
-	 * The topicmap being edited by this topicmap editor (type <CODE>tt-topicmap</CODE>).
+	 * The topicmap being edited by this topicmap editor (type <code>tt-topicmap</code>).
 	 */
 	private BaseTopic topicmapTopic;
 
 	/**
 	 * The editor context this editor is deployed for.
-	 * <P>
+	 * <p>
 	 * See the 4 {@link #EDITOR_CONTEXT_PERSONAL EDITOR_CONTEXT_XXX constants}.
 	 */
 	private int editorContext;
 
 	/**
 	 * Displayed topic/assoc details.
-	 * <P>
+	 * <p>
  	 * ### The hashkey is composed by topicID/assocID AND detail command (one topic may have many
 	 * details open at the same time, but no two of the same processing command)
- 	 * <P>
-	 * Key: "topicID:command" (<CODE>String</CODE>)<BR>
+ 	 * <p>
+	 * Key: "topicID:command" (<code>String</code>)<br>
 	 * Value: detail ({@link PresentationDetail})
 	 */
 	private Hashtable details = new Hashtable();
@@ -81,9 +81,9 @@ class TopicmapEditorModel implements DeepaMehtaConstants {
 
 
 	/**
-	 * @param	editorContext	The editor context this editor is deployed for.<BR>
+	 * @param	editorContext	The editor context this editor is deployed for.<br>
 	 *							See the 4 {@link #EDITOR_CONTEXT_PERSONAL EDITOR_CONTEXT_XXX constants}.
-	 * @param	topicmapTopic	The topic representing the view being edited by this editor (type <CODE>tt-topicmap</CODE>).
+	 * @param	topicmapTopic	The topic representing the view being edited by this editor (type <code>tt-topicmap</code>).
 	 * @param	topicMap
 	 *
 	 * @see		PresentationService#createTopicMapEditor
@@ -118,7 +118,7 @@ class TopicmapEditorModel implements DeepaMehtaConstants {
 
 	/**
 	 * Returns the topic representing the view being edited by this editor (type
-	 * <CODE>tt-topicmap</CODE>).
+	 * <code>tt-topicmap</code>).
 	 *
 	 * @see		TopicMapEditorControler#getTopicmapTopic
 	 */
@@ -229,16 +229,16 @@ class TopicmapEditorModel implements DeepaMehtaConstants {
 	/**
 	 * Initializes the geometry of the specified topic and adds it to the
 	 * specified viewmode of this editor.
-	 * <P>
+	 * <p>
 	 * Presumption: the type is already present.
-	 * <P>
+	 * <p>
 	 * Part of processing {@link #DIRECTIVE_SHOW_TOPIC} and
 	 * {@link #DIRECTIVE_SHOW_TOPICS} (called repeatedly).
-	 * <P>
+	 * <p>
 	 * References checked: 30.3.2003 (2.0a18-pre8)
 	 *
-	 * @return	<CODE>true</CODE> if the geometry has been initialized,
-	 *			<CODE>false</CODE> if the topic already have a geometry.
+	 * @return	<code>true</code> if the geometry has been initialized,
+	 *			<code>false</code> if the topic already have a geometry.
 	 *
 	 * @see		PresentationService#showTopic
 	 */
@@ -253,10 +253,10 @@ class TopicmapEditorModel implements DeepaMehtaConstants {
 
 	/**
 	 * Adds the specified association to the specified viewmode of this editor.
-	 * <P>
+	 * <p>
 	 * Part of processing {@link #DIRECTIVE_SHOW_ASSOCIATION} and
 	 * {@link #DIRECTIVE_SHOW_ASSOCIATIONS} (called repeatedly).
-	 * <P>
+	 * <p>
 	 * References checked: 1.4.2003 (2.0a18-pre8)
 	 *
 	 * @param	assoc	The association to add (the associated topics are not yet set)
@@ -327,7 +327,7 @@ class TopicmapEditorModel implements DeepaMehtaConstants {
 
 	/**
 	 * Updates the model to reflect the specified topic is selected now.
-	 * <P>
+	 * <p>
 	 * References checked: 8.5.2002 (2.0a15-pre1)
 	 *
 	 * @see		TopicmapEditorModel#selectTopic
@@ -348,7 +348,7 @@ class TopicmapEditorModel implements DeepaMehtaConstants {
 
 	/**
 	 * Updates the model to reflect the specified assoc is selected now.
-	 * <P>
+	 * <p>
 	 * References checked: 8.5.2002 (2.0a15-pre1)
 	 *
 	 * @see		TopicmapEditorModel#selectAssociation
@@ -369,7 +369,7 @@ class TopicmapEditorModel implements DeepaMehtaConstants {
 
 	/**
 	 * Updates the model to reflect this graph is selected now.
-	 * <P>
+	 * <p>
 	 * References checked: 10.6.2002 (2.0a15-pre7)
 	 *
 	 * @see		TopicmapEditorModel#selectTopicMap
@@ -391,7 +391,7 @@ class TopicmapEditorModel implements DeepaMehtaConstants {
 	/**
 	 * If the selected topic is the specified topic the model is updated to reflect nothing is
 	 * selected now.
-	 * <P>
+	 * <p>
 	 * References checked: 10.6.2002 (2.0a15-pre7)
 	 *
 	 * @see		TopicmapEditorModel#removeSelection(String viewmode)
@@ -405,7 +405,7 @@ class TopicmapEditorModel implements DeepaMehtaConstants {
 	/**
 	 * If the selected topic is the specified topic the model is updated to reflect nothing is
 	 * selected now.
-	 * <P>
+	 * <p>
 	 * References checked: 10.6.2002 (2.0a15-pre7)
 	 *
 	 * @see		TopicmapEditorModel#removeSelection(String viewmode)
@@ -484,6 +484,8 @@ class TopicmapEditorModel implements DeepaMehtaConstants {
 				controler.processNodeDetail(topicMap, id, detail);
 			} else if (detailType == DETAIL_ASSOCIATION) {
 				controler.processEdgeDetail(topicMap, id, detail);
+			} else if (detailType == DETAIL_TOPICMAP) {
+				// ### ?
 			} else {
 				// ### error
 			}

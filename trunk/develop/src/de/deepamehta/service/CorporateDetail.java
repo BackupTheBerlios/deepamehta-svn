@@ -12,13 +12,13 @@ import java.util.StringTokenizer;
 
 /**
  * ### to be dropped
- * <P>
+ * <p>
  * Server side extension of topic/association {@link de.deepamehta.Detail}.
- * <P>
- * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
- * Last documentation update: 14.10.2001 (2.0a13-pre1)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 3.2.2008 (2.0b8)<br>
+ * Last documentation update: 14.10.2001 (2.0a13-pre1)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class CorporateDetail extends Detail {
@@ -43,7 +43,7 @@ public class CorporateDetail extends Detail {
 
 	/**
 	 * Copy constructor.
-	 * <P>
+	 * <p>
 	 * References checked: 2.1.2002 (2.0a14-pre5)
 	 *
 	 * @see		EmbeddedService#processTopicDetail
@@ -55,7 +55,7 @@ public class CorporateDetail extends Detail {
 
 	/**
 	 * Stream constructor.
-	 * <P>
+	 * <p>
 	 * References checked: 20.10.2001 (2.0a13-pre1)
 	 *
 	 * @see		InteractionConnection#performProcessTopicDetail
@@ -80,31 +80,6 @@ public class CorporateDetail extends Detail {
 	 */
 	public CorporateDirectives process(Session session, String topicID, int version,
 													String topicmapID, String viewmode) {
-		CorporateDirectives directives = new CorporateDirectives();
-		//
-		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
-		String cmd = st.nextToken();
-		//
-		/* ### if (cmd.equals(CMD_CHANGE_TOPIC_NAME)) {
-			String name = (String) param1;
-			directives.add(as.changeTopicName(topicID, version, name, topicmapID, viewmode));
-			return directives;
-		} else */ if (cmd.equals(CMD_EDIT_TOPIC_PROPERTY)) {
-			String prop = st.nextToken();
-			String value = (String) param1;
-			Hashtable props = new Hashtable();
-			props.put(prop, value);
-			directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, topicID, props, new Integer(version));
-			return directives;
-		} else if (cmd.equals(CMD_EDIT_ASSOC_PROPERTY)) {
-			String prop = st.nextToken();
-			String value = (String) param1;
-			Hashtable props = new Hashtable();
-			props.put(prop, value);
-			directives.add(DIRECTIVE_SHOW_ASSOC_PROPERTIES, topicID, props, new Integer(version));
-			return directives;
-		} else {
-			throw new DeepaMehtaException("unexpected command: \"" + command + "\"");
-		}
+		return new CorporateDirectives();
 	}
 }

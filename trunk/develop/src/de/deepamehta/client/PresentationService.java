@@ -70,17 +70,16 @@ import javax.swing.plaf.FontUIResource;
 
 
 /**
- * Main controler of the graphical DeepaMehta frontend.
- * <P>
- * <HR>
- * Last functional change: 12.9.2007 (2.0b8)<BR>
- * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
- * J&ouml;rg Richter<BR>
+ * Main controler of the graphical DeepaMehta client.
+ * <p>
+ * <hr>
+ * Last functional change: 3.2.2008 (2.0b8)<br>
+ * Last documentation update: 3.2.2008 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
-public final class PresentationService implements DeepaMehtaConstants,
-												GraphPanelControler, PropertyPanelControler,
-												ActionListener, Runnable {
+public final class PresentationService implements DeepaMehtaConstants, GraphPanelControler, PropertyPanelControler,
+																							ActionListener, Runnable {
 
 
 
@@ -119,8 +118,8 @@ public final class PresentationService implements DeepaMehtaConstants,
 	// ---
 
 	/**
-	 * Initialized by {@link InteractionConnection#InteractionConnection}.<BR>
-	 * Initialized by {@link de.deepamehta.service.DeepaMehta#initApplication}.<BR>
+	 * Initialized by {@link InteractionConnection#InteractionConnection}.<br>
+	 * Initialized by {@link de.deepamehta.service.DeepaMehta#initApplication}.<br>
 	 * Initialized by {@link de.deepamehta.service.DeepaMehta#init}.
 	 */
 	public Hashtable installationProps;
@@ -133,8 +132,8 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 	/**
 	 * Reflects weather the user is logged in.
-	 * <P>
-	 * ### Initialized with <CODE>false</CODE>, set to <CODE>true</CODE> by the login thread ({@link #run}).
+	 * <p>
+	 * ### Initialized with <code>false</code>, set to <code>true</code> by the login thread ({@link #run}).
 	 */
 	boolean loggedIn;
 
@@ -150,15 +149,15 @@ public final class PresentationService implements DeepaMehtaConstants,
 	 * Key: topicmap ID (String)
 	 * Value: TopicMapEditorModel
 	 * <p>
-	 * Accessed by {@link #getEditor(String topicmapID)}<BR>
-	 * Added by {@link #createTopicMapEditor}<BR>
+	 * Accessed by {@link #getEditor(String topicmapID)}<br>
+	 * Added by {@link #createTopicMapEditor}<br>
 	 * Removed by {@link #removeEditor}
 	 */
 	private Hashtable editors = new Hashtable();
 
 	/**
 	 * ID of currently selected topicmap.
-	 * <P>
+	 * <p>
 	 * Updated in {@link #selectTopicmap} (private)
 	 */
 	private String selectedTopicmapID;
@@ -180,8 +179,8 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 	/**
 	 * The number of displayed group workspaces (topicmap editors with {@link #EDITOR_CONTEXT_WORKGROUP}).
-	 * <P>
-	 * Incremented in {@link #showWorkspace}.<BR>
+	 * <p>
+	 * Incremented in {@link #showWorkspace}.<br>
 	 * Decremented in {@link #removeEditor}.
 	 */
 	private int workgroupCount;
@@ -196,18 +195,18 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 	/**
 	 * The main window.
-	 * <P>
+	 * <p>
 	 * Note: there is no other window. The main window is also used for the login dialog when
 	 * running as (monolithic) application
-	 * <P>
+	 * <p>
 	 * Initialized by {@link #createMainWindow}.
 	 */
 	public JFrame mainWindow;
 
 	/**
 	 * Content pane of main window.
-	 * <P>
-	 * Initialized by {@link #createMainWindow}.<BR>
+	 * <p>
+	 * Initialized by {@link #createMainWindow}.<br>
 	 * Accessed by {@link #createMainGUI(Directives directives)}, {@link #createMainGUI()}.
 	 */
 	public Container cp;
@@ -361,7 +360,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	// ---
 
 	/**
-	 * @param	demoMapID	may be <CODE>null</CODE>
+	 * @param	demoMapID	may be <code>null</code>
 	 *
 	 * @see		DeepeMehtaClient#init				(running as applet)
 	 */
@@ -375,7 +374,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	/**
 	 * References checked: 11.12.2006 (2.0b8)
 	 *
-	 * @param	applet		may be <CODE>null</CODE>
+	 * @param	applet		may be <code>null</code>
 	 *
 	 * @see		DeepeMehtaClient#init				(running as applet)
 	 * @see		de.deepamehta.service.DeepeMehta#init
@@ -388,7 +387,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
-	 * @param	as		the application service (not <CODE>null</CODE>)
+	 * @param	as		the application service (not <code>null</code>)
 	 *
 	 * @see		DeepeMehtaClient#initApplication	(running as application)
 	 * @see		DeepeMehtaClient#init				(running as applet)
@@ -485,7 +484,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
-	 * Processes <CODE>DIRECTIVE_SET_LAST_MODIFIED</CODE>.
+	 * Processes <code>DIRECTIVE_SET_LAST_MODIFIED</code>.
 	 *
 	 * @see		#processDirectives
 	 * @see		SocketService#downloadFile
@@ -535,15 +534,15 @@ public final class PresentationService implements DeepaMehtaConstants,
 	/**
 	 * Checks if the specified topic type is known in the topicmap this controler
 	 * controls.
-	 * <P>
+	 * <p>
 	 * ### If the topic type is not known it is retrieved from the list of corporate wide
 	 * topic types and is added to the editor who deploys this controler and the server
-	 * is notified by means of a (<CODE>addTypeToView</CODE>) message.
-	 * <P>
+	 * is notified by means of a (<code>addTypeToView</code>) message.
+	 * <p>
 	 * References checked: 2.12.2001 (2.0a14-pre1)
 	 *
-	 * @return	### <CODE>true</CODE> if the specified topic type is known in the topicmap
-	 *			this controler controls, <CODE>false</CODE> if the type was unknown (and
+	 * @return	### <code>true</code> if the specified topic type is known in the topicmap
+	 *			this controler controls, <code>false</code> if the type was unknown (and
 	 *			thus is retrieved now)
 	 *
 	 * @see		#showTopic
@@ -566,15 +565,15 @@ public final class PresentationService implements DeepaMehtaConstants,
 	/**
 	 * Checks if the specified association type is known in the topicmap this controler
 	 * controls.
-	 * <P>
+	 * <p>
 	 * ### If the association type is not known it is retrieved from the list of corporate
 	 * wide association types and is added to the editor who deploys this controler and
-	 * the server is notified by means of a (<CODE>addTypeToView</CODE>) message.
-	 * <P>
+	 * the server is notified by means of a (<code>addTypeToView</code>) message.
+	 * <p>
 	 * References checked: 2.12.2001 (2.0a14-pre1)
 	 *
-	 * @return	### <CODE>true</CODE> if the specified association type is known in the
-	 *			topicmap this controler controls, <CODE>false</CODE> if the type was
+	 * @return	### <code>true</code> if the specified association type is known in the
+	 *			topicmap this controler controls, <code>false</code> if the type was
 	 *			unknown (and thus is retrieved now)
 	 *
 	 * @see		PresentationService#showTopic
@@ -634,7 +633,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
-	 * May return <CODE>null</CODE>.
+	 * May return <code>null</code>.
 	 */
 	private Image customerImage() {
 		// Note: the custumer icon may be not set
@@ -730,7 +729,8 @@ public final class PresentationService implements DeepaMehtaConstants,
 	public void showNodeMenu(PresentationTopicMap topicmap, GraphNode node, int x, int y) {
 		storeProperties();
 		BaseTopic topic = (BaseTopic) node;
-		String command = CMD_GET_TOPIC_COMMANDS + COMMAND_SEPARATOR + topic.getID() + COMMAND_SEPARATOR + topic.getVersion() + COMMAND_SEPARATOR + x + COMMAND_SEPARATOR + y;
+		String command = CMD_GET_TOPIC_COMMANDS + COMMAND_SEPARATOR + topic.getID() + COMMAND_SEPARATOR + topic.getVersion() +
+			COMMAND_SEPARATOR + x + COMMAND_SEPARATOR + y;
 		processTopicCommand(topic.getID(), topic.getVersion(), command, topicmap.getID());
 	}
 
@@ -740,7 +740,8 @@ public final class PresentationService implements DeepaMehtaConstants,
 	public void showEdgeMenu(PresentationTopicMap topicmap, GraphEdge edge, int x, int y) {
 		storeProperties();
 		BaseAssociation assoc = (BaseAssociation) edge;
-		String command = CMD_GET_ASSOC_COMMANDS + COMMAND_SEPARATOR + assoc.getID() + COMMAND_SEPARATOR + assoc.getVersion() + COMMAND_SEPARATOR + x + COMMAND_SEPARATOR + y;
+		String command = CMD_GET_ASSOC_COMMANDS + COMMAND_SEPARATOR + assoc.getID() + COMMAND_SEPARATOR + assoc.getVersion() +
+			COMMAND_SEPARATOR + x + COMMAND_SEPARATOR + y;
 		processAssociationCommand(assoc.getID(), assoc.getVersion(), command, topicmap.getID());
 	}
 
@@ -749,7 +750,8 @@ public final class PresentationService implements DeepaMehtaConstants,
 	 */
 	public void showGraphMenu(PresentationTopicMap topicmap, int x, int y) {
 		storeProperties();
-		processTopicCommand(topicmap.getID(), 1, CMD_GET_VIEW_COMMANDS + COMMAND_SEPARATOR + x + COMMAND_SEPARATOR + y, topicmap.getID());
+		String command = CMD_GET_VIEW_COMMANDS + COMMAND_SEPARATOR + x + COMMAND_SEPARATOR + y;
+		processTopicCommand(topicmap.getID(), 1, command, topicmap.getID());
 	}
 
 	// ---
@@ -791,14 +793,18 @@ public final class PresentationService implements DeepaMehtaConstants,
 	// ---
 
 	/**
-	 * @see		GraphPanel#updateDetail
+	 * References checked: 3.2.2008 (2.0b8)
+	 *
+	 * @see		TopicmapEditorModel#updateDetail
 	 */
 	public void processNodeDetail(PresentationTopicMap topicmap, String topicID, Detail detail) {
 		processTopicDetail(topicID, 1, detail, topicmap.getID());	// ### version 1
 	}
 
 	/**
-	 * @see		GraphPanel#updateDetail
+	 * References checked: 3.2.2008 (2.0b8)
+	 *
+	 * @see		TopicmapEditorModel#updateDetail
 	 */
 	public void processEdgeDetail(PresentationTopicMap topicmap, String assocID, Detail detail) {
 		processAssociationDetail(assocID, 1, detail, topicmap.getID());	// ### version 1
@@ -808,13 +814,13 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 	/**
 	 * Notifies the application service about changed topic geometry.
-	 * <P>
+	 * <p>
 	 * Called in 3 situations
-	 * <UL>
-	 * <LI>A single topic has been moved by the user
-	 * <LI>A cluster of topics has been moved by the user
-	 * <LI>A topic about to be shown gots its geometry at client side programatically
-	 * </UL>
+	 * <ul>
+	 * <li>A single topic has been moved by the user
+	 * <li>A cluster of topics has been moved by the user
+	 * <li>A topic about to be shown gots its geometry at client side programatically
+	 * </ul>
 	 * References checked: 5.8.2002 (2.0a15-pre11)
 	 *
 	 * @see		#updateGeometry
@@ -827,11 +833,11 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 	/**
 	 * Notifies the application service about changed topicmap translation.
-	 * <P>
+	 * <p>
 	 * Called in 1 situation
-	 * <UL>
-	 * <LI>A topicmap has been moved by the user
-	 * </UL>
+	 * <ul>
+	 * <li>A topicmap has been moved by the user
+	 * </ul>
 	 * References checked: 30.1.2002 (2.0a14-pre7)
 	 *
 	 * @see		GraphPanel#thisPanelReleased
@@ -923,7 +929,6 @@ public final class PresentationService implements DeepaMehtaConstants,
 		System.out.println(">>> save topic properties of " + topic);
 		Directives directives = as.setTopicProperties(topicmap.getID(), VIEWMODE_USE, topic.getID(), topic.getVersion(), newData);
 		processDirectives(directives, topicmap);
-		// ### topicmap.changeTopicData(topic, newData);
 	}
 
 	/**
@@ -933,7 +938,6 @@ public final class PresentationService implements DeepaMehtaConstants,
 		System.out.println(">>> save association properties of " + assoc);
 		Directives directives = as.setAssocProperties(topicmap.getID(), VIEWMODE_USE, assoc.getID(), assoc.getVersion(), newData);
 		processDirectives(directives, topicmap);
-		// ### topicmap.changeAssocData(assoc, newData);
 	}
 
 	// ---
@@ -985,7 +989,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 	/**
 	 * Processes the action events triggered by the login screen.
-	 * <P>
+	 * <p>
 	 * Once the enter key is pressed inside the password field a server side password
 	 * check is performed. If the password check is successfull the login procedure is
 	 * run in its own thread.
@@ -1020,13 +1024,17 @@ public final class PresentationService implements DeepaMehtaConstants,
 			ComboBoxItem item = (ComboBoxItem) topicmapChoice.getSelectedItem();
 			// ### error check
 			if (item == null) {
-				System.out.println("*** PresentationService.performAction(): action \"selectTopicmap\" can't perform (topicmap choice has no selection)");
+				System.out.println("*** PresentationService.performAction(): action \"selectTopicmap\" " +
+					"can't perform (topicmap choice has no selection)");
 				return;
 			}
 			//
 			String topicmapID = item.topicID;
 			addToHistory(topicmapID);
+			//
+			beginLongTask();	// ### no effect
 			selectTopicmap(topicmapID);
+			endTask();
 		} else if (command.equals("back")) {
 			selectTopicmap(back());
 		} else if (command.equals("forward")) {
@@ -1108,6 +1116,11 @@ public final class PresentationService implements DeepaMehtaConstants,
 	// ---
 
 	/**
+	 * Delegates the execution of a topic command to the application service and processes the resulting directives.
+	 * If the directives contains a chained directive another execution-processing-cycle is performed.
+	 *
+	 * References checked: 3.2.2008 (2.0b8)
+	 *
 	 * @see		#showNodeMenu
 	 * @see		#showGraphMenu
 	 * @see		#processNodeCommand
@@ -1126,6 +1139,11 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
+	 * Delegates the execution of an association command to the application service and processes the resulting directives.
+	 * If the directives contains a chained directive another execution-processing-cycle is performed.
+	 *
+	 * References checked: 3.2.2008 (2.0b8)
+	 *
 	 * @see		#showEdgeMenu
 	 * @see		#processEdgeCommand
 	 * @see		#executeAssocCommand
@@ -1160,54 +1178,51 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 	// --- processDirectives (3 forms) ---
 
+	/**
+	 * References checked: 3.2.2008 (2.0b8)
+	 *
+	 * @see		#performRequest
+	 * @see		#createMainGUI
+	 * @see		MessagingConnection#processMessage
+	 * @see		de.deepamehta.service.DeepaMehta#sendDirectives
+	 */
 	public String processDirectives(Directives directives) {
 		return processDirectives(directives, null);
 	}
 
-	// ### topicmapID, viewmode should be known also for asynchronously send directives
+	/**
+	 * References checked: 3.2.2008 (2.0b8)
+	 *
+	 * @see		#processTopicCommand
+	 * @see		#processAssociationCommand
+	 * @see		#processTopicDetail
+	 * @see		#processAssociationDetail
+	 */
 	String processDirectives(Directives directives, String topicmapID, String viewmode) {
+		// ### topicmapID, viewmode should be known also for asynchronously send directives
 		PresentationTopicMap topicmap = getEditor(topicmapID).getTopicMap();
 		return processDirectives(directives, topicmap);
 	}
 
 	/**
+	 * References checked: 3.2.2008 (2.0b8)
+	 *
 	 * @param	topicmap	The topicmap in which the action was triggered resp.
-	 *						<CODE>null</CODE> if the directives has been received
-	 *						asynchronously.
-	 * @param	viewMode	The viewmode in which the action was triggered resp.
-	 *						<CODE>null</CODE> if the directives has been received
+	 *						<code>null</code> if the directives has been received
 	 *						asynchronously.
 	 *
-	 * @return	processing result, used for chained directives:<BR>
+	 * @return	processing result, used for chained directives:<br>
 	 *			DIRECTIVE_CHOOSE_FILE: result is the path of the choosen file, resp. "" if file
 	 *				choosing has been aborted by the user
 	 *			DIRECTIVE_CHOOSE_COLOR: result is the chosen color representation, resp. "" if color
 	 *				choosing has been aborted by the user
 	 *
-	 * @see		DeepaMehtaClient#createGUI
-	 * @see		MessagingConnection#processMessage
-	 *
-	 * @see		PresentationTopicMap#importTopicmap		2x
-	 * @see		PresentationTopicMap#viewmodeSwitched
-	 * @see		PresentationTopicMap#changeTopicName
-	 * @see		PresentationTopicMap#changeTopicType
-	 * @see		PresentationTopicMap#changeAssocType
-	 * @see		PresentationTopicMap#changeTopicData
-	 * @see		PresentationTopicMap#hideTopic
-	 * @see		PresentationTopicMap#deleteTopic
-	 * @see		PresentationTopicMap#hideAssociation
-	 * @see		PresentationTopicMap#deleteAssociation
-	 * @see		PresentationTopicMap#showTopicsByType
-	 * @see		PresentationTopicMap#hideTopicsByType
-	 * @see		PresentationTopicMap#createNewTopic
-	 * @see		PresentationTopicMap#createNewTopicType
-	 * @see		PresentationTopicMap#createNewAssociationType
-	 * @see		PresentationTopicMap#navigateByTopicType
-	 * @see		PresentationTopicMap#navigateByAssociationType
-	 * @see		PresentationTopicMap#performTopicAction
+	 * @see		#nodesMoved
+	 * @see		#changeTopicData
+	 * @see		#changeAssocData
 	 */
 	String processDirectives(Directives directives, PresentationTopicMap topicmap) {
-		String result = null;	// processing result, used for chained directives (DIRECTIVE_CHOOSE_FILE)
+		String result = null;	// processing result, used for chained directives (DIRECTIVE_CHOOSE_FILE, DIRECTIVE_CHOOSE_COLOR)
 		String viewMode = null;
 		//
 		// Used to collect topics which have got their geometry at client side
@@ -1437,9 +1452,9 @@ public final class PresentationService implements DeepaMehtaConstants,
 					showMenu(menuID, commands, p.x, p.y);
 					break;
 				case DIRECTIVE_SHOW_DETAIL:
-					topicID = (String) param1;
+					String obbjectID = (String) param1;
 					Detail detail = (Detail) param2;
-					showDetail(topicmapID, viewMode, topicID, detail);
+					showDetail(topicmapID, viewMode, obbjectID, detail);
 					break;
 				case DIRECTIVE_SHOW_WORKSPACE:
 					PresentableTopic topicmapMetadata = (PresentableTopic) param1;
@@ -1573,7 +1588,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	// ---
 
 	/**
-	 * @return	the topic type specified by its ID or <CODE>null</CODE> if no such
+	 * @return	the topic type specified by its ID or <code>null</code> if no such
 	 *			topic type is known.
 	 */
 	PresentationType getTopicType(String typeID) {
@@ -1581,7 +1596,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
-	 * @return	the association type specified by its ID or <CODE>null</CODE> if no such
+	 * @return	the association type specified by its ID or <code>null</code> if no such
 	 *			association type is known.
 	 */
 	PresentationType getAssociationType(String typeID) {
@@ -1665,10 +1680,10 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 	/**
 	 * Processes {@link #DIRECTIVE_SHOW_TOPIC} and {@link #DIRECTIVE_SHOW_TOPICS} (called repeatedly).
-	 * <P>
+	 * <p>
 	 * If the topic's type don't exists in the specified viewmode the topic type is copied
 	 * from the list of corporate wide topic types before the topic is added ###.
-	 * <P>
+	 * <p>
 	 * References checked: 16.4.2002 (2.0a14-post1)
 	 *
 	 * @param	updateGeometry			return parameter to collect the topics which have got their
@@ -1967,7 +1982,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 	/**
 	 * ### params not needed
-	 * <P>
+	 * <p>
 	 * Processes {@link #DIRECTIVE_FOCUS_NAME}.
 	 *
 	 * @see		#processDirectives
@@ -1980,7 +1995,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 	/**
 	 * ### params not needed
-	 * <P>
+	 * <p>
 	 * Processes {@link #DIRECTIVE_FOCUS_PROPERTY}.
 	 *
 	 * @see		#processDirectives
@@ -2167,38 +2182,47 @@ public final class PresentationService implements DeepaMehtaConstants,
 	/**
 	 * Processes {@link #DIRECTIVE_SHOW_DETAIL}.
 	 *
+	 * @param	objectID	ID of the topic/association/topicmap the detail window is bound to
+	 *
 	 * @see		#processDirectives
 	 */
-	private void showDetail(String topicmapID, String viewmode, String topicID, Detail detail) {
+	private void showDetail(String topicmapID, String viewmode, String objectID, Detail detail) {
 		if (detail.getContentType() == DETAIL_CONTENT_NONE) {
 			return;
 		}
 		// check weather the detail of the specified topic is already shown
 		TopicmapEditorModel editor = getEditor(topicmapID);
-		String key = getKey(topicID, detail.getCommand());
+		String key = getKey(objectID, detail.getCommand());
 		PresentationDetail pd = editor.getDetail(key);
 		JInternalFrame detailWindow;
 		if (pd == null) {
 			// --- create detail window ---
+			// ### copy in GraphPanel.paintDetails()
 			int x, y;
 			switch (detail.getType()) {
 			case DETAIL_TOPIC:
-				PresentationTopic topic = editor.getTopic(topicID);				// throws DME
+				PresentationTopic topic = editor.getTopic(objectID);				// throws DME
 				Point p = topic.getGeometry();
 				x = p.x;
 				y = p.y;
 				break;
 			case DETAIL_ASSOCIATION:
-				PresentationAssociation assoc = editor.getAssociation(topicID);	// ### throws DME
+				PresentationAssociation assoc = editor.getAssociation(objectID);	// throws DME
 				Point p1 = editor.getTopic(assoc.getTopicID1()).getGeometry();
 				Point p2 = editor.getTopic(assoc.getTopicID2()).getGeometry();
 				x = (p1.x + p2.x) / 2;
 				y = (p1.y + p2.y) / 2;
 				break;
+			case DETAIL_TOPICMAP:
+				x = detail.getGuideAnchor().x;
+				y = detail.getGuideAnchor().y;
+				break;
 			default:
 				throw new DeepaMehtaException("unexpected detail type: " + detail.getType());
 			}
-			pd = new PresentationDetail(detail, x, y, this);
+			//
+			Point translation = editor.getTopicMap().getTranslation();
+			pd = new PresentationDetail(detail, x + translation.x, y + translation.y, this);
 			detailWindow = pd.getWindow();
 			detailWindow.setName(key);		// component name is used to store key
 			editor.addDetailListeners(detailWindow);
@@ -2210,6 +2234,10 @@ public final class PresentationService implements DeepaMehtaConstants,
 			detailWindow = pd.getWindow();
 			System.out.println(">>> detail \"" + detailWindow.getName() + "\" reopened");
 			// ### possibly update content
+			// adjust guide anchor position
+			if (detail.getType() == DETAIL_TOPICMAP) {
+				pd.setGuideAnchor(detail.getGuideAnchor());
+			}
 		}
 		// select detail window
 		try {
@@ -2276,7 +2304,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	// --- Notifying the user ---
 
 	/**
-	 * Processes <CODE>DIRECTIVE_SHOW_MESSAGE</CODE>.
+	 * Processes <code>DIRECTIVE_SHOW_MESSAGE</code>.
 	 *
 	 * @see		#processDirectives
 	 */
@@ -2296,16 +2324,11 @@ public final class PresentationService implements DeepaMehtaConstants,
 	 * @see		#setDefaultCursor
 	 */
 	private void setMouseCursor(int cursorType) {
-		/* ### if (mainWindow == null) {
-			// Note: this is the case if running as applet and not logged in yet
-			applet.setCursor(new Cursor(cursorType));
-		} else { */
 		mainWindow.setCursor(new Cursor(cursorType));
-		// ### }
 	}
 
 	/**
-	 * Processes <CODE>DIRECTIVE_PLAY_SOUND</CODE>.
+	 * Processes <code>DIRECTIVE_PLAY_SOUND</code>.
 	 *
 	 * @see		#processDirectives
 	 */
@@ -2377,7 +2400,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
-	 * Processes <CODE>DIRECTIVE_RENAME_EDITOR</CODE>
+	 * Processes <code>DIRECTIVE_RENAME_EDITOR</code>
 	 *
 	 * @see		#processDirectives
 	 */
@@ -2420,7 +2443,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	// --- executeCommand (2 forms) ---
 
 	/**
-	 * Processes <CODE>DIRECTIVE_LAUNCH_APPLICATION</CODE>.
+	 * Processes <code>DIRECTIVE_LAUNCH_APPLICATION</code>.
 	 *
 	 * @see		#processDirectives
 	 */
@@ -2444,7 +2467,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
-	 * Processes <CODE>DIRECTIVE_OPEN_FILE</CODE>
+	 * Processes <code>DIRECTIVE_OPEN_FILE</code>
 	 *
 	 * @see		#processDirectives
 	 */
@@ -2477,11 +2500,11 @@ public final class PresentationService implements DeepaMehtaConstants,
 	// ---
 
 	/**
-	 * Processes <CODE>DIRECTIVE_CHOOSE_FILE</CODE>
-	 * <P>
+	 * Processes <code>DIRECTIVE_CHOOSE_FILE</code>
+	 * <p>
 	 * Presents the filechooser dialog to let the user choose one file from the local
 	 * filesystem. If a file has been selected the path is returned. If the
-	 * user aborts the selection or if an error occurs <CODE>null</CODE> is returned.
+	 * user aborts the selection or if an error occurs <code>null</code> is returned.
 	 *
 	 * @see		#processDirectives
 	 */
@@ -2509,11 +2532,11 @@ public final class PresentationService implements DeepaMehtaConstants,
 	// ---
 
 	/**
-	 * Processes <CODE>DIRECTIVE_CHOOSE_COLOR</CODE> and <CODE>DIRECTIVE_CHOOSE_BACKGROUND_COLOR</CODE>
-	 * <P>
+	 * Processes <code>DIRECTIVE_CHOOSE_COLOR</code> and <code>DIRECTIVE_CHOOSE_BACKGROUND_COLOR</code>
+	 * <p>
 	 * Presents the color chooser dialog to let the user choose a color.
 	 * If a color has been selected the hexadecimal representation is returned. If the
-	 * user aborts the selection or if an error occurs <CODE>null</CODE> is returned.
+	 * user aborts the selection or if an error occurs <code>null</code> is returned.
 	 *
 	 * @see         #processDirectives
 	 */
@@ -2561,13 +2584,13 @@ public final class PresentationService implements DeepaMehtaConstants,
 	// ---
 	
 	/**
-	 * Processes <CODE>DIRECTIVE_COPY_FILE</CODE>.
-	 * <P>
+	 * Processes <code>DIRECTIVE_COPY_FILE</code>.
+	 * <p>
 	 * Queues the specified file for being copied from local filesystem into the local
 	 * document repository.
-	 * <P>
+	 * <p>
 	 * The file is expected to exist on local filesystem. ### If not so an error
-	 * is reported and the copy request is <I>not</I> queued.
+	 * is reported and the copy request is <i>not</i> queued.
 	 *
 	 * @see		#processDirectives
 	 */
@@ -2576,7 +2599,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
-	 * Processes <CODE>DIRECTIVE_DOWNLOAD_FILE</CODE>.
+	 * Processes <code>DIRECTIVE_DOWNLOAD_FILE</code>.
 	 *
 	 * @see		#processDirectives
 	 */
@@ -2640,16 +2663,16 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
-	 * Processes <CODE>DIRECTIVE_UPLOAD_FILE</CODE>.
-	 * <P>
+	 * Processes <code>DIRECTIVE_UPLOAD_FILE</code>.
+	 * <p>
 	 * Queues the specified file for being uploaded if it has changed against the
 	 * specified timestamp.
-	 * <P>
-	 * ### If the specified timestamp is <CODE>0</CODE> the upload request <I>is</I> queued
+	 * <p>
+	 * ### If the specified timestamp is <code>0</code> the upload request <i>is</i> queued
 	 * (regardless of the local files timestamp).
-	 * <P>
+	 * <p>
 	 * The file is expected to exist in the local document repository. If not so, an
-	 * error is reported and the upload request is <I>not</I> queued.
+	 * error is reported and the upload request is <i>not</i> queued.
 	 * ### true again, now we can queue directives
 	 * jri 3.5.2001 (2.0a10-pre8)]
 	 *
@@ -2662,7 +2685,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	// ---
 
 	/**
-	 * Processes <CODE>DIRECTIVE_QUEUE_MESSAGE</CODE>.
+	 * Processes <code>DIRECTIVE_QUEUE_MESSAGE</code>.
 	 *
 	 * @see		#processDirectives
 	 */
@@ -2672,7 +2695,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
-	 * Processes <CODE>DIRECTIVE_QUEUE_DIRECTIVES</CODE>.
+	 * Processes <code>DIRECTIVE_QUEUE_DIRECTIVES</code>.
 	 *
 	 * @see		#processDirectives
 	 */
@@ -2684,7 +2707,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	// --- Image Utilities ---
 
 	/**
-	 * ### Also application should retrieve image from server (instead of accessing them locally)<BR>
+	 * ### Also application should retrieve image from server (instead of accessing them locally)<br>
 	 * ### Java Plugin workaraound?
 	 *
 	 * @see		PresentationTopic#setIcon
@@ -2700,7 +2723,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
-	 * Workaround for Sun's Java Plugin: returns <CODE>null</CODE> if imagefile is empty.
+	 * Workaround for Sun's Java Plugin: returns <code>null</code> if imagefile is empty.
 	 *
 	 * @see		#changeEditorIcon
 	 * @see		#editorIcon
@@ -2981,7 +3004,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 	}
 
 	/**
-	 * @param	host	<CODE>null</CODE> is allowed
+	 * @param	host	<code>null</code> is allowed
 	 *
 	 * @see		DeepaMehtaClient#initApplication
 	 * @see		DeepaMehtaClient#init
@@ -3010,7 +3033,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 	/**
 	 * Removes the login screen and creates the main GUI.
-	 * <P>
+	 * <p>
 	 * ### The workspaces and the message panel is created in the upper screen area.
 	 * The progress bar used to reflect background file transfers is created in the
 	 * lower screen end.
@@ -3029,8 +3052,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 		// --- create main GUI ---
 		createMainGUI();
 		processDirectives(directives);	// creates workspaces and views
-		// Note: the listener is set once workspaces and views are added
-		// ### topicmapChoice.addActionListener(this);
+		//
 		propertyPanel.init();
 		//
 		progressBar = new JProgressBar(progressModel);
@@ -3050,7 +3072,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 		topicmapChoice.setRenderer(new ComboBoxRenderer());
 		// topicmapChoice.setOpaque(false);	// ###
 		topicmapChoice.setActionCommand("selectTopicmap");
-		// Note: the listener is set once workspaces and views are added, see createMainGUI(Directives directives)
+		// Note: the listener is set once workspaces and views are added, see createTopicMapEditor()
 		backButton = new JButton("<");
 		backButton.setSize(42, 20);		// ### width 38, 40 are to small for windows
 		backButton.setLocation(10, 11);
@@ -3169,7 +3191,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 
 	/**
 	 * Closes the editor that is opened for the specified view.
-	 * <P>
+	 * <p>
 	 * Processes {@kink #DIRECTIVE_CLOSE_EDITOR}.
 	 *
 	 * @see		#processDirectives
@@ -3453,7 +3475,7 @@ public final class PresentationService implements DeepaMehtaConstants,
 		/**
 		 * ### Creates the fileserver connection and the messaging connection, then creates
 		 * main GUI.
-		 * <P>
+		 * <p>
 		 * Performed for normal login as well as demo login.
 		 *
 		 * @see		#startSession

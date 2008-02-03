@@ -11,11 +11,11 @@ import javax.swing.Icon;
 
 /**
  * This interface specifies the controler for a {@link GraphPanel}.
- * <P>
- * <HR>
- * Last functional change: 18.4.2004 (2.0b3-pre2)<BR>
- * Last documentation update: 16.11.2000 (2.0a7-pre3)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 18.4.2004 (2.0b3-pre2)<br>
+ * Last documentation update: 16.11.2000 (2.0a7-pre3)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 interface GraphPanelControler {

@@ -22,11 +22,11 @@ import java.util.Vector;
 
 /**
  * Utility class for building {@link de.deepamehta.Commands topic commands / association commands}.
- * <P>
- * <HR>
- * Last functional change: 1.2.2008 (2.0b8)<BR>
- * Last documentation update: 9.10.2001 (2.0a12)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 1.2.2008 (2.0b8)<br>
+ * Last documentation update: 9.10.2001 (2.0a12)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public final class CorporateCommands extends Commands implements DeepaMehtaConstants {
@@ -63,7 +63,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	/**
 	 * Adds a "Create" command group to this (view) command set.
-	 * <P>
+	 * <p>
 	 * References checked: 11.6.2002 (2.0a15-pre7)
 	 *
 	 * @see		de.deepamehta.topics.TopicMapTopic#viewCommands
@@ -79,7 +79,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	/**
 	 * Adds a "Search by Topic Type" command group to this (view) command set.
-	 * <P>
+	 * <p>
 	 * References checked: 31.1.2008 (2.0b8)
 	 *
 	 * @see		de.deepamehta.topics.TopicMapTopic#viewCommands
@@ -94,7 +94,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	/**
 	 * Adds a "Hide all" command group to this (view) command set.
-	 * <P>
+	 * <p>
 	 * References checked: 4.12.2002 (2.0a17-pre2)
 	 *
 	 * @see		de.deepamehta.topics.TopicMapTopic#viewCommands
@@ -273,7 +273,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	/**
 	 * Adds a "Retype" command to this (topic) command set.
-	 * <P>
+	 * <p>
 	 * References checked: 9.2.2005 (2.0b5)
 	 *
 	 * @see		#addStandardCommands
@@ -294,7 +294,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	/**
 	 * Adds a "Retype" command to this (association) command set.
-	 * <P>
+	 * <p>
 	 * References checked: 9.2.2005 (2.0b5)
 	 *
 	 * @see		de.deepamehta.assocs.LiveAssociation#contextCommands
@@ -317,8 +317,8 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	/**
 	 * Adds a "Hide" command to this (topic) command set.
-	 * <P>
-	 * References checked: 11.10.2001 (2.0a12)<BR>
+	 * <p>
+	 * References checked: 11.10.2001 (2.0a12)<br>
 	 * Documentation updated: 11.10.2001 (2.0a12)
 	 *
 	 * @see		#addStandardCommands
@@ -329,7 +329,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	/**
 	 * Adds a "Hide" command to this (association) command set.
-	 * <P>
+	 * <p>
 	 * References checked: 11.10.2001 (2.0a12)
 	 *
 	 * @see		de.deepamehta.assocs.LiveAssociation#contextCommands
@@ -342,7 +342,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	/**
 	 * Adds a "Delete" command to this (topic) command set.
-	 * <P>
+	 * <p>
 	 * References checked: 9.2.2005 (2.0b5)
 	 *
 	 * @see		#addStandardCommands
@@ -364,7 +364,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	/**
 	 * Adds a "Delete" command to this (association) command set.
-	 * <P>
+	 * <p>
 	 * References checked: 9.2.2005 (2.0b5)
 	 *
 	 * @see		de.deepamehta.assocs.LiveAssociation#contextCommands
@@ -539,17 +539,17 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	/**
 	 * Adds topic commands to the specified command group of this (topic) command set.
-	 * <P>
+	 * <p>
 	 * This method is useful for creating preference submenus, e.g. the submenus for
 	 * the export preferences or the Kompetenzstern preferences are build by help
 	 * of this method.
-	 * <P>
-	 * References checked: 14.12.2001 (2.0a14-pre4)<BR>
+	 * <p>
+	 * References checked: 14.12.2001 (2.0a14-pre4)<br>
 	 * Documentation updated: 9.10.2001 (2.0a12)
 	 *
 	 * @param	topics			vector of topics (BaseTopic) resp. topic IDs (String)
-	 * @param	selectedTopic	currently selected topic, may be <CODE>null</CODE>
-	 * @param	title			appears before commands, may be <CODE>null</CODE>
+	 * @param	selectedTopic	currently selected topic, may be <code>null</code>
+	 * @param	title			appears before commands, may be <code>null</code>
 	 *
 	 * @see		#addExportCommand
 	 */
@@ -579,8 +579,8 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	/**
 	 * @param	topics				vector of topics (BaseTopic) resp. topic IDs (String)
-	 * @param	selectedTopicIDs	IDs of currently selected topics, may be <CODE>null</CODE>
-	 * @param	disabledTopicIDs	IDs of currently disabled topics, may be <CODE>null</CODE>
+	 * @param	selectedTopicIDs	IDs of currently selected topics, may be <code>null</code>
+	 * @param	disabledTopicIDs	IDs of currently disabled topics, may be <code>null</code>
 	 */
 	public void addTopicCommands(Commands cmdGroup, Vector topics, String command,
 								int commandState, Vector selectedTopicIDs, Vector disabledTopicIDs, String title,
@@ -608,9 +608,9 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	/**
 	 * Adds commands for all topic types which are accessible by the user to the specified command group.
-	 * <P>
+	 * <p>
 	 * Used for "Retype", "Create", "Search" and workspace's "Assign Topic Type" commands.
-	 * <P>
+	 * <p>
 	 * References checked: 31.1.2008 (2.0b8)
 	 *
 	 * @see		#addCreateCommands
@@ -668,9 +668,9 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 
 	/**
 	 * Adds commands for all association types which are accessible by the user to the specified command group.
-	 * <P>
+	 * <p>
 	 * Used for "Retype" and workspace's "Assign Association Type" commands.
-	 * <P>
+	 * <p>
 	 * References checked: 9.2.2005 (2.0b5)
 	 *
 	 * @see		#addRetypeAssociationCommand
@@ -764,9 +764,9 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 	 * Used for "Navigate by Topic", "Navigate by Association" and "Hide all" commands.
 	 *
 	 * @param	types		the types to add as typeID/count pairs
-	 * @param	heading		can be <CODE>null</CODE>
+	 * @param	heading		can be <code>null</code>
 	 *
-	 * @return	<CODE>true</CODE> if at least one command has been added
+	 * @return	<code>true</code> if at least one command has been added
 	 *
 	 * @see		#addHideAllCommands
 	 * @see		#addNavigationCommands

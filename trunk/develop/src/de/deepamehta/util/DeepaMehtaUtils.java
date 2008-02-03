@@ -32,11 +32,11 @@ import java.util.regex.Pattern;
 
 
 /**
- * <P>
- * <HR>
- * Last functional change: 19.1.2008 (2.0b8)<BR>
- * Last documentation update: 28.7.2001 (2.0a11)<BR>
- * Malte Rei&szlig;ig<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 19.1.2008 (2.0b8)<br>
+ * Last documentation update: 28.7.2001 (2.0a11)<br>
+ * Malte Rei&szlig;ig<br>
  * mre@deepamehta.de
  */
 public class DeepaMehtaUtils implements DeepaMehtaConstants {
@@ -50,7 +50,7 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 
 
 	/**
-	 * Returns the contents of the specified file as a <CODE>String</CODE>.
+	 * Returns the contents of the specified file as a <code>String</code>.
 	 * <p>
 	 * References checked: 4.2.2005 (2.0b5)
 	 *
@@ -434,10 +434,10 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 
 	/**
 	 * ### to be dropped, use a StringTokenizer or split() instead
-	 * <P>
-	 * Convenience method to split a string that contains a <CODE>:</CODE> into 2
+	 * <p>
+	 * Convenience method to split a string that contains a <code>:</code> into 2
 	 * substrings.
-	 * <P>
+	 * <p>
 	 * Used here to split a refresh request into topicmap ID and viewmode.
 	 */
 	static public String[] explode(String str) {

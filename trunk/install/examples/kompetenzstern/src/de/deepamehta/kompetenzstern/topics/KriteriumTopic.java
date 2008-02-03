@@ -24,7 +24,7 @@ import java.util.Vector;
  * Part of {@link KompetenzsternTopic Kompetenzstern} application.
  * <P>
  * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
+ * Last functional change: 3.2.2008 (2.0b8)<BR>
  * Last documentation update: 25.8.2001 (2.0a12-pre1)<BR>
  * J&ouml;rg Richter<BR>
  * jri@freenet.de
@@ -170,13 +170,7 @@ public class KriteriumTopic extends LiveTopic implements KS {
         //
 		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
         String cmd = st.nextToken();
-		if (cmd.equals(CMD_DEFAULT)) {
-			boolean insideTemplate = as.getLiveTopic(topicmapID, 1).getType().equals(TOPICTYPE_KOMPETENZSTERN_TEMPLATE);
-			String prop = insideTemplate ? PROPERTY_HELP : PROPERTY_DESCRIPTION;
-			String propLabel = insideTemplate ? PROPERTY_HELP : PROPERTY_BESCHREIBUNG;
-			return super.executeCommand(CMD_EDIT_TOPIC_PROPERTY + COMMAND_SEPARATOR + prop + COMMAND_SEPARATOR +
-				propLabel + COMMAND_SEPARATOR + "true" + COMMAND_SEPARATOR + "true", session, topicmapID, viewmode);
-		} else if (cmd.equals(CMD_NAVIGATE_BY_CRITERION)) {
+		if (cmd.equals(CMD_NAVIGATE_BY_CRITERION)) {
 			return navigateByTopictype(getSubkriteriumTypeID(), 2, SEMANTIC_STERN_COMPOSITION);
 		} else if (cmd.equals(CMD_ASSIGN_NEW_CRITERION)) {
 			// ### in template: TOPICTYPE_BEWERTUNGS_KRITERIUM

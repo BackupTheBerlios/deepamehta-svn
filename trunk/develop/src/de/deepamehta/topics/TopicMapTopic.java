@@ -3,6 +3,7 @@ package de.deepamehta.topics;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseTopicMap;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.Detail;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableTopicMap;
@@ -42,51 +43,51 @@ import javax.swing.ImageIcon;
 
 
 /**
- * This active kernel topic represents a <I>Topicmap</I> (in DeepaMehta a synonym is
- * <I>View</I>). Topics representing topicmaps are mainly represented in the workspaces
+ * This active kernel topic represents a <i>Topicmap</i> (in DeepaMehta a synonym is
+ * <i>View</i>). Topics representing topicmaps are mainly represented in the workspaces
  * in the upper display area.
  *
- * <H4>Active behavoir</H4>
+ * <h4>Active behavoir</h4>
  *
- * ### The active <I>evocation</I> behavoir of a <CODE>TopicMapTopic</CODE> is setting the
- * initial view by duplicating the generic view (<CODE>t-genericmap</CODE>) in corporate
+ * ### The active <i>evocation</i> behavoir of a <code>TopicMapTopic</code> is setting the
+ * initial view by duplicating the generic view (<code>t-genericmap</code>) in corporate
  * memory.
- * <P>
- * The active <I>dying</I> behavoir of a <CODE>TopicMapTopic</CODE> is deleting the view
+ * <p>
+ * The active <i>dying</i> behavoir of a <code>TopicMapTopic</code> is deleting the view
  * from corporate memory as well as from users personal workspace and causing the client
  * to close this view if opened.
- * <P>
- * The <I>default command</I> (triggered by doublecklicking) provided by a
- * <CODE>TopicMapTopic</CODE> is <I>opening</I> the topicmap.
- * <P>
- * The <I>context-commands</I> (about to appear in the topic context menu) provided by a
- * <CODE>TopicMapTopic</CODE> are <I>publishing</I> the topicmap resp. <I>exporting</I>
+ * <p>
+ * The <i>default command</i> (triggered by doublecklicking) provided by a
+ * <code>TopicMapTopic</code> is <i>opening</i> the topicmap.
+ * <p>
+ * The <i>context-commands</i> (about to appear in the topic context menu) provided by a
+ * <code>TopicMapTopic</code> are <i>publishing</i> the topicmap resp. <i>exporting</i>
  * this topicmap to an archive file. In regard of publishing it is active behavoir of a
- * <CODE>TopicMapTopic</CODE> to determe to which workgroups this topicmap may published
+ * <code>TopicMapTopic</code> to determe to which workgroups this topicmap may published
  * by the user. This depends on the status of this view (newly created in personal
  * workspace vs. opened from a shared workspace), group memberships of the user, further
  * publish permissions of the user and administrator status of the user (yes/no).
- * <P>
- * The active <I>renaming</I> behavoir of a <CODE>TopicMapTopic</CODE> is causing the
+ * <p>
+ * The active <i>renaming</i> behavoir of a <code>TopicMapTopic</code> is causing the
  * client to rename the corresponding topicmap editor if this view is opened.
- * <P>
- * The active <I>property change</I> behavoir of a <CODE>TopicMapTopic</CODE> is causing
+ * <p>
+ * The active <i>property change</i> behavoir of a <code>TopicMapTopic</code> is causing
  * the client to update the background color of the corresponding topicmap editor (only
- * <CODE>VIEWMODE_USE</CODE> for now) if this view is opened.
+ * <code>VIEWMODE_USE</code> for now) if this view is opened.
  *
- * <H4>Importing of topicmaps</H4>
+ * <h4>Importing of topicmaps</h4>
  * The importing of topicmaps on the server side is divided into three steps:
- * <P><OL>
- * <LI>sending of directive for choosing archive file name ({@link #executeCommand})</LI>
- * <LI>sending of directives for copying of archive file to client's document repository
- *     and upload to the server ({@link #doImport})</LI>
- * <LI>importing from archive file stored in server's document repository
- *     ({@link #importFromFile})</LI>
- * </OL>
- * <HR>
- * Last functional change: 29.1.2008 (2.0b8)<BR>
- * Last documentation update: 11.12.2001 (2.0a14-pre4)<BR>
- * J&ouml;rg Richter<BR>
+ * <p><ol>
+ * <li>sending of directive for choosing archive file name ({@link #executeCommand})</li>
+ * <li>sending of directives for copying of archive file to client's document repository
+ *     and upload to the server ({@link #doImport})</li>
+ * <li>importing from archive file stored in server's document repository
+ *     ({@link #importFromFile})</li>
+ * </ol>
+ * <hr>
+ * Last functional change: 3.2.2008 (2.0b8)<br>
+ * Last documentation update: 11.12.2001 (2.0a14-pre4)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class TopicMapTopic extends LiveTopic {
@@ -108,8 +109,8 @@ public class TopicMapTopic extends LiveTopic {
 	/**
 	 * ### If this topicmap is part of a shared workspace this variable holds the respective
 	 * workspace. May be null.
-	 * <P>
-	 * Initialized by {@link #updateOwnership}<BR>
+	 * <p>
+	 * Initialized by {@link #updateOwnership}<br>
 	 * Accessed by {@link #openTopicmap}
 	 */
 	private BaseTopic owner;
@@ -136,16 +137,16 @@ public class TopicMapTopic extends LiveTopic {
 
 	/**
 	 * Exports this topicmap to corporate document repository and instructs the client to
-	 * <OL>
-	 * <LI>download the exported file
-	 * <LI>show the exported file as document topic
-	 * <LI>notify the user about completion
-	 * </OL>
+	 * <ol>
+	 * <li>download the exported file
+	 * <li>show the exported file as document topic
+	 * <li>notify the user about completion
+	 * </ol>
 	 * Export performs in the background.
-	 * Note: the returned directives are send <I>asynchronously</I>.
-	 * <P>
+	 * Note: the returned directives are send <i>asynchronously</i>.
+	 * <p>
 	 * Presumption: all the document files are existing in corporate document repository.
-	 * <P>
+	 * <p>
 	 * References checked: 9.11.2004 (2.0b3)
 	 *
 	 * @throws	DeepaMehtaException	if an I/O error occurrs while export
@@ -261,10 +262,10 @@ public class TopicMapTopic extends LiveTopic {
 
 
 	/**
-	 * Creates the action commands for a <CODE>TopicMapTopic</CODE> and returns them.
-	 * <P>
-	 * A <CODE>TopicMapTopic</CODE> provides two commands: <I>publishing</I> and
-	 * <I>exporting</I>.
+	 * Creates the action commands for a <code>TopicMapTopic</code> and returns them.
+	 * <p>
+	 * A <code>TopicMapTopic</code> provides two commands: <i>publishing</i> and
+	 * <i>exporting</i>.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#showTopicMenu
 	 */
@@ -323,7 +324,7 @@ public class TopicMapTopic extends LiveTopic {
 
 	/**
 	 * Subclasses can override this method to customize the topic property form.
-	 * <P>
+	 * <p>
 	 * ### The default implementation does nothing.
 	 *
 	 * @see		TypeTopic#makeTypeDefinition
@@ -410,6 +411,12 @@ public class TopicMapTopic extends LiveTopic {
 		// --- delete topicmap ---
 		} else if (cmd.equals(CMD_DELETE_TOPICMAP)) {
 			delete(session.getPersonalWorkspace().getID(), VIEWMODE_USE, directives);
+		// --- help ---
+		} else if (cmd.equals(CMD_SHOW_HELP)) {
+			String typeID = st.nextToken();
+			int x = Integer.parseInt(st.nextToken());
+			int y = Integer.parseInt(st.nextToken());
+			showTypeHelp(typeID, x, y, session, directives);
 		//
 		} else if (cmd.equals(CMD_ASSIGN_BACKGROUND)) {
 			directives.add(DIRECTIVE_CHOOSE_FILE);
@@ -425,7 +432,7 @@ public class TopicMapTopic extends LiveTopic {
 	}
 
 	/**
-	 * The chained action of a <CODE>TopicMapTopic</CODE> performs ### opening (the default
+	 * The chained action of a <code>TopicMapTopic</code> performs ### opening (the default
 	 * action) and publishing of this topicmap.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#performChainedTopicCommand
@@ -524,17 +531,17 @@ public class TopicMapTopic extends LiveTopic {
 
 	/**
 	 * Opens this topicmap. Precondition: this topicmap is currently not opened.
-	 * <P>
+	 * <p>
 	 * Adds the directives for opening this topicmap to the specified directives.
 	 * Called in 3 situaltions:
-	 * <UL>
-	 * <LI>(interactively) -- this view is double-clicked and is not already open
-	 * <LI>(programatically) -- this view is opened while restoring a user session
-	 * <LI>(programatically) -- this view is opened while starting a demo session
-	 * </UL>
-	 * <P>
+	 * <ul>
+	 * <li>(interactively) -- this view is double-clicked and is not already open
+	 * <li>(programatically) -- this view is opened while restoring a user session
+	 * <li>(programatically) -- this view is opened while starting a demo session
+	 * </ul>
+	 * <p>
 	 * Note: overridden in KompetenzsternTopic (super implementation is called)
-	 * <P>
+	 * <p>
 	 * References checked: 23.5.2003 (2.0a18)
 	 *
 	 * @throws	DeepaMehtaException	if an error occurrs while opening
@@ -557,17 +564,17 @@ public class TopicMapTopic extends LiveTopic {
 
 	/**
 	 * This hook can be used to modify the export behaviour of this topicmap.
-	 * <P>
+	 * <p>
 	 * The default implementation exports all topics and associations of this topicmap,
 	 * along with their icon and document files.
-	 * <P>
+	 * <p>
 	 * Note: The application KS-Editor modifies the default export behavoir.
-	 * <P>
+	 * <p>
 	 * References checked: 26.9.2003 (2.0b2)
 	 *
 	 * @param   handler     this object will get the generated SAX events
 	 * @param   collector   this object will collect document and icon files.
-	 *                      This parameter may be <CODE>null</CODE>, which signalizes
+	 *                      This parameter may be <code>null</code>, which signalizes
 	 *                      that this is an export to SVG or PDF.
 	 *
 	 * @see		de.deepamehta.topics.helper.TopicMapExporter#transformTopicmap
@@ -750,7 +757,7 @@ public class TopicMapTopic extends LiveTopic {
 
 
 	/**
-	 * Handles <CODE>CMD_CREATE_TOPIC</CODE>.
+	 * Handles <code>CMD_CREATE_TOPIC</code>.
 	 *
 	 * @see		#executeCommand
 	 * @see		ChatBoardTopic#executeCommand
@@ -818,7 +825,7 @@ public class TopicMapTopic extends LiveTopic {
 
 	/**
 	 * Initializes the {@link #owner} field.
-	 * <P>
+	 * <p>
 	 * Checks wheather this topicmap is part of a shared workspace resp. part of the personal workspace.
 	 *
 	 * @see		#isShared
@@ -915,7 +922,7 @@ public class TopicMapTopic extends LiveTopic {
 
 	/**
 	 * Opens this group view.
-	 * <P>
+	 * <p>
 	 * Note: This topicmap is about to be personalized.
 	 *
 	 * @return	the ID of the personal view
@@ -1290,5 +1297,26 @@ public class TopicMapTopic extends LiveTopic {
 				directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, Boolean.TRUE); */
 			}
 		}
+	}
+
+
+
+	// ------------
+	// --- Help ---
+	// ------------
+
+
+
+	private void showTypeHelp(String typeID, int x, int y, Session session, CorporateDirectives directives) {
+		Detail detail = createTopicHelp(typeID, x, y);
+		directives.add(DIRECTIVE_SHOW_DETAIL, getID(), detail);
+	}
+
+	private Detail createTopicHelp(String typeID, int x, int y) {
+		TypeTopic type = as.type(typeID, 1);
+		String html = type.getProperty(PROPERTY_DESCRIPTION);
+		String title = as.string(ITEM_SHOW_HELP, type.getName());
+		Detail detail = new Detail(DETAIL_TOPICMAP, DETAIL_CONTENT_HTML, html, Boolean.FALSE, title, "??", new Point(x, y));	// ### command="??"
+		return detail;
 	}
 }

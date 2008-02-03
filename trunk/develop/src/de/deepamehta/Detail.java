@@ -4,25 +4,26 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import java.awt.Point;
+
 
 
 /**
- * Basis model of a topic/association detail.
- * <P>
- * A <CODE>Detail</CODE> can be serialized and send through a
- * <CODE>DataOutputStream</CODE>. The client builds a
- * {@link de.deepamehta.client.PresentationDetail} object upon
- * and displays the detail in a window.
+ * Basis model for a detail window. Details windows are displayed within a topicmap and
+ * are bound to either a topic, an association, or a topicmap.
+ * <p>
+ * A <code>Detail</code> can be serialized and send through a <code>DataOutputStream</code>.
+ * The client builds a {@link de.deepamehta.client.PresentationDetail} object upon and displays the detail window.
  *
  * <H4>Hints for application programmers</H4>
  *
- * Use the <CODE>DIRECTIVE_SHOW_DETAIL</CODE> directive to instruct the client
+ * Use the <code>DIRECTIVE_SHOW_DETAIL</code> directive to instruct the client
  * to display the details of a certain topic.
- * <P>
- * <HR>
- * Last functional change: 26.1.2003 (2.0a17-pre7)<BR>
- * Last documentation update: 11.3.2001 (2.0a10-pre1)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 3.2.2008 (2.0b8)<br>
+ * Last documentation update: 3.2.2008 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class Detail implements DeepaMehtaConstants {
@@ -36,30 +37,39 @@ public class Detail implements DeepaMehtaConstants {
 
 
 	/**
-	 * Detail type. {@link #DETAIL_TOPIC} or {@link #DETAIL_ASSOCIATION}.
+	 * Detail type.
+	 * {@link #DETAIL_TOPIC}, {@link #DETAIL_ASSOCIATION}, or {@link #DETAIL_TOPICMAP}.
 	 */
 	protected int detailType;
 
 	/**
-	 * Detail content type. See the 5 {@link #DETAIL_CONTENT_NONE DETAIL_CONTENT_... constants}.
+	 * The anchor point for the guiding polygon.
+	 * Only used for detail type {@link #DETAIL_TOPICMAP}.
+	 */
+	protected Point guideAnchor;
+
+	/**
+	 * Detail content type.
+	 * See the 5 {@link #DETAIL_CONTENT_NONE DETAIL_CONTENT_... constants}.
 	 */
 	protected int contentType;
 
 	/**
 	 * Detail content model.
+	 * Usage depends on detail content type.
 	 */
 	protected Object param1, param2;
 
 	/**
 	 * The title to be used for the detail window.
-	 * <P>
+	 * <p>
 	 * Initialized by constructors.
 	 */
 	protected String title;
 
 	/**
 	 * The command that evoked this detail.
-	 * <P>
+	 * <p>
 	 * Initialized by constructors.
 	 */
 	protected String command;
@@ -73,9 +83,8 @@ public class Detail implements DeepaMehtaConstants {
 
 
 	/**
-	 * References checked: 22.11.2001 (2.0a13-post1)
+	 * References checked: 2.2.2008 (2.0b8)
 	 *
-	 * @see		de.deepamehta.topics.LiveTopic#getDetail
 	 * @see		de.deepamehta.topics.ContainerTopic#getDetail
 	 */
 	public Detail(int detailType) {
@@ -85,30 +94,35 @@ public class Detail implements DeepaMehtaConstants {
 
 	/**
 	 * Standard constructor.
-	 * <P>
-	 * References checked: 23.11.2001 (2.0a13-post1)
+	 * <p>
+	 * References checked: 2.2.2008 (2.0b8)
 	 *
-	 * @see		de.deepamehta.topics.LiveTopic#getDetail
 	 * @see		de.deepamehta.topics.LiveTopic#openTextEditor
-	 * @see		de.deepamehta.topics.LiveTopic#showTypeHelp
-	 * @see		de.deepamehta.topics.LiveTopic#rename
+	 * @see		de.deepamehta.topics.LiveTopic#createTopicHelp
 	 * @see		de.deepamehta.topics.ContainerTopic#getDetail
+	 * @see		de.deepamehta.topics.ImageTopic#getDetail
 	 * @see		de.deepamehta.assocs.LiveAssociation#openTextEditor
-	 * @see		de.deepamehta.assocs.LiveAssociation#showTypeHelp
+	 * @see		de.deepamehta.assocs.LiveAssociation#createAssociationHelp
+	 * @see		de.deepamehta.kompetenzstern.topics.KompetenzsternTopic#openTextEditor
 	 */
-	public Detail(int detailType, int contentType, Object param1, Object param2,
-    												String title, String command) {
+	public Detail(int detailType, int contentType, Object param1, Object param2, String title, String command) {
+		this(detailType, contentType, param1, param2, title, command, null);
+	}
+
+	public Detail(int detailType, int contentType, Object param1, Object param2, String title, String command,
+																							Point guideAnchor) {
 		this.detailType = detailType;
 		this.contentType = contentType;
 		this.param1 = param1;
 		this.param2 = param2;
 		this.title = title;
 		this.command = command;
+		this.guideAnchor = guideAnchor;
 	}
 
 	/**
 	 * Copy constructor.
-	 * <P>
+	 * <p>
 	 * References checked: 2.1.2002 (2.0a15-pre5)
 	 *
 	 * @see		de.deepamehta.service.CorporateDetail#CorporateDetail(Detail, de.deepamehta.service.ApplicationService)
@@ -121,17 +135,24 @@ public class Detail implements DeepaMehtaConstants {
 		this.param2 = detail.param2;
 		this.title = detail.title;
 		this.command = detail.command;
+		this.guideAnchor = detail.guideAnchor;
 	}
 
 	/**
 	 * Stream constructor.
-	 * <P>
+	 * <p>
 	 * References checked: 15.10.2001 (2.0a13-pre1)
 	 *
 	 * @see		de.deepamehta.client.PresentationDirectives#PresentationDirectives
 	 */
 	public Detail(DataInputStream in) throws IOException {
 		this.detailType = in.readInt();
+		if (detailType == DETAIL_TOPICMAP) {
+			int x = in.readInt();
+			int y = in.readInt();
+			this.guideAnchor = new Point(x, y);
+		}
+		//
 		this.contentType = in.readInt();
 		switch (contentType) {
 		case DETAIL_CONTENT_NONE:
@@ -203,6 +224,16 @@ public class Detail implements DeepaMehtaConstants {
 		return command;
 	}
 
+	public Point getGuideAnchor() {
+		return guideAnchor;
+	}
+
+	// ---
+
+	public void setGuideAnchor(Point guideAnchor) {
+		this.guideAnchor = guideAnchor;
+	}
+
 
 
 	// ---------------------
@@ -213,6 +244,11 @@ public class Detail implements DeepaMehtaConstants {
 
 	public void write(DataOutputStream out) throws IOException {
 		out.writeInt(detailType);
+		if (detailType == DETAIL_TOPICMAP) {
+			out.writeInt(guideAnchor.x);
+			out.writeInt(guideAnchor.y);
+		}
+		//
 		out.writeInt(contentType);
 		switch (contentType) {
 		case DETAIL_CONTENT_NONE:

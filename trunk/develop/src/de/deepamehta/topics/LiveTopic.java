@@ -47,8 +47,8 @@ import java.util.Vector;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last sourcecode change: 22.1.2008 (2.0b8)<br>
- * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
+ * Last sourcecode change: 3.2.2008 (2.0b8)<br>
+ * Last documentation update: 3.2.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
@@ -520,13 +520,6 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 			String prop = st.nextToken();
 			String value = st.nextToken();
 			directives.add(setTopicData(prop, value, topicmapID, viewmode));
-		} else if (cmd.equals(CMD_EDIT_TOPIC_PROPERTY) || cmd.equals(CMD_VIEW_TOPIC_PROPERTY)) {
-			String prop = st.nextToken();
-			String propLabel = st.nextToken();
-			boolean styled = new Boolean(st.nextToken()).booleanValue();
-			boolean multiline = new Boolean(st.nextToken()).booleanValue();
-			boolean editable = cmd.equals(CMD_EDIT_TOPIC_PROPERTY);
-			openTextEditor(prop, propLabel, styled, multiline, editable, directives, command);
 		} else if (cmd.equals(CMD_ASSIGN_TOPIC)) {
 			String assocTypeID = st.nextToken();
 			String cardinality = st.nextToken();
@@ -858,36 +851,14 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 
 	/**
-	 * Subclasses can override this method to provide topic details.
+	 * Subclasses can override this method to provide a topic detail window.
 	 * <p>
-	 * ### The default implementation returns the properties in a 1-row table format.
+	 * The default implementation returns the help text for this topic's type.
 	 *
 	 * @see		#executeCommand
 	 */
 	public Detail getDetail() {
-		/* ### Vector typeDef = as.type(this).getTypeDefinition();
-		int propCount = typeDef.size();
-		if (propCount == 0) {
-			return new Detail(DETAIL_TOPIC);
-		}
-		//
-		String[] columnNames = new String[propCount];
-		String[][] values = new String[1][propCount];
-		//
-		Hashtable props = getProperties();
-		String propName, propVal;
-		Enumeration e = typeDef.elements();
-		for (int i = 0; i < propCount; i++) {
-			propName = ((PropertyDefinition) e.nextElement()).getPropertyName();
-			columnNames[i] = propName;
-			propVal = (String) props.get(propName);
-			values[0][i] = propVal != null ? propVal : "";
-		}
-		//
-		String title = getName().equals("") ? "Topic Properties" : "\"" + getName() + "\"";
-		Detail detail = new Detail(DETAIL_TOPIC, DETAIL_CONTENT_TABLE, columnNames, values, title, "setProperties"); */
-		Detail detail = createTopicHelp(getType());
-		return detail;
+		return createTopicHelp(getType());
 	}
 
 	/**
@@ -1559,34 +1530,6 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 
 	/**
-	 * Handles the {@link #CMD_EDIT_TOPIC_PROPERTY} and {@link #CMD_VIEW_TOPIC_PROPERTY} commands.
-	 * <p>
-	 * Extend the specified directives to let the user edit/view the specified
-	 * property of this live topic.
-	 *
-	 * @see		#executeCommand
-	 */
-	private void openTextEditor(String propName, String propLabel, boolean styled,
-									boolean multiline, boolean editable,
-									CorporateDirectives directives, String command) {
-		// ### compare to LiveAssociation.openTextEditor()
-		// ### compare to KompetenzsternTopic.openTextEditor()
-		Detail detail;
-		String title = getName().equals("") ? as.typeName(this) + " " + propLabel :
-			propLabel + " von \"" + getName() + "\"";
-		if (styled) {
-			detail = new Detail(DETAIL_TOPIC, DETAIL_CONTENT_HTML, getProperty(propName),
-				new Boolean(editable), title, command);
-		} else {
-			detail = new Detail(DETAIL_TOPIC, DETAIL_CONTENT_TEXT, getProperty(propName),
-				new Boolean(multiline), title, command);
-		}
-		directives.add(DIRECTIVE_SHOW_DETAIL, getID(), detail);
-	}
-
-	// ---
-
-	/**
 	 * Handles the {@link #CMD_ASSIGN_TOPIC} command.
 	 *
 	 * @see		#executeCommand
@@ -1661,19 +1604,6 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	// ---
 
 	/**
-	 * ### to be dropped? (called only once)
-	 * <p>
-	 * Handles the {@link #CMD_CHANGE_TOPIC_NAME} command.
-	 * <p>
-	 * References checked: 23.6.2002 (2.0a15-pre8)
-	 *
-	 * @see		#executeCommand
-	 */
-	/* ### private void rename(BaseTopic topic, Session session, CorporateDirectives directives) {
-		rename(topic.getID(), topic.getType(), topic.getName(), session, directives);
-	} */
-
-	/**
 	 * Adds directives to initiate topic (re)naming.
 	 * <p>
 	 * References checked: 23.6.2002 (2.0a15-pre8)
@@ -1687,19 +1617,11 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * @see		TypeTopic#executeCommand
 	 * @see		PropertyTopic#executeCommand
 	 */
-	protected final void rename(String topicID, String typeID, String name, Session session,
-															   CorporateDirectives directives) {
+	protected final void rename(String topicID, String typeID, String name, Session session, CorporateDirectives directives) {
 		if (session == null) {
 			return;
 		}
-		// ### if (session.getUserPreferences().showSidebar) {
 		directives.add(DIRECTIVE_FOCUS_PROPERTY);
-		/* ### } else {
-			String title = as.typeName(typeID) + " Name";
-			Detail detail = new Detail(DETAIL_TOPIC, DETAIL_CONTENT_TEXT, name, Boolean.FALSE,
-				title, CMD_CHANGE_TOPIC_NAME);		// ### command not handled
-			directives.add(DIRECTIVE_SHOW_DETAIL, topicID, detail);
-		} */
 	}
 
 	// ---
