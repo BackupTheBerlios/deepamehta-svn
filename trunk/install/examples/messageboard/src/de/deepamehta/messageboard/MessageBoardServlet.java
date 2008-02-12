@@ -17,11 +17,11 @@ import javax.servlet.ServletException;
 
 
 /**
- * <P>
- * <HR>
- * Last functional change: 13.6.2006 (2.0b7)<BR>
- * Last documentation update: 10.1.2003 (2.0a17-pre5)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 12.2.2008 (2.0b8)<br>
+ * Last documentation update: 10.1.2003 (2.0a17-pre5)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class MessageBoardServlet extends DeepaMehtaServlet implements MessageBoard {
@@ -65,39 +65,22 @@ public class MessageBoardServlet extends DeepaMehtaServlet implements MessageBoa
 			//
 			return PAGE_MESSAGE_BOARD;
 		} else if (action.equals(ACTION_CREATE_MESSAGE)) {
-			if (params.getParameter("button").equals("OK")) {
-				// create message
-				prepareMessage(params);
-				String messageID = createTopic(TOPICTYPE_MESSAGE, params, session);
-				//
-				String mode = getMode(session);
-				if (mode.equals(MODE_WRITE_TOPLEVEL_MESSAGE)) {
-					// associate message with message board ### see MessageBoardTopic.executeCommand()
-					cm.createAssociation(as.getNewAssociationID(), 1, SEMANTIC_MESSAGE_HIERARCHY, 1,
-						messageBoardID, 1, messageID, 1);
-				} else if (mode.equals(MODE_WRITE_REPLY_MESSAGE)) {
-					// associate message with toplevel message ### see MessageTopic.executeCommand()
-					String toplevelMessageID = getToplevelMessage(session).getID();
-					cm.createAssociation(as.getNewAssociationID(), 1, SEMANTIC_MESSAGE_HIERARCHY, 1,
-						toplevelMessageID, 1, messageID, 1);
-					// extend toplevel message
-					Vector extendedNodes = getExtendedNodes(session);
-					if (!extendedNodes.contains(toplevelMessageID)) {
-						extendedNodes.addElement(toplevelMessageID);
-					}
-					// propagate last reply date/time to toplevel message ### pending for java client
-					String date = as.getTopicProperty(messageID, 1, PROPERTY_LAST_REPLY_DATE);
-					String time = as.getTopicProperty(messageID, 1, PROPERTY_LAST_REPLY_TIME);
-					as.setTopicProperty(toplevelMessageID, 1, PROPERTY_LAST_REPLY_DATE, date);
-					as.setTopicProperty(toplevelMessageID, 1, PROPERTY_LAST_REPLY_TIME, time);
+			if (!getMode(session).equals(MODE_SHOW_MESSAGE)) {
+				if (params.getParameter("button").equals("OK")) {
+					// create message
+					prepareMessage(params);
+					String messageID = createTopic(TOPICTYPE_MESSAGE, params, session);
+					finalizeMessage(messageID, session);
+					// store in session
+					setMessage(messageID, session);
+					setPageNr(0, session);
 				} else {
-					throw new DeepaMehtaException("unexpected mode: \"" + mode + "\"");
+					System.out.println(">>> no message created (cancelled by user)");
 				}
-				// store in session
-				setMessage(messageID, session);
-				setPageNr(0, session);
+				setMode(MODE_SHOW_MESSAGE, session);
+			} else {
+				System.out.println(">>> no message created (accidental action was caused by 'reload' button)");
 			}
-			setMode(MODE_SHOW_MESSAGE, session);
 			//
 			return PAGE_MESSAGE_BOARD;
 		//
@@ -202,6 +185,32 @@ public class MessageBoardServlet extends DeepaMehtaServlet implements MessageBoa
 		// qutoe HTML and XML tags
 		String message = DeepaMehtaUtils.quoteHTML(params.getParameter(PROPERTY_DESCRIPTION), true);	// allowSomeTags=true
 		params.setParameter(PROPERTY_DESCRIPTION, message);
+	}
+
+	private void finalizeMessage(String messageID, Session session) {
+		String mode = getMode(session);
+		if (mode.equals(MODE_WRITE_TOPLEVEL_MESSAGE)) {
+			// associate message with message board ### see MessageBoardTopic.executeCommand()
+			cm.createAssociation(as.getNewAssociationID(), 1, SEMANTIC_MESSAGE_HIERARCHY, 1,
+				messageBoardID, 1, messageID, 1);
+		} else if (mode.equals(MODE_WRITE_REPLY_MESSAGE)) {
+			// associate message with toplevel message ### see MessageTopic.executeCommand()
+			String toplevelMessageID = getToplevelMessage(session).getID();
+			cm.createAssociation(as.getNewAssociationID(), 1, SEMANTIC_MESSAGE_HIERARCHY, 1,
+				toplevelMessageID, 1, messageID, 1);
+			// extend toplevel message
+			Vector extendedNodes = getExtendedNodes(session);
+			if (!extendedNodes.contains(toplevelMessageID)) {
+				extendedNodes.addElement(toplevelMessageID);
+			}
+			// propagate last reply date/time to toplevel message ### pending for java client
+			String date = as.getTopicProperty(messageID, 1, PROPERTY_LAST_REPLY_DATE);
+			String time = as.getTopicProperty(messageID, 1, PROPERTY_LAST_REPLY_TIME);
+			as.setTopicProperty(toplevelMessageID, 1, PROPERTY_LAST_REPLY_DATE, date);
+			as.setTopicProperty(toplevelMessageID, 1, PROPERTY_LAST_REPLY_TIME, time);
+		} else {
+			throw new DeepaMehtaException("unexpected mode: \"" + mode + "\"");
+		}
 	}
 
 	// --- Methods to store data in the session
