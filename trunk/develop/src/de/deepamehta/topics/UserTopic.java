@@ -17,16 +17,16 @@ import java.util.Vector;
 
 /**
  * A user who can login into DeepaMehta.
- * <P>
- * The active behavoir of a <CODE>UserTopic</CODE> is creating the users personal
+ * <p>
+ * The active behavoir of a <code>UserTopic</code> is creating the users personal
  * workspace and its personal MIME Configuration once a new user is created.
- * Furthermore the users personal workspace is renamed once this <CODE>UserTopic</CODE>
+ * Furthermore the users personal workspace is renamed once this <code>UserTopic</code>
  * is renamed.
- * <P>
- * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
- * Last documentation update: 29.11.2000 (2.0a7)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 12.2.2008 (2.0b8)<br>
+ * Last documentation update: 29.11.2000 (2.0a7)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class UserTopic extends PersonTopic {
@@ -122,18 +122,21 @@ public class UserTopic extends PersonTopic {
 		commands.addNavigationCommands(this, editorContext, session);
 		//
 		// --- "Set Standard Workspace" ---
-		String userID = getID();
-		Vector workspaces = as.getWorkspaces(userID);
-		// ### compare to as.getUsersDefaultWorkspace()
-		BaseTopic standardWorkspace = as.getRelatedTopic(userID, SEMANTIC_PREFERENCE, TOPICTYPE_WORKSPACE, 2, true);	// emptyAllowed=true
 		//
 		commands.addSeparator();
 		Commands workspacesGroup = commands.addCommandGroup(as.string(ITEM_SET_WORKSPACE),
 			FILESERVER_ICONS_PATH, "workgroup.gif");
-		// CMD_ASSIGN_TOPIC is handled by LiveTopic, 3 parameters are required, the 3rd is added by addTopicCommands()
-		String command = CMD_ASSIGN_TOPIC + COMMAND_SEPARATOR + SEMANTIC_PREFERENCE + COMMAND_SEPARATOR + CARDINALITY_ONE;
-		commands.addTopicCommands(workspacesGroup, workspaces, command, COMMAND_STATE_RADIOBUTTON,
-			standardWorkspace, null, session, directives);	// title=null
+		//
+		String userID = session.getUserID();
+		if (userID.equals(getID()) || as.isAdministrator(userID)) {
+			Vector workspaces = as.getWorkspaces(getID());
+			String command = CMD_ASSIGN_TOPIC + COMMAND_SEPARATOR + SEMANTIC_PREFERENCE + COMMAND_SEPARATOR + CARDINALITY_ONE;
+			// Note: CMD_ASSIGN_TOPIC is handled by LiveTopic, 3 parameters are required, the 3rd is added by addTopicCommands()
+			BaseTopic standardWorkspace = as.getRelatedTopic(getID(), SEMANTIC_PREFERENCE, TOPICTYPE_WORKSPACE, 2, true);	// emptyAllowed=true
+			// ### compare to as.getUsersDefaultWorkspace()
+			commands.addTopicCommands(workspacesGroup, workspaces, command, COMMAND_STATE_RADIOBUTTON,
+				standardWorkspace, null, session, directives);	// title=null
+		}
 		//
 		// --- standard topic commands ---
 		commands.addStandardCommands(this, editorContext, viewmode, session, directives);
