@@ -24,7 +24,7 @@ import java.util.Vector;
  * Utility class for building {@link de.deepamehta.Commands topic commands / association commands}.
  * <p>
  * <hr>
- * Last functional change: 1.2.2008 (2.0b8)<br>
+ * Last functional change: 12.2.2008 (2.0b8)<br>
  * Last documentation update: 9.10.2001 (2.0a12)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -146,8 +146,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			if (defaultWorkspace != null) {
 				String workspaceID = defaultWorkspace.getID();
 				defaultWorkspaceID = workspaceID;
-				int cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
-					COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
+				int cmdState = as.publishIsAllowed(userID, workspaceID) ? COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
 				commandGroup.addCommand(defaultWorkspace.getName(), CMD_PUBLISH + COMMAND_SEPARATOR + workspaceID,
 					FILESERVER_ICONS_PATH, as.getIconfile(defaultWorkspace), cmdState);
 			}
@@ -170,8 +169,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 					isFirst = false;
 				}
 				//
-				int cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
-					COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
+				int cmdState = as.publishIsAllowed(userID, workspaceID) ? COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
 				commandGroup.addCommand(workspaceTopic.getName(), CMD_PUBLISH + COMMAND_SEPARATOR + workspaceID,
 					FILESERVER_ICONS_PATH, as.getIconfile(workspaceTopic), cmdState);
 			}
@@ -179,8 +177,7 @@ public final class CorporateCommands extends Commands implements DeepaMehtaConst
 			// this topicmap is a personalized view originating from a shared workspace -- it can be published
 			// "back" to its original workspace.
 			String workspaceID = workspace.getID();
-			int cmdState = as.hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) ?
-				COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
+			int cmdState = as.publishIsAllowed(userID, workspaceID) ? COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
 			commandGroup.addCommand(workspace.getName(), CMD_PUBLISH + COMMAND_SEPARATOR + workspaceID,
 				FILESERVER_ICONS_PATH, as.getIconfile(workspace), cmdState);
 		}

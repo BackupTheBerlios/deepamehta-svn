@@ -66,7 +66,7 @@ import java.util.Vector;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last functional change: 31.1.2008 (2.0b8)<br>
+ * Last functional change: 12.2.2008 (2.0b8)<br>
  * Last documentation update: 30.12.2001 (2.0a14-pre5)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -1195,6 +1195,12 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		//
 		String userID = session.getUserID();
 		return isAssocOwner(assoc.getID(), session) || isAdministrator(userID);
+	}
+
+	// ---
+
+	boolean publishIsAllowed(String userID, String workspaceID) {
+		return hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) || isAdministrator(userID);
 	}
 
 	// --- setTopicProperty (2 forms) ---
