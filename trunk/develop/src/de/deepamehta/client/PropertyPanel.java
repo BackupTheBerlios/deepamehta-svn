@@ -40,17 +40,15 @@ import javax.swing.text.JTextComponent;
 
 
 /**
- * Side panel view.
- * <P>
- * ### A <CODE>PropertyPanel</CODE> consists of 2 parts: the upper part shows the
- * topic/association characteristics of the selected topic/association, the lower
- * part shows the topic/association property panel.
- * <P>
- * There is one instance created (singleton).
- * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
- * Last documentation update: 10.6.2001 (2.0a11-pre5)<BR>
- * J&ouml;rg Richter<BR>
+ * The <i>view</i> that is shown at the right side of the graphical DeepaMehta client.
+ * The property panel shows the properties of the selected topic/association/topicmap and allows the user to edit them.
+ * The <i>controller</i> is passed to the <code>PropertyPanel</code> {@link #PropertyPanel constructor}.
+ * <p>
+ * This is a singleton, there is only one instance created.
+ * <hr>
+ * Last functional change: 13.2.2008 (2.0b8)<br>
+ * Last documentation update: 13.2.2008 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 class PropertyPanel extends JPanel implements ActionListener, ItemListener, DocumentListener,
@@ -87,7 +85,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	private PropertyPanelControler controler;
 
 	/**
-	 * Key: &lt;topicmap ID>:&lt;viewmode><BR>
+	 * Key: &lt;topicmap ID>:&lt;viewmode><br>
 	 * Value: {@link PropertyPanel.Selection}
 	 */
 	private Hashtable selections = new Hashtable();
@@ -98,8 +96,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	/**
 	 * The key of the current selection (format is &lt;topicmap ID>:&lt;viewmode>) or
-	 * <CODE>null</CODE> if there is currently no selection.
-	 * <P>
+	 * <code>null</code> if there is currently no selection.
+	 * <p>
 	 * Updated in
 	 * {@link #setSelection}
 	 * {@link #restoreSelection}
@@ -109,13 +107,13 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	/**
 	 * Current selection mode. See the 4 {@link #SELECTED_NONE SELECTED_XXX constants}
-	 * <P>
+	 * <p>
 	 * Note: there are 2 situations the property is empty (SELECTED_NONE)
-	 * <OL>
-	 * <LI>a view is opened
-	 * <LI>the selected topic/association is removed
-	 * </OL>
-	 * <P>
+	 * <ol>
+	 * <li>a view is opened
+	 * <li>the selected topic/association is removed
+	 * </ol>
+	 * <p>
 	 * Updated in
 	 * {@link #setSelection}
 	 * {@link #restoreSelection}
@@ -134,14 +132,14 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	// ---
 	
 	/**
-	 * Key: Topic Type ID (<CODE>String</CODE>)<BR>
+	 * Key: Topic Type ID (<code>String</code>)<br>
 	 * Value: PresentationType
 	 */
 	private Hashtable topicTypes;
 	private Vector topicTypesV;
 
 	/**
-	 * Key: Association Type ID (<CODE>String</CODE>)<BR>
+	 * Key: Association Type ID (<code>String</code>)<br>
 	 * Value: PresentationType
 	 */
 	private Hashtable assocTypes;
@@ -153,18 +151,18 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	 * A hashtable containing the property forms for every type.
 	 * A property form consists of single property fields (ordered).
 	 * Note: also hidden property fields are contained in the vector ### required?
-	 * <P>
-	 * Key: type ID (<CODE>String</CODE>)<BR>
-	 * Value: vector of <CODE>PropertyField</CODE> objects
-	 * <P>
-	 * Building: {@link #buildPropertyFields}<BR>
+	 * <p>
+	 * Key: type ID (<code>String</code>)<br>
+	 * Value: vector of <code>PropertyField</code> objects
+	 * <p>
+	 * Building: {@link #buildPropertyFields}<br>
 	 * Accessing: {@link #getPropertyFields}
 	 */
 	private Hashtable propertyForms = new Hashtable();
 
 	/**
-	 * Key: type ID (<CODE>String</CODE>)<BR>
-	 * Value: <CODE>JPanel</CODE>
+	 * Key: type ID (<code>String</code>)<br>
+	 * Value: <code>JPanel</code>
 	 */
 	private Hashtable propertyPanels = new Hashtable();
 
@@ -174,7 +172,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	private JComboBox assocTypeChoice;
 
 	/**
-	 * The <CODE>JPanel</CODE> deployed for the topic characterstics resp. association
+	 * The <code>JPanel</code> deployed for the topic characterstics resp. association
 	 * characterstics.
 	 * This panel uses the {@link #characteristicsCardLayout} object as its layout manager.
 	 */
@@ -182,7 +180,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	private CardLayout characteristicsCardLayout = new CardLayout();
 
 	/**
-	 * The <CODE>JPanel</CODE> deployed for the property panel.
+	 * The <code>JPanel</code> deployed for the property panel.
 	 * This panel uses the {@link #dataCardLayout} object as its layout manager.
 	 */
 	private JPanel dataCardPanel = new JPanel();
@@ -197,7 +195,9 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 
 	/**
-	 * @see		PresentationService#createGUI
+	 * References checked: 13.2.2008 (2.0b8)
+	 *
+	 * @see		PresentationService#createMainGUI
 	 */
 	PropertyPanel(PropertyPanelControler controler) {
 		try {
@@ -254,10 +254,10 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	/**
 	 * Called when one of this events occurred:
-	 * <UL>
-	 * <LI>The value of a "Options Menu" / "Option Button" / "Switch" property has been changed
-	 * <LI>Return has been pressed in an (single line) input field of the property panel
-	 * </UL>
+	 * <ul>
+	 * <li>The value of a "Options Menu" / "Option Button" / "Switch" property has been changed
+	 * <li>Return has been pressed in an (single line) input field of the property panel
+	 * </ul>
 	 */
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
@@ -288,7 +288,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 
 	/**
-	 * ### should rely on action command<BR>
+	 * ### should rely on action command<br>
 	 */
 	public void itemStateChanged(ItemEvent e) {
 		Object src = e.getSource();
@@ -524,7 +524,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	/**
 	 * Convenience method to access current Selection.
-	 * <P>
+	 * <p>
 	 * Presumption: there is a selection.
 	 */
 	private Selection getSelection() {
@@ -640,7 +640,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	/**
 	 * Stores changed properties (actually the {@link #controler} is informed).
-	 * <P>
+	 * <p>
 	 * The properties are stored only, if marked dirty (see {@link #propertiesAreDirty}).
 	 * After storing the resp. flag is cleared.
 	 *
@@ -849,14 +849,14 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	/**
 	 * Shows the specified properties.
-	 * <P>
+	 * <p>
 	 * The property fields to fill are determined by the specified typeID.
-	 * <P>
+	 * <p>
 	 * Presumption: the topic the properties are bound to is currently selected
 	 * (otherwise there is no need to call this method because there will be no visual result ###).
 	 *
-	 * @param	all		if not set, only the <I>passed</I> properties are set, not
-	 *					<I>every</I> property according to the type definition, thus
+	 * @param	all		if not set, only the <i>passed</i> properties are set, not
+	 *					<i>every</i> property according to the type definition, thus
 	 *					the application programmers are not required to pass a full set
 	 *					of properties when using the DIRECTIVE_SHOW_PROPERTIES ###
 	 *
@@ -937,7 +937,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	/**
 	 * ### should be private
-	 * <P>
+	 * <p>
 	 * References checked: 1.11.2001 (2.0a13-pre3)
 	 *
 	 * @see		#removeSelection
@@ -1040,14 +1040,14 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	/**
 	 * Returns the property values currently entered in the property panel.
-	 * <P>
+	 * <p>
 	 * Values of hidden properties are not returned.
-	 * <P>
+	 * <p>
 	 * References checked: 4.8.2001 (2.0a11)
 	 *
-	 * @return	the property values as a hashtable.<BR>
-	 *			Key: property name (<CODE>String</CODE>)<BR>
-	 *			Value: property value (<CODE>String</CODE>)
+	 * @return	the property values as a hashtable.<br>
+	 *			Key: property name (<code>String</code>)<br>
+	 *			Value: property value (<code>String</code>)
 	 *
 	 * @see		#storeProperties
 	 */
@@ -1235,7 +1235,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	/**
 	 * Returns the property fields of the specified type.
-	 * <P>
+	 * <p>
 	 * References checked: 3.8.2001 (2.0a11)
 	 *
 	 * @see		#showProperties
@@ -1248,7 +1248,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	/**
 	 * Checks weather the property form for the specified type does exist, if not it is build.
-	 * <P>
+	 * <p>
 	 * Presumption: the type is known by the presentation service.
 	 *
 	 * @see		#showProperties
@@ -1367,8 +1367,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	/**
 	 * A single property field as deployed by a property form.
-	 * <P>
-	 * <CODE>PropertyField</CODE> objects are created by {@link #createPropertyFields}
+	 * <p>
+	 * <code>PropertyField</code> objects are created by {@link #createPropertyFields}
 	 * and stored in the {@link #propertyForms} hashtable.
 	 */
 	private class PropertyField {
@@ -1384,17 +1384,17 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 		PresentationPropertyDefinition propertyDef;
 
 		/**
-		 * The <I>View</I> of the <CODE>PropertyField</CODE>.
-		 * <P>
-		 * <TABLE>
-		 * <TR><TH>Initialized by<TH>Situation
-		 * <TR><TD>{@link PropertyPanel$PropertyField#PropertyField}<TD>The constructor
+		 * The <i>View</i> of the <code>PropertyField</code>.
+		 * <p>
+		 * <table>
+		 * <tr><th>Initialized by<th>Situation
+		 * <tr><td>{@link PropertyPanel$PropertyField#PropertyField}<td>The constructor
 		 *				calls {@link PresentationPropertyDefinition#createGUIComponent}
 		 *				and sets the view to element [0] of the result
-		 * <TR><TH>Accessed by<TH>Situation
-		 * <TR><TD>{@link #createPropertyForm}<TD>The view component is added to a
+		 * <tr><th>Accessed by<th>Situation
+		 * <tr><td>{@link #createPropertyForm}<td>The view component is added to a
 		 *				property form
-		 * </TABLE>
+		 * </table>
 		 */
 		JComponent view;
 		private Object model;
@@ -1410,7 +1410,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 		/**
 		 * Standard constructor.
 		 * <p>
-		 * Creates the GUI component for this <CODE>PropertyField</CODE> and stores
+		 * Creates the GUI component for this <code>PropertyField</code> and stores
 		 * it in the {@link #view} and {@link #model} fields.
 		 * <p>
 		 * References checked: 10.9.2007 (2.0b8)
@@ -1608,7 +1608,11 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			} else if (visualization.equals(VISUAL_CHOICE)) {
 				((JComboBox) view).setEnabled(enabled);
 			} else if (visualization.equals(VISUAL_RADIOBUTTONS)) {
-				// ### pending
+				Enumeration e = ((ButtonGroup) model).getElements();
+				while (e.hasMoreElements()) {
+					JRadioButton button = (JRadioButton) e.nextElement();
+					button.setEnabled(enabled);
+				}
 			} else if (visualization.equals(VISUAL_SWITCH)) {
 				((JCheckBox) view).setEnabled(enabled);
 			} else if (visualization.equals(VISUAL_DATE_CHOOSER)) {
@@ -1668,11 +1672,16 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 		// --- getButton (2 forms) ---
 
+		/**
+		 * Returns the radio button with the specified label or <code>null</code> if there is no such radio button.
+		 * Only used for <code>VISUAL_RADIOBUTTONS</code> properties.
+		 *
+		 * @see		#setText
+		 */
 		JRadioButton getButton(String label) {
-			JRadioButton button;
 			Enumeration e = ((ButtonGroup) model).getElements();
 			while (e.hasMoreElements()) {
-				button = (JRadioButton) e.nextElement();
+				JRadioButton button = (JRadioButton) e.nextElement();
 				if (button.getText().equals(label)) {
 					return button;
 				}
@@ -1680,11 +1689,16 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			return null;
 		}
 
+		/**
+		 * Returns the selected radio button or <code>null</code> if no radio button is selected.
+		 * Only used for <code>VISUAL_RADIOBUTTONS</code> properties.
+		 *
+		 * @see		#getText
+		 */
 		JRadioButton getButton() {
-			JRadioButton button;
 			Enumeration e = ((ButtonGroup) model).getElements();
 			while (e.hasMoreElements()) {
-				button = (JRadioButton) e.nextElement();
+				JRadioButton button = (JRadioButton) e.nextElement();
 				if (button.isSelected()) {
 					return button;
 				}
@@ -1697,10 +1711,9 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 		// ### doesn't work
 		void removeAllSelections() {
 			ButtonGroup group = (ButtonGroup) model;
-			JRadioButton button;
 			Enumeration e = group.getElements();
 			while (e.hasMoreElements()) {
-				button = (JRadioButton) e.nextElement();
+				JRadioButton button = (JRadioButton) e.nextElement();
 				// button.setSelected(false);
 				group.setSelected(button.getModel(), false);
 			}
@@ -1711,8 +1724,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	/**
 	 * Model of selected topic/association.
-	 * <P>
-	 * <CODE>Selection</CODE> objects are stored in the {PropertyPanel#selections} hashtable.
+	 * <p>
+	 * <code>Selection</code> objects are stored in the {PropertyPanel#selections} hashtable.
 	 */
 	private class Selection {
 
