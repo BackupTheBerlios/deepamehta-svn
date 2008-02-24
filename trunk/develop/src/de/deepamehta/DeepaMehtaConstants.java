@@ -26,7 +26,7 @@ import java.util.Vector;
  * </ol>
  * <p>
  * <hr>
- * Last functional change: 3.2.2008 (2.0b8)<br>
+ * Last functional change: 23.2.2008 (2.0b8)<br>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -60,12 +60,12 @@ public interface DeepaMehtaConstants {
 	static final boolean VERSIONING = false;		// server
 	static final boolean PLAY_SOUNDS = true;		// client
 	// --- configuration management ---
-	static final String CLIENT_VERSION = "2.0b7";
-	static final String SERVER_VERSION = "2.0b7";
-	static final String REQUIRED_SERVER_VERSION = "2.0b7";
-	static final int REQUIRED_STANDARD_TOPICS = 16;
+	static final String CLIENT_VERSION = "2.0b8";
+	static final String SERVER_VERSION = "2.0b8";
+	static final String REQUIRED_SERVER_VERSION = "2.0b8";
+	static final int REQUIRED_STANDARD_TOPICS = 17;
 	static final int REQUIRED_DB_MODEL = 2;
-	static final int REQUIRED_DB_CONTENT = 16;
+	static final int REQUIRED_DB_CONTENT = 17;
 	// --- application server ---
 	static final int DEFAULT_PORT = 7557;			// used by DeepaMehtaClient
 	static final int MAX_CLIENTS = 50;

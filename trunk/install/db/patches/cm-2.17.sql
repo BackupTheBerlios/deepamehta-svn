@@ -4,16 +4,18 @@
 ---
 
 
----
---- New "Membership" Properties: "Editor" and "Publisher"
----
--- create properties
+---------------------------------------------------
+--- Extended Access Control: Define 2 new roles ---
+---------------------------------------------------
+
+-- create properties "Editor" and "Publisher"
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-editor', 'Editor');
 INSERT INTO TopicProp VALUES ('pp-editor', 1, 'Name', 'Editor');
 INSERT INTO TopicProp VALUES ('pp-editor', 1, 'Visualization', 'Switch');
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-publisher', 'Publisher');
 INSERT INTO TopicProp VALUES ('pp-publisher', 1, 'Name', 'Publisher');
 INSERT INTO TopicProp VALUES ('pp-publisher', 1, 'Visualization', 'Switch');
+
 -- assign properties to association type "Membership"
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-93', '', 'at-membership', 1, 'pp-editor', 1);
 INSERT INTO AssociationProp VALUES ('a-93', 1, 'Ordinal Number', '10');
@@ -22,9 +24,26 @@ INSERT INTO AssociationProp VALUES ('a-94', 1, 'Ordinal Number', '20');
 
 
 
------------------------------
---- New Feature: Calendar ---
------------------------------
+--------------------------------
+--- Rearrange standard types ---
+--------------------------------
+
+-- delete "City", "Country" and "Appointment" assignments from workspace "DeepaMehta"
+DELETE FROM Association WHERE ID='a-324';
+DELETE FROM AssociationProp WHERE AssociationID='a-324';
+DELETE FROM ViewAssociation WHERE AssociationID='a-324';
+DELETE FROM Association WHERE ID='a-325';
+DELETE FROM AssociationProp WHERE AssociationID='a-325';
+DELETE FROM ViewAssociation WHERE AssociationID='a-325';
+DELETE FROM Association WHERE ID='a-186';
+DELETE FROM AssociationProp WHERE AssociationID='a-186';
+DELETE FROM ViewAssociation WHERE AssociationID='a-186';
+
+
+
+---------------------------------
+--- New Application: Calendar ---
+---------------------------------
 
 ---
 --- create topic type "Calendar" ---
@@ -249,49 +268,50 @@ INSERT INTO AssociationProp VALUES ('a-21b', 1, 'Ordinal Number', '125');
 
 
 
----
---- delete "City", "Country" and "Appointment" assignments from workspace "DeepaMehta"
----
-DELETE FROM Association WHERE ID='a-324';
-DELETE FROM AssociationProp WHERE AssociationID='a-324';
-DELETE FROM ViewAssociation WHERE AssociationID='a-324';
-DELETE FROM Association WHERE ID='a-325';
-DELETE FROM AssociationProp WHERE AssociationID='a-325';
-DELETE FROM ViewAssociation WHERE AssociationID='a-325';
-DELETE FROM Association WHERE ID='a-186';
-DELETE FROM AssociationProp WHERE AssociationID='a-186';
-DELETE FROM ViewAssociation WHERE AssociationID='a-186';
+--------------------------------------
+--- Fixing some Typos in whois.sql ---
+--------------------------------------
 
-
-
---- fixing some Typos in whois.sql
 UPDATE Association SET TopicID1='tt-whoistopic' WHERE TopicID1='tt-whoisTopic';
-delete from TopicProp where topicid='tt-whois6';
+
+DELETE FROM TopicProp where topicid='tt-whois6';
+INSERT INTO TopicProp VALUES ('tt-whois6', 1, 'Name', 'Whois Server 6');
 INSERT INTO TopicProp VALUES ('tt-whois6', 1, 'Server', 'whois.nic.as');
 INSERT INTO TopicProp VALUES ('tt-whois6', 1, 'Domains', 'as');
+
 INSERT INTO TopicProp VALUES ('tt-whois18', 1, 'Server', 'whois.nic.fr');
 INSERT INTO TopicProp VALUES ('tt-whois18', 1, 'Domains', 'fr');
 
 
 
----
---- Update standard installation
----
+------------------------------------
+--- Update standard installation ---
+------------------------------------
+
+-- set new icon for "DeepaMehta" installation
 DELETE FROM TopicProp                                     WHERE TopicID='t-deepamehtainstallation' AND PropName='Corporate Icon';
 INSERT INTO TopicProp VALUES ('t-deepamehtainstallation', 1, 'Customer Icon', 'deepamehta-logo-tiny.png');
 
---- Version Change
-UPDATE TopicProp SET PropValue='DeepaMehta 2.0b8-preview3'         WHERE TopicID='t-deepamehtainstallation' AND PropName='Client Name';
-UPDATE TopicProp SET PropValue='DeepaMehtaServer 2.0b8-preview3'   WHERE TopicID='t-deepamehtainstallation' AND PropName='Server Name';
-
----
---- Update DB content version
----
--- UPDATE KeyGenerator SET NextKey=17 WHERE Relation='DB-Content Version';
 
 
+-----------------------
+--- Version Control ---
+-----------------------
 
+-- change version labels
+UPDATE TopicProp SET PropValue='DeepaMehta 2.0b8'         WHERE TopicID='t-deepamehtainstallation' AND PropName='Client Name';
+UPDATE TopicProp SET PropValue='DeepaMehtaServer 2.0b8'   WHERE TopicID='t-deepamehtainstallation' AND PropName='Server Name';
+
+-- update DB content version
+UPDATE KeyGenerator SET NextKey=17 WHERE Relation='DB-Content Version';
+
+
+
+--------------------------------------
 --- *** UPDATE DATA DEFINITION *** ---
+--------------------------------------
+
+-- set primary key for "TopicProp" and "AssociationProp" tables
 ALTER TABLE             TopicProp
      CHANGE             PropName PropName CHAR(255) NOT NULL,
      DROP   INDEX       TopicID,
@@ -310,13 +330,13 @@ FROM TopicProp
 JOIN (
     SELECT TopicID, TopicVersion, PropName
     FROM TopicProp GROUP BY TopicID, TopicVersion, PropName
-    HAVING COUNT( * ) > 1 ) tp
-USING ( TopicID, TopicVersion, PropName );
+    HAVING COUNT(*) > 1 ) tp
+USING (TopicID, TopicVersion, PropName);
 
 SELECT *
 FROM AssociationProp
 JOIN (
     SELECT AssociationID, AssociationVersion, PropName
     FROM AssociationProp GROUP BY AssociationID, AssociationVersion, PropName
-    HAVING COUNT( * ) > 1 ) ap
-USING ( AssociationID, AssociationVersion, PropName );
+    HAVING COUNT(*) > 1 ) ap
+USING (AssociationID, AssociationVersion, PropName);

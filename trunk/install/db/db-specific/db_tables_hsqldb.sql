@@ -70,7 +70,7 @@ CREATE CACHED TABLE TopicProp (
     PropValue VARCHAR_IGNORECASE
 );
 ALTER TABLE TopicProp ADD PRIMARY KEY (
-	TopicID , TopicVersion , PropName
+	TopicID, TopicVersion, PropName
 );
 
 CREATE CACHED TABLE AssociationProp (

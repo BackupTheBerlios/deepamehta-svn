@@ -47,7 +47,7 @@ import java.util.Vector;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last sourcecode change: 3.2.2008 (2.0b8)<br>
+ * Last sourcecode change: 23.2.2008 (2.0b8)<br>
  * Last documentation update: 3.2.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -62,7 +62,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 
 
-	public static final int kernelTopicsVersion = 16;
+	public static final int kernelTopicsVersion = 17;
 
 	public ApplicationService as;	// ### should be protected (WebBuilderLogin accesses it)
 	protected CorporateMemory cm;	// as.cm
