@@ -230,6 +230,10 @@
 				<delete dir="develop" />
 				<delete dir="." includes="**/config*.properties" />
 				<delete dir="${client}/db" />
+				<delete file="checkstyle_config.xml" />
+				<delete file="checkstyle_errors.xml" />
+				<delete file="ant/lib/checkstyle-all-4.3.jar" />
+				<delete file="ant/lib/jdepend-2.9.jar" />
 				<!-- self destruction -->
 				<delete file="build-development.xml" />
 				<echo>
