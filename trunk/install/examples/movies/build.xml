@@ -73,27 +73,29 @@
 		</jar>
 	</target>
 
-	<target name="-copy-images">
+	<target name="-copy-install">
 		<copy todir="${client}">
 			<fileset dir=".">
-				<include name="images/**" />
 				<include name="icons/**" />
-				<include name="backgrounds/**" />
 			</fileset>
 		</copy>
 	</target>
 
-	<target name="build" depends="-jar,-copy-images" />
+	<target name="build" depends="-jar" />
 
 	<target name="cleanup" description="remove build directory">
 		<delete dir="${build}" includes="**" />
+	</target>
+
+	<target name="-strip">
+		<delete dir="src" includes="**" />
 	</target>
 
 	<!-- example database "Movies" -->
 
 	<target name="uninstall" depends="-dropmoviesdb" />
 
-	<target name="install" depends="-initdb">
+	<target name="install" depends="-initdb,-copy-install">
 		<!-- seperate call! -->
 		<ant target="-initmoviesdb" />
 	</target>

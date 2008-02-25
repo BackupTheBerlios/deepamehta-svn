@@ -36,6 +36,10 @@
 		<delete dir="${build}" includes="**" />
 	</target>
 
+	<target name="-strip">
+		<delete dir="src" includes="**" />
+	</target>
+
 	<target name="install">
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${examples}">

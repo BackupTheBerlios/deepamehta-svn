@@ -49,4 +49,7 @@
 		<delete dir="${build}" includes="**"/>
 	</target>
 
+	<target name="-strip">
+		<delete dir="src" includes="**" />
+	</target>
 </project>

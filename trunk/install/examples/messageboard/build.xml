@@ -48,24 +48,26 @@
 		</war>
 	</target>
 
-	<target name="-copy-images">
+	<target name="-copy-deploy">
 		<copy todir="${client}">
 			<fileset dir=".">
 				<include name="images/**" />
-				<include name="icons/**" />
-				<include name="backgrounds/**" />
 			</fileset>
 		</copy>
 	</target>
 
-	<target name="build" depends="-war,-copy-images" description="builds the application" />
+	<target name="build" depends="-war" description="builds the application" />
 
-	<target name="deploy" if="do.web.deploy" description="deploys the application">
+	<target name="deploy" depends="-copy-deploy" if="do.web.deploy" description="deploys the application">
 		<copy file="${jar}" todir="${web.lib.dir}" />
 		<copy file="${war}" todir="${web.deploy.dir}" />
 	</target>
 
 	<target name="cleanup" description="remove build directory">
 		<delete dir="${build}" includes="**" />
+	</target>
+
+	<target name="-strip">
+		<delete dir="src" includes="**" />
 	</target>
 </project>

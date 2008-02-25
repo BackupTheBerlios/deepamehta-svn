@@ -201,5 +201,46 @@
 			<property name="target" value="cleanup" />
 		</ant>
 	</target>
+	
+	<target name="strip" description="strip for deploy">
+		<echo>
+,-----------------------------------------------------.
+|                                                     |
+|   THIS WILL REMOVE ANY DEVELOPMENT RELATED STUFF!   |
+|                                                     |
+|-----------------------------------------------------|
+|     sources, build-dirs, version control, etc...    |
+`-----------------------------------------------------'
+		</echo>
+		<input message="Do you want to proceed?" addproperty="do.strip" defaultvalue="n" validargs="y,n" />
+		<if>
+			<equals arg1="${do.strip}" arg2="y" />
+			<then>
+				<echo>
+,-------------------------------------------.
+|                                           |
+|   PROCESS OF SELF DESTRUCTION INITIATED   |
+|                                           |
+`-------------------------------------------'
+				</echo>
+				<ant target="-call-examples">
+					<property name="target" value="-strip" />
+				</ant>
+				<delete dir="." includes="**/.svn/" />
+				<delete dir="develop" />
+				<delete dir="." includes="**/config*.properties" />
+				<delete dir="${client}/db" />
+				<!-- self destruction -->
+				<delete file="build-development.xml" />
+				<echo>
+,-------------------------------------------.
+|                                           |
+|   PROCESS OF SELF DESTRUCTION COMPLETED   |
+|                                           |
+`-------------------------------------------'
+				</echo>
+			</then>
+		</if>
+	</target>
 
 </project>

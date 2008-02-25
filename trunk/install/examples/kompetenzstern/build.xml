@@ -47,30 +47,40 @@
 		</war>
 	</target>
 
-	<target name="build" depends="-war,-copy-images" description="Builds the whole application and copies images to the standalone dm-install-directory" />
+	<target name="build" depends="-war" description="Builds the whole application and copies images to the standalone dm-install-directory" />
 
-	<target name="-copy-images">
+	<target name="-copy-install">
+		<copy file="vergleich2fo.xsl" todir="../../client/stylesheets" />
+		<copy file="vergleich2svg.xsl" todir="../../client/stylesheets" />
+		<copy todir="${client}">
+			<fileset dir=".">
+				<include name="icons/**" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="-copy-deploy">
 		<copy todir="${client}">
 			<fileset dir=".">
 				<include name="images/**" />
-				<include name="icons/**" />
-				<include name="backgrounds/**" />
 			</fileset>
 		</copy>
 	</target>
 
-	<target name="deploy" if="do.web.deploy">
+	<target name="deploy" depends="-copy-deploy" if="do.web.deploy">
 		<copy file="${jar}" todir="${web.lib.dir}" />
 		<copy file="${war}" todir="${web.deploy.dir}" />
-		<copy file="vergleich2fo.xsl" todir="../../client/stylesheets" />
-		<copy file="vergleich2svg.xsl" todir="../../client/stylesheets" />
 	</target>
 
 	<target name="cleanup" description="remove build directory">
 		<delete dir="${build}" includes="**"/>
 	</target>
 
-	<target name="install" description="initialisation for the dm-db">
+	<target name="-strip">
+		<delete dir="src" includes="**" />
+	</target>
+
+	<target name="install" depends="-copy-install" description="initialisation for the dm-db">
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${examples}">
 				<include name="kompetenzstern/kompetenzstern.sql" />
