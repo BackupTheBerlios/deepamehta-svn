@@ -202,7 +202,7 @@
 		</ant>
 	</target>
 	
-	<target name="strip" description="strip for deploy">
+	<target name="strip" depends="cleanup" description="strip for deploy">
 		<echo>
 ,-----------------------------------------------------.
 |                                                     |
@@ -223,17 +223,34 @@
 |                                           |
 `-------------------------------------------'
 				</echo>
+
+				<!-- calling the examples -->
 				<ant target="-call-examples">
 					<property name="target" value="-strip" />
 				</ant>
-				<delete dir="." includes="**/.svn/" />
+
+				<!-- removing the sources and build files -->
 				<delete dir="develop" />
+
+				<!-- removing default-overriding property-files -->
 				<delete dir="." includes="**/config*.properties" />
+
+				<!-- removing SVN repository-files -->
+				<delete dir="." includes="**/.svn/" />
+
+				<!-- removing existing hsql/derby database -->
 				<delete dir="${client}/db" />
+
+				<!-- removing development libs -->
 				<delete file="checkstyle_config.xml" />
 				<delete file="checkstyle_errors.xml" />
 				<delete file="ant/lib/checkstyle-all-4.3.jar" />
 				<delete file="ant/lib/jdepend-2.9.jar" />
+
+				<!-- derby is currently unsupported -->
+				<delete dir="libs/derby" />
+				<delete dir="${config}" includes="*derby-intern.properties" />
+
 				<!-- self destruction -->
 				<delete file="build-development.xml" />
 				<echo>
