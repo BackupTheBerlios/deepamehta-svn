@@ -24,9 +24,14 @@
 			<entry key="main-targets" default="dm" />
 		</propertyfile>
 		<echo>
-Your choices are stored in the "${config.properties}" file.
+Your choices are stored in the files
+
+${config.properties}
+${config}/config.properties
+${dm.instance.config-property-file}
+
 If you want to change the settings you have made please edit
-this file or call the config target again.
+these files or call the config target again.
 		</echo>
 	</target>
 
@@ -67,14 +72,27 @@ this file or call the config target again.
 		<var name="default" value="${dm.instance}" />
 		<antcallback target="-config-which-generic-instance" return="return.instance" />
 		<if>
-			<not>
-				<or>
-					<equals arg1="${return.instance}" arg2="${dm.instance}" />
-					<isset property="example.execute" />
-				</or>
-			</not>
+			<or>
+				<not>
+					<or>
+						<equals arg1="${return.instance}" arg2="${dm.instance}" />
+						<isset property="example.execute" />
+					</or>
+				</not>
+				<not>
+					<available file="${config}/config.properties"/>
+				</not>
+			</or>
 			<then>
-				<input message="Setup ${return.instance} as default instance?" addproperty="setup.default-instance" defaultvalue="y" validargs="y,n"/>
+				<if>
+					<available file="${config}/config.properties"/>
+					<then>
+						<input message="Setup ${return.instance} as default instance?" addproperty="setup.default-instance" defaultvalue="y" validargs="y,n"/>
+					</then>
+					<else>
+						<var name="setup.default-instance" value="y"/>
+					</else>
+				</if>
 				<if>
 					<equals arg1="${setup.default-instance}" arg2="y" />
 					<then>
