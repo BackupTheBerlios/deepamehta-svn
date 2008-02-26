@@ -1896,8 +1896,8 @@ INSERT INTO TopicProp VALUES ('t-deepamehtaarch', 1, 'Background Image', 'arch.p
 INSERT INTO ViewTopic VALUES ('t-corporatemap', 1, 't-deepamehtaarch', 1, 100, 100);
 
 -- webpage
-INSERT INTO Topic VALUES ('tt-webpage', 1, 1, 't-deepamehtawebpage', 'DeepaMehta -\- Homepage');
-INSERT INTO TopicProp VALUES ('t-deepamehtawebpage', 1, 'Name', 'DeepaMehta -\- Homepage');
+INSERT INTO Topic VALUES ('tt-webpage', 1, 1, 't-deepamehtawebpage', 'DeepaMehta Homepage');
+INSERT INTO TopicProp VALUES ('t-deepamehtawebpage', 1, 'Name', 'DeepaMehta Homepage');
 INSERT INTO TopicProp VALUES ('t-deepamehtawebpage', 1, 'URL', 'http://www.deepamehta.de/');
 -- website
 INSERT INTO Topic VALUES ('tt-website', 1, 1, 't-deepamehtawebsite', 'www.deepamehta.de');
