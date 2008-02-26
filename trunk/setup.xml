@@ -31,7 +31,7 @@ ${config}/config.properties
 ${dm.instance.config-property-file}
 
 If you want to change the settings you have made please edit
-these files or call the config target again.
+these files or execute 'run config' again.
 		</echo>
 	</target>
 
