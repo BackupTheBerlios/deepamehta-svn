@@ -2,11 +2,10 @@
 	<target name="-askcreatedb">
 		<echo>
 --- DeepaMehta Installation ---
-You are about to create a database '${db.name}' and an
-user '${db.user}' (password '${db.password}') with corresponding
-grants. You will possibly be asked for the database ${db.sysuser}
-password. If you want change these settings, type 'n' (or Ctrl-C)
-and execute 'run config' again.
+You are about to create a database '${db.name}' and an user '${db.user}' (password '${db.password}')
+with corresponding grants.
+You will possibly be asked for the database '${db.sysuser}' password.
+If you want change these settings, type 'n' and execute 'run config' again.
 		</echo>
 		<var name="input.createdb" unset="true" />
 		<input message="Continue? " validargs="y,n" addproperty="input.createdb" defaultvalue="y" />

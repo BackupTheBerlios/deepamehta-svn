@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-	date: 2006/05/11
-	version: ks-1.1.21
+	date: 2008/02/26
+	version: ks-1.1.22
 
 	stylesheet for the comparison of
 	competence stars (KS) to formatting objects.
@@ -120,7 +120,7 @@
 								<fo:table-row>
 									<fo:table-cell>
 										<fo:block>
-											<fo:external-graphic src="{$iconDirectory}../images/logo.png"/>
+											<fo:external-graphic src="{$iconDirectory}../images/deepamehta-logo-tiny.png"/>
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
@@ -130,7 +130,7 @@
 									</fo:table-cell>
 									<fo:table-cell>
 										<fo:block>
-											<fo:external-graphic src="{$iconDirectory}../images/logo.png"/>
+											<fo:external-graphic src="{$iconDirectory}../images/deepamehta-logo-tiny.png"/>
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
