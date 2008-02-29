@@ -1,0 +1,28 @@
+MessageBoardServlet Documentation
+=================================
+
+Web Session Attributes
+
+Jšrg Richter
+13.6.2006
+
+
+Global
+------
+
+session attributes are listed here along with explanation and possible values
+
+messageboard		name of current messageboard (String)
+messageCount		number of toplevel messages on current messageboard (Integer)
+messages			message tree on current page (TopicTree)
+messageID			ID of selected message or null if no message is selected (String)	\ always set
+message				selected message (Message), only valid if latter is set				|
+toplevelMessage		corresponding toplevel message of selected message (BaseTopic)		/ together
+mode				current mode (String)				MODE_SHOW_MESSAGE
+														MODE_WRITE_TOPLEVEL_MESSAGE
+														MODE_WRITE_REPLY_MESSAGE
+extendedNodes		IDs of extended messages (String Vector)
+pageNr			
+pageSize			
+webpageName			name of "homepage" link (String) or null no link is generated
+webpageURL			URL of "homepage" link (String) or null no link is generated

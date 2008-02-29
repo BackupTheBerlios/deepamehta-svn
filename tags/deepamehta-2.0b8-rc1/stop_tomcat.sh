@@ -1,0 +1,5 @@
+#!/bin/sh
+export CATALINA_HOME=/usr/local/tomcat
+export JAVA_HOME=/usr
+
+$CATALINA_HOME/bin/shutdown.sh

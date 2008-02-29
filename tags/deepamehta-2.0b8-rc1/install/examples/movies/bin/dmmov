@@ -1,0 +1,18 @@
+MOVIES_PATH=install/examples/movies/src
+SOURCES=$MOVIES_PATH/de/deepamehta/topics/movies/*.java
+MOVIES=de/deepamehta/topics/movies/*.class
+
+echo "--- compiling application \"Movies\" ..."
+if javac -verbose -classpath develop/src:$MOVIES_PATH:$JAVA_LIBS/xml4j.jar $SOURCES 2>&1 |\
+        egrep -v "(loading|checking|parsing completed)"; then
+
+	# the jaring must take place in MOVIES_PATH directory	
+	cd $MOVIES_PATH
+	echo "--- making MoviesTopics.jar ..."
+	jar -cf ../MoviesTopics.jar $MOVIES
+	ls -l ../MoviesTopics.jar
+
+	echo ">>> application \"Movies\" complete <<<"
+else
+	echo "*** compilation of application \"Movies\" failed ***"
+fi
