@@ -218,38 +218,54 @@ Starten & Beenden
 Einzelplatz-Anwendung
 ---------------------
 
-Die monolithische DeepaMehta-Anwendung ist passend für Einzelplatz-Einsatz, d.h. wenn nicht mit anderen Nutzern über das Netz gemeinsam gearbeitet werden soll.
+Die DeepaMehta-Einzelplatz-Anwendung ist die einfachste Art DeepaMehta zu starten, und ist ausreichend, wenn nicht über das Netzwerk mit anderen Nutzern gemeinsam gearbeitet werden soll.
 
-Zum Starten von DeepaMehta als Einzelplatz-Anwendung gebe folgendes Kommando ein:
+=> Zum Starten der DeepaMehta-Einzelplatz-Anwendung gebe folgendes Kommando ein:
 
 	./run.sh
 
 Es erscheint der DeepaMehta-Login-Dialog. Gebe "root" ein und drücke 2x Return (initial hat der DeepaMehta-root-User kein Passwort). Der DeepaMehta Desktop erscheint.
 
-Technischer Sicherheitshinweis: die monolithische DeepaMehta-Anwendung integriert den DeepaMehta-Client und -Server in eine einzige Anwendung, wobei über direkte Methoden kommuniziert wird. Es wird kein Netzwerkport geöffnet.
+Zum Starten einer bestimmten DeepaMehta-Instanz setze auf der Kommandozeile mittels -D die "dm.instance" Einstellung auf die gewünschte Instanz:
 
-Zum Beenden der DeepaMehta-Sitzung schließe das DeepaMehta-Fenster.
+	./run.sh -Ddm.instance=myinstance
+
+Um eine bestimmte Instanz als Standard-Instanz zu benutzen, öffne mit einem Texteditor die Datei deepamehta/install/config/config.properties und setze die "dm.instance" Einstellung dort. Die Standard-Instanz ist diejenige, die benutzt wird, wenn DeepaMehta ohne Angabe einer Instanz gestartet wird. Informationen über DeepaMehta-Instanzen findest Du unten unter "Weitere Instanzen einrichten" (Abschnitt "Administration").
+
+=> Zum Beenden der DeepaMehta-Sitzung schließe das DeepaMehta-Fenster.
+
+Technischer Sicherheitshinweis: die monolithische DeepaMehta-Anwendung integriert den DeepaMehta-Client und -Server in eine einzige Anwendung, wobei über direkte Methoden kommuniziert wird. Es wird kein Netzwerkport geöffnet.
 
 
 Client/Server-Anwendung
 -----------------------
 
-Technischer Sicherheitshinweis: Die DeepaMehta-Clients kommunizieren mit dem DeepaMehta-Server über TCP Sockets. Der DeepaMehta-Server öffnet einen dedizierten TCP-Port (standardmäßig ist das Port 7557).
+Die DeepaMehta-Client/Server-Anwendung ermöglicht Nutzern über das Netzwerk gemeinsam an Inhalten zu arbeiten.
 
-Zum Starten des DeepaMehta-Servers gebe folgendes Kommando ein:
+=> Zum Starten des DeepaMehta-Servers gebe folgendes Kommando ein:
 
 	./run.sh dms
 
-Zum Starten der DeepaMehta-Client-Anwendung gebe folgendes Kommando ein:
+Zum Servieren einer bestimmten DeepaMehta-Instanz setze auf der Kommandozeile mittels -D die "dm.instance" Einstellung auf die gewünschte Instanz:
+
+	./run.sh dms -Ddm.instance=myinstance
+
+Um eine bestimmte Instanz als Standard-Instanz zu benutzen, öffne mit einem Texteditor die Datei deepamehta/install/config/config.properties und setze die "dm.instance" Einstellung dort. Die Standard-Instanz ist diejenige, die benutzt wird, wenn DeepaMehta ohne Angabe einer Instanz gestartet wird. Informationen über DeepaMehta-Instanzen findest Du unten unter "Weitere Instanzen einrichten" (Abschnitt "Administration").
+
+=> Zum Starten der DeepaMehta-Client-Anwendung gebe folgendes Kommando ein:
 
 	./run.sh dmc
 
-Zum Starten des DeepaMehta-Client-Applets resp. des signierten Client-Applets öffne die entsprechende Webseite in Deinem Webbrowser:
+Es erscheint der DeepaMehta-Login-Dialog. Gebe "root" ein und drücke 2x Return (initial hat der DeepaMehta-root-User kein Passwort). Der DeepaMehta Desktop erscheint.
+
+=> Zum Starten des DeepaMehta-Client-Applets resp. des signierten Client-Applets öffne die entsprechende Webseite in Deinem Webbrowser:
 
 	.../deepamehta/install/client/start.html
 	.../deepamehta/install/client/start-signed.html
 
 Das Client-Applet erwartet, daß der DeepaMehta-Server auf der gleichen Maschine läuft, von der das Applet geladen wurde. Der Port, auf dem das Client-Applet versucht, den Server zu kontaktieren, can in den HTML-Seiten durch Angabe des Applet-Parameters "PORT" eingestellt werden. Wenn kein "Port"-Parameter vorhanden ist, wird der Standard-Port (7557) benutzt.
+
+Technischer Sicherheitshinweis: Die DeepaMehta-Clients kommunizieren mit dem DeepaMehta-Server über TCP Sockets. Der DeepaMehta-Server öffnet einen dedizierten TCP-Port (standardmäßig ist das Port 7557).
 
 
 Webanwendungen
@@ -303,7 +319,7 @@ Um eine neue DeepaMehta-Instanz einzurichten führe die 3 folgenden Schritte aus
 	build-hsqldb-intern.properties	=> build-myinstance.properties
 	dm-hsqldb-intern.properties		=> dm-myinstance.properties
 
-2) Jetzt muß die neue Instanz konfiguriert werden, im Prinzip wie oben im Schritt 2, "Konfigurieren" (Abschnitt "Installation") erklärt ist:
+2) Jetzt muß die neue Instanz konfiguriert werden, im Prinzip wie oben in "Schritt 2: Konfigurieren" (Abschnitt "Installation") erklärt ist:
 
 	./run.sh config
 
@@ -328,7 +344,7 @@ Dann wirst Du wieder nach dem Namen der anzulegenden Datenbank gefragt, wobei al
 
 Die anderen Fragen, die das Config-Skript stellt (bezgl. den Webanwendungen und den Beispiel-Anwendungen) beantworte einfach mit Return, wodurch die bisherigen Einstellungen beibehalten werden (Hinweis: diese Einstellungen werden tatsächlich nicht pro DeepaMehta-Instanz gespeichert, sondern sind global).
 
-3) Nun wird die neue Instanz installiert, im Prinzip wie oben im Schritt 3, "Installieren" (Abschnitt "Installation") erklärt ist:
+3) Nun wird die neue Instanz installiert, im Prinzip wie oben in "Schritt 3: Installieren" (Abschnitt "Installation") erklärt ist:
 
 	./run.sh install
 
