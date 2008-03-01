@@ -34,7 +34,15 @@
 	<target name="build" depends="jar"/>
 
 	<target name="cleanup" description="remove build directory">
-		<delete dir="${build}" includes="**"/>
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${build}" include="**"/>
+		</delete>
+	</target>
+	
+	<target name="-strip">
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="src" include="**"/>
+		</delete>
 	</target>
 
 </project>

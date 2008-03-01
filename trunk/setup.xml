@@ -23,6 +23,9 @@
 		<propertyfile file="${config.properties}">
 			<entry key="main-targets" default="dm" />
 		</propertyfile>
+		<propertyfile file="${dm.instance.config-property-file}">
+			<entry key="config.finished" value="true" />
+		</propertyfile>
 		<echo>
 Your choices are stored in the files
 
@@ -33,6 +36,15 @@ ${dm.instance.config-property-file}
 If you want to change the settings you have made please edit
 these files or execute 'run config' again.
 		</echo>
+		<input message="Do you want to install now?" addproperty="do.install.now" validargs="y,n" defaultvalue="y" />
+		<if>
+			<equals arg1="${do.install.now}" arg2="y" />
+			<then>
+				<ant target="install" inheritall="false">
+					<property name="dm.instance" value="${dm.instance}"/>
+				</ant>
+			</then>
+		</if>
 	</target>
 
 	<target name="-config-web" depends="-config-init">
@@ -42,7 +54,8 @@ these files or execute 'run config' again.
 		<condition property="old.do.installweb" value="y">
 			<istrue value="${web.deploy.do}" />
 		</condition>
-		<input message="Do you want to install web applications?" validargs="y,n" addproperty="new.do.installweb" defaultvalue="${old.do.installweb}" />
+		<input message="Do you want to install the example web applications (Tomcat must 
+already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultvalue="${old.do.installweb}" />
 		<if>
 			<equals arg1="${new.do.installweb}" arg2="n" />
 			<then>
@@ -60,7 +73,7 @@ these files or execute 'run config' again.
 	</target>
 
 	<target name="-config-web-root" if="do.web.deploy" depends="-config-web">
-		<input message="Please enter the root directory of your application server." addproperty="new.tomcat.root" defaultvalue="${tomcat.root}" />
+		<input message="Please enter the home directory of your Tomcat installation." addproperty="new.tomcat.root" defaultvalue="${tomcat.root}" />
 		<propertyfile file="${config.properties}">
 			<entry key="tomcat.root" value="${new.tomcat.root}" />
 		</propertyfile>
@@ -87,7 +100,7 @@ these files or execute 'run config' again.
 				<if>
 					<available file="${config}/config.properties"/>
 					<then>
-						<input message="Setup ${return.instance} as default instance?" addproperty="setup.default-instance" defaultvalue="y" validargs="y,n"/>
+						<input message="Setup '${return.instance}' as default instance?" addproperty="setup.default-instance" defaultvalue="y" validargs="y,n"/>
 					</then>
 					<else>
 						<var name="setup.default-instance" value="y"/>
@@ -219,8 +232,21 @@ these files or execute 'run config' again.
 			</sequential>
 		</for>
 		<echo />
+
+		<fileset dir="${path}" includes="${prefix}-${default}.properties" id="default-instance.config.fileset" />
+		<var name="incorrect" unset="true" />
+		<condition property="incorrect">
+			<resourcecount refid="default-instance.config.fileset" when="ne" count="1" />
+		</condition>
+
+		<if>
+			<istrue value="${incorrect}"/>
+			<then>
+				<var name="default" value="hsqldb-intern" />
+			</then>
+		</if>
 		<var name="return.instance" unset="true" />
-		<input message="currently set (default)" addproperty="return.instance" defaultvalue="${default}" />
+		<input message="Currently set" addproperty="return.instance" defaultvalue="${default}" />
 
 		<fileset dir="${path}" includes="${prefix}-${return.instance}.properties" id="instance.config.fileset" />
 		<var name="correct" unset="true" />

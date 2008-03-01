@@ -46,9 +46,18 @@
 	<!-- Install -->
 
 	<target name="install" description="initialises the database">
-		<antcallback target="-initdb" return="do.db.abort" />
-		<!-- example applications -->
-		<antcall target="-installexamples" />
+		<if>
+			<istrue value="${config.finished}"/>
+			<then>
+				<antcallback target="-initdb" return="do.db.abort" />
+				<!-- example applications -->
+				<antcall target="-installexamples" />
+			</then>
+			<else>
+				<echo message="DeepaMehta has not been configured yet."/>
+				<ant target="config" inheritall="false"/>
+			</else>
+		</if>
 	</target>
 	<target name="uninstall" description="drops all databases">
 		<antcall target="-dropdb" />
@@ -281,12 +290,6 @@
 		</ant>
 		<ant target="-call-example">
 			<property name="example" value="dm-web" />
-		</ant>
-		<ant target="-call-example">
-			<property name="example" value="knoppixforum" />
-		</ant>
-		<ant target="-call-example">
-			<property name="example" value="musicforum" />
 		</ant>
 	</target>
 	<target name="-call-examples-both-intern">

@@ -92,6 +92,7 @@
 		<echo>Image file is dependencies.png.</echo>
 	</target>
 
+	<taskdef resource="checkstyletask.properties" />
 	<target name="checkstyle">
 		<checkstyle config="checkstyle_config.xml">
 			<fileset dir="${sources}" includes="**/*.java" />
@@ -196,7 +197,9 @@
 	</target>
 
 	<target name="cleanup" description="remove build directory">
-		<delete dir="${build}" includes="**" />
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${build}" />
+		</delete>
 		<ant target="-call-examples">
 			<property name="target" value="cleanup" />
 		</ant>
@@ -223,36 +226,58 @@
 |                                           |
 `-------------------------------------------'
 				</echo>
-
-				<!-- calling the examples -->
+				
+				<defaultexcludes remove="**/.svn"/>
+				<defaultexcludes remove="**/.svn/**"/>
+				
+				<echo message="calling the examples"/>
 				<ant target="-call-examples">
 					<property name="target" value="-strip" />
 				</ant>
-
-				<!-- removing the sources and build files -->
-				<delete dir="develop" />
-
-				<!-- removing default-overriding property-files -->
-				<delete dir="." includes="**/config*.properties" />
-
-				<!-- removing SVN repository-files -->
-				<delete dir="." includes="**/.svn/" />
-
-				<!-- removing existing hsql/derby database -->
-				<delete dir="${client}/db" />
-
-				<!-- removing development libs -->
-				<delete file="checkstyle_config.xml" />
-				<delete file="checkstyle_errors.xml" />
-				<delete file="ant/lib/checkstyle-all-4.3.jar" />
-				<delete file="ant/lib/jdepend-2.9.jar" />
-
-				<!-- derby is currently unsupported -->
-				<delete dir="libs/derby" />
-				<delete dir="${config}" includes="*derby-intern.properties" />
-
-				<!-- self destruction -->
-				<delete file="build-development.xml" />
+				
+				<echo message="removing SVN repository-files"/>
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="." includes="**/.svn/**" defaultexcludes="false" />
+				</delete>
+					
+				<echo message="removing the sources and build files"/>
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="develop" />
+					<fileset dir=".settings" />
+					<fileset file=".classpath" />
+					<fileset file=".project" />
+				</delete>
+	
+				<echo message="removing default-overriding property-files"/>
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="." includes="**/config*.properties" />
+				</delete>
+	
+				<echo message="removing existing hsql/derby database"/>
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="${client}/db" />
+				</delete>
+	
+				<echo message="removing development libs"/>
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset file=".checkstyle" />
+					<fileset file="checkstyle_config.xml" />
+					<fileset file="checkstyle_errors.xml" />
+					<fileset file="ant/lib/checkstyle-all-4.3.jar" />
+					<fileset file="ant/lib/jdepend-2.9.jar" />
+				</delete>
+	
+				<echo message="derby is currently unsupported"/>
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="libs/derby" />
+					<fileset dir="${config}" includes="*derby*.properties" />
+					<fileset dir="install/examples/movies/config" includes="*derby*.properties" />
+				</delete>
+	
+				<echo message="self destruction"/>
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset file="build-development.xml" />
+				</delete>
 				<echo>
 ,-------------------------------------------.
 |                                           |

@@ -19,7 +19,7 @@
 
 	<property file="${db.type.property-file}" />
 
-	<property name="main-target" value="config" />
+	<property name="main-targets" value="config" />
 
 	<path id="dblibs">
 		<fileset dir="${dm.base-dir}">
@@ -57,6 +57,5 @@
 
 	<taskdef resource="org/apache/tools/ant/taskdefs/antinput.properties" />
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
-	<taskdef resource="checkstyletask.properties" />
 	<taskdef name="for" classname="net.sf.antcontrib.logic.ForTask" />
 </project>
