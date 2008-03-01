@@ -12,9 +12,8 @@ Voraussetzungen
 Inbetriebnahme, Kurzanleitung
 Installation
   - Schritt 1: Auspacken
-  - Schritt 2: Konfigurieren
-  - Schritt 3: Installieren
-  - Schritt 4: Deployen der Webanwendungen
+  - Schritt 2: Konfigurieren & Installieren
+  - Schritt 3: Deployen der Webanwendungen
 Starten & Beenden
   - Einzelplatz-Anwendung
   - Client/Server-Anwendung
@@ -79,9 +78,8 @@ Installation
 ============
 
 * Schritt 1: Auspacken
-* Schritt 2: Konfigurieren
-* Schritt 3: Installieren
-* Schritt 4: Deployen der Webanwendungen
+* Schritt 2: Konfigurieren & Installieren
+* Schritt 3: Deployen der Webanwendungen
 
 
 Schritt 1: Auspacken
@@ -97,8 +95,8 @@ Packe diese Datei in Deinem Verzeichnis für Anwendungen aus, z.B.:
 Beim Auspacken wird ein Verzeichnis "deepamehta" angelegt.
 
 
-Schritt 2: Konfigurieren
-------------------------
+Schritt 2: Konfigurieren & Installieren
+---------------------------------------
 
 Jetzt wird die DeepaMehta-Installation konfiguriert, hinsichtlich 3 Aspekten:
 - Sollen die DeepaMehta Beispiel-Webanwendungen benutzt werden (erfordert Tomcat)?
@@ -113,9 +111,9 @@ Dir werden ein paar Fragen gestellt, wobei die Standard-Antwort, die einfach dur
 
 Als erstes wirst Du gefragt, ob Du auch die DeepaMehta Beispiel-Webanwendungen benutzen möchtest. Wenn Ja, mußt Du angeben, wo das Tomcat Home-Verzeichnis ist.
 
-	[input] Do you want to install web applications? (y, [n])
+	[input] Do you want to install the example web applications (Tomcat must already be installed)? (y, [n])
 
-	[input] Please enter the root directory of your application server. [/usr/local/tomcat]
+	[input] Please enter the home directory of your Tomcat installation. [/usr/local/tomcat]
 
 Dann wirst Du gefragt, in welcher Datenbank DeepaMehta seine Daten ablegen soll. Wenn die mitgelieferte HSQL-Datenbank benutzt werden soll, drücke einfach Return.
 
@@ -125,7 +123,7 @@ Dann wirst Du gefragt, in welcher Datenbank DeepaMehta seine Daten ablegen soll.
 	[echo] * mysql4
 	[echo] * mysql5
 	[echo]
-	[input] currently set (default) [hsqldb-intern]
+	[input] Currently set [hsqldb-intern]
 
 ACHTUNG: Wenn DeepaMehta-Webfrontends und die grafische DeepaMehta-Oberfläche gleichzeitig auf einer Maschine benutzt werden sollen, muß als Datenbank MySQL benutzt werden. MySQL wird nicht mit DeepaMehta mitgeliefert und muß separat installiert werden.
 
@@ -162,18 +160,12 @@ Weitere Beispiel-Anwendungen werden angeboten:
 	[input] Shall the example dm-search be processed? (y, [n])
 	[input] Shall the example dm-topicmapviewer be processed? (y, [n])
 	[input] Shall the example dm-web be processed? (y, [n])
-	[input] Shall the example knoppixforum be processed? (y, [n])
-	[input] Shall the example musicforum be processed? (y, [n])
 
-Wenn die Konfiguration erfolgreich abgeschlossen wurde, wird "BUILD SUCCESSFUL" angezeigt.
+Damit ist die Konfiguration abgeschlossen.
 
+Du wirst gefragt, ob die eigentliche Installation jetzt vorgenommen werden soll. Während der Installation wird die DeepaMehta-Datenbank angelegt und die ausgewählten Beispiel-Anwendungen eingespielt. Um mit der Installation fortzufahren, drücke Return.
 
-Schritt 3: Installieren
------------------------
-
-Jetzt wird DeepaMehta und die ausgewählten Beispiel-Anwendungen installiert. Zum Starten der Installation gebe folgendes Kommando ein:
-
-	./run.sh install
+	[input] Do you want to install now? ([y], n)
 
 Dir werden nochmal die konfigurierten Datenbank-Angaben gezeigt. Sobald Du Return drückst wird die DeepaMehta-Datenbank angelegt und mit den initialen Inhalten gefüllt.
 
@@ -194,8 +186,8 @@ Sofern Du beim Konfigurieren die Movies-Beispielanwendung ausgewählt hast, und 
 Wenn die Installation erfolgreich verlaufen ist, wird "BUILD SUCCESSFUL" angezeigt.
 
 
-Schritt 4: Deployen der Webanwendungen
--------------------------------------
+Schritt 3: Deployen der Webanwendungen
+--------------------------------------
 
 Wenn Du beim Konfigurieren gesagt hast, daß Du die DeepaMehta Beispiel-Webanwendungen benutzen möchtest, werden diese jetzt unter Tomcat deployt. Zum Deployen gebe folgendes Kommando ein:
 
