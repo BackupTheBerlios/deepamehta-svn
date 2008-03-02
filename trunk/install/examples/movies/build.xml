@@ -85,13 +85,13 @@
 
 	<target name="cleanup" description="remove build directory">
 		<delete includeEmptyDirs="true" failonerror="false">
-			<fileset dir="${build}" include="**"/>
+			<fileset dir="${build}"/>
 		</delete>
 	</target>
 
 	<target name="-strip">
 		<delete includeEmptyDirs="true" failonerror="false">
-			<fileset dir="src" include="**"/>
+			<fileset dir="src"/>
 		</delete>
 	</target>
 

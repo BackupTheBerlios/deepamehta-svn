@@ -273,31 +273,47 @@
 	<target name="-call-examples-noweb-intern">
 		<ant target="-call-example">
 			<property name="example" value="ldap" />
+			<property name="example.name" value="LDAP-Client" />
 		</ant>
 		<ant target="-call-example">
 			<property name="example" value="movies" />
+			<property name="example.name" value="Movies database" />
 		</ant>
 	</target>
-	<target name="-call-examples-web-intern" if="do.web.deploy">
-		<ant target="-call-example">
-			<property name="example" value="dm-browser" />
-		</ant>
-		<ant target="-call-example">
-			<property name="example" value="dm-search" />
-		</ant>
-		<ant target="-call-example">
-			<property name="example" value="dm-topicmapviewer" />
-		</ant>
-		<ant target="-call-example">
-			<property name="example" value="dm-web" />
-		</ant>
+	<target name="-call-examples-web-intern">
+		<if>
+			<or>
+				<isset property="do.web.deploy"/>
+				<istrue value="${example.executeall}"/>
+			</or>
+			<then>
+				<ant target="-call-example">
+					<property name="example" value="dm-browser" />
+					<property name="example.name" value="Generic web frontend" />
+				</ant>
+				<ant target="-call-example">
+					<property name="example" value="dm-search" />
+					<property name="example.name" value="Generic web frontend" />
+				</ant>
+				<ant target="-call-example">
+					<property name="example" value="dm-topicmapviewer" />
+					<property name="example.name" value="web based Topicmap-viewer" />
+				</ant>
+				<ant target="-call-example">
+					<property name="example" value="dm-web" />
+					<property name="example.name" value="Generic web frontend" />
+				</ant>
+			</then>
+		</if>
 	</target>
 	<target name="-call-examples-both-intern">
 		<ant target="-call-example">
 			<property name="example" value="kompetenzstern" />
+			<property name="example.name" value="Kompetenzstern" />
 		</ant>
 		<ant target="-call-example">
 			<property name="example" value="messageboard" />
+			<property name="example.name" value="Messageboard" />
 		</ant>
 	</target>
 	<target name="-call-external-apps">
@@ -321,7 +337,9 @@
 				</ant>
 			</try>
 			<catch>
+				<!--
 				<echo>${exceptionProp}</echo>
+				-->
 			</catch>
 		</trycatch>
 		<echo>finished target "${target}" in example "${example}"</echo>
@@ -340,10 +358,30 @@
 				</ant>
 			</try>
 			<catch>
+				<!--
 				<echo>${exceptionProp}</echo>
+				-->
 			</catch>
 		</trycatch>
 		<echo>finished target "${target}" in external application "${app-dir}"</echo>
 	</target>
 
+	<target name="tomcat-start">
+		<exec executeable="${tomcat.root}/bin/startup.sh" dir="${client}">
+			<env key="JAVA_HOME" value="${java.home}"/>
+			<env key="CATALINA_HOME" value="${tomcat.root}"/>
+		</exec>
+	</target>
+	<target name="tomcat-stop">
+		<exec executeable="${tomcat.root}/bin/shutdown.sh" dir="${client}">
+			<env key="JAVA_HOME" value="${java.home}"/>
+			<env key="CATALINA_HOME" value="${tomcat.root}"/>
+		</exec>
+	</target>
+	<target name="tomcat-log">
+		<exec executeable="tail">
+			<arg value="-f"/>
+			<arg value="${tomcat.root}/logs/catalina.out"/>
+		</exec>
+	</target>
 </project>

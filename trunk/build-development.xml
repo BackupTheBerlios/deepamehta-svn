@@ -201,6 +201,7 @@
 			<fileset dir="${build}" />
 		</delete>
 		<ant target="-call-examples">
+			<property name="example.executeall" value="true" />
 			<property name="target" value="cleanup" />
 		</ant>
 	</target>
@@ -232,6 +233,7 @@
 				
 				<echo message="calling the examples"/>
 				<ant target="-call-examples">
+					<property name="example.executeall" value="true" />
 					<property name="target" value="-strip" />
 				</ant>
 				
@@ -273,7 +275,12 @@
 					<fileset dir="${config}" includes="*derby*.properties" />
 					<fileset dir="install/examples/movies/config" includes="*derby*.properties" />
 				</delete>
-	
+
+				<echo message="who is artfacts?"/>
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="install/examples/artfacts" />
+				</delete>
+
 				<echo message="self destruction"/>
 				<delete includeemptydirs="true" failonerror="false">
 					<fileset file="build-development.xml" />

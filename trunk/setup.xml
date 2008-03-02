@@ -54,17 +54,16 @@ these files or execute 'run config' again.
 		<condition property="old.do.installweb" value="y">
 			<istrue value="${web.deploy.do}" />
 		</condition>
-		<input message="Do you want to install the example web applications (Tomcat must 
-already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultvalue="${old.do.installweb}" />
+		<input message="Do you want to install the example web applications (Tomcat must be installed already)?" validargs="y,n" addproperty="new.do.installweb" defaultvalue="${old.do.installweb}" />
 		<if>
 			<equals arg1="${new.do.installweb}" arg2="n" />
 			<then>
 				<var name="web.deploy.do" value="false" />
-				<var name="do.web.deploy" unset="true" />
+				<var name="do.web.deploy" unset="true" /><!--unset-->
 			</then>
 			<else>
-				<var name="do.web.deploy" value="true" />
 				<var name="web.deploy.do" value="true" />
+				<var name="do.web.deploy" value="true" />
 			</else>
 		</if>
 		<propertyfile file="${config.properties}">
@@ -83,7 +82,9 @@ already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultv
 		<var name="path" value="${config}" />
 		<var name="prefix" value="dm" />
 		<var name="default" value="${dm.instance}" />
-		<antcallback target="-config-which-generic-instance" return="return.instance" />
+		<antcallback target="-config-which-generic-instance" return="return.instance">
+			<property name="message" value="Please select the DeepaMehta instance to configure"/>
+		</antcallback>
 		<if>
 			<or>
 				<not>
@@ -109,10 +110,7 @@ already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultv
 				<if>
 					<equals arg1="${setup.default-instance}" arg2="y" />
 					<then>
-<!--						<propertyfile file="${config.properties}">
-							<entry key="dm.instance" value="${dm.instance}" />
-						</propertyfile>
--->						<propertyfile file="${config}/config.properties">
+						<propertyfile file="${config}/config.properties">
 							<entry key="dm.instance" value="${return.instance}" />
 						</propertyfile>
 					</then>
@@ -160,6 +158,7 @@ already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultv
 	<target name="-config-examples" depends="-config-init">
 		<ant target="-call-examples">
 			<property name="target" value="config" />
+			<property name="example.ask.verb" value="installed"/>
 		</ant>
 	</target>
 
@@ -170,7 +169,10 @@ already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultv
 			<or>
 				<istrue value="${configuration.isactive}" />
 				<not>
-					<isset property="example.execute" />
+					<or>
+						<isset property="example.execute" />
+						<isset property="example.executeall" />
+					</or>
 				</not>
 			</or>
 			<then>
@@ -183,8 +185,25 @@ already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultv
 						<var name="default" value="n" />
 					</else>
 				</if>
+				<if>
+					<not>
+						<isset property="example.ask.verb"/>
+					</not>
+					<then>
+						<var name="example.ask.verb" value="processed"/>
+					</then>
+				</if>
+				<if>
+					<isset property="example.name"/>
+					<then>
+						<var name="example.complete-name" value="'${example.name}' (${example})"/>
+					</then>
+					<else>
+						<var name="example.complete-name" value="'${example}'"/>
+					</else>
+				</if>
 				<var name="input" unset="true" />
-				<input message="Shall the example ${example} be processed?" validargs="y,n" defaultvalue="${default}" addproperty="input" />
+				<input message="Shall the example application ${example.complete-name} be ${example.ask.verb}?" validargs="y,n" defaultvalue="${default}" addproperty="input" />
 				<var name="default" unset="true" />
 				<if>
 					<equals arg1="${input}" arg2="y" />
@@ -204,7 +223,10 @@ already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultv
 			</then>
 			<else>
 				<if>
-					<istrue value="${example.execute}" />
+					<or>
+						<istrue value="${example.execute}" />
+						<istrue value="${example.executeall}" />
+					</or>
 					<then>
 						<var name="do.example.execute" value="true" />
 					</then>
@@ -217,7 +239,15 @@ already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultv
 	</target>
 
 	<target name="-config-which-generic-instance">
-		<echo>Please select one of the following instance configurations:</echo>
+		<if>
+			<not>
+				<isset property="message"/>
+			</not>
+			<then>
+				<var name="message" value="Please select one of the following instance configurations:"/>
+			</then>
+		</if>
+		<echo>${message}</echo>
 		<echo />
 		<for param="list.instance.config.file">
 			<path>
