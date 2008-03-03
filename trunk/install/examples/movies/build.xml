@@ -188,7 +188,9 @@
 		<var name="path" value="config" />
 		<var name="prefix" value="movies" />
 		<var name="default" value="${movies.dm.instance}" />
-		<antcallback target="-config-which-generic-instance" return="return.instance" />
+		<antcallback target="-config-which-generic-instance" return="return.instance">
+			<property name="message" value="Please select the datasource to be used for the 'movies' example:"/>
+		</antcallback>
 		<var name="movies.dm.instance" value="${return.instance}" />
 		<propertyfile file="${config}/config-${dm.instance}.properties">
 			<entry key="movies.dm.instance" value="${movies.dm.instance}" />

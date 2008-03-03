@@ -26,6 +26,7 @@
 		<propertyfile file="${dm.instance.config-property-file}">
 			<entry key="config.finished" value="true" />
 		</propertyfile>
+		<var name="config.finished" value="true"/>
 		<echo>
 Your choices are stored in the files
 
@@ -54,7 +55,7 @@ these files or execute 'run config' again.
 		<condition property="old.do.installweb" value="y">
 			<istrue value="${web.deploy.do}" />
 		</condition>
-		<input message="Do you want to install the example web applications (Tomcat must be installed already)?" validargs="y,n" addproperty="new.do.installweb" defaultvalue="${old.do.installweb}" />
+		<input message="Do you want to install the example web applications (Tomcat must already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultvalue="${old.do.installweb}" />
 		<if>
 			<equals arg1="${new.do.installweb}" arg2="n" />
 			<then>
@@ -77,13 +78,13 @@ these files or execute 'run config' again.
 			<entry key="tomcat.root" value="${new.tomcat.root}" />
 		</propertyfile>
 	</target>
-
+	
 	<target name="-config-which-dm-instance" depends="-config-init">
 		<var name="path" value="${config}" />
 		<var name="prefix" value="dm" />
 		<var name="default" value="${dm.instance}" />
 		<antcallback target="-config-which-generic-instance" return="return.instance">
-			<property name="message" value="Please select the DeepaMehta instance to configure"/>
+			<property name="message" value="Please select the DeepaMehta instance to be configured:"/>
 		</antcallback>
 		<if>
 			<or>
@@ -101,7 +102,7 @@ these files or execute 'run config' again.
 				<if>
 					<available file="${config}/config.properties"/>
 					<then>
-						<input message="Setup '${return.instance}' as default instance?" addproperty="setup.default-instance" defaultvalue="y" validargs="y,n"/>
+						<input message="Should '${return.instance}' be your default instance?" addproperty="setup.default-instance" defaultvalue="y" validargs="y,n"/>
 					</then>
 					<else>
 						<var name="setup.default-instance" value="y"/>
@@ -118,14 +119,19 @@ these files or execute 'run config' again.
 			</then>
 		</if>
 		<var name="dm.instance" value="${return.instance}" />
+		<var name="dm.instance.property-file" value="${config}/dm-${dm.instance}.properties"/>
+		<var name="dm.instance.build-property-file" value="${config}/build-${dm.instance}.properties"/>
+		<var name="dm.instance.config-property-file" value="${config}/config-${dm.instance}.properties"/>
 	</target>
 
 	<target name="-config-dm-instance" depends="-config-which-dm-instance">
 		<echo>configuring now the DeepaMehta instance "${dm.instance}" ...</echo>
-		<antcallback target="-config-dm-instance2" inheritall="false" return="db.syspass"/>
+		<antcallback target="-config-dm-instance2" inheritall="false" return="db.syspass">
+			<property name="dm.instance" value="${dm.instance}"/>
+		</antcallback>
 	</target>
 
-	<target name="-config-dm-instance2" depends="-config-instance-db.host,-config-instance-db.name,-config-instance-db.user">
+	<target name="-config-dm-instance2" depends="-config-instance-db.host,-config-instance-db.name,-config-instance-db.user,-config-instance-dm.port">
 		<echo>completed configuring instance "${dm.instance}"</echo>
 		<echo>Instance-related settings are stored in "${dm.instance.config-property-file}.</echo>
 	</target>
@@ -139,7 +145,7 @@ these files or execute 'run config' again.
 
 	<import file="${db-specific}/${db.list-names}" />
 	<target name="-config-instance-db.name" if="do.config.db.name" depends="-listdb">
-		<input message="Please enter the name of your database:" addproperty="new.db.name" defaultvalue="${db.name}" />
+		<input message="Please enter the name of the database to be created:" addproperty="new.db.name" defaultvalue="${db.name}" />
 		<propertyfile file="${dm.instance.config-property-file}">
 			<entry key="db.name" value="${new.db.name}" />
 		</propertyfile>
@@ -155,10 +161,17 @@ these files or execute 'run config' again.
 		</propertyfile>
 	</target>
 
+	<target name="-config-instance-dm.port" if="do.web.deploy">
+		<input message="Network port for this instance (when served by the DeepaMehta server):" addproperty="new.dm.port" defaultvalue="${dm.port}" />
+		<propertyfile file="${dm.instance.config-property-file}">
+			<entry key="dm.port" value="${new.dm.port}" />
+		</propertyfile>
+	</target>
+	
 	<target name="-config-examples" depends="-config-init">
 		<ant target="-call-examples">
 			<property name="target" value="config" />
-			<property name="example.ask.verb" value="installed"/>
+			<property name="example.ask.verb" value="install"/>
 		</ant>
 	</target>
 
@@ -190,20 +203,20 @@ these files or execute 'run config' again.
 						<isset property="example.ask.verb"/>
 					</not>
 					<then>
-						<var name="example.ask.verb" value="processed"/>
+						<var name="example.ask.verb" value="go into"/>
 					</then>
 				</if>
 				<if>
 					<isset property="example.name"/>
 					<then>
-						<var name="example.complete-name" value="'${example.name}' (${example})"/>
+						<var name="example.complete-name" value="'${example}' (${example.name})"/>
 					</then>
 					<else>
 						<var name="example.complete-name" value="'${example}'"/>
 					</else>
 				</if>
 				<var name="input" unset="true" />
-				<input message="Shall the example application ${example.complete-name} be ${example.ask.verb}?" validargs="y,n" defaultvalue="${default}" addproperty="input" />
+				<input message="Do you want to ${example.ask.verb} the example application ${example.complete-name}?" validargs="y,n" defaultvalue="${default}" addproperty="input" />
 				<var name="default" unset="true" />
 				<if>
 					<equals arg1="${input}" arg2="y" />

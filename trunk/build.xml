@@ -49,6 +49,7 @@
 		<if>
 			<istrue value="${config.finished}"/>
 			<then>
+				<echo message="Installing the DeepaMehta instance '${dm.instance}' now..."/>
 				<antcallback target="-initdb" return="do.db.abort" />
 				<!-- example applications -->
 				<antcall target="-installexamples" />
@@ -273,11 +274,11 @@
 	<target name="-call-examples-noweb-intern">
 		<ant target="-call-example">
 			<property name="example" value="ldap" />
-			<property name="example.name" value="LDAP-Client" />
+			<property name="example.name" value="LDAP-Client for browsing users and groups" />
 		</ant>
 		<ant target="-call-example">
 			<property name="example" value="movies" />
-			<property name="example.name" value="Movies database" />
+			<property name="example.name" value="Demonstration of accessing external datasources" />
 		</ant>
 	</target>
 	<target name="-call-examples-web-intern">
@@ -289,19 +290,19 @@
 			<then>
 				<ant target="-call-example">
 					<property name="example" value="dm-browser" />
-					<property name="example.name" value="Generic web frontend" />
+					<property name="example.name" value="Generic web frontend demo 1" />
 				</ant>
 				<ant target="-call-example">
 					<property name="example" value="dm-search" />
-					<property name="example.name" value="Generic web frontend" />
+					<property name="example.name" value="Generic web frontend demo 2" />
 				</ant>
 				<ant target="-call-example">
 					<property name="example" value="dm-topicmapviewer" />
-					<property name="example.name" value="web based Topicmap-viewer" />
+					<property name="example.name" value="Generic web based topicmap viewer" />
 				</ant>
 				<ant target="-call-example">
 					<property name="example" value="dm-web" />
-					<property name="example.name" value="Generic web frontend" />
+					<property name="example.name" value="Generic web frontend demo 3, recommendend" />
 				</ant>
 			</then>
 		</if>
@@ -309,11 +310,11 @@
 	<target name="-call-examples-both-intern">
 		<ant target="-call-example">
 			<property name="example" value="kompetenzstern" />
-			<property name="example.name" value="Kompetenzstern" />
+			<property name="example.name" value="Balanced Scorecard editor and report generator" />
 		</ant>
 		<ant target="-call-example">
 			<property name="example" value="messageboard" />
-			<property name="example.name" value="Messageboard" />
+			<property name="example.name" value="Graphical forum application and web frontend" />
 		</ant>
 	</target>
 	<target name="-call-external-apps">
@@ -366,19 +367,19 @@
 		<echo>finished target "${target}" in external application "${app-dir}"</echo>
 	</target>
 
-	<target name="tomcat-start">
+	<target name="tomcat-start" description="starts the configured config instance">
 		<exec executeable="${tomcat.root}/bin/startup.sh" dir="${client}">
 			<env key="JAVA_HOME" value="${java.home}"/>
 			<env key="CATALINA_HOME" value="${tomcat.root}"/>
 		</exec>
 	</target>
-	<target name="tomcat-stop">
+	<target name="tomcat-stop" description="stops the configured config instance">
 		<exec executeable="${tomcat.root}/bin/shutdown.sh" dir="${client}">
 			<env key="JAVA_HOME" value="${java.home}"/>
 			<env key="CATALINA_HOME" value="${tomcat.root}"/>
 		</exec>
 	</target>
-	<target name="tomcat-log">
+	<target name="tomcat-log" description="continiuos logging output of the tomcat log">
 		<exec executeable="tail">
 			<arg value="-f"/>
 			<arg value="${tomcat.root}/logs/catalina.out"/>
