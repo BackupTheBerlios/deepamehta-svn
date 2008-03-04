@@ -14,6 +14,14 @@
 	<condition property="do.config.db.user" value="true">
 		<istrue value="${config.db.user}" />
 	</condition>
+	<condition property="do.config.dm.port" value="true">
+		<or>
+			<istrue value="${config.dm.port}" />
+			<not>
+				<isset property="config.dm.port"/>
+			</not>
+		</or>
+	</condition>
 
 	<!-- Configuration -->
 	<target name="-config-init">
@@ -161,7 +169,7 @@ these files or execute 'run config' again.
 		</propertyfile>
 	</target>
 
-	<target name="-config-instance-dm.port" if="do.web.deploy">
+	<target name="-config-instance-dm.port" if="do.config.dm.port">
 		<input message="Network port for this instance (when served by the DeepaMehta server):" addproperty="new.dm.port" defaultvalue="${dm.port}" />
 		<propertyfile file="${dm.instance.config-property-file}">
 			<entry key="dm.port" value="${new.dm.port}" />
@@ -252,6 +260,7 @@ these files or execute 'run config' again.
 	</target>
 
 	<target name="-config-which-generic-instance">
+		<antcall target="-unset-temporary-properties"/>
 		<if>
 			<not>
 				<isset property="message"/>
@@ -271,32 +280,78 @@ these files or execute 'run config' again.
 				<var name="list.dm-instance" unset="true" />
 				<basename file="@{list.instance.config.file}" property="list.dm-instance" suffix=".properties" />
 				<propertyregex property="list.instance" input="${list.dm-instance}" regexp="${prefix}-(.*)" select="\1" />
-				<echo>* ${list.instance}</echo>
+				<var name="temporary.config.web.compatible" unset="true"/>
+				<var name="temporary.config.name" unset="true"/>
+				<property file="${path}/build-${list.instance}.properties" prefix="temporary"/>
+				<if>
+					<or>
+						<not>
+							<isset property="do.web.deploy"/>
+						</not>
+						<not>
+							<isfalse value="${temporary.config.web.compatible}"/>
+						</not>
+						<not>
+							<isset property="temporary.config.web.compatible"/>
+						</not>
+					</or>
+					<then>
+						<if>
+							<not>
+								<isset property="temporary.config.name"/>
+							</not>
+							<then>
+								<property name="temporary.config.name" value=""/>
+							</then>
+						</if>
+						<echo>* ${list.instance} ${temporary.config.name}</echo>
+						<var name="temporary.${list.instance}.config" value="ok"/>
+					</then>
+				</if>
 			</sequential>
 		</for>
 		<echo />
 
-		<fileset dir="${path}" includes="${prefix}-${default}.properties" id="default-instance.config.fileset" />
-		<var name="incorrect" unset="true" />
-		<condition property="incorrect">
-			<resourcecount refid="default-instance.config.fileset" when="ne" count="1" />
-		</condition>
-
 		<if>
-			<istrue value="${incorrect}"/>
+			<not>
+				<isset property="temporary.${default}.config" />
+			</not>
 			<then>
-				<var name="default" value="hsqldb-intern" />
+				<echo>The former selected configration '${default}' is currently not available.</echo>
+				<if>
+					<isset property="temporary.hsqldb-intern.config"/>
+					<then>
+						<var name="default" value="hsqldb-intern" />
+					</then>
+					<else>
+						<var name="default" value="mysql5" />
+					</else>
+				</if>
 			</then>
 		</if>
 		<var name="return.instance" unset="true" />
 		<input message="Currently set" addproperty="return.instance" defaultvalue="${default}" />
 
-		<fileset dir="${path}" includes="${prefix}-${return.instance}.properties" id="instance.config.fileset" />
 		<var name="correct" unset="true" />
 		<condition property="correct">
-			<resourcecount refid="instance.config.fileset" when="equal" count="1" />
+			<isset property="temporary.${return.instance}.config" />
 		</condition>
 		<fail unless="correct" message="${return.instance} does not refer to an instance configuration" />
+	</target>
+
+	<target name="-unset-temporary-properties">
+		<propertyselector
+				property="temporary.list"
+				delimiter="|"
+				match="temporary\..*"/>
+		<for
+				list="${temporary.list}"
+				delimiter="|"
+				param="property.id">
+			<sequential>
+				<var name="${property.id}" unset="true"/>
+			</sequential>
+		</for>
 	</target>
 
 </project>
