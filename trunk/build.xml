@@ -186,9 +186,8 @@
 			<equals arg1="${do.reset}" arg2="n" />
 		</condition>
 		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] reset'" />
-		<antcall target="droptables" />
-		<antcall target="createtables" />
-		<antcall target="initdb" />
+		<antcall target="-droptables" />
+		<antcall target="install" />
 	</target>
 
 	<target name="patchdb">
