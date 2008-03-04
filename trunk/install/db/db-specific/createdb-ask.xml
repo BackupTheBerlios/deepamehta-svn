@@ -1,5 +1,5 @@
 <project name="DeepaMehta-db-createdb-ask">
-	<target name="-askcreatedb">
+	<target name="-askcreatedb" unless="dont.db.ask">
 		<echo>
 --- DeepaMehta Installation ---
 You are about to create a database '${db.name}' and a database user '${db.user}' (password '${db.password}').

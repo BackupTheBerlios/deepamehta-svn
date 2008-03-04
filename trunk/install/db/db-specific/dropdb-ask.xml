@@ -1,5 +1,5 @@
 <project name="DeepaMehta-db-askdropdb">
-	<target name="-askdropdb">
+	<target name="-askdropdb" unless="dont.db.ask">
 		<echo>
 You are about to delete the database '${db.name}'.
 If you want delete another database, type 'n' and edit config.xml (section 'Database')

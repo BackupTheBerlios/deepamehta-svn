@@ -186,7 +186,8 @@
 			<equals arg1="${do.reset}" arg2="n" />
 		</condition>
 		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] reset'" />
-		<antcall target="-droptables" />
+		<property name="dont.db.ask" value="true"/>
+		<antcall target="uninstall" />
 		<antcall target="install" />
 	</target>
 
@@ -333,6 +334,7 @@
 					<property name="do.dmdb.abort" value="${do.db.abort}" />
 					<property name="db.syspass" value="${db.syspass}" />
 					<property name="withsyspass" value="${withsyspass}" />
+					<property name="dont.db.ask" value="${dont.db.ask}" />
 					<property name="configuration.isactive" value="${configuration.isactive}" />
 				</ant>
 			</try>
@@ -354,6 +356,7 @@
 					<property name="do.dmdb.abort" value="${do.db.abort}" />
 					<property name="db.syspass" value="${db.syspass}" />
 					<property name="withsyspass" value="${withsyspass}" />
+					<property name="db.ask.dont" value="${dont.db.ask}" />
 					<property name="configuration.isactive" value="${configuration.isactive}" />
 				</ant>
 			</try>
