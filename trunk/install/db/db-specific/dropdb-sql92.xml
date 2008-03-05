@@ -1,7 +1,7 @@
 <project name="DeepaMehta-db-dropdb-sql92" >
 	<import file="dropdb-ask.xml"/>
 	<import file="asksyspass.xml"/>
-	<target name="-dropdb" depends="-askdropdb,-asksyspass" unless="do.db.abort">
+	<target name="-dropdb-do" depends="-askdropdb,-asksyspass" unless="do.db.abort">
 		<path id="dblibs">
 			<fileset dir="${dm.base-dir}">
 				<include name="${db.libs}" />

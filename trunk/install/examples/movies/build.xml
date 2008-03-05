@@ -104,18 +104,18 @@
 		<ant target="-initmoviesdb" />
 	</target>
 
-	<target name="-initdb" unless="do.dmdb.abort">
-		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="dblibs" autocommit="${db.autocommit}">
-			<fileset dir=".">
-				<include name="db/dmdb-movies.sql" />
-				<include name="db/dmdb-movies-${movies.dm.instance}.sql" />
-			</fileset>
-			<fileset dir="${db-specific}">
-				<include name="${db.close-session}" />
-			</fileset>
-		</sql>
+	<target name="-initdb">
 		<trycatch property="exceptionProp">
 			<try>
+				<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="dblibs" autocommit="${db.autocommit}">
+					<fileset dir=".">
+						<include name="db/dmdb-movies.sql" />
+						<include name="db/dmdb-movies-${movies.dm.instance}.sql" />
+					</fileset>
+					<fileset dir="${db-specific}">
+						<include name="${db.close-session}" />
+					</fileset>
+				</sql>
 				<ant antfile="${movies.dmdb.content}" target="dmdb-movies" />
 			</try>
 			<catch>

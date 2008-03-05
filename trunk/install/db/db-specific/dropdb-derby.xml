@@ -1,6 +1,6 @@
 <project name="DeepaMehta-db-dropdb-derby">
 	<import file="dropdb-ask.xml"/>
-	<target name="-dropdb" depends="-askdropdb" unless="do.abort">
+	<target name="-dropdb-do" depends="-askdropdb" unless="do.abort">
 		<delete dir="${db.derby.path}" />
 	</target>
 </project>
