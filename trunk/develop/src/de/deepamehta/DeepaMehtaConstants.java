@@ -26,7 +26,7 @@ import java.util.Vector;
  * </ol>
  * <p>
  * <hr>
- * Last functional change: 23.2.2008 (2.0b8)<br>
+ * Last functional change: 7.3.2008 (2.0b8)<br>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -369,26 +369,26 @@ public interface DeepaMehtaConstants {
 	//
 	static final String ICON_CHANGE_ASSOC_TYPE = "changing.gif";
 	static final String ICON_NEW_ASSOC_TYPE = "create.gif";
-	static final String ICON_HIDE_ASSOC = "hide.gif";
+	static final String ICON_HIDE_ASSOC = "eye-closed.gif";
 	static final String ICON_DELETE_ASSOC = "trash.gif";
 	static final String ICON_NEW_TOPIC = "create.gif";
-	static final String ICON_HIDE_ALL = "hide.gif";
-	static final String ICON_CLOSE_VIEW = "hide.gif";
+	static final String ICON_HIDE_ALL = "eye-obscured.gif";
+	static final String ICON_CLOSE_VIEW = "eye-closed.gif";
 	static final String ICON_PUBLISH = "publishing.gif";
 	static final String ICON_IMPORT_TOPICMAP = "import.gif";
 	static final String ICON_EXPORT_TOPICMAP = "export.gif";
 	static final String ICON_PREFERENCES = "settings.gif";
 	static final String ICON_NEW_TOPIC_TYPE = "create.gif";
-	static final String ICON_NAVIGATION = "show.gif";
-	static final String ICON_SEARCH_BY_TOPICTYPE = "show.gif";
+	static final String ICON_NAVIGATION = "eye-grey.gif";
+	static final String ICON_SEARCH_BY_TOPICTYPE = "eye-grey.gif";
 	static final String ICON_SEARCH_BY_PROPERTY = "show.gif";
 	static final String ICON_CHANGE_TOPIC_NAME = "rename.gif";
 	static final String ICON_CHANGE_TOPIC_TYPE = "retype.gif";
-	static final String ICON_HIDE_TOPIC = "hide.gif";
+	static final String ICON_HIDE_TOPIC = "eye-closed.gif";
 	static final String ICON_DELETE_TOPIC = "trash.gif";
 	static final String ICON_SHOW_HELP = "viewhilfe.gif";
 	static final String ICON_SEARCH_INTERNET = "google.gif";
-	static final String ICON_SHOW_RESULT = "show.gif";
+	static final String ICON_SHOW_RESULT = "eye-grey.gif";
 	static final String ICON_GROUP_BY = "show.gif";
 
 	// --- commands ---

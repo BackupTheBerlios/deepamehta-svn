@@ -589,8 +589,8 @@ INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-topicmap', 'Topic Map');
 INSERT INTO TopicProp VALUES ('tt-topicmap', 1, 'Name', 'Topic Map');
 INSERT INTO TopicProp VALUES ('tt-topicmap', 1, 'Plural Name', 'Topicmaps');
 INSERT INTO TopicProp VALUES ('tt-topicmap', 1, 'Description', '<HTML><BODY>A <I>Topic Map</I> is a ...</BODY></HTML>');
-INSERT INTO TopicProp VALUES ('tt-topicmap', 1, 'Icon', 'show.gif');
-INSERT INTO TopicProp VALUES ('tt-topicmap', 1, 'Creation Icon', 'create.gif');
+INSERT INTO TopicProp VALUES ('tt-topicmap', 1, 'Icon', 'eye.gif');
+INSERT INTO TopicProp VALUES ('tt-topicmap', 1, 'Creation Icon', 'eye-with-wand.gif');
 INSERT INTO TopicProp VALUES ('tt-topicmap', 1, 'Unique Topic Names', 'on');
 INSERT INTO TopicProp VALUES ('tt-topicmap', 1, 'Custom Implementation', 'de.deepamehta.topics.TopicMapTopic');
 -- assign properties
@@ -604,7 +604,7 @@ INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-135', '', 'tt-generic'
 -- container type
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-topicmapcontainer', 'Topic Map Search');
 INSERT INTO TopicProp VALUES ('tt-topicmapcontainer', 1, 'Name', 'Topic Map Search');
-INSERT INTO TopicProp VALUES ('tt-topicmapcontainer', 1, 'Icon', 'topicmapcontainer.gif');
+INSERT INTO TopicProp VALUES ('tt-topicmapcontainer', 1, 'Icon', 'eye-in-ton.gif');
 -- derive container type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-41', '', 'tt-topiccontainer', 1, 'tt-topicmapcontainer', 1);
 -- assign type to container type

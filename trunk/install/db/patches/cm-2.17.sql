@@ -284,6 +284,18 @@ INSERT INTO TopicProp VALUES ('tt-whois18', 1, 'Domains', 'fr');
 
 
 
+-------------------------
+--- Set new eye icons ---
+-------------------------
+
+
+
+UPDATE TopicProp SET PropValue='eye.gif' WHERE TopicID='tt-topicmap' AND PropName='Icon';
+UPDATE TopicProp SET PropValue='eye-with-wand.gif' WHERE TopicID='tt-topicmap' AND PropName='Creation Icon';
+UPDATE TopicProp SET PropValue='eye-in-ton.gif' WHERE TopicID='tt-topicmapcontainer' AND PropName='Icon';
+
+
+
 ------------------------------------
 --- Update standard installation ---
 ------------------------------------

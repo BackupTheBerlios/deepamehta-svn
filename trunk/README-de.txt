@@ -12,7 +12,7 @@ Voraussetzungen
 Inbetriebnahme, Kurzanleitung
 Installation
   - Schritt 1: Auspacken
-  - Schritt 2: Konfigurieren & Installieren
+  - Schritt 2: Installieren
   - Schritt 3: Deployen der Webanwendungen
 Starten & Beenden
   - Einzelplatz-Anwendung
@@ -48,28 +48,24 @@ Inbetriebnahme, Kurzanleitung
 		unzip deepamehta-2.0b8.zip
 	Es wird ein Verzeichnis "deepamehta" angelegt.
 
-2) Konfigurieren:
+2) Installieren:
 		cd deepamehta
-		./run.sh config
+		./run.sh install
 	Beantworte alle Fragen mit Return
 
-3) Installieren:
-		./run.sh install
-	Beantworte die Frage mit Return
-
-4) Starten:
+3) Starten:
 		./run.sh
 	Es erscheint der DeepaMehta-Login-Dialog.
 	Gebe "root" ein und drücke 2x Return.
 	Der DeepaMehta Desktop erscheint.
 
-5) Dokumentation lesen:
+4) Dokumentation lesen:
 	Bedienhinweise für die ersten Schritte stehen im Wiki:
 		https://www.mindworxs.de/zwiki/ErsteSchritte
 	Den Beginn eines Users Guides gibt es hier:
 		www.deepamehta.de/docs/usersguide.html
 
-6) Beenden:
+5) Beenden:
 	Schließe das DeepaMehta-Fenster.
 
 
@@ -78,7 +74,7 @@ Installation
 ============
 
 * Schritt 1: Auspacken
-* Schritt 2: Konfigurieren & Installieren
+* Schritt 2: Installieren
 * Schritt 3: Deployen der Webanwendungen
 
 
@@ -95,17 +91,17 @@ Packe diese Datei in Deinem Verzeichnis für Anwendungen aus, z.B.:
 Beim Auspacken wird ein Verzeichnis "deepamehta" angelegt.
 
 
-Schritt 2: Konfigurieren & Installieren
----------------------------------------
+Schritt 2: Installieren
+-----------------------
 
-Jetzt wird die DeepaMehta-Installation konfiguriert, hinsichtlich 3 Aspekten:
+Zum Starten der DeepaMehta-Installation gebe folgendes Kommando ein:
+
+	./run.sh install
+
+Zunächst wird die DeepaMehta-Installation konfiguriert, hinsichtlich 3 Aspekten:
 - Sollen die DeepaMehta Beispiel-Webanwendungen benutzt werden (erfordert Tomcat)?
 - Welche Datenbank soll DeepaMehta benutzen (das mitgelieferte HSQL oder MySQL)?
 - Welche Beispiel-Anwendungen sollen installiert werden?
-
-Zum Starten der Konfigurierung gebe folgendes Kommando ein:
-
-	./run.sh config
 
 Dir werden ein paar Fragen gestellt, wobei die Standard-Antwort, die einfach durch Drücken von Return ausgelöst wird, in eckigen Klammern angegeben ist.
 
@@ -117,7 +113,7 @@ Als erstes wirst Du gefragt, ob Du auch die DeepaMehta Beispiel-Webanwendungen b
 
 Dann wirst Du gefragt, in welcher Datenbank DeepaMehta seine Daten ablegen soll. Wenn die mitgelieferte HSQL-Datenbank benutzt werden soll, drücke einfach Return.
 
-	[echo] Please select one of the following instance configurations:
+	[echo] Please select the DeepaMehta instance to be configured:
 	[echo]
 	[echo] * hsqldb-intern
 	[echo] * mysql4
@@ -375,4 +371,4 @@ Für Deine Fragen benutze möglichst das Forum auf der DeepaMehta Website oder a
 
 ------------------------------------------------------------------------------------------------
 Jörg Richter                                                                   www.deepamehta.de
-1.3.2008
+6.3.2008
