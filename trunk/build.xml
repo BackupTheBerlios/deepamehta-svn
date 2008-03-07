@@ -505,19 +505,19 @@
 	</target>
 
 	<target name="tomcat-start" description="starts the configured config instance">
-		<exec executeable="${tomcat.root}/bin/startup.sh" dir="${client}">
+		<exec executable="${tomcat.root}/bin/startup.sh" dir="${client}">
 			<env key="JAVA_HOME" value="${java.home}" />
 			<env key="CATALINA_HOME" value="${tomcat.root}" />
 		</exec>
 	</target>
 	<target name="tomcat-stop" description="stops the configured config instance">
-		<exec executeable="${tomcat.root}/bin/shutdown.sh" dir="${client}">
+		<exec executable="${tomcat.root}/bin/shutdown.sh" dir="${client}">
 			<env key="JAVA_HOME" value="${java.home}" />
 			<env key="CATALINA_HOME" value="${tomcat.root}" />
 		</exec>
 	</target>
 	<target name="tomcat-log" description="continiuos logging output of the tomcat log">
-		<exec executeable="tail">
+		<exec executable="tail">
 			<arg value="-f" />
 			<arg value="${tomcat.root}/logs/catalina.out" />
 		</exec>

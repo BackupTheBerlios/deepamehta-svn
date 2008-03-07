@@ -116,8 +116,11 @@ Dann wirst Du gefragt, in welcher Datenbank DeepaMehta seine Daten ablegen soll.
 	[echo] Please select the DeepaMehta instance to be configured:
 	[echo]
 	[echo] * hsqldb-intern
+		(Recommended for just using the DeepaMehta application. No additional software is required.)
 	[echo] * mysql4
+		(Recommended for use with the additional web frontends. MySQL 4 must be installed separately.)
 	[echo] * mysql5
+		(Recommended for use with the additional web frontends. MySQL 5 must be installed separately.)
 	[echo]
 	[input] Currently set [hsqldb-intern]
 
@@ -125,14 +128,22 @@ ACHTUNG: Wenn DeepaMehta-Webfrontends und die grafische DeepaMehta-Oberfläche g
 
 Dann wirst Du nach dem Namen der anzulegenden Datenbank gefragt. Gebe den Namen der anzulegenden Datenbank ein, oder drücke einfach Return.
 
-	[input] Please enter the name of your database: [DeepaMehta]
+	[input] Please enter the name of the database to be created: [DeepaMehta]
+
+Dann wirst Du nach dem Netzwerk-Port gefragt, auf dem der DeepaMehta-Server Client-Verbindungen annehmen soll. Diese Einstellung ist für den Client-Server-Betrieb relevant (siehe "Client/Server-Anwendung" im Abschnitt "Starten & Beenden"), besonders dann, wenn mehrere DeepaMehta-Instanzen im Einsatz sind (siehe "Weitere Instanzen einrichten" im Abschnitt "Administration"). Im Moment drücke einfach Return.
+
+	[input] Network port for this instance (when served by the DeepaMehta server): [7557]
 
 Dann wirst Du gefragt, welche der mitgelieferten Beispiel-Anwendungen Du installieren möchtest. Die Entscheidung steht Dir frei. Auch ohne Beispiel-Anwendungen ist DeepaMehta nutzbar.
 
-	[input] Shall the example kompetenzstern be processed? ([y], n)
-	[input] Shall the example messageboard be processed? ([y], n)
-	[input] Shall the example ldap be processed? ([y], n)
-	[input] Shall the example movies be processed? ([y], n)
+	[input] Do you want to install the example application 'kompetenzstern'
+			(Balanced Scorecard editor and report generator)? (y, [n])
+	[input] Do you want to install the example application 'messageboard'
+			(Graphical forum application and web frontend)? (y, [n])
+	[input] Do you want to install the example application 'ldap'
+			(LDAP-Client for browsing users and groups)? (y, [n])
+	[input] Do you want to install the example application 'movies'
+			(Demonstration of accessing external datasources)? (y, [n])
 
 Sofern Du das "movies" Beispiel installieren möchtest, wirst Du jetzt nach der Art der Datenquelle gefragt, die für das movies-Beispiel angelegt werden soll.
 
@@ -150,12 +161,16 @@ Sofern Du "hsqldb-intern" ausgewählt hast, wirst Du jetzt nach dem Namen der an
 
 	[input] Please enter the name of your database: [Movies]
 
-Weitere Beispiel-Anwendungen werden angeboten:
+Sofern Du eingangs gesagt hast, daß Du auch die DeepaMehta Webanwendungen benutzen möchtest (unter Tomcat), wirst Du jetzt gefragt, welche der mitgelieferten Beispiel-Webanwendungen Du installieren möchtest:
 
-	[input] Shall the example dm-browser be processed? (y, [n])
-	[input] Shall the example dm-search be processed? (y, [n])
-	[input] Shall the example dm-topicmapviewer be processed? (y, [n])
-	[input] Shall the example dm-web be processed? (y, [n])
+	[input] Do you want to install the example application 'dm-browser'
+			(Generic web frontend demo 1)? (y, [n])
+	[input] Do you want to install the example application 'dm-search'
+			(Generic web frontend demo 2)? (y, [n])
+	[input] Do you want to install the example application 'dm-topicmapviewer'
+			(Generic web based topicmap viewer)? (y, [n])
+	[input] Do you want to install the example application 'dm-web'
+			(Generic web frontend demo 3, recommendend)? (y, [n])
 
 Damit ist die Konfiguration abgeschlossen.
 
@@ -166,8 +181,7 @@ Du wirst gefragt, ob die eigentliche Installation jetzt vorgenommen werden soll.
 Dir werden nochmal die konfigurierten Datenbank-Angaben gezeigt. Sobald Du Return drückst wird die DeepaMehta-Datenbank angelegt und mit den initialen Inhalten gefüllt.
 
 	[echo] --- DeepaMehta Installation ---
-	[echo] You are about to create a database 'DeepaMehta' and an
-	[echo] user 'sa' (password '') with corresponding grants.
+	[echo] You are about to create a database 'DeepaMehta' and a database user 'sa' (password '').
 	...
 	[input] Continue?  ([y], n)
 
@@ -369,6 +383,6 @@ Für Deine Fragen benutze möglichst das Forum auf der DeepaMehta Website oder a
 
 
 
-------------------------------------------------------------------------------------------------
-Jörg Richter                                                                   www.deepamehta.de
-6.3.2008
+------------------------------------------------------------------------------------------------------
+Jörg Richter                                                                         www.deepamehta.de
+7.3.2008
