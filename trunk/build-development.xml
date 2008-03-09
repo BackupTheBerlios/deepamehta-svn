@@ -4,6 +4,8 @@
 		DeepaMehta development build file
 	</description>
 
+	<property name="exceptions.log" value="true" />
+
 	<import file="build.xml" />
 
 	<!-- Build -->
@@ -205,7 +207,7 @@
 			<property name="target" value="cleanup" />
 		</ant>
 	</target>
-	
+
 	<target name="strip" depends="cleanup" description="strip for deploy">
 		<echo>
 ,-----------------------------------------------------.
@@ -227,40 +229,40 @@
 |                                           |
 `-------------------------------------------'
 				</echo>
-				
-				<defaultexcludes remove="**/.svn"/>
-				<defaultexcludes remove="**/.svn/**"/>
-				
-				<echo message="calling the examples"/>
+
+				<defaultexcludes remove="**/.svn" />
+				<defaultexcludes remove="**/.svn/**" />
+
+				<echo message="calling the examples" />
 				<ant target="-call-examples">
 					<property name="example.executeall" value="true" />
 					<property name="target" value="-strip" />
 				</ant>
-				
-				<echo message="removing SVN repository-files"/>
+
+				<echo message="removing SVN repository-files" />
 				<delete includeemptydirs="true" failonerror="false">
 					<fileset dir="." includes="**/.svn/**" defaultexcludes="false" />
 				</delete>
-					
-				<echo message="removing the sources and build files"/>
+
+				<echo message="removing the sources and build files" />
 				<delete includeemptydirs="true" failonerror="false">
 					<fileset dir="develop" />
 					<fileset dir=".settings" />
 					<fileset file=".classpath" />
 					<fileset file=".project" />
 				</delete>
-	
-				<echo message="removing default-overriding property-files"/>
+
+				<echo message="removing default-overriding property-files" />
 				<delete includeemptydirs="true" failonerror="false">
 					<fileset dir="." includes="**/config*.properties" />
 				</delete>
-	
-				<echo message="removing existing hsql/derby database"/>
+
+				<echo message="removing existing hsql/derby database" />
 				<delete includeemptydirs="true" failonerror="false">
 					<fileset dir="${client}/db" />
 				</delete>
-	
-				<echo message="removing development libs"/>
+
+				<echo message="removing development libs" />
 				<delete includeemptydirs="true" failonerror="false">
 					<fileset file=".checkstyle" />
 					<fileset file="checkstyle_config.xml" />
@@ -268,20 +270,20 @@
 					<fileset file="ant/lib/checkstyle-all-4.3.jar" />
 					<fileset file="ant/lib/jdepend-2.9.jar" />
 				</delete>
-	
-				<echo message="derby is currently unsupported"/>
+
+				<echo message="derby is currently unsupported" />
 				<delete includeemptydirs="true" failonerror="false">
 					<fileset dir="libs/derby" />
 					<fileset dir="${config}" includes="*derby*.properties" />
 					<fileset dir="install/examples/movies/config" includes="*derby*.properties" />
 				</delete>
 
-				<echo message="who is artfacts?"/>
+				<echo message="who is artfacts?" />
 				<delete includeemptydirs="true" failonerror="false">
 					<fileset dir="install/examples/artfacts" />
 				</delete>
 
-				<echo message="self destruction"/>
+				<echo message="self destruction" />
 				<delete includeemptydirs="true" failonerror="false">
 					<fileset file="build-development.xml" />
 				</delete>

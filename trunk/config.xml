@@ -19,7 +19,7 @@
 
 	<property file="${db.type.property-file}" />
 
-	<property name="main-targets" value="config" />
+	<property name="main-targets" value="install" />
 
 	<path id="dblibs">
 		<fileset dir="${dm.base-dir}">
@@ -54,11 +54,11 @@
 	<condition property="do.web.deploy" value="true">
 		<istrue value="${web.deploy.do}" />
 	</condition>
-	
+
 	<condition property="dont.db.ask" value="true">
 		<istrue value="${db.ask.dont}" />
 	</condition>
-	
+
 	<taskdef resource="org/apache/tools/ant/taskdefs/antinput.properties" />
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 	<taskdef name="for" classname="net.sf.antcontrib.logic.ForTask" />

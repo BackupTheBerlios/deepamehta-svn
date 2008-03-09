@@ -88,10 +88,16 @@ these files or execute 'run config' again.
 		</antcallback>
 		<antcall target="-config-setup-default-instance" />
 		<var name="dm.instance" value="${return.instance}" />
-		<var name="dm.instance.property-file" value="${config}/dm-${dm.instance}.properties" />
-		<var name="dm.instance.build-property-file" value="${config}/build-${dm.instance}.properties" />
-		<var name="dm.instance.config-property-file" value="${config}/config-${dm.instance}.properties" />
+
+		<!-- ugly hack for <var name="..." value="..." /> -->
+		<var name="dm.instance.property-file" unset="true" />
+		<var name="dm.instance.build-property-file" unset="true" />
+		<var name="dm.instance.config-property-file" unset="true" />
+		<property name="dm.instance.property-file" value="${config}/dm-${dm.instance}.properties" />
+		<property name="dm.instance.build-property-file" value="${config}/build-${dm.instance}.properties" />
+		<property name="dm.instance.config-property-file" value="${config}/config-${dm.instance}.properties" />
 	</target>
+
 	<target name="-config-setup-default-instance">
 		<if>
 			<or>
