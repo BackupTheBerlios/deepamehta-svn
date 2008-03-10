@@ -21,7 +21,7 @@
 			<classpath>
 				<pathelement location="${server}/DeepaMehtaService.jar"/>
 				<pathelement location="${server}/DeepaMehtaTopics.jar"/>
-				<pathelement location="${web.servlet.lib}"/>
+				<pathelement location="${dm.base-dir}/${libpath}/servlet.jar" />
 			</classpath>
 		</javac>
 	</target>
