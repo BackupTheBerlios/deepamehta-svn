@@ -205,7 +205,7 @@
 			<property name="db.sysuser" value="${movies.db.sysuser}" />
 			<property name="db.hsqldb.base-path" value="${movies.db.hsqldb.base-path}" />
 		</ant>
-		<input message="Please enter the name of your database:" addproperty="new.movies.db.name" defaultvalue="${movies.db.name}" />
+		<input2 message="Please enter the name of your database:" addproperty="new.movies.db.name" defaultvalue="${movies.db.name}" />
 		<propertyfile file="${movies.instance.config-property-file}">
 			<entry key="movies.db.name" value="${new.movies.db.name}" />
 		</propertyfile>
@@ -213,8 +213,8 @@
 
 	<target name="-config-movies-instance-db.user" if="do.movies.config.db.user">
 		<echo>It is strongly advised to change the database user and password before creation!</echo>
-		<input message="Please enter the user to use:" addproperty="new.movies.db.user" defaultvalue="${movies.db.user}" />
-		<input message="Please enter the password to use:" addproperty="new.movies.db.password" defaultvalue="${movies.db.password}" />
+		<input2 message="Please enter the user to use:" addproperty="new.movies.db.user" defaultvalue="${movies.db.user}" />
+		<input2 message="Please enter the password to use:" addproperty="new.movies.db.password" defaultvalue="${movies.db.password}" />
 		<propertyfile file="${movies.instance.config-property-file}">
 			<entry key="movies.db.user" value="${new.movies.db.user}" />
 			<entry key="movies.db.password" value="${new.movies.db.password}" />
@@ -222,7 +222,7 @@
 	</target>
 
 	<target name="-config-movies-instance-db.host" if="do.movies.config.db.host">
-		<input message="Please enter the host of your database:" addproperty="new.movies.db.host" defaultvalue="${movies.db.host}" />
+		<input2 message="Please enter the host of your database:" addproperty="new.movies.db.host" defaultvalue="${movies.db.host}" />
 		<propertyfile file="${movies.instance.config-property-file}">
 			<entry key="movies.db.host" value="${new.movies.db.host}" />
 		</propertyfile>

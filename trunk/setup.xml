@@ -23,6 +23,68 @@
 		</or>
 	</condition>
 
+	<property name="NOT-SET" value="*** NOT SET ***" />
+
+	<!-- = = = = = = = = = = = = = = = = =
+          macrodef: input2          
+         = = = = = = = = = = = = = = = = = -->
+	<macrodef name="input2">
+		<attribute name="message" />
+		<attribute name="addproperty" />
+		<attribute name="validargs" default="${NOT-SET}" />
+		<attribute name="defaultvalue" default="${NOT-SET}" />
+		<sequential>
+			<if>
+				<and>
+					<istrue value="${dont-ask-set-default}" />
+					<not>
+						<equals arg1="@{defaultvalue}" arg2="${NOT-SET}" />
+					</not>
+				</and>
+				<then>
+					<if>
+						<equals arg1="@{validargs}" arg2="${NOT-SET}" />
+						<then>
+							<echo>@{message} [@{defaultvalue}]</echo>
+						</then>
+						<else>
+							<echo>@{message} (@{validargs}) [@{defaultvalue}]</echo>
+						</else>
+					</if>
+					<echo>using default value "@{defaultvalue}"</echo>
+					<var name="@{addproperty}" value="@{defaultvalue}" />
+				</then>
+				<else>
+					<if>
+						<equals arg1="@{defaultvalue}" arg2="${NOT-SET}" />
+						<then>
+							<if>
+								<equals arg1="@{validargs}" arg2="${NOT-SET}" />
+								<then>
+									<input message="@{message}" addproperty="@{addproperty}" />
+								</then>
+								<else>
+									<input message="@{message}" addproperty="@{addproperty}" validargs="@{validargs}" />
+								</else>
+							</if>
+						</then>
+						<else>
+							<if>
+								<equals arg1="@{validargs}" arg2="${NOT-SET}" />
+								<then>
+									<input message="@{message}" addproperty="@{addproperty}" defaultvalue="@{defaultvalue}" />
+								</then>
+								<else>
+									<input message="@{message}" addproperty="@{addproperty}" defaultvalue="@{defaultvalue}" validargs="@{validargs}" />
+								</else>
+							</if>
+						</else>
+					</if>
+				</else>
+			</if>
+		</sequential>
+	</macrodef>
+
 	<!-- Configuration -->
 	<target name="-config-init">
 		<property name="configuration.isactive" value="true" />
@@ -54,7 +116,7 @@ these files or execute 'run config' again.
 		<condition property="old.do.installweb" value="y">
 			<istrue value="${web.deploy.do}" />
 		</condition>
-		<input message="Do you want to install the example web applications (Tomcat must already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultvalue="${old.do.installweb}" />
+		<input2 message="Do you want to install the example web applications (Tomcat must already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultvalue="${old.do.installweb}" />
 		<if>
 			<equals arg1="${new.do.installweb}" arg2="n" />
 			<then>
@@ -73,7 +135,7 @@ these files or execute 'run config' again.
 	</target>
 
 	<target name="-config-web-root" if="do.web.deploy" depends="-config-web">
-		<input message="Please enter the home directory of your Tomcat installation." addproperty="new.tomcat.root" defaultvalue="${tomcat.root}" />
+		<input2 message="Please enter the home directory of your Tomcat installation." addproperty="new.tomcat.root" defaultvalue="${tomcat.root}" />
 		<propertyfile file="${config.properties}">
 			<entry key="tomcat.root" value="${new.tomcat.root}" />
 		</propertyfile>
@@ -120,7 +182,7 @@ these files or execute 'run config' again.
 						</not>
 					</and>
 					<then>
-						<input message="Should '${return.instance}' be your default instance?" addproperty="setup.default-instance" defaultvalue="y" validargs="y,n" />
+						<input2 message="Should '${return.instance}' be your default instance?" addproperty="setup.default-instance" defaultvalue="y" validargs="y,n" />
 					</then>
 					<else>
 						<var name="setup.default-instance" value="y" />
@@ -150,7 +212,7 @@ these files or execute 'run config' again.
 	</target>
 
 	<target name="-config-instance-db.host" if="do.config.db.host">
-		<input message="Please enter the host of your database:" addproperty="new.db.host" defaultvalue="${db.host}" />
+		<input2 message="Please enter the host of your database:" addproperty="new.db.host" defaultvalue="${db.host}" />
 		<propertyfile file="${dm.instance.config-property-file}">
 			<entry key="db.host" value="${new.db.host}" />
 		</propertyfile>
@@ -158,7 +220,7 @@ these files or execute 'run config' again.
 
 	<import file="${db-specific}/${db.list-names}" />
 	<target name="-config-instance-db.name" if="do.config.db.name" depends="-listdb">
-		<input message="Please enter the name of the database to be created:" addproperty="new.db.name" defaultvalue="${db.name}" />
+		<input2 message="Please enter the name of the database to be created:" addproperty="new.db.name" defaultvalue="${db.name}" />
 		<propertyfile file="${dm.instance.config-property-file}">
 			<entry key="db.name" value="${new.db.name}" />
 		</propertyfile>
@@ -166,8 +228,8 @@ these files or execute 'run config' again.
 
 	<target name="-config-instance-db.user" if="do.config.db.user">
 		<echo>It is strongly advised to change the database user and password before creation!</echo>
-		<input message="Please enter the user to use:" addproperty="new.db.user" defaultvalue="${db.user}" />
-		<input message="Please enter the password to use:" addproperty="new.db.password" defaultvalue="${db.password}" />
+		<input2 message="Please enter the user to use:" addproperty="new.db.user" defaultvalue="${db.user}" />
+		<input2 message="Please enter the password to use:" addproperty="new.db.password" defaultvalue="${db.password}" />
 		<propertyfile file="${dm.instance.config-property-file}">
 			<entry key="db.user" value="${new.db.user}" />
 			<entry key="db.password" value="${new.db.password}" />
@@ -175,7 +237,7 @@ these files or execute 'run config' again.
 	</target>
 
 	<target name="-config-instance-dm.port" if="do.config.dm.port">
-		<input message="Network port for this instance (when served by the DeepaMehta server):" addproperty="new.dm.port" defaultvalue="${dm.port}" />
+		<input2 message="Network port for this instance (when served by the DeepaMehta server):" addproperty="new.dm.port" defaultvalue="${dm.port}" />
 		<propertyfile file="${dm.instance.config-property-file}">
 			<entry key="dm.port" value="${new.dm.port}" />
 		</propertyfile>
@@ -228,8 +290,8 @@ these files or execute 'run config' again.
 						<var name="example.complete-name" value="'${example}'" />
 					</else>
 				</if>
-				<var name="input" unset="true" />
-				<input message="Do you want to ${example.ask.verb} the example application ${example.complete-name}?" validargs="y,n" defaultvalue="${default}" addproperty="input" />
+				<var name="input2" unset="true" />
+				<input2 message="Do you want to ${example.ask.verb} the example application ${example.complete-name}?" validargs="y,n" defaultvalue="${default}" addproperty="input" />
 				<var name="default" unset="true" />
 				<if>
 					<equals arg1="${input}" arg2="y" />
@@ -335,7 +397,7 @@ these files or execute 'run config' again.
 			</then>
 		</if>
 		<var name="return.instance" unset="true" />
-		<input message="Currently set" addproperty="return.instance" defaultvalue="${default}" />
+		<input2 message="Currently set" addproperty="return.instance" defaultvalue="${default}" />
 
 		<var name="correct" unset="true" />
 		<condition property="correct">

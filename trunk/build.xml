@@ -45,8 +45,14 @@
 
 	<!-- Install -->
 
+	<target name="defaultinstall">
+		<ant target="install" inheritall="false">
+			<property name="dont-ask-set-default" value="true" />
+		</ant>
+	</target>
+
 	<target name="install" depends="config">
-		<input message="Do you want to initialize now?" addproperty="do.install.now" validargs="y,n" defaultvalue="y" />
+		<input2 message="Do you want to initialize now?" addproperty="do.install.now" validargs="y,n" defaultvalue="y" />
 		<if>
 			<equals arg1="${do.install.now}" arg2="y" />
 			<then>
