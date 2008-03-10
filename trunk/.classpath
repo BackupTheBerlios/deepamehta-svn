@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**/.svn/" kind="src" path="develop/src"/>
-	<classpathentry excluding="**/.svn/" kind="src" path="install/examples/artfacts/src"/>
-	<classpathentry excluding="**/.svn/" kind="src" path="install/examples/dm-browser/src"/>
-	<classpathentry excluding="**/.svn/" kind="src" path="install/examples/dm-search/src"/>
-	<classpathentry excluding="**/.svn/" kind="src" path="install/examples/dm-topicmapviewer/src"/>
-	<classpathentry excluding="**/.svn/" kind="src" path="install/examples/dm-web/src"/>
-	<classpathentry excluding="**/.svn/" kind="src" path="install/examples/kompetenzstern/src"/>
-	<classpathentry excluding="**/.svn/" kind="src" path="install/examples/ldap/src"/>
-	<classpathentry excluding="**/.svn/" kind="src" path="install/examples/messageboard/src"/>
-	<classpathentry excluding="**/.svn/" kind="src" path="install/examples/movies/src"/>
+	<classpathentry excluding="**/.svn/" kind="src" output="develop/build" path="develop/src"/>
+	<classpathentry excluding="**/.svn/" kind="src" output="install/examples/artfacts/build" path="install/examples/artfacts/src"/>
+	<classpathentry excluding="**/.svn/" kind="src" output="install/examples/dm-browser/build" path="install/examples/dm-browser/src"/>
+	<classpathentry excluding="**/.svn/" kind="src" output="install/examples/dm-search/build" path="install/examples/dm-search/src"/>
+	<classpathentry excluding="**/.svn/" kind="src" output="install/examples/dm-topicmapviewer/build" path="install/examples/dm-topicmapviewer/src"/>
+	<classpathentry excluding="**/.svn/" kind="src" output="install/examples/dm-web/build" path="install/examples/dm-web/src"/>
+	<classpathentry excluding="**/.svn/" kind="src" output="install/examples/kompetenzstern/build" path="install/examples/kompetenzstern/src"/>
+	<classpathentry excluding="**/.svn/" kind="src" output="install/examples/ldap/build" path="install/examples/ldap/src"/>
+	<classpathentry excluding="**/.svn/" kind="src" output="install/examples/messageboard/build" path="install/examples/messageboard/src"/>
+	<classpathentry excluding="**/.svn/" kind="src" output="install/examples/movies/build" path="install/examples/movies/src"/>
 	<classpathentry kind="lib" path="libs/activation.jar"/>
 	<classpathentry kind="lib" path="libs/avalon-framework.jar"/>
 	<classpathentry kind="lib" path="libs/batik.jar"/>

@@ -17,9 +17,9 @@
 	<target name="-init">
 		<mkdir dir="${build}" />
 	</target>
-	<echoproperties prefix="dm." />
+
 	<target name="-compile" depends="-init">
-		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
+		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes" encoding="UTF8">
 			<classpath>
 				<pathelement location="${server}/DeepaMehtaService.jar" />
 				<pathelement location="${server}/DeepaMehtaTopics.jar" />

@@ -109,6 +109,13 @@
 		</ant>
 	</target>
 
+	<target name="build-all" depends="-build-self" description="build jar files">
+		<ant target="-call-examples">
+			<property name="target" value="build" />
+			<property name="example.executeall" value="true" />
+		</ant>
+	</target>
+
 	<target name="sign" depends="build" description="sign client">
 		<signjar jar="${client}/DeepaMehtaClient.jar" alias="tomcat" storepass="kspw01" keypass="kspw01" signedjar="${client}/sDeepaMehtaClient.jar" />
 	</target>
