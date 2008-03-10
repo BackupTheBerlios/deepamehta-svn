@@ -66,7 +66,7 @@ import java.util.Vector;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last functional change: 12.2.2008 (2.0b8)<br>
+ * Last functional change: 11.3.2008 (2.0b8)<br>
  * Last documentation update: 30.12.2001 (2.0a14-pre5)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -196,7 +196,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		System.out.println(">    version: " + SERVER_VERSION);
 		System.out.println(">    standard topics version: " + LiveTopic.kernelTopicsVersion);
 		System.out.println(">    communication: " + host.getCommInfo());
-		System.out.println(">    service name: \"" + instance.name + "\"");
+		System.out.println(">    selected instance: \"" + instance.name + "\"");
 		System.out.println("> Corporate Memory");
 		System.out.println(">    implementation: \"" + instance.cmClass + "\"");
 		// establish access to corporate memory

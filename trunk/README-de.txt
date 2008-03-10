@@ -21,6 +21,8 @@ Starten & Beenden
 Administration
   - Setzen des root Passworts
   - Weitere Instanzen einrichten
+  - Standard-Instanz festlegen
+  - Instanz löschen
   - Kontrollieren von Tomcat
   - Die Datenbank zurücksetzen
   - Vorhandene Installation updaten
@@ -124,7 +126,7 @@ Dann wirst Du gefragt, in welcher Datenbank DeepaMehta seine Daten ablegen soll.
 	[echo]
 	[input] Currently set [hsqldb-intern]
 
-ACHTUNG: Wenn DeepaMehta-Webfrontends und die grafische DeepaMehta-Oberfläche gleichzeitig auf einer Maschine benutzt werden sollen, muß als Datenbank MySQL benutzt werden. MySQL wird nicht mit DeepaMehta mitgeliefert und muß separat installiert werden.
+WICHTIG: Wenn DeepaMehta-Webfrontends und die grafische DeepaMehta-Oberfläche gleichzeitig auf einer Maschine benutzt werden sollen, muß als Datenbank MySQL benutzt werden. MySQL wird nicht mit DeepaMehta mitgeliefert und muß separat installiert werden.
 
 Dann wirst Du nach dem Namen der anzulegenden Datenbank gefragt. Gebe den Namen der anzulegenden Datenbank ein, oder drücke einfach Return.
 
@@ -220,9 +222,9 @@ Starten & Beenden
 Einzelplatz-Anwendung
 ---------------------
 
-Die DeepaMehta-Einzelplatz-Anwendung ist die einfachste Art DeepaMehta zu starten, und ist ausreichend, wenn nicht über das Netzwerk mit anderen Nutzern gemeinsam gearbeitet werden soll.
+Die einfachste Art DeepaMehta zu starten ist die Einzelplatz-Anwendung. Diese ist ausreichend, wenn nicht mit anderen Nutzern gemeinsam gearbeitet werden soll (über das Netzwerk).
 
-=> Zum Starten der DeepaMehta-Einzelplatz-Anwendung gebe folgendes Kommando ein:
+=> Zum Starten der Einzelplatz-Anwendung gebe folgendes Kommando ein:
 
 	./run.sh
 
@@ -232,17 +234,17 @@ Zum Starten einer bestimmten DeepaMehta-Instanz setze auf der Kommandozeile mitt
 
 	./run.sh -Ddm.instance=myinstance
 
-Um eine bestimmte Instanz als Standard-Instanz zu benutzen, öffne mit einem Texteditor die Datei deepamehta/install/config/config.properties und setze die "dm.instance" Einstellung dort. Die Standard-Instanz ist diejenige, die benutzt wird, wenn DeepaMehta ohne Angabe einer Instanz gestartet wird. Informationen über DeepaMehta-Instanzen findest Du unten unter "Weitere Instanzen einrichten" (Abschnitt "Administration").
+Informationen über DeepaMehta-Instanzen findest Du unten im Abschnitt "Administration" unter "Weitere Instanzen einrichten" und "Standard-Instanz festlegen".
 
 => Zum Beenden der DeepaMehta-Sitzung schließe das DeepaMehta-Fenster.
 
-Technischer Sicherheitshinweis: die monolithische DeepaMehta-Anwendung integriert den DeepaMehta-Client und -Server in eine einzige Anwendung, wobei über direkte Methoden kommuniziert wird. Es wird kein Netzwerkport geöffnet.
+Technischer Sicherheitshinweis: die monolithische DeepaMehta-Anwendung integriert den DeepaMehta-Client und -Server in eine einzige Anwendung, wobei über direkte Methodenaufrufe kommuniziert wird. Es wird kein Netzwerkport geöffnet.
 
 
 Client/Server-Anwendung
 -----------------------
 
-Die DeepaMehta-Client/Server-Anwendung ermöglicht Nutzern über das Netzwerk gemeinsam an Inhalten zu arbeiten.
+Die DeepaMehta-Client/Server-Anwendung ermöglicht Nutzern über das Netzwerk gemeinsam zu arbeiten.
 
 => Zum Starten des DeepaMehta-Servers gebe folgendes Kommando ein:
 
@@ -252,20 +254,24 @@ Zum Servieren einer bestimmten DeepaMehta-Instanz setze auf der Kommandozeile mi
 
 	./run.sh dms -Ddm.instance=myinstance
 
-Um eine bestimmte Instanz als Standard-Instanz zu benutzen, öffne mit einem Texteditor die Datei deepamehta/install/config/config.properties und setze die "dm.instance" Einstellung dort. Die Standard-Instanz ist diejenige, die benutzt wird, wenn DeepaMehta ohne Angabe einer Instanz gestartet wird. Informationen über DeepaMehta-Instanzen findest Du unten unter "Weitere Instanzen einrichten" (Abschnitt "Administration").
+Informationen über DeepaMehta-Instanzen findest Du unten im Abschnitt "Administration" unter "Weitere Instanzen einrichten" und "Standard-Instanz festlegen".
 
-=> Zum Starten der DeepaMehta-Client-Anwendung gebe folgendes Kommando ein:
+=> Zum Starten der DeepaMehta-Client-Anwendung und Verbinden mit einem lokalen DeepaMehta-Server gebe folgendes Kommando ein:
 
 	./run.sh dmc
 
-Es erscheint der DeepaMehta-Login-Dialog. Gebe "root" ein und drücke 2x Return (initial hat der DeepaMehta-root-User kein Passwort). Der DeepaMehta Desktop erscheint.
+Zum Verbinden mit einem entfernten DeepaMehta-Server setze auf der Kommandozeile mittels -D die "dm.host" und "dm.port" Einstellungen (wenn kein Servername angegeben wird, wird "localhost" benutzt und wenn kein Port angegeben wird, wird der Standard-Port 7557 benutzt):
+
+	./run.sh dmc -Ddm.host=www.site.com -Ddm.port=7558
+
+In beiden Fällen erscheint der DeepaMehta-Login-Dialog. Gebe "root" ein und drücke 2x Return (initial hat der DeepaMehta-root-User kein Passwort). Der DeepaMehta Desktop erscheint.
 
 => Zum Starten des DeepaMehta-Client-Applets resp. des signierten Client-Applets öffne die entsprechende Webseite in Deinem Webbrowser:
 
 	.../deepamehta/install/client/start.html
 	.../deepamehta/install/client/start-signed.html
 
-Das Client-Applet erwartet, daß der DeepaMehta-Server auf der gleichen Maschine läuft, von der das Applet geladen wurde. Der Port, auf dem das Client-Applet versucht, den Server zu kontaktieren, can in den HTML-Seiten durch Angabe des Applet-Parameters "PORT" eingestellt werden. Wenn kein "Port"-Parameter vorhanden ist, wird der Standard-Port (7557) benutzt.
+Das Client-Applet erwartet, daß der DeepaMehta-Server auf der gleichen Maschine läuft, von der das Applet geladen wurde. Der Port, auf dem das Client-Applet versucht, den Server zu kontaktieren, kann in den HTML-Seiten durch Angabe des Applet-Parameters "PORT" eingestellt werden. Wenn kein "Port"-Parameter vorhanden ist, wird der Standard-Port (7557) benutzt.
 
 Technischer Sicherheitshinweis: Die DeepaMehta-Clients kommunizieren mit dem DeepaMehta-Server über TCP Sockets. Der DeepaMehta-Server öffnet einen dedizierten TCP-Port (standardmäßig ist das Port 7557).
 
@@ -293,6 +299,8 @@ Administration
 
 * Setzen des root Passworts
 * Weitere Instanzen einrichten
+* Standard-Instanz festlegen
+* Instanz löschen
 * Kontrollieren von Tomcat
 * Die Datenbank zurücksetzen
 * Vorhandene Installation updaten
@@ -312,49 +320,92 @@ Setzen des root Passworts
 Weitere Instanzen einrichten
 ----------------------------
 
-Für unterschiedliche Zwecke können jeweils eigene DeepaMehta-Instanzen angelegt werden (z.B. eine mit "echten" Inhalten und eine mit Testinhalten während der Entwicklung). Jede DeepaMehta-Instanz ist mit einem individuellen Corporate Memory (Inhalte-Speicher) assoziiert. Für jedes Corporate Memory kann ein individuelles Datenbanksystems (z.B. HSQL oder MySQL) verwendet werden.
+Für unterschiedliche Anwendungszwecke können unabhängige DeepaMehta-Instanzen angelegt werden (z.B. eine mit "echten" Inhalten und eine mit Testinhalten während der Entwicklung). Jede DeepaMehta-Instanz hat ein separates Corporate Memory (Inhalte-Speicher). Für jedes Corporate Memory kann ein individuelles Datenbanksystems (z.B. HSQL oder MySQL) verwendet werden.
 
-Um eine neue DeepaMehta-Instanz einzurichten führe die 3 folgenden Schritte aus: 
+Um eine neue DeepaMehta-Instanz einzurichten gebe folgendes Kommando ein: 
 
-1) Kopiere aus .../deepamehta/install/config/ die build- und die dm- Dateien für das gewünschte Datenbanksystem und ersetze im Dateinamen den Datenbanktyp ("hsqldb-intern", "mysql4", "mysql5") durch den Namen der neuen DeepaMehta-Instanz. Um z.B. eine neue DeepaMehta-Instanz "myinstance", die in einer HSQL-Datenbank abgelegt wird, einzurichten, führe folgende Kopiervorgänge durch:
+	./run.sh newinstance
 
-	build-hsqldb-intern.properties	=> build-myinstance.properties
-	dm-hsqldb-intern.properties		=> dm-myinstance.properties
+Ales erstes wirst Du gefragt, auf welchen Einstellungen die neue Instanz basieren soll. Wenn z.B. für die neue Instanz die HSQL-Datenbank benutzt werden soll, wähle "hsqldb-intern" aus.
 
-2) Jetzt muß die neue Instanz konfiguriert werden, im Prinzip wie oben in "Schritt 2: Konfigurieren" (Abschnitt "Installation") erklärt ist:
-
-	./run.sh config
-
-In der Liste der vorhandenen DeepaMehta-Instanzen wird nun die neue Instanz (z.B. "myinstance") aufgelistet. Gebe hier den Namen der neuen Instanz ein und drücke Return.
-
-	[echo] Please select one of the following instance configurations:
+	[echo] Please select the instance configuration the new instance is based on:
 	[echo] 
 	[echo] * hsqldb-intern
-	[echo] * myinstance
 	[echo] * mysql4
 	[echo] * mysql5
 	[echo] 
-	[input] currently set (default) [hsqldb-intern]
+	[input] Instance name: [hsqldb-intern]
 
-Jetzt wirst Du gefragt, ob die neue Instanz die Standard-Instanz sein soll. Die Standard-Instanz ist diejenige, die benutzt wird, wenn DeepaMehta ohne Angabe einer Instanz gestartet wird. Zum Starten einer bestimmten DeepaMehta-Instanz siehe oben "Einzelplatz-Anwendung" oder "Client/Server-Anwendung" (Abschnitt "Starten & Beenden").
+Dann wirst Du nach einem Namen für die neue Instanz gefragt. Die Empfehlung ist, einen Namen zu verwenden, der den Zweck der Instanz bezeichnet, z.B. "production" oder "test".
 
-	[input] Setup myinstance as default instance? ([y], n)
+	[input] Please enter the new instance name: [hsqldb-intern2]
 
-Dann wirst Du wieder nach dem Namen der anzulegenden Datenbank gefragt, wobei alle bereits vorhandenen Datenbanken zuvor aufgelistet werden. Gebe einen Datenbanknamen ein, der nicht in der Liste vorhanden ist, und drücke Return.
+Dann wird die neue Instanz konfiguriert und installiert, im Prinzip wie oben im Abschnitt "Installation" unter "Schritt 2: Installieren" erklärt ist. Wenn Du nach dem Namen der anzulegenden Datenbank gefragt wirst, werden alle bereits vorhandenen Datenbanken aufgelistet. Gebe einen Datenbanknamen ein, der nicht in der Liste vorhanden ist.
 
 	[input] Please enter the name of your database: [DeepaMehta]
 
-Die anderen Fragen, die das Config-Skript stellt (bezgl. den Webanwendungen und den Beispiel-Anwendungen) beantworte einfach mit Return, wodurch die bisherigen Einstellungen beibehalten werden (Hinweis: diese Einstellungen werden tatsächlich nicht pro DeepaMehta-Instanz gespeichert, sondern sind global).
+Die anderen Fragen (bezgl. den Webanwendungen und den Beispiel-Anwendungen) beantworte einfach mit Return, wodurch die bisherigen Einstellungen für die neue Instanz übernommen werden (Hinweis: diese Einstellungen werden tatsächlich nicht pro DeepaMehta-Instanz gespeichert, sondern sind global).
 
-3) Nun wird die neue Instanz installiert, im Prinzip wie oben in "Schritt 3: Installieren" (Abschnitt "Installation") erklärt ist:
+Dann wirst Du gefragt, ob die neue Instanz jetzt installiert werden soll. Beantworte die Fragen durch Drücken von Return.
 
-	./run.sh install
+	[input] Do you want to initialize now? ([y], n)
 
-Die neue DeepaMehta-Instanz ist jetzt eingerichtet. Zum Starten einer bestimmten DeepaMehta-Instanz siehe oben "Einzelplatz-Anwendung" oder "Client/Server-Anwendung" (Abschnitt "Starten & Beenden").
+Wenn die Instanz erfolgreich angelegt wurde, wird "BUILD SUCCESSFUL" angezeigt. Zum Starten einer bestimmten DeepaMehta-Instanz siehe oben den Abschnitt "Starten & Beenden" und den folgenden Punkt "Standard-Instanz festlegen".
+
+
+Standard-Instanz festlegen
+--------------------------
+
+Eine bestimmte DeepaMehta-Instanz kann als Standard-Instanz festgelegt werden. Die Standard-Instanz ist diejenige, die benutzt wird, wenn DeepaMehta ohne Angabe einer Instanz gestartet wird.
+
+Zum Festlegen der Standard-Instanz gebe folgendes Kommando ein:
+
+	./run.sh switchinstance
+
+Es werden die Namen aller bisher eingerichteten Instanzen aufgelistet und angezeigt, welche aktuell die Standard-Instanz ist. Gebe den Namen der Instanz, die als Standard-Instanz festgelegt werden soll, ein und drücke Return.
+
+	[echo] Please select the DeepaMehta instance to activate:
+	[echo] 
+	[echo] * hsqldb-intern
+	[echo] * myinstance
+	[echo] 
+    [input] Currently set [hsqldb-intern]
+
+
+Instanz löschen
+---------------
+
+Zum Löschen einer Instanz gebe folgendes Kommando ein, wobei mittels -D die "dm.instance" Einstellung auf die zu löschenden Instanz zu setzen ist:
+
+	./run.sh dropdb -Ddm.instance=myinstance
+
+Zur Sicherheit wird nachgefragt, ob die Instanz tatsächlich gelöscht werden soll. Um die Instanz zu löschen gebe 'y' ein und drücke Return.
+
+	[echo] Uninstalling the DeepaMehta instance 'myinstance' now...
+	...
+	[echo] You are about to delete the database 'DeepaMehta'.
+	...
+    [input] Continue?  (y, n)
 
 
 Kontrollieren von Tomcat
 ------------------------
+
+=> Zum Starten von Tomcat gebe folgendes Kommando ein:
+
+	./run.sh tomcat-start
+
+WICHTIG: Tomcat muß aus dem Verzeichnis deepamehta/install/client/ heraus gestartet werden, sonst können die Webanwendungen notwendige Dateien nicht finden. Benutze zum Starten von Tomcat das hier angegebene Kommando, und nicht die Mechanismen Deiner Systemumgebung (z.B. /etc/init.d bei Linux).
+
+=> Zum Stoppen von Tomcat gebe folgendes Kommando ein:
+
+	./run.sh tomcat-stop
+
+=> Zum Anzeigen der Tomcat-Diagnosemeldungen gebe folgendes Kommando ein:
+
+	./run.sh tomcat-log
+
+Tipp: die Tomcat-Diagnosemeldungen können am besten mitgelesen werden, wenn das Kommando in einem separaten Konsolen-Fenster eingegeben wird, und dieses während der ganzen Sitzung offengelassen wird.
 
 
 Die Datenbank zurücksetzen
@@ -385,4 +436,4 @@ Für Deine Fragen benutze möglichst das Forum auf der DeepaMehta Website oder a
 
 ------------------------------------------------------------------------------------------------------
 Jörg Richter                                                                         www.deepamehta.de
-7.3.2008
+11.3.2008
