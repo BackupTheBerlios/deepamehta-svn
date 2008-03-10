@@ -15,11 +15,11 @@ import java.util.StringTokenizer;
 
 /**
  * A Message Board.
- * <P>
- * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
- * Last documentation update: 17.9.2002 (2.0a16-pre3)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 10.3.2008 (2.0b8)<br>
+ * Last documentation update: 17.9.2002 (2.0a16-pre3)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class MessageBoardTopic extends TopicMapTopic implements MessageBoard {
@@ -36,7 +36,7 @@ public class MessageBoardTopic extends TopicMapTopic implements MessageBoard {
 
 	static final String ITEM_SHOW_MESSAGES = "Show Messages";
 	static final String CMD_SHOW_MESSAGES = "showMessages";
-	static final String ICON_SHOW_MESSAGES = "show.gif";
+	static final String ICON_SHOW_MESSAGES = "eye-grey.gif";
 
 	static final String ITEM_CREATE_MESSAGE = "Create Message";
 	static final String CMD_CREATE_MESSAGE = "createMessage";

@@ -13,11 +13,11 @@ import java.util.StringTokenizer;
 
 /**
  * A chat board is a topic map that holds chats.
- * <P>
- * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
- * Last documentation update: 11.4.2003 (2.0a18-pre9)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 10.3.2008 (2.0b8)<br>
+ * Last documentation update: 11.4.2003 (2.0a18-pre9)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class ChatBoardTopic extends TopicMapTopic {
@@ -34,7 +34,7 @@ public class ChatBoardTopic extends TopicMapTopic {
 
 	static final String ITEM_SHOW_CHATS = "Show Chats";
 	static final String CMD_SHOW_CHATS = "showChats";
-	static final String ICON_SHOW_CHATS = "show.gif";
+	static final String ICON_SHOW_CHATS = "eye-grey.gif";
 
 	static final String ITEM_CREATE_CHAT = "Create Chat";
 	static final String CMD_CREATE_CHAT = "createChat";

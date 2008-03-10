@@ -26,7 +26,7 @@ import java.util.Vector;
  * </ol>
  * <p>
  * <hr>
- * Last functional change: 7.3.2008 (2.0b8)<br>
+ * Last functional change: 10.3.2008 (2.0b8)<br>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -389,7 +389,7 @@ public interface DeepaMehtaConstants {
 	static final String ICON_SHOW_HELP = "viewhilfe.gif";
 	static final String ICON_SEARCH_INTERNET = "google.gif";
 	static final String ICON_SHOW_RESULT = "eye-grey.gif";
-	static final String ICON_GROUP_BY = "show.gif";
+	static final String ICON_GROUP_BY = "eye-grey.gif";
 
 	// --- commands ---
 	static final String CMD_NAVIGATION_BY_TOPIC = "navByTopic";
