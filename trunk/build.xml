@@ -49,6 +49,7 @@
 		<ant target="install" inheritall="false">
 			<property name="dont-ask-set-default" value="true" />
 		</ant>
+		<ant target="dm" inheritall="false" />
 	</target>
 
 	<target name="install" depends="config">

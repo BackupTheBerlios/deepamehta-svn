@@ -19,7 +19,7 @@
 
 	<property file="${db.type.property-file}" />
 
-	<property name="main-targets" value="install" />
+	<property name="main-targets" value="defaultinstall" />
 
 	<path id="dblibs">
 		<fileset dir="${dm.base-dir}">
