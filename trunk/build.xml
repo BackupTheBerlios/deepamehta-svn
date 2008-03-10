@@ -93,7 +93,7 @@
 			</else>
 		</if>
 	</target>
-	<target name="-dropdb" depends="-dropdb-do">
+	<target name="-dropdb" depends="-dropdb-do" unless="do.db.abort">
 		<propertyfile file="${dm.instance.config-property-file}">
 			<entry key="dm.instance.installed" value="false" />
 		</propertyfile>
