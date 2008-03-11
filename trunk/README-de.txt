@@ -52,7 +52,7 @@ Kurzanleitung
 * Inbetriebnahme unter Windows
 * Inbetriebnahme unter Linux / Mac OS X
 
-Um die DeepaMehta-Einzelplatz-Anwendung möglichst einfach in Betrieb nehmen zu können, wird eine automatische Standardinstallation angeboten. Dabei werden keine Beispielanwendungen installiert und keine Webfrontends zur Verfügung gestellt (diese Themen, und auch der Client-Server-Betrieb werden inn den verbleibenden Abschnitten dieses READMEs behandelt).
+Um DeepaMehta möglichst einfach in Betrieb nehmen zu können, wird eine automatische Standardinstallation angeboten. Dabei werden keine Beispielanwendungen installiert und keine Webfrontends zur Verfügung gestellt (diese Themen, und auch der Client-Server-Betrieb, werden in den verbleibenden Abschnitten dieses READMEs behandelt).
 
 
 Inbetriebnahme unter Windows
@@ -61,7 +61,7 @@ Inbetriebnahme unter Windows
 1) Auspacken: deepamehta-2.0b8.zip
 
     Hinweis: Benutze zum Auspacken einen Entpacker, z.B. WinRAR.
-    Als Zielort wähle z.B. C:\Programme.
+    Als Zielort wähle z.B. C:\Programme\.
     
     Beim Auspacken wird am Zielort ein Verzeichnis "deepamehta" angelegt.
 
@@ -127,7 +127,7 @@ WICHTIG für Windows-Anwender:
 
 => immer, wenn in dieser Anleitung die Eingabe von "./run.sh" erwähnt wird, müssen Windows-Anwender lediglich "run" eingeben.
 
-Hinweis: Zum Öffnen eines Terminal-Fensters ("Eingabeaufforderung") wähle "Ausführen..." aus dem "Start"-Menu und drücke dann den "OK"-Knopf.
+Hinweis: Zum Öffnen eines Terminal-Fensters ("Eingabeaufforderung") wähle "Ausführen..." aus dem "Start"-Menu, gebe "cmd" in das Eingabefeld ein und drücke dann "OK".
 
 
 Schritt 1: Auspacken
@@ -136,7 +136,7 @@ Schritt 1: Auspacken
 Die DeepaMehta-Distribution besteht aus der Datei deepamehta-2.0b8.zip
 Packe diese Datei in Deinem Verzeichnis für Anwendungen aus, z.B.:
 
-    * Windows:     C:\Program Files\
+    * Windows:     C:\Programme\
     * Mac OS X:    /Macintosh HD/Applications/
     * Linux:       /home/you/
 
