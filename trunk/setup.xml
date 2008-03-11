@@ -116,7 +116,7 @@ these files or execute 'run config' again.
 		<condition property="old.do.installweb" value="y">
 			<istrue value="${web.deploy.do}" />
 		</condition>
-		<input2 message="Do you want to install the example web applications (Tomcat must already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultvalue="${old.do.installweb}" />
+		<input2 message="Do you want to install the web frontends (Tomcat must already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultvalue="${old.do.installweb}" />
 		<if>
 			<equals arg1="${new.do.installweb}" arg2="n" />
 			<then>
