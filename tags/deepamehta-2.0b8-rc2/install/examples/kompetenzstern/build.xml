@@ -1,0 +1,97 @@
+<project name="Kompetenzstern" default="build" basedir=".">
+	<description>
+		Kompetenzstern
+	</description>
+
+	<property name="project.name" value="kompetenzstern" />
+	<property name="jar" value="${project.name}.jar" />
+	<property name="war" value="${project.name}.war" />
+	<property name="build" location="build" />
+
+	<property name="dm.base-dir" location="../../.." />
+
+	<import file="${dm.base-dir}/config.xml" />
+
+	<target name="-init">
+		<mkdir dir="${build}" />
+	</target>
+
+	<target name="-compile" depends="-init">
+		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes" encoding="UTF8">
+			<classpath>
+				<pathelement location="${server}/DeepaMehtaService.jar" />
+				<pathelement location="${server}/DeepaMehtaTopics.jar" />
+				<pathelement location="${dm.base-dir}/${libpath}/servlet.jar" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="-jar" depends="-compile">
+		<jar jarfile="${jar}" basedir="${build}">
+			<include name="de/deepamehta/kompetenzstern/KS.class" />
+			<include name="de/deepamehta/kompetenzstern/topics/*.class" />
+			<include name="de/deepamehta/kompetenzstern/assocs/*.class" />
+		</jar>
+	</target>
+
+	<target name="-war" depends="-jar">
+		<war warfile="${war}" webxml="config/web.xml">
+			<classes dir="${build}">
+				<include name="de/deepamehta/kompetenzstern/*.class" />
+			</classes>
+			<fileset dir=".">
+				<include name="pages/*" />
+				<include name="images/*" />
+			</fileset>
+		</war>
+	</target>
+
+	<target name="build" depends="-war" description="Builds the whole application and copies images to the standalone dm-install-directory" />
+
+	<target name="-copy-install">
+		<copy file="vergleich2fo.xsl" todir="../../client/stylesheets" />
+		<copy file="vergleich2svg.xsl" todir="../../client/stylesheets" />
+		<copy todir="${client}">
+			<fileset dir=".">
+				<include name="icons/**" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="-copy-deploy">
+		<copy todir="${client}">
+			<fileset dir=".">
+				<include name="images/**" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="deploy" depends="-copy-deploy" if="do.web.deploy">
+		<copy file="${jar}" todir="${web.lib.dir}" />
+		<copy file="${war}" todir="${web.deploy.dir}" />
+	</target>
+
+	<target name="cleanup" description="remove build directory">
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${build}" />
+		</delete>
+	</target>
+
+	<target name="-strip">
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="src" />
+		</delete>
+	</target>
+
+	<target name="install" depends="-copy-install" description="initialisation for the dm-db">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${examples}">
+				<include name="kompetenzstern/kompetenzstern.sql" />
+				<include name="kompetenzstern/businesscheck.sql" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+	</target>
+</project>

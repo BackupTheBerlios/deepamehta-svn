@@ -1,0 +1,34 @@
+Kompetenzstern Web-Frontend
+===========================
+
+Jšrg Richter
+17.1.2003
+
+
+
+Session
+-------
+
+session attributes are listed here along with explanation and possible values
+
+"ksID"			ID of current Kompetenzstern (String)
+"ks"			current Kompetenzstern (BaseTopic)
+"crits"			main criterias of current Kompetenzstern (vector of base topics)
+"critTypeID"	type ID of criterias, depends on scale (String)
+
+valid inside PAGE_CRITERIA_FORM:
+
+"critID"		ID of current criteria (String)
+"crit"			current criteria (BaseTopic)
+"subCrits"		subcriterias of current criteria (vector of base topics)
+
+
+
+Pages
+-----
+
+request attributes are listed here by page along with explanation
+
+PAGE_HOME			ksList			all Kompetenzsterne existing in CM (vector of base topics)
+PAGE_KS_FORM		ksID			if set, an edit-form is displayed, otherwise a create-form
+PAGE_CRITERIA_FORM

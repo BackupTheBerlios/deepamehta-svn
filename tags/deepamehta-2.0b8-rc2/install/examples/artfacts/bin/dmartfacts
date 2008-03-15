@@ -1,0 +1,20 @@
+echo "--- creating example database \"Artfacts\" (MySQL root user password required) ..."
+
+mysql -u root -p mysql < install/examples/artfacts/db/createdb.sql
+
+if test $? == 1; then
+	echo "*** database \"Artfacts\" not created ***"
+	exit
+fi
+echo "> database \"Artfacts\" and database user created"
+echo "> hint: you can get the Artfacts SQL console by the \"artfactsdb\" command"
+
+install/examples/artfacts/bin/artfactsdb < ../../Download/Artfacts-Dec-2002.sql
+
+if test $? == 1; then
+	echo "*** \"Artfacts\" content not created ***"
+	exit
+fi
+echo "> default \"Artfacts\" content created"
+
+echo ">>> example database \"Artfacts\" created <<<"

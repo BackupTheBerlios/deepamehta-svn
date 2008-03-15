@@ -1,0 +1,36 @@
+body, td {
+	font-family: Verdana, Arial;
+	font-size: 13px;
+	line-height: 20px;
+}
+
+body {
+	background-color: #E8E8D8;
+	margin-top:28px;
+	margin-left:28px;
+	margin-right:28px;
+}
+
+a:link		{color: #CC0000}
+a:visited	{color: #880000}
+a:active	{color: #FF0000}
+
+.tree-highlight {
+	background-color: #F8F8E8;
+}
+
+.tree-pager {
+	color: grey;
+	font-size: 11px;
+}
+
+.message {
+	background-color: #F8F8E8;
+	padding:10px;
+}
+
+.supplement {
+	color: grey;
+	font-size: 11px;
+	line-height: 14px;
+}

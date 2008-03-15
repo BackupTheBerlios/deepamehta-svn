@@ -1,0 +1,25 @@
+<project name="DeepaMehta-db-createdb-ask">
+	<target name="-askcreatedb" unless="dont.db.ask">
+		<echo>
+--- DeepaMehta Installation ---
+You are about to create a database '${db.name}' and a database user '${db.user}' (password '${db.password}').
+Possibly you're asked for the database '${db.sysuser}' password.
+If you want change these settings, type 'n' and execute 'run config' again.
+		</echo>
+		<var name="input.createdb" unset="true" />
+		<if>
+			<istrue value="${dm.instance.installed}" />
+			<then>
+				<var name="input.createdb.default" value="n"/>
+			</then>
+			<else>
+				<var name="input.createdb.default" value="y"/>
+			</else>
+		</if>
+		<input2 message="Continue? " validargs="y,n" addproperty="input.createdb" defaultvalue="${input.createdb.default}" />
+		<var name="do.db.abort" unset="true" />
+		<condition property="do.db.abort" value="true">
+			<equals arg1="${input.createdb}" arg2="n" />
+		</condition>
+	</target>
+</project>

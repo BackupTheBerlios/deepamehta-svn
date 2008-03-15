@@ -1,0 +1,34 @@
+DeepaMehta Browser Documentation
+================================
+
+Web Session Attributes
+
+Jšrg Richter
+31.10.2004
+
+
+Global
+------
+
+
+PAGE_HOME
+---------
+
+workspaces		workspaces the user is a member of
+
+
+PAGE_TOPIC_INFO
+---------------
+
+topic			selected topic
+relTopics		related topics
+
+
+PAGE_TOPIC_LIST
+---------------
+
+
+PAGE_TOPIC_FORM
+---------------
+
+typeID			type for wich the form is shown
