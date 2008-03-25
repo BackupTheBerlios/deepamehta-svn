@@ -799,11 +799,13 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * ### since 2.0b6-post3 also triggered for create operation
 	 * <p>
 	 * The default implementation does nothing.
+	 * <p>
+	 * References checked: 25.3.2008 (2.0b8)
 	 *
 	 * @param	assocTypeID		the new association type
 	 * @param	relTopicID		the other involved topic
 	 *
-	 * @see		de.deepamehta.service.ApplicationService#changeAssociationType
+	 * @see		de.deepamehta.service.ApplicationService#createLiveAssociation
 	 */
 	public void associated(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
 	}

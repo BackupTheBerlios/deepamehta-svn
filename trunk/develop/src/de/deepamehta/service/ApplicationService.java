@@ -66,7 +66,7 @@ import java.util.Vector;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last functional change: 11.3.2008 (2.0b8)<br>
+ * Last functional change: 25.3.2008 (2.0b8)<br>
  * Last documentation update: 30.12.2001 (2.0a14-pre5)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -697,18 +697,18 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * Instantiates a {@link de.deepamehta.assocs.LiveAssociation} based on the specified {@link de.deepamehta.BaseAssociation},
 	 * stores it in the live corporate memory, and finally triggers its evoke() hook provided the evoke flag is set.
 	 * <p>
-	 * References checked: 27.9.2007 (2.0b8)
+	 * References checked: 25.3.2008 (2.0b8)
 	 *
 	 * @param	directives	may be <code>null</code>
 	 *
-	 * @see 	#checkLiveAssociation(BaseAssociation, Session, CorporateDirectives)									false	false
-	 * @see 	#checkLiveAssociation(String assocID, int version, Session, CorporateDirectives)						false	false
-	 * @see 	#createLiveAssociations(Enumeration, boolean evoke, Session, CorporateDirectives)						false	variable
-	 * @see 	#createLiveAssociation(String assocID, String typeID, String name, String topicID1, String topicID2)	false	true
-	 * @see 	CorporateDirectives#showAssociation																		false	variable
-	 * @see 	CorporateDirectives#changeAssociationType																true	true
+	 * @see 	#checkLiveAssociation(BaseAssociation, Session, CorporateDirectives)																false	false
+	 * @see 	#checkLiveAssociation(String assocID, int version, Session, CorporateDirectives)													false	false
+	 * @see 	#createLiveAssociations(Enumeration, boolean evoke, Session, CorporateDirectives)													false	variable
+	 * @see 	#createLiveAssociation(String assocID, String typeID, String name, String topicID1, String topicID2, Session, CorporateDirectives)	false	true
+	 * @see 	CorporateDirectives#showAssociation																									false	variable
+	 * @see 	CorporateDirectives#changeAssociationType																							true	true
 	 */
-	public void createLiveAssociation(BaseAssociation assoc, boolean override, boolean evoke, Session session,
+	void createLiveAssociation(BaseAssociation assoc, boolean override, boolean evoke, Session session,
 																								CorporateDirectives directives) {
 		// ### compare to createLiveTopic(), topicmapID, viewmode, session, directives parameters?
 		if (!override && liveAssociationExists(assoc.getID(), assoc.getVersion())) {
@@ -737,8 +737,9 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// 2 utility wrapper for createLiveAssociation() above.
 
 	/**
-	 * Utility method for the application developer.
 	 * Creates a new association. All hooks are triggered.
+	 * <p>
+	 * Utility method for the application developer.
 	 * <p>
 	 * References checked: 27.9.2007 (2.0b8)
 	 *

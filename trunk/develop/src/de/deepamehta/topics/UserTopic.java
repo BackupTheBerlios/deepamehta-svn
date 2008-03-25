@@ -24,7 +24,7 @@ import java.util.Vector;
  * is renamed.
  * <p>
  * <hr>
- * Last functional change: 12.2.2008 (2.0b8)<br>
+ * Last functional change: 24.3.2008 (2.0b8)<br>
  * Last documentation update: 29.11.2000 (2.0a7)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -69,7 +69,7 @@ public class UserTopic extends PersonTopic {
 			BaseTopic ws = as.getDefaultWorkspace(directives);
 			if (ws != null) {
 				WorkspaceTopic defaultWorkspace = (WorkspaceTopic) as.getLiveTopic(ws);
-				defaultWorkspace.joinUser(getID(), REVEAL_MEMBERSHIP_WORKSPACE, true, session, directives);
+				defaultWorkspace.joinUser(getID(), REVEAL_MEMBERSHIP_WORKSPACE, session, directives);
 			}
 			//
 			// transfer installation preferences as defaults for new user

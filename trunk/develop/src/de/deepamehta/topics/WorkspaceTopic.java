@@ -21,16 +21,16 @@ import java.util.Vector;
 
 /**
  * A workspace.
- * <P>
- * The custom behavoir of a <CODE>WorkspaceTopic</CODE> is creating the corresponding
+ * <p>
+ * The custom behavoir of a <code>WorkspaceTopic</code> is creating the corresponding
  * topicmap and default chattopic once a new workspace is created.
  * Furthermore the corresponding topicmap (and chattopic) is renamed once
- * this <CODE>WorkspaceTopic</CODE> is renamed.
- * <P>
- * <HR>
- * Last functional change: 27.9.2007 (2.0b8)<BR>
- * Last documentation update: 29.4.2001 (2.0a10-pre7)<BR>
- * J&ouml;rg Richter<BR>
+ * this <code>WorkspaceTopic</code> is renamed.
+ * <p>
+ * <hr>
+ * Last functional change: 25.3.2008 (2.0b8)<br>
+ * Last documentation update: 29.4.2001 (2.0a10-pre7)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class WorkspaceTopic extends LiveTopic {
@@ -105,7 +105,7 @@ public class WorkspaceTopic extends LiveTopic {
 		setTopicData(PROPERTY_PUBLIC, SWITCH_OFF);
 		setTopicData(PROPERTY_DEFAULT_WORKSPACE, SWITCH_OFF);
 		// --- join current user ---
-		joinUser(session.getUserID(), REVEAL_MEMBERSHIP_NONE, true, session, directives);
+		joinUser(session.getUserID(), REVEAL_MEMBERSHIP_NONE, session, directives);
 		//
 		return directives;
 	}
@@ -202,9 +202,9 @@ public class WorkspaceTopic extends LiveTopic {
 		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		if (cmd.equals(CMD_JOIN_WORKSPACE)) {
-			joinUser(session.getUserID(), REVEAL_MEMBERSHIP_USER, true, session, directives);
+			joinUser(session.getUserID(), REVEAL_MEMBERSHIP_USER, session, directives);
 		} else if (cmd.equals(CMD_LEAVE_WORKSPACE)) {
-			leaveUser(session.getUserID(), topicmapID, viewmode, session, directives);
+			leaveUser(session.getUserID(), topicmapID, session, directives);
 		} else if (cmd.equals(CMD_ASSIGN_TOPIC_TYPE)) {
 			String typeID = st.nextToken();
 			assignType(typeID, directives);
@@ -282,24 +282,39 @@ public class WorkspaceTopic extends LiveTopic {
 	}
 
 	public void associated(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
-		boolean isMembership = as.type(assocTypeID, 1).hasSupertype(SEMANTIC_MEMBERSHIP);
-		// ### boolean wasMembership = oldTypeID != null && as.type(oldTypeID, 1).hasSupertype(SEMANTIC_MEMBERSHIP);
-		if (isMembership /* ### && !wasMembership */) {
+		if (as.getLiveTopic(relTopicID, 1).getType().equals(TOPICTYPE_USER) &&
+				as.type(assocTypeID, 1).hasSupertype(SEMANTIC_MEMBERSHIP)) {
 			// join
-			if (as.getLiveTopic(relTopicID, 1).getType().equals(TOPICTYPE_USER)) {
-				joinUser(relTopicID, REVEAL_MEMBERSHIP_NONE, false, session, directives);
+			String userID = relTopicID;
+			// --- open workspace ---
+			boolean isCurrentUser = userID.equals(session.getUserID());
+			if (isCurrentUser) {
+				BaseTopic workspace = as.getWorkspaceTopicmap(getID(), directives);
+				if (workspace != null) {
+					CorporateTopicMap topicmap = new CorporateTopicMap(as, workspace.getID(), 1);
+					topicmap.createLiveTopicmap(session, directives);
+					//
+					directives.add(DIRECTIVE_SHOW_WORKSPACE, workspace, topicmap, new Integer(EDITOR_CONTEXT_WORKGROUP));
+				}
 			}
+			// --- transfer workspace prefernces to user ---
+			directives.add(transferPreferences(userID));
 		}
 	}
 
 	public void associationRemoved(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {
-		boolean isMembership = as.type(assocTypeID, 1).hasSupertype(SEMANTIC_MEMBERSHIP);
-		if (!isMembership) {
-			return;
-		}
-		// leave
-		if (as.getLiveTopic(relTopicID, 1).getType().equals(TOPICTYPE_USER)) {
-			leaveUser(relTopicID, null, null, session, directives);		// topicmapID=null, viewmode=null
+		if (as.getLiveTopic(relTopicID, 1).getType().equals(TOPICTYPE_USER) &&
+				as.type(assocTypeID, 1).hasSupertype(SEMANTIC_MEMBERSHIP)) {
+			// leave
+			String userID = relTopicID;
+			// --- close workspace ---
+			boolean isCurrentUser = userID.equals(session.getUserID());
+			if (isCurrentUser) {
+				BaseTopic workspace = as.getWorkspaceTopicmap(getID(), directives);
+				if (workspace != null) {
+					directives.add(DIRECTIVE_CLOSE_EDITOR, workspace.getID());
+				}
+			}
 		}
 	}
 
@@ -313,86 +328,62 @@ public class WorkspaceTopic extends LiveTopic {
 
 	/**
 	 * Joins the specified user to this workspace.
-	 * <P>
-	 * ### An association (type <CODE>membership</CODE>) between user and workspace is
-	 * created and the specified directives are extended to let the client show the
-	 * topicmap.
-	 * <P>
-	 * References checked: 31.3.2003 (2.0a18-pre8)
+	 * <p>
+	 * An association of type <code>ASSOCTYPE_MEMBERSHIP</code> (or one of its subtypes) is
+	 * created between the user and this workspace.
+	 * <p>
+	 * References checked: 24.3.2008 (2.0b8)
 	 *
-	 * @param	membershipRevealMode	REVEAL_MEMBERSHIP_NONE<BR>
-	 *									REVEAL_MEMBERSHIP_USER<BR>
+	 * @param	membershipRevealMode	REVEAL_MEMBERSHIP_NONE<br>
+	 *									REVEAL_MEMBERSHIP_USER<br>
 	 *									REVEAL_MEMBERSHIP_WORKSPACE
 	 *
 	 * @see		#evoke
-	 * @see		#associated
 	 * @see		#executeCommand
 	 * @see		UserTopic#evoke
+	 * @see		de.deepamehta.kompetenzstern.assocs.KompetenzsternMembership#propertiesChanged
 	 */
-	public void joinUser(String userID, int membershipRevealMode, boolean createMembership,
-										Session session, CorporateDirectives directives) {
-		// --- create membership association ---
+	public void joinUser(String userID, int membershipRevealMode, Session session, CorporateDirectives directives) {
+		// ---  association ---
 		String assocType = as.getMembershipType(getID(), directives);
 		if (membershipRevealMode == REVEAL_MEMBERSHIP_NONE) {
-			// manipulate CM directly
-			if (createMembership) {
-				cm.createAssociation(as.getNewAssociationID(), 1, assocType, 1, userID, 1, getID(), 1);
-			}
+			// create membership
+			as.createLiveAssociation(as.getNewAssociationID(), assocType, userID, getID(), session, directives);
 		} else {
+			// build directives to create membership
 			revealMembership(userID, assocType, membershipRevealMode, directives);
 		}
-		// --- open workspace ---
-		boolean isCurrentUser = userID.equals(session.getUserID());
-		if (isCurrentUser) {
-			BaseTopic workspace = as.getWorkspaceTopicmap(getID(), directives);
-			if (workspace != null) {
-				CorporateTopicMap topicmap = new CorporateTopicMap(as, workspace.getID(), 1);
-				topicmap.createLiveTopicmap(session, directives);
-				/* topicmap.createLiveTopics(directives, session);
-				topicmap.createLiveAssociations(session, directives);
-				topicmap.initLiveTopics(directives, session); */
-				//
-				directives.add(DIRECTIVE_SHOW_WORKSPACE, workspace, topicmap, new Integer(EDITOR_CONTEXT_WORKGROUP));
-			}
-		}
-		// --- transfer workspace prefernces to user ---
-		directives.add(transferPreferences(userID));
+		// Note: two more actions are performed in the associated() hook (see above), which is triggered
+		// as response to the newly created membership association:
+		// 1) add the workspace to the users GUI (provided the user in question is the current user)
+		// 2) transfer the workspaces preferences to the user
 	}
 
 	/**
 	 * Specified user leaves this workspace.
-	 * <P>
-	 * ### It deletes membership association between user and workspace and hides the workspace's tab
-	 * immediately (using <CODE>DIRECTIVE_CLOSE_EDITOR</CODE> directive).
+	 * <p>
+	 * The membership association between the user and this workspace is deleted.
+	 * <p>
+	 * References checked: 24.3.2008 (2.0b8)
 	 * 
-	 * @param	topicmapID		may be <CODE>null</CODE>
+	 * @param	topicmapID		the topicmap from which the origin command was issued
 	 *
-	 * @see		#associationRemoved
 	 * @see		#executeCommand
+	 * @see		de.deepamehta.kompetenzstern.assocs.KompetenzsternMembership#propertiesChanged
 	 */
-	public void leaveUser(String userID, String topicmapID, String viewmode,
-															Session session, CorporateDirectives directives) {
+	public void leaveUser(String userID, String topicmapID, Session session, CorporateDirectives directives) {
 		// Note: also subtypes of association type "at-membership" are respected
 		Vector subtypes = as.type(SEMANTIC_MEMBERSHIP, 1).getSubtypeIDs();
 		Association assoc = cm.getAssociation(subtypes, userID, getID());
-		// ### error check
+		// error check ### should not happen anymore
 		if (assoc == null) {
 			throw new DeepaMehtaException("user \"" + userID + "\" is not a member of workspace \"" + getName() + "\"");
 		}
 		//
-		if (topicmapID != null) {
-			directives.add(DIRECTIVE_HIDE_ASSOCIATION, assoc.getID(), Boolean.TRUE, topicmapID);
-		}
-		// --- close workspace ---
-		boolean isCurrentUser = userID.equals(session.getUserID());
-		if (isCurrentUser) {
-			BaseTopic workspace = as.getWorkspaceTopicmap(getID(), directives);
-			if (workspace != null) {
-				directives.add(DIRECTIVE_CLOSE_EDITOR, workspace.getID());
-			}
-		}
-		// ### directives.add(DIRECTIVE_SHOW_MESSAGE, "User \"" + session.getUserName() +
-		// ### 	"\" left the workspace \"" + getName() + "\"", new Integer(NOTIFICATION_DEFAULT));
+		directives.add(DIRECTIVE_HIDE_ASSOCIATION, assoc.getID(), Boolean.TRUE, topicmapID);	// die=TRUE
+		// Note: one more action is performed in the associationRemoved() hook (see above), which is triggered
+		// as response to the deleted membership association:
+		// 1) remove the workspace from the users GUI (provided the user in question is the current user)
 	}
 
 
@@ -404,6 +395,11 @@ public class WorkspaceTopic extends LiveTopic {
 
 
 	/**
+	 * Builds the directives to create and reveal a membership association between a user and this workspace.
+	 *
+	 * @param	userID		the ID of the user
+	 * @param	assocType	the ID of the association type. <code>ASSOCTYPE_MEMBERSHIP</code> or one of its subtypes.
+	 *
 	 * @see		#joinUser
 	 */
 	private void revealMembership(String userID, String assocType, int membershipRevealMode,
@@ -429,7 +425,7 @@ public class WorkspaceTopic extends LiveTopic {
 
 	/**
 	 * Transfers workspace preferences as defaults for the specified user.
-	 * <P>
+	 * <p>
 	 * References checked: 2.4.2003 (2.0a18-pre8)
 	 *
 	 * @see		#joinUser
@@ -439,8 +435,7 @@ public class WorkspaceTopic extends LiveTopic {
 		//
 		// ### compare to UserTopic.evoke()
 		Vector prefs = as.getPreferences(getID());
-		System.out.println(">>> transfer " + prefs.size() + " workspace preferences of " +
-			this + " to user \"" + userID + "\"");
+		System.out.println(">>> transfer " + prefs.size() + " workspace preferences of " + this + " to user \"" + userID + "\"");
 		as.setUserPreferences(userID, prefs, directives);
 		//
 		return directives;
