@@ -16,11 +16,11 @@ import java.util.Vector;
 
 /**
  * A Message on a Message Board.
- * <P>
- * <HR>
- * Last functional change: 25.9.2006 (2.0b8)<BR>
- * Last documentation update: 17.9.2002 (2.0a16-pre3)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 25.3.2008 (2.0b8)<br>
+ * Last documentation update: 17.9.2002 (2.0a16-pre3)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class MessageTopic extends LiveTopic implements MessageBoard {
@@ -67,13 +67,13 @@ public class MessageTopic extends LiveTopic implements MessageBoard {
 		// set date
 		String date = DeepaMehtaUtils.getDate();
 		String time = DeepaMehtaUtils.getTime();
-		setTopicData(PROPERTY_DATE, date);
-		setTopicData(PROPERTY_LAST_REPLY_DATE, date);
-		setTopicData(PROPERTY_LAST_REPLY_TIME, time);
+		setProperty(PROPERTY_DATE, date);
+		setProperty(PROPERTY_LAST_REPLY_DATE, date);
+		setProperty(PROPERTY_LAST_REPLY_TIME, time);
 		// set author
 		String user = session.getUserName();
 		if (user != null) {		// ### Note: user is null when evoked through web interface
-			setTopicData(PROPERTY_FROM, user);
+			setProperty(PROPERTY_FROM, user);
 		}
 		//
 		return super.evoke(session, topicmapID, viewmode);

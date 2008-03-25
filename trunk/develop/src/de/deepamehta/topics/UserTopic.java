@@ -24,7 +24,7 @@ import java.util.Vector;
  * is renamed.
  * <p>
  * <hr>
- * Last functional change: 24.3.2008 (2.0b8)<br>
+ * Last functional change: 25.3.2008 (2.0b8)<br>
  * Last documentation update: 29.11.2000 (2.0a7)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -79,6 +79,8 @@ public class UserTopic extends PersonTopic {
 			System.out.println(">>> transfer " + prefs.size() + " installation preferences of " +
 				instID + " to user \"" + getID() + "\"");
 			as.setUserPreferences(getID(), prefs, directives);
+			// set owner
+			setProperty(PROPERTY_OWNER_ID, getID());
 		}
 		//
 		return directives;
@@ -104,6 +106,10 @@ public class UserTopic extends PersonTopic {
 		}
 		//
 		return directives;
+	}
+
+	public boolean retypeAllowed(Session session) {
+		return as.isAdministrator(session.getUserID());
 	}
 
 
@@ -190,6 +196,14 @@ public class UserTopic extends PersonTopic {
 
 	public String getNameProperty() {
 		return PROPERTY_USERNAME;
+	}
+
+	public Vector disabledProperties(Session session) {
+		Vector disabledProps = super.disabledProperties(session);
+		if (!as.isAdministrator(session.getUserID())) {
+			disabledProps.addElement(PROPERTY_USERNAME);
+		}
+		return disabledProps;
 	}
 
 	public static void propertyLabel(PropertyDefinition propertyDef, ApplicationService as, Session session) {

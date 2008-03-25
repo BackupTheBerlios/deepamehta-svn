@@ -47,7 +47,7 @@ import java.util.Vector;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last sourcecode change: 23.2.2008 (2.0b8)<br>
+ * Last sourcecode change: 25.3.2008 (2.0b8)<br>
  * Last documentation update: 3.2.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -184,7 +184,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * @see		WorkspaceTopic#evoke
 	 */
 	public CorporateDirectives evoke(Session session, String topicmapID, String viewmode) {
-		// create topic in corporate memory
+		// store in corporate memory
 		cm.createTopic(getID(), getVersion(), getType(), getTypeVersion(), getName());
 		// set default values
 		Enumeration e = as.type(this).getTypeDefinition().elements();
@@ -1165,17 +1165,19 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		return as.getTopicProperty(topicID, version, propName);
 	}
 
-	// --- setTopicData (3 forms) ---
+	// ---
 
 	/**
-	 * Sets the specified property for this topic.
+	 * Sets a property value for this topic directly in corporate memory.
 	 * <p>
-	 * Note: the property is changed "blind" in corporate memory directly, the client is
-	 * not notified in any way.
+	 * Note: the application service is bypassed (no hooks are triggered) and the GUI is not updated (no directives are send).
+	 * Use this method deliberately.
 	 */
-	public final void setTopicData(String field, String value) {
-		as.setTopicProperty(getID(), getVersion(), field, value);
+	public final void setProperty(String propName, String propValue) {
+		as.setTopicProperty(getID(), getVersion(), propName, propValue);
 	}
+
+	// --- setTopicData (2 forms) ---
 
 	/**
 	 * Sets the specified properties for this topic and sends a

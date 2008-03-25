@@ -94,7 +94,7 @@ public class PropertyTopic extends LiveTopic {
 	// since 2.0b3: we use the default-value-facility instead (property "Default Value" of topic type "Property")
 	/* ### public CorporateDirectives evoke(Session session, String topicmapID, String viewmode) {
 		// --- set default property ---
-		setTopicData(PROPERTY_VISUALIZATION, VISUAL_FIELD);
+		setProperty(PROPERTY_VISUALIZATION, VISUAL_FIELD);
 		// Note: actually empty directives are returned
 		return super.evoke(session, topicmapID, viewmode);
 	} */

@@ -102,8 +102,8 @@ public class WorkspaceTopic extends LiveTopic {
 		cm.createTopic(boardID, 1, TOPICTYPE_MESSAGE_BOARD, 1, "Forum");		// ### hardcoded
 		cm.createViewTopic(mapID, 1, VIEWMODE_USE, boardID, 1, 100, 50, false);	// ### geometry
 		// --- set default properties ---
-		setTopicData(PROPERTY_PUBLIC, SWITCH_OFF);
-		setTopicData(PROPERTY_DEFAULT_WORKSPACE, SWITCH_OFF);
+		setProperty(PROPERTY_PUBLIC, SWITCH_OFF);
+		setProperty(PROPERTY_DEFAULT_WORKSPACE, SWITCH_OFF);
 		// --- join current user ---
 		joinUser(session.getUserID(), REVEAL_MEMBERSHIP_NONE, session, directives);
 		//

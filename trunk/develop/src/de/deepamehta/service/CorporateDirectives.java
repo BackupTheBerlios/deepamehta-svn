@@ -675,8 +675,8 @@ public class CorporateDirectives extends Directives {
 	 *								is added to this directives set and creation of the
 	 *								live topic is continued.
 	 *
-	 * @see		#updateCorporateMemory	package
-	 * @see		#showTopics		private
+	 * @see		#updateCorporateMemory	public
+	 * @see		#showTopics				private
 	 */
 	private int showTopic(ApplicationService as, Session session, PresentableTopic topic, boolean evoke,
 								String topicmapID, int topicmapVersion) throws TopicInitException {

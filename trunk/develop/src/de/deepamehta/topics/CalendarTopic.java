@@ -21,7 +21,7 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 21.12.2007 (2.0b8)<br>
+ * Last functional change: 25.3.2008 (2.0b8)<br>
  * Last documentation update: 6.7.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -90,8 +90,8 @@ public class CalendarTopic extends LiveTopic {
 	public CorporateDirectives evoke(Session session, String topicmapID, String viewmode) {
 		CorporateDirectives directives = super.evoke(session, topicmapID, viewmode);
 		// setup calendar for today
-		setTopicData(PROPERTY_DISPLAY_MODE, DISPLAY_MODE_WEEK);
-		setTopicData(PROPERTY_DISPLAY_DATE, DeepaMehtaUtils.getDate());
+		setProperty(PROPERTY_DISPLAY_MODE, DISPLAY_MODE_WEEK);
+		setProperty(PROPERTY_DISPLAY_DATE, DeepaMehtaUtils.getDate());
 		// initial rendering
 		updateView(directives);
 		//

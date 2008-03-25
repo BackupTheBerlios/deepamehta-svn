@@ -67,7 +67,7 @@ import java.util.Vector;
  * <p>
  * <hr>
  * Last functional change: 25.3.2008 (2.0b8)<br>
- * Last documentation update: 30.12.2001 (2.0a14-pre5)<br>
+ * Last documentation update: 25.3.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
@@ -1204,23 +1204,43 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		return hasRole(userID, workspaceID, PROPERTY_ROLE_PUBLISHER) || isAdministrator(userID);
 	}
 
-	// --- setTopicProperty (2 forms) ---
 
-	// Note: there 2 other methods who are changing the properties NOT "blindly"
+
+	// -----------------------------------------------
+	// --- Set Properties (corporate memory level) ---
+	// -----------------------------------------------
+
+
+
+	// Note: there are 2 other methods who set properties at application service level
 	// - setTopicProperty()
 	// - setTopicProperties()
 
+	// --- setTopicProperty (2 forms) ---
+
 	/**
-	 * Changes a topic property "blindly".
+	 * Sets a topic property value directly in corporate memory.
+	 * <p>
+	 * Note: the application service is bypassed (no hooks are triggered) and the GUI is not updated (no directives are send).
+	 * Use this method deliberately.
+	 * <p>
+	 * If you want set a property value at application service level use
+	 * {@link #setTopicProperty(String topicID, int version, String propName, String propValue, String topicmapID, String viewmode, Session)}
 	 */
 	public void setTopicProperty(BaseTopic topic, String propName, String propValue) {
 		setTopicProperty(topic.getID(), topic.getVersion(), propName, propValue);
 	}
 
 	/**
-	 * Changes a topic property "blindly".
+	 * Sets a topic property value directly in corporate memory.
+	 * <p>
+	 * Note: the application service is bypassed (no hooks are triggered) and the GUI is not updated (no directives are send).
+	 * Use this method deliberately.
+	 * <p>
+	 * If you want set a property value at application service level use
+	 * {@link #setTopicProperty(String topicID, int version, String propName, String propValue, String topicmapID, String viewmode, Session)}
 	 *
-	 * @see		LiveTopic#setTopicData(String propName, String propValue)
+	 * @see		LiveTopic#setProperty(String propName, String propValue)
 	 */
 	public void setTopicProperty(String topicID, int version, String propName, String propValue) {
 		cm.setTopicData(topicID, version, propName, propValue);
@@ -1229,7 +1249,13 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// ---
 
 	/**
-	 * Changes topic properties "blindly".
+	 * Sets multiple topic property values directly in corporate memory.
+	 * <p>
+	 * Note: the application service is bypassed (no hooks are triggered) and the GUI is not updated (no directives are send).
+	 * Use this method deliberately.
+	 * <p>
+	 * If you want set property values at application service level use
+	 * {@link #setTopicProperties(String topicID, int version, Hashtable props, String topicmapID, boolean triggerPropertiesChangedHook, Session)}
 	 *
 	 * @see		CorporateDirectives#createLiveTopic
 	 */
@@ -1239,35 +1265,23 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	// ---
 
+	// Note: there is another method who set properties at application service level
+	// - setAssocProperties()
+
 	/**
-	 * Changes association properties "blindly".
+	 * Sets multiple association property values directly in corporate memory.
+	 * <p>
+	 * Note: the application service is bypassed (no hooks are triggered) and the GUI is not updated (no directives are send).
+	 * Use this method deliberately.
+	 * <p>
+	 * If you want set property values at application service level use
+	 * {@link #setAssocProperties(String assocID, int version, Hashtable props, String topicmapID, String viewmode, Session)}
 	 *
 	 * @see		InteractionConnection#performChangeAssociationData
 	 */
 	void setAssocProperties(String assocID, int version, Hashtable props) {
 		cm.setAssociationData(assocID, version, props);
 	}
-
-	// Note: there is 1 other method who changes the properties NOT "blindly"
-	// - setAssocProperties()
-
-	// --- getAllTopics (2 forms) ---
-
-	/**
-	 * @see		InteractionConnection#performHideTopicsByType
-	 */
-	/* ### public CorporateDirectives getAllTopics(String typeID, String topicmapID,
-																	String viewmode) {
-		// vector of String
-		Vector topicIDs = cm.getTopicIDs(typeID, topicmapID, viewmode);
-		System.out.println("> ApplicationService.getAllTopics(): " + topicIDs.size() +
-			" topics of type \"" + typeID + "\" found in view \"" + topicmapID + "\"");
-		// create directives
-		CorporateDirectives directives = new CorporateDirectives();
-		directives.add(DIRECTIVE_HIDE_TOPICS, topicIDs, Boolean.FALSE, topicmapID,
-			viewmode);
-		return directives;
-	} */
 
 
 
@@ -1639,12 +1653,20 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		return directives;
 	}
 
-	// ---
 
-	// Note: there are also 3 methods who are changing the properties "blindly"
+
+	// --------------------------------------------------
+	// --- Set Properties (application service level) ---
+	// --------------------------------------------------
+
+
+
+	// Note: there are 3 other methods who set properties at corporate memory level
 	// - setTopicProperty()
 	// - setTopicProperty()
 	// - setTopicProperties()
+
+
 
 	/**
 	 * Sets a topic property.

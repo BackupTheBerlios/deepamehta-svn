@@ -41,14 +41,14 @@ import java.util.Vector;
 
 /**
  * Part of {@link KompetenzsternTopic Kompetenzstern} application.
- * <P>
+ * <p>
  * ### Note: once a Kompetenzstern is created it should be independant from the
  * underlying {@link TemplateTopic Template}, but this isn't completely achieved yet.
- * <P>
- * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
- * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 11.9.2007 (2.0b8)<br>
+ * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class KompetenzsternTopic extends TopicMapTopic implements KS {
@@ -417,7 +417,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 	 *
 	 * @param   handler     this object will get the generated SAX events
 	 * @param   collector   this object will collect document and icon files.
-	 *                      This parameter may be <CODE>null</CODE>, which signalizes
+	 *                      This parameter may be <code>null</code>, which signalizes
 	 *                      that this is an export to SVG or PDF.
 	 */
 	public void exportTopicmap(ContentHandler handler, ArchiveFileCollector collector) throws SAXException {
@@ -488,7 +488,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 	/ **
 	 * Adds a "Reihenfolge festlegen"/"Reihenfolge ändern" command to the specified
 	 * (topic) command set.
-	 * <P>
+	 * <p>
 	 * References checked: 30.12.2001 (2.0a14-pre5)
 	 *
 	 * @see		KriteriumTopic#contextCommands
@@ -602,7 +602,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 	}
 
 	/**
-	 * Returns the current <CODE>Kompetenzstern-Template</CODE> setting of the specified
+	 * Returns the current <code>Kompetenzstern-Template</code> setting of the specified
 	 * user. If the setting is not available (e.g. because the respective template has
 	 * been deleted meanwhile) the standard template is returned.
 	 *
@@ -630,11 +630,11 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 
 
 	/**
-	 * Returns the <CODE>Kompetenzstern-Template</CODE> upon this <CODE>Kompetenzstern</CODE> is based.
-	 * <P>
+	 * Returns the <code>Kompetenzstern-Template</code> upon this <code>Kompetenzstern</code> is based.
+	 * <p>
 	 * ### Note: a created Kompetenzstern is not independant of its template.
 	 *
-	 * @return	the template as <CODE>BaseTopic</CODE> of type <CODE>tt-kompetenzsterntemplate</CODE>
+	 * @return	the template as <code>BaseTopic</code> of type <code>tt-kompetenzsterntemplate</code>
 	 *
 	 * @throws	DeepaMehtaException
 	 *
@@ -1015,7 +1015,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 	 *
 	 * @param   handler     this object will get the generated SAX events
 	 * @param   collector   this object will collect document and icon files.
-	 *                      This parameter may be <CODE>null</CODE>, which signalizes
+	 *                      This parameter may be <code>null</code>, which signalizes
 	 *                      that this is an export to SVG or PDF.
 	 *
 	 * @see		#exportTopicmap
