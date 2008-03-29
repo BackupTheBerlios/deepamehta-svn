@@ -26,7 +26,7 @@ import java.util.Vector;
  * </ol>
  * <p>
  * <hr>
- * Last functional change: 10.3.2008 (2.0b8)<br>
+ * Last functional change: 29.3.2008 (2.0b8)<br>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -220,7 +220,6 @@ public interface DeepaMehtaConstants {
 	static final int IMAGE_SIZE = 20;
 	static final int ICON_SIZE = 12;	// should be an even value ### still required?
 	static final int TOPIC_BORDER = (IMAGE_SIZE - ICON_SIZE) / 2;
-	static final int TOO_LARGE_DIRECTIVES = 240;
 	// colors
 	static final Color EDGE_COLOR = Color.gray;				// edge in progress color
 	static final Color TEXT_COLOR = Color.black;

@@ -24,7 +24,7 @@ import java.util.Vector;
 /**
  * <p>
  * <hr>
- * Last functional change: 7.6.2007 (2.0b8)<br>
+ * Last functional change: 29.3.2008 (2.0b8)<br>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -242,10 +242,6 @@ public class PresentationDirectives extends Directives {
 			int dirCount = in.readInt();
 			//
 			System.out.println("> receive " + dirCount + " directives ...");
-			if (dirCount > TOO_LARGE_DIRECTIVES) {
-				// ### appears if interaction resp. messaging connection is out of sync
-				throw new DeepaMehtaException("too large directives (" + dirCount + ")");
-			}
 			//
 			StringBuffer log = new StringBuffer();	// diagnosis log
 			// loop through all directives
