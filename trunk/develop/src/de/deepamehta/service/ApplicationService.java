@@ -3843,23 +3843,6 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// ---
 
 	/**
-	 * Returns all client sessions.
-	 *
-	 * @see		de.deepamehta.topics.ChatTopic#executeCommand
-	 *
-	 * @return	vector of <code>Session</code> elements
-	 */
-	/* ### public Vector getAllSessions() {
-		Vector sessions = new Vector();
-		for (int id = 0; id < MAX_CLIENTS; id++) {
-			if (clientSessions[id] != null) {
-				sessions.addElement(clientSessions[id]);
-			}
-		}
-		return sessions;
-	} */
-
-	/**
 	 * ### to be dropped
 	 *
 	 * References checked: 1.9.2002 (2.0a16-pre2)

@@ -26,7 +26,7 @@ import java.util.Vector;
  * </ol>
  * <p>
  * <hr>
- * Last functional change: 29.3.2008 (2.0b8)<br>
+ * Last functional change: 30.3.2008 (2.0b8)<br>
  * Last documentation update: 7.12.2000 (2.0a8-pre2)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -68,7 +68,7 @@ public interface DeepaMehtaConstants {
 	static final int REQUIRED_DB_CONTENT = 17;
 	// --- application server ---
 	static final int DEFAULT_PORT = 7557;			// used by DeepaMehtaClient
-	static final int MAX_CLIENTS = 50;
+	static final int MAX_CLIENTS = 150;
 	static final String ACTIVE_TOPIC_PACKAGE = "de.deepamehta.topics";
 	static final String ACTIVE_ASSOC_PACKAGE = "de.deepamehta.assocs";
 	static final String CONTAINER_SUFFIX_NAME = "Search";
