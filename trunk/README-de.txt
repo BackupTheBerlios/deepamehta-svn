@@ -72,7 +72,7 @@ Kurzanleitung
 * Inbetriebnahme unter Linux
 * Inbetriebnahme unter Mac OS X
 
-Diese Kurzanleitung enthält alle Informationen, die benötigt werden, um DeepaMehta so schnell und einfach wie möglich in Betrieb zu nehmen. Nach dem Auspacken kann DeepaMehta sofort per Doppelklick gestartet werden. Beim ersten Programmstart wird automatisch eine minimale Standardinstallation ausgeführt. Es sind keine Terminal-Eingaben notwendig. 
+Diese Kurzanleitung enthält alle Informationen, die benötigt werden, um DeepaMehta so schnell und einfach wie möglich in Betrieb zu nehmen. Nach dem Auspacken kann DeepaMehta sofort per Doppelklick gestartet werden. Beim ersten Programmstart wird automatisch eine minimale Standardinstallation ausgeführt. Es sind keine Terminal-Eingaben notwendig.
 
 Wenn Beispielanwendungen oder Webfrontends installiert werden sollen, führe eine manuelle (Terminal-basierte) Installation durch, die im anschließenden Abschnitt "Installation" beschrieben ist. Es ist auch möglich, zunächst die automatische Installation durchzuführen, und die Beispielanwendungen und Webfrontends nachträglich zu installieren.
 
