@@ -9,6 +9,8 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
+
 public class HsqlDatabaseProvider extends DefaultDatabaseProvider {
 
 	private class CheckpointThread extends TimerTask {
@@ -32,13 +34,12 @@ public class HsqlDatabaseProvider extends DefaultDatabaseProvider {
 
 	private boolean doNextCheckPoint = false;
 
-	public HsqlDatabaseProvider(Properties conf) throws ClassNotFoundException,
-			SQLException, InstantiationException, IllegalAccessException {
+	public HsqlDatabaseProvider(Properties conf) throws ClassNotFoundException, SQLException, InstantiationException,
+												IllegalAccessException {
 		super(conf);
 		setConnectionProperty("shutdown", "true");
 		int rate = 5 * 60 * 1000;
-		new Timer().scheduleAtFixedRate(new CheckpointThread(), rate,
-				rate);
+		new Timer().scheduleAtFixedRate(new CheckpointThread(), rate, rate);
 	}
 
 	public DbmsHint getDbmsHint() {
@@ -74,40 +75,44 @@ public class HsqlDatabaseProvider extends DefaultDatabaseProvider {
 
 	public void checkPointNeeded() {
 		super.checkPointNeeded();
-		doNextCheckPoint=true;
+		doNextCheckPoint = true;
 	}
 
 	public void logStatement(String stmt) {
 		super.logStatement(stmt);
-		// do not use the AutoFreeConnectionStatement
-		// as it would result in an endless loop
-		try {
-			Connection connection = getConnection();
+		/* DEBUG */
+		if (false) {
+			// do not use the AutoFreeConnectionStatement
+			// as it would result in an endless loop
 			try {
-				Statement statement = connection.createStatement();
-				ResultSet rs = statement.executeQuery("EXPLAIN PLAN FOR "
-						+ stmt);
-				ResultSetMetaData md = rs.getMetaData();
-				int cc = md.getColumnCount();
-				for (int i = 1; i <= cc; i++) {
-					dblog.print(md.getColumnName(i) + ";");
-				}
-				dblog.println();
-				while (rs.next()) {
+				Connection connection = getConnection();
+				try {
+					Statement statement = connection.createStatement();
+					ResultSet rs = statement.executeQuery("EXPLAIN PLAN FOR " + stmt);
+					ResultSetMetaData md = rs.getMetaData();
+					int cc = md.getColumnCount();
+					StringBuffer buf = new StringBuffer();
 					for (int i = 1; i <= cc; i++) {
-						dblog.print(rs.getString(i) + ";");
+						buf.append(md.getColumnName(i) + ";");
 					}
-					dblog.println();
+					super.logStatement(buf.toString());
+					buf = new StringBuffer();
+					while (rs.next()) {
+						for (int i = 1; i <= cc; i++) {
+							buf.append(rs.getString(i) + ";");
+						}
+						super.logStatement(buf.toString());
+					}
+					super.logStatement("");
+					statement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					freeConnection(connection);
 				}
-				dblog.println();
-				statement.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
-			} finally {
-				freeConnection(connection);
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 	}
 }

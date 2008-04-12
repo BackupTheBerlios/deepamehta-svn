@@ -197,6 +197,7 @@
 		<var name="default" value="${dm.instance}" />
 		<antcallback target="-config-which-generic-instance" return="return.instance">
 			<property name="message" value="Please select the DeepaMehta instance to activate:" />
+			<property name="installed" value="true" />
 		</antcallback>
 		<antcall target="-config-setup-default-instance">
 			<param name="dont.ask" value="true" />

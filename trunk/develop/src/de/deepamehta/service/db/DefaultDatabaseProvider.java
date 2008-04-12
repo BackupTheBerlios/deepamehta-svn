@@ -22,6 +22,8 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.Properties;
 
+
+
 public class DefaultDatabaseProvider implements DatabaseProvider {
 
 	public class DefaultDatabaseOptimizer extends DatabaseOptimizer {
@@ -49,9 +51,8 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 
 	private String dbType;
 
-	public DefaultDatabaseProvider(Properties conf)
-			throws ClassNotFoundException, SQLException,
-			InstantiationException, IllegalAccessException {
+	public DefaultDatabaseProvider(Properties conf) throws ClassNotFoundException, SQLException, InstantiationException,
+													IllegalAccessException {
 		setupDatabaseProvider(conf);
 	}
 
@@ -59,9 +60,8 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		return new DefaultDatabaseOptimizer();
 	}
 
-	protected void setupDatabaseProvider(Properties conf)
-			throws ClassNotFoundException, SQLException,
-			InstantiationException, IllegalAccessException {
+	protected void setupDatabaseProvider(Properties conf) throws ClassNotFoundException, SQLException, InstantiationException,
+			IllegalAccessException {
 		jdbcURL = conf.getProperty(ConfigurationConstants.Database.DB_URL);
 		dbType = conf.getProperty(ConfigurationConstants.Database.DB_TYPE);
 		if (dbType == null) {
@@ -74,8 +74,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 			c2 = Configuration.getGlobalConfig();
 		}
 		String libs = c2.getProperty(ConfigurationConstants.Database.DB_LIBS);
-		String driverClazz = c2
-				.getProperty(ConfigurationConstants.Database.DB_DRIVER);
+		String driverClazz = c2.getProperty(ConfigurationConstants.Database.DB_DRIVER);
 
 		System.out.println("Using Database");
 		System.out.println("  Type : " + dbType);
@@ -85,19 +84,16 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		loadClassFromLibs(libs, driverClazz);
 		driver = (Driver) driverClass.newInstance();
 		if (!driver.acceptsURL(jdbcURL))
-			throw new DeepaMehtaException(
-					"JDBC-Driver and JDBC-Url does not match!");
+			throw new DeepaMehtaException("JDBC-Driver and JDBC-Url does not match!");
 		String user = conf.getProperty(ConfigurationConstants.Database.DB_USER);
 		if ((null != user) || ("".equals(user))) {
 			setConnectionProperty("user", user);
-			String password = conf
-					.getProperty(ConfigurationConstants.Database.DB_PASSWORD);
+			String password = conf.getProperty(ConfigurationConstants.Database.DB_PASSWORD);
 			setConnectionProperty("password", password);
 		}
 	}
 
-	private void loadClassFromLibs(String libs, String driverClazz)
-			throws ClassNotFoundException {
+	private void loadClassFromLibs(String libs, String driverClazz) throws ClassNotFoundException {
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 		Resource[] resources;
 		try {
@@ -108,8 +104,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		loadClassFromLibs(resources, driverClazz);
 	}
 
-	private void loadClassFromLibs(Resource[] resources, String clazz)
-			throws ClassNotFoundException {
+	private void loadClassFromLibs(Resource[] resources, String clazz) throws ClassNotFoundException {
 		URL[] urls = new URL[resources.length];
 		try {
 			for (int i = 0; i < resources.length; i++) {
@@ -132,8 +127,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		loadClassFromLibs(urls, clazz);
 	}
 
-	private void loadClassFromLibs(URL[] urls, String clazz)
-			throws ClassNotFoundException {
+	private void loadClassFromLibs(URL[] urls, String clazz) throws ClassNotFoundException {
 		System.out.println("Using separate Classloader for:");
 		for (int i = 0; i < urls.length; i++) {
 			System.out.println("  " + urls[i].toExternalForm());
@@ -167,8 +161,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		Connection con = driver.connect(jdbcURL, conProps);
 		con.setAutoCommit(true);
 		allCons.add(con);
-		System.out.println("DB-Connections: ALL:" + allCons.size() + " FREE:"
-				+ freeCons.size());
+		System.out.println("DB-Connections: ALL:" + allCons.size() + " FREE:" + freeCons.size());
 		return con;
 	}
 
@@ -193,8 +186,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 
 	public void release() {
 		try {
-			System.out.println("all / free connections : " + allCons.size()
-					+ " / " + freeCons.size());
+			System.out.println("all / free connections : " + allCons.size() + " / " + freeCons.size());
 			closeAllCons();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -204,17 +196,22 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	public void checkPointNeeded() {
 	}
 
-	static PrintStream dblog;
+	private static PrintStream dblog = null;
 	static {
-		try {
-			dblog = new PrintStream(new FileOutputStream("db.log"));
-		} catch (FileNotFoundException e) {
-			dblog = System.err;
+		/* DEBUG */
+		if (false) {
+			try {
+				dblog = new PrintStream(new FileOutputStream("db.log"));
+			} catch (FileNotFoundException e) {
+				dblog = System.err;
+			}
 		}
 	}
 
 	public void logStatement(String arg0) {
-		dblog.println(arg0);
+		if (null != dblog) {
+			dblog.println(arg0);
+		}
 	}
 
 }
