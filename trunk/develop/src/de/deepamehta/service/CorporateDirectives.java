@@ -22,14 +22,14 @@ import java.util.Vector;
 
 
 /**
- * ### Note: other as the name suggests ("Corporate") a <CODE>CorporateDirectives</CODE>
+ * ### Note: other as the name suggests ("Corporate") a <code>CorporateDirectives</code>
  * object isn't aware of the LCM (the application is not required to pass the LCM
  * with every constructor call).
- * <P>
- * <HR>
- * Last functional change: 8.1.2008 (2.0b8)<BR>
- * Last documentation update: 17.11.2000 (2.0a7-pre3)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 17.4.2008 (2.0b8)<br>
+ * Last documentation update: 17.11.2000 (2.0a7-pre3)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class CorporateDirectives extends Directives {
@@ -57,8 +57,8 @@ public class CorporateDirectives extends Directives {
 	/**
 	 * Covenience constructor.
 	 *
-	 * @param	directives	array of 2 vectors:<BR>
-	 *			Vector 1: Vector of {@link de.deepamehta.PresentableTopic}s<BR>
+	 * @param	directives	array of 2 vectors:<br>
+	 *			Vector 1: Vector of {@link de.deepamehta.PresentableTopic}s<br>
 	 *			Vector 2: Vector of {@link de.deepamehta.PresentableAssociation}s
 	 *
 	 * @see		de.deepamehta.topics.LiveTopic#navigateByTopictype
@@ -86,7 +86,7 @@ public class CorporateDirectives extends Directives {
 	}
 
 	/**
-	 * Adds a directive with one parameters to this <CODE>Directives</CODE> object.
+	 * Adds a directive with one parameters to this <code>Directives</code> object.
 	 *
 	 * @param	type	The directive type
 	 * @param	param	The parameter depending on the directive type
@@ -154,7 +154,7 @@ public class CorporateDirectives extends Directives {
 	/**
 	 * Updates live corporate memory and updates view according to this directives.
 	 *
-	 * @param	session		current user (user who requests this directives)<BR>
+	 * @param	session		current user (user who requests this directives)<br>
 	 *						only needed for DIRECTIVE_SHOW_VIEW
 	 * @param	topicMapID	current topicmap (view the user currently manipulates)
 	 * @param	viewMode	current viewmode (viewmode the user is currently working in)
@@ -834,10 +834,11 @@ public class CorporateDirectives extends Directives {
 	private void setTopicProperties(String topicID, int version, Hashtable props, ApplicationService as,
                                         			Session session, String topicmapID, String viewmode) {
 		if (props != null) {
-			// ### triggerPropertiesChangedHook?
+			// ### triggerPropertiesChangedHook? is obsolete. Implicitely set to true.
 			// ### true required while changing e.g. "Icon" property
-			// ### false required while moving e.g. an Instituton topic with YADE coordinares ### true works also (but creates one unnecessary DIRECTIVE_GEOMETRY)
-			add(as.setTopicProperties(topicID, version, props, topicmapID, true, session));	// ### triggerPropertiesChangedHook=false
+			// ### false required while moving e.g. an Instituton topic with YADE coordinares
+			// ### true works also (but creates one unnecessary DIRECTIVE_GEOMETRY)
+			add(as.setTopicProperties(topicID, version, props, topicmapID, session));
 		}
 	}
 
@@ -891,10 +892,10 @@ public class CorporateDirectives extends Directives {
 	/**
 	 * Returns the directives to delete the specified topic. Note: the directives to delete the
 	 * associations the specified topic is involved are not build by this method.
-	 * <P>
+	 * <p>
 	 * Called for {@link #DIRECTIVE_HIDE_TOPIC} and {@link #DIRECTIVE_HIDE_TOPICS} (indirectly)
-	 * if the <CODE>die</CODE> parameter set to <CODE>Boolean.TRUE</CODE>.
-	 * <P>
+	 * if the <code>die</code> parameter set to <code>Boolean.TRUE</code>.
+	 * <p>
 	 * Triggers the die() hook of the specified topic and returns the resulting directives.
 	 *
 	 * @see		CorporateDirectives#updateCorporateMemory

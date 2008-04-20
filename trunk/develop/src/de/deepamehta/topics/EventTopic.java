@@ -13,7 +13,7 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 25.3.2008 (2.0b8)<br>
+ * Last functional change: 20.4.2008 (2.0b8)<br>
  * Last documentation update: 14.12.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -57,7 +57,7 @@ public class EventTopic extends LiveTopic {
 	public CorporateDirectives die(Session session) {
 		CorporateDirectives directives = super.die(session);
 		//
-		updateCalendars(getCalendars(), directives);
+		CalendarTopic.updateAllCalendars(directives, as);
 		//
 		return directives;
 	}
@@ -75,29 +75,8 @@ public class EventTopic extends LiveTopic {
 		CorporateDirectives directives = super.propertiesChanged(newProps, oldProps,
 			topicmapID, viewmode, session);
 		//
-		updateCalendars(getCalendars(), directives);
+		CalendarTopic.updateAllCalendars(directives, as);
 		//
 		return directives;
-	}
-
-
-
-	// **********************
-	// *** Custom Methods ***
-	// **********************
-
-
-
-	private Vector getCalendars() {
-		return cm.getTopics(TOPICTYPE_CALENDAR);
-	}
-
-	// ### copy in AppointmentTopic
-	private void updateCalendars(Vector calendars, CorporateDirectives directives) {
-		Enumeration e = calendars.elements();
-		while (e.hasMoreElements()) {
-			BaseTopic calendar = (BaseTopic) e.nextElement();
-			((CalendarTopic) as.getLiveTopic(calendar)).updateView(directives);
-		}
 	}
 }

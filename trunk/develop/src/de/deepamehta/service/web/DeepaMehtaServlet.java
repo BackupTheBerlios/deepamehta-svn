@@ -52,11 +52,11 @@ import javax.xml.transform.stream.StreamSource;
 
 
 /**
- * <P>
- * <HR>
- * Last functional change: 27.9.2007 (2.0b8)<BR>
- * Last documentation update: 28.9.2002 (2.0a16-pre4)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 17.4.2008 (2.0b8)<br>
+ * Last documentation update: 28.9.2002 (2.0a16-pre4)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class DeepaMehtaServlet extends HttpServlet implements ApplicationServiceHost, DeepaMehtaConstants {
@@ -358,9 +358,9 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 
 	/**
 	 * Processes a topic form. Called recusively to process embedded forms.
-	 * <P>
-	 * Used for both: "create topic" (<CODE>doCreate=true</CODE>) and
-	 * "update topic" (<CODE>doCreate=false</CODE>) actions.
+	 * <p>
+	 * Used for both: "create topic" (<code>doCreate=true</code>) and
+	 * "update topic" (<code>doCreate=false</code>) actions.
 	 *
 	 * @param	typeID		the topic type of the form resp. embedded form
 	 * @param	topicID		the ID of the topic to be created resp. updated
@@ -385,7 +385,7 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 		}
 		// properties
 		Hashtable props = getProperties(params, typeID);
-		directives.add(as.setTopicProperties(topicID, 1, props, topicmapID, true, session));	// triggerPropertiesChangedHook=true
+		directives.add(as.setTopicProperties(topicID, 1, props, topicmapID, session));
 		directives.updateCorporateMemory(as, session, topicmapID, viewmode);
 		// weak relations
 		updateWeakRelations(typeID, topicID, getWeakRelationParameters(params));
@@ -397,15 +397,15 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 
 	/**
 	 * Processes an association form.
-	 * <P>
+	 * <p>
 	 * Hint to application developers: your derived servlet will call this method to perform "create association"
-	 * (<CODE>doCreate=true</CODE>) and "update association" (<CODE>doCreate=false</CODE>) actions.
+	 * (<code>doCreate=true</code>) and "update association" (<code>doCreate=false</code>) actions.
 	 *
 	 * @param	assocID		the ID of the association to be created resp. updated
 	 * @param	params		all request parameters as hashtable
-	 * @param	doCreate	if <CODE>true</CODE> the association is created, otherwise updated
-	 * @param	topicID1	only used for <CODE>doCreate=true</CODE>
-	 * @param	topicID2	only used for <CODE>doCreate=true</CODE>
+	 * @param	doCreate	if <code>true</code> the association is created, otherwise updated
+	 * @param	topicID1	only used for <code>doCreate=true</code>
+	 * @param	topicID2	only used for <code>doCreate=true</code>
 	 */
 	private void processForm(String typeID, String assocID, Hashtable params, boolean doCreate,
 																		String topicID1, String topicID2, Session session) {
@@ -830,8 +830,8 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 	/**
 	 * @param	params		### all request parameters as hashtable
 	 *
-	 * @return	the parameter values for weak relations (weak means: non-strong) as hashtable,<BR>
-	 *			key: relation ID (string)<BR>
+	 * @return	the parameter values for weak relations (weak means: non-strong) as hashtable,<br>
+	 *			key: relation ID (string)<br>
 	 *			value: IDs of selected topics (array of strings)
 	 *
 	 * @see		#processForm
@@ -872,10 +872,10 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 	/**
 	 * @param	params		### all request parameters as hashtable
 	 *
-	 * @return	the parameters of related topics (via strong relation) as hashtable,<BR>
-	 *			key: relation ID (string)<BR>
-	 *			value: parameter of related topic as hashtable,<BR>
-	 *			&nbsp;&nbsp;&nbsp;&nbsp;key: property name (string)<BR>
+	 * @return	the parameters of related topics (via strong relation) as hashtable,<br>
+	 *			key: relation ID (string)<br>
+	 *			value: parameter of related topic as hashtable,<br>
+	 *			&nbsp;&nbsp;&nbsp;&nbsp;key: property name (string)<br>
 	 *			&nbsp;&nbsp;&nbsp;&nbsp;value: property value (string)
 	 *
 	 * @see		#processForm

@@ -13,7 +13,7 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 25.3.2008 (2.0b8)<br>
+ * Last functional change: 20.4.2008 (2.0b8)<br>
  * Last documentation update: 6.7.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -128,16 +128,7 @@ public class AppointmentTopic extends LiveTopic {
 		while (e.hasMoreElements()) {
 			BaseTopic person = (BaseTopic) e.nextElement();
 			Vector calendars = ((PersonTopic) as.getLiveTopic(person)).getCalendars();
-			updateCalendars(calendars, directives);
-		}
-	}
-
-	// ### copy in EventTopic
-	private void updateCalendars(Vector calendars, CorporateDirectives directives) {
-		Enumeration e = calendars.elements();
-		while (e.hasMoreElements()) {
-			BaseTopic calendar = (BaseTopic) e.nextElement();
-			((CalendarTopic) as.getLiveTopic(calendar)).updateView(directives);
+			CalendarTopic.updateCalendars(calendars, directives, as);
 		}
 	}
 }

@@ -15,20 +15,20 @@ import java.util.Hashtable;
 /**
  * For every connected client the server maintains a socket connection to handle user
  * interaction.
- * <P>
- * An <CODE>InteractionConnection</CODE> performs <I>synchronous</I> communication between
+ * <p>
+ * An <code>InteractionConnection</code> performs <i>synchronous</i> communication between
  * client and server (request/reply protocol). To represent the request types there are
  * the {@link InteractionConnection#REQUEST_LOGIN REQUEST_XXX constants} defined in
  * {@link de.deepamehta.DeepaMehtaConstants}.
- * <P>
+ * <p>
  * Besides this connection for every connected client the server maintains 2 further
- * connections simultanously: the {@link MessagingConnection} (used for <I>asynchronous</I> communication)
+ * connections simultanously: the {@link MessagingConnection} (used for <i>asynchronous</i> communication)
  * and the {@link FileserverConnection} (used for background file transfers).
- * <P>
- * <HR>
- * Last functional change: 22.11.2004 (2.0b4)<BR>
- * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 17.4.2008 (2.0b8)<br>
+ * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 final class InteractionConnection implements DeepaMehtaConstants, Runnable {
@@ -375,8 +375,7 @@ final class InteractionConnection implements DeepaMehtaConstants, Runnable {
 		// --- log request ---
 		log("REQUEST_SET_TOPIC_DATA \"" + topicID + ":" + version + "\"");
 		// --- handle request ---
-		CorporateDirectives directives = as.setTopicProperties(topicID, version, newData,
-			topicmapID, true, session);		// triggerPropertiesChangedHook=true
+		CorporateDirectives directives = as.setTopicProperties(topicID, version, newData, topicmapID, session);
 		directives.updateCorporateMemory(as, session, topicmapID, viewmode);
 		directives.write(out);
 	}

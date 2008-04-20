@@ -257,6 +257,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#changeTopicName
 	 * @see		TopicMapTopic#nameChanged
+	 * @see		TopicTypeTopic#nameChanged
 	 * @see		UserTopic#nameChanged
 	 * @see		WorkspaceTopic#nameChanged
 	 */

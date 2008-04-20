@@ -15,7 +15,7 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 3.2.2008 (2.0b8)<br>
+ * Last functional change: 20.4.2008 (2.0b8)<br>
  * Last documentation update: 7.3.2004 (2.0b3-pre1)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -123,6 +123,19 @@ public class PersonTopic extends LiveTopic {
 
 
 
+	public CorporateDirectives propertiesChanged(Hashtable newProps, Hashtable oldProps,
+											String topicmapID, String viewmode, Session session) {
+		CorporateDirectives directives = super.propertiesChanged(newProps, oldProps,
+			topicmapID, viewmode, session);
+		// Simplification: if this person is attendee in any appointment update all calendars
+		Vector appointments = getCalendarAppointments();
+		if (appointments.size() > 0) {
+			CalendarTopic.updateAllCalendars(directives, as);
+		}
+		//
+		return directives;
+	}
+
 	public String getNameProperty() {
 		return null;
 	}
@@ -173,6 +186,9 @@ public class PersonTopic extends LiveTopic {
 		return cm.getRelatedTopics(getID(), SEMANTIC_CALENDAR_PERSON, TOPICTYPE_CALENDAR, 1);
 	}
 
+	/**
+	 * @see		CalendarTopic#getAppointments
+	 */
 	public Vector getCalendarAppointments() {
 		return cm.getRelatedTopics(getID(), SEMANTIC_APPOINTMENT_ATTENDEE, TOPICTYPE_APPOINTMENT, 1);
 	}

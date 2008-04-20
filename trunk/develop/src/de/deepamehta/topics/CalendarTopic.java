@@ -8,6 +8,7 @@ import de.deepamehta.PresentableTopic;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
+import de.deepamehta.service.CorporateMemory;
 import de.deepamehta.service.Session;
 import de.deepamehta.util.DeepaMehtaUtils;
 
@@ -222,7 +223,50 @@ public class CalendarTopic extends LiveTopic {
 
 
 
-	void updateView(CorporateDirectives directives) {
+	/**
+	 * @see		#updateAllCalendars
+	 */
+	static Vector getAllCalendars(CorporateMemory cm) {
+		return cm.getTopics(TOPICTYPE_CALENDAR);
+	}
+
+	/**
+	 * @see		EventTopic#die
+	 * @see		EventTopic#propertiesChanged
+	 * @see		PersonTopic#propertiesChanged
+	 */
+	static void updateAllCalendars(CorporateDirectives directives, ApplicationService as) {
+		Vector calendars = getAllCalendars(as.cm);
+		updateCalendars(calendars, directives, as);
+	}
+
+	/**
+	 * @see		#updateAllCalendars
+	 * @see		AppointmentTopic#updateCalendars
+	 */
+	static void updateCalendars(Vector calendars, CorporateDirectives directives, ApplicationService as) {
+		Enumeration e = calendars.elements();
+		while (e.hasMoreElements()) {
+			BaseTopic calendar = (BaseTopic) e.nextElement();
+			((CalendarTopic) as.getLiveTopic(calendar)).updateView(directives);
+		}
+	}
+
+	// ---
+
+	/**
+	 * Refreshs the view (HTML rendering) of this calendar.
+	 * All content is retrieved from the corporate memory, the display model is build, and HTML is rendered.
+	 * <p>
+	 * References checked: 20.4.2008 (2.0b8)
+	 *
+	 * @see		evoke
+	 * @see		propertiesChanged
+	 * @see		associated
+	 * @see		associationRemoved
+	 * @see		updateCalendars
+	 */
+	private void updateView(CorporateDirectives directives) {
 		Vector appointments = getAppointments();
 		Vector events = getEvents();
 		System.out.println(">>> Update calender \"" + getName() + "\" (" + appointments.size() + " appointments, " +

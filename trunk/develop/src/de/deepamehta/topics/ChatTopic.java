@@ -15,11 +15,11 @@ import java.util.Vector;
 
 /**
  * A chat between logged users which are members of the same workspace.
- * <P>
- * <HR>
- * Last functional change: 24.8.2006 (2.0b8)<BR>
- * Last documentation update: 27.5.2001 (2.0a11-pre2)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 17.4.2008 (2.0b8)<br>
+ * Last documentation update: 27.5.2001 (2.0a11-pre2)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public class ChatTopic extends LiveTopic {
@@ -33,26 +33,26 @@ public class ChatTopic extends LiveTopic {
 
 
 	/**
-	 * The workspace this <CODE>ChatTopic</CODE> belongs to.
-	 * <P>
-	 * <TABLE>
-	 * <TR><TD><B>Initialized by</B></TD></TR>
-	 * <TR><TD>{@link #initWorkspace}</TD></TR>
-	 * <TR><TD><B>Accessed by</B></TD></TR>
-	 * <TR><TD>{@link #executeCommand}</TD></TR>
-	 * </TABLE>
+	 * The workspace this <code>ChatTopic</code> belongs to.
+	 * <p>
+	 * <table>
+	 * <tr><td><b>Initialized by</b></td></tr>
+	 * <tr><td>{@link #initWorkspace}</td></tr>
+	 * <tr><td><b>Accessed by</b></td></tr>
+	 * <tr><td>{@link #executeCommand}</td></tr>
+	 * </table>
 	 */
 	private BaseTopic workspace;
 
 	/**
-	 * The workspace of the workgroup this <CODE>ChatTopic</CODE> belongs to.
-	 * <P>
-	 * <TABLE>
-	 * <TR><TD><B>Initialized by</B></TD></TR>
-	 * <TR><TD>{@link #initWorkspace}</TD></TR>
-	 * <TR><TD><B>Accessed by</B></TD></TR>
-	 * <TR><TD>{@link #executeCommand}</TD></TR>
-	 * </TABLE>
+	 * The workspace of the workgroup this <code>ChatTopic</code> belongs to.
+	 * <p>
+	 * <table>
+	 * <tr><td><b>Initialized by</b></td></tr>
+	 * <tr><td>{@link #initWorkspace}</td></tr>
+	 * <tr><td><b>Accessed by</b></td></tr>
+	 * <tr><td>{@link #executeCommand}</td></tr>
+	 * </table>
 	 */
 	// ### private BaseTopic chatBoard;
 
@@ -103,7 +103,7 @@ public class ChatTopic extends LiveTopic {
 		props.put(PROPERTY_DATE, DeepaMehtaUtils.getDate());
 		props.put(PROPERTY_BEGIN, DeepaMehtaUtils.getTime(false));	// withSecs=false
 		// Note: the application service must be used in order to trigger the topic naming behavoir
-		directives.add(as.setTopicProperties(getID(), 1, props, topicmapID, true, session));	// triggerPropertiesChangedHook=true
+		directives.add(as.setTopicProperties(getID(), 1, props, topicmapID, session));
 		// notify workspace members
 		Vector sessions = activeSessions(session);
 		String text = "User \"" + session.getUserName() + "\" invites you to a \"" + workspace.getName() +
@@ -130,14 +130,14 @@ public class ChatTopic extends LiveTopic {
 
 	/**
 	 * Here is all active behavoir of ChatTopic class.
-	 * <P>
+	 * <p>
 	 * "Your Remark" property is added to "Chat Flow" property and then
-	 * <CODE>DIRECTIVE_SHOW_TOPIC_PROPERTIES</CODE> directive is broadcasted to all related
+	 * <code>DIRECTIVE_SHOW_TOPIC_PROPERTIES</code> directive is broadcasted to all related
 	 * users. 
-	 * If <CODE>ChatTopic</CODE> belongs to Corporate
+	 * If <code>ChatTopic</code> belongs to Corporate
 	 * workspace, directive is broadcasted to all existing client sessions, otherwise
 	 * it is broadcasted to the client sessions that belong to given workspace.
-	 * <P>
+	 * <p>
 	 * Property "Your Remark" is cleaned only for current client session, for other
 	 * client sessions it is left unchanged.
 	 */
@@ -225,7 +225,7 @@ public class ChatTopic extends LiveTopic {
 
 
 	/**
-	 * Initializes <CODE>workspace</CODE> variable.
+	 * Initializes <code>workspace</code> variable.
 	 *
 	 * @see		#init
 	 */

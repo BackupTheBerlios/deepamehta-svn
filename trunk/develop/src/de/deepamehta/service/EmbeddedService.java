@@ -21,11 +21,11 @@ import java.util.Hashtable;
 /**
  * Proxy of the application service which communicates via direct method calls.
  * Presentation service and application service are running inside the same VM.
- * <P>
- * <HR>
- * Last functional change: 27.2.2005 (2.0b6)<BR>
- * Last documentation update: 17.12.2001 (2.0a14-pre5)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last functional change: 17.4.2008 (2.0b8)<br>
+ * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
+ * J&ouml;rg Richter<br>
  * jri@freenet.de
  */
 public final class EmbeddedService implements de.deepamehta.client.ApplicationService, DeepaMehtaConstants {
@@ -191,8 +191,7 @@ public final class EmbeddedService implements de.deepamehta.client.ApplicationSe
 				"REQUEST_SET_TOPIC_DATA \"" + topicID + ":" + version + "\"");
 		}
 		// --- handle request ---
-		CorporateDirectives directives = as.setTopicProperties(topicID, version, props,
-			topicmapID, true, session);		// triggerPropertiesChangedHook=true
+		CorporateDirectives directives = as.setTopicProperties(topicID, version, props, topicmapID, session);
 		directives.updateCorporateMemory(as, session, topicmapID, viewmode);
 		return new PresentationDirectives(directives, ps);
 	}

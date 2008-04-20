@@ -1255,7 +1255,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * Use this method deliberately.
 	 * <p>
 	 * If you want set property values at application service level use
-	 * {@link #setTopicProperties(String topicID, int version, Hashtable props, String topicmapID, boolean triggerPropertiesChangedHook, Session)}
+	 * {@link #setTopicProperties(String topicID, int version, Hashtable props, String topicmapID, Session)}
 	 *
 	 * @see		CorporateDirectives#createLiveTopic
 	 */
@@ -1528,10 +1528,9 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * Triggers the nameChanged() hook of the specified topic.
 	 * <p>
-	 * References checked: 4.3.2003 (2.0a18-pre4)
+	 * References checked: 20.4.2008 (2.0b8)
 	 *
 	 * @see		#setTopicProperties
-	 * @see		CorporateDetail#process
 	 */
 	public CorporateDirectives changeTopicName(String topicID, int version, String name, String topicmapID, String viewmode) {
 		// --- trigger nameChanged() hook ---
@@ -1669,7 +1668,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 
 	/**
-	 * Sets a topic property.
+	 * Sets a topic property at application service level.
 	 * <p>
 	 * References checked: 6.9.2002 (2.0a16-pre2)
 	 *
@@ -1679,28 +1678,29 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 												String topicmapID, String viewmode, Session session) {
 		Hashtable props = new Hashtable();
 		props.put(propName, propValue);
-		return setTopicProperties(topicID, version, props, topicmapID, true, session);	// triggerPropertiesChangedHook=true
+		return setTopicProperties(topicID, version, props, topicmapID, session);
 	}
 
 	/**
-	 * Sets topic properties.
+	 * Sets topic properties at application service level.
 	 * <p>
-	 * References checked: 13.2.2005 (2.0b5)
+	 * The 4 topic hooks <code>propertiesChangeAllowed()</code>, <code>propertiesChanged()</code>, <code>getNameProperty()</code>,
+	 * and <code>getTopicName()</code> are potentially triggered.
+	 * <p>
+	 * References checked: 17.4.2008 (2.0b8)
 	 *
 	 * @param	topicmapID						### may be null
-	 * @param	triggerPropertiesChangedHook	### always true, not required anymore -- the <code>propertiesChanged()</code> hook is only triggered if set to <code>true</code>
 	 * @param	session							### may be null
 	 *
-	 * @see		#setTopicProperty							true
-	 * @see		#performGoogleSearch						true
-	 * @see		CorporateDirectives#setTopicProperties		true
-	 * @see		InteractionConnection#setTopicData			true
-	 * @see		EmbeddedService#setTopicProperties			true
-	 * @see		ChatTopic#evoke								true
-	 * @see		DeepaMehtaServlet#processForm				true
+	 * @see		#setTopicProperty
+	 * @see		#performGoogleSearch
+	 * @see		CorporateDirectives#setTopicProperties
+	 * @see		InteractionConnection#setTopicData
+	 * @see		EmbeddedService#setTopicProperties
+	 * @see		de.deepamehta.topics.ChatTopic#evoke
+	 * @see		de.deepamehta.service.web.DeepaMehtaServlet#processForm
 	 */
-	public CorporateDirectives setTopicProperties(String topicID, int version, Hashtable props, String topicmapID,
-																	boolean triggerPropertiesChangedHook, Session session) {
+	public CorporateDirectives setTopicProperties(String topicID, int version, Hashtable props, String topicmapID, Session session) {
 		CorporateDirectives directives = new CorporateDirectives();
 		//
 		try {
@@ -1712,9 +1712,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 				// update cm
 				setTopicProperties(topicID, version, props);
 				// --- trigger propertiesChanged() hook ---
-				if (triggerPropertiesChangedHook) {
-					directives.add(topic.propertiesChanged(props, oldProps, topicmapID, VIEWMODE_USE, session));
-				}
+				directives.add(topic.propertiesChanged(props, oldProps, topicmapID, VIEWMODE_USE, session));
 				// --- topic name behavoir ---
 				String name;
 				// trigger getNameProperty() hook
@@ -3657,7 +3655,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 				// ### must evoke here, because createNewContainer() evokes only if < 7
 				if (webpage.getEvoke()) {
 					createLiveTopic(webpage, topicmapID, viewmode, session, directives);
-					setTopicProperties(webpageID, 1, webpage.getProperties(), topicmapID, true, session);	// triggerPropertiesChangedHook=true
+					setTopicProperties(webpageID, 1, webpage.getProperties(), topicmapID, session);
 				}
 				if (!cm.associationExists(topicID, webpageID, false)) {	// ignoreDirection=false
 					String assocID = getNewAssociationID();
