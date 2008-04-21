@@ -1,6 +1,7 @@
 package de.deepamehta.service.db;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -26,4 +27,6 @@ public interface DatabaseProvider {
 	DatabaseOptimizer getDatabaseOptimizer();
 
 	public void logStatement(String arg0);
+
+	PreparedStatement getPreparedStatement(String sql) throws SQLException;
 }

@@ -17,6 +17,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
@@ -149,8 +150,6 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 
 	public synchronized void freeConnection(Connection con) throws SQLException {
 		freeCons.addLast(con);
-		// System.out.println("DB-Connections: ALL:"+allCons.size()+"
-		// FREE:"+freeCons.size());
 	}
 
 	protected void setConnectionProperty(String key, String value) {
@@ -179,8 +178,12 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	}
 
 	public Statement getStatement() throws SQLException {
-		Connection con = getConnection();
-		Statement stmt = new AutoFreeConnectionStatement(this, con);
+		Statement stmt = new AutoFreeConnectionStatement(this);
+		return stmt;
+	}
+
+	public PreparedStatement getPreparedStatement(String sql) throws SQLException {
+		PreparedStatement stmt = new AutoFreeConnectionPreparedStatement(this, sql);
 		return stmt;
 	}
 

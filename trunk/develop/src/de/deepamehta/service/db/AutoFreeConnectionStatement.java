@@ -15,11 +15,11 @@ public final class AutoFreeConnectionStatement implements Statement {
 	private final Connection con;
 
 	private boolean finalClose = true;
-
-	public AutoFreeConnectionStatement(DatabaseProvider provider, Connection con)
+	
+	public AutoFreeConnectionStatement(DatabaseProvider provider)
 			throws SQLException {
 		this.provider = provider;
-		this.con = con;
+		this.con = provider.getConnection();
 		this.statement = con.createStatement();
 	}
 
