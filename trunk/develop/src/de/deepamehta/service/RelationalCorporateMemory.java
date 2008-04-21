@@ -679,8 +679,8 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 				topicID2 + ":" + topicVersion2+ ")");
 		}
 		update("INSERT INTO Association (ID, Version, TypeID, TypeVersion, TopicID1, TopicVersion1, TopicID2, TopicVersion2, Name)" +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-				new Object[]{id, i(version), typeID, i(typeVersion), topicID1, i(topicVersion1), topicID2, i(topicVersion2)});
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				new Object[]{id, i(version), typeID, i(typeVersion), topicID1, i(topicVersion1), topicID2, i(topicVersion2), ""});
 	}
 
 	// ---
@@ -2391,10 +2391,6 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	}
 
 	// ---
-
-	private String quote(String str) {
-		return DeepaMehtaUtils.replace(str, '\'', "\\'");
-	}
 
 	public void release() {
 		provider.release();
