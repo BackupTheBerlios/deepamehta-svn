@@ -9,7 +9,6 @@ import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableType;
 import de.deepamehta.assocs.LiveAssociation;
 import de.deepamehta.service.db.DatabaseProvider;
-import de.deepamehta.service.db.DatabaseSweeper;
 import de.deepamehta.service.db.OracleDatabaseProvider;
 import de.deepamehta.service.db.DatabaseProvider.DbmsHint;
 import de.deepamehta.topics.LiveTopic;
@@ -661,9 +660,9 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 			System.out.println("> (#) " + typeID + ":" + typeVersion + " \"" +
 				name + "\" (" + id + ":" + version + ")");
 		}
-		update("INSERT INTO Topic (ID, Version, TypeID, TypeVersion, Name) VALUES " +
-			"('" + id + "', " + version + ", '" + typeID + "', " + typeVersion +
-			", '" + quote(name) + "')");
+		update("INSERT INTO Topic (ID, Version, TypeID, TypeVersion, Name) " +
+				"VALUES (?, ?, ?, ?, ?)",
+		       new Object[]{id, i(version), typeID, i(typeVersion), name});
 	}
 
 	/**
@@ -679,12 +678,9 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 				topicID1 + ":" + topicVersion1 + ", " +
 				topicID2 + ":" + topicVersion2+ ")");
 		}
-		update("INSERT INTO Association (" +
-			"ID, Version, TypeID, TypeVersion, " +
-			"TopicID1, TopicVersion1, " +
-			"TopicID2, TopicVersion2, Name) VALUES ('" +
-			id + "', " + version + ", '" + typeID + "', " + typeVersion + ", '" +
-			topicID1 + "', " + topicVersion1 + ", '" + topicID2 + "', " + topicVersion2 + ",'')");
+		update("INSERT INTO Association (ID, Version, TypeID, TypeVersion, TopicID1, TopicVersion1, TopicID2, TopicVersion2, Name)" +
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+				new Object[]{id, i(version), typeID, i(typeVersion), topicID1, i(topicVersion1), topicID2, i(topicVersion2)});
 	}
 
 	// ---
@@ -693,16 +689,16 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 * @see		ApplicationService#changeTopicName
 	 */
 	public void changeTopicName(String topicID, int version, String name) {
-		update("UPDATE Topic SET Name='" + quote(name) + "' WHERE ID='" + topicID + "' " +
-			"AND Version=" + version);
+		update("UPDATE Topic SET Name = ? WHERE ID = ? AND Version = ?",
+		       new Object[]{name, topicID, i(version)});
 	}
 
 	/**
 	 * @see		ApplicationService#changeTopicType
 	 */
 	public void changeTopicType(String topicID, int version, String typeID, int typeVersion) {
-		update("UPDATE Topic SET TypeID='" + typeID + "', TypeVersion=" + typeVersion +
-			" WHERE ID='" + topicID + "' AND Version=" + version);
+		update("UPDATE Topic SET TypeID = ?, TypeVersion = ? WHERE ID = ? AND Version = ?",
+	       new Object[]{typeID, i(typeVersion), topicID, i(version)});
 	}
 
 	// ---
@@ -711,16 +707,16 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 * @see		ApplicationService#changeTopicName
 	 */
 	public void changeAssociationName(String assocID, int version, String name) {
-		update("UPDATE Association SET Name='" + quote(name) + "' WHERE ID='" + assocID + "' " +
-			"AND Version=" + version);
+		update("UPDATE Association SET Name = ? WHERE ID = ? AND Version = ?",
+	       new Object[]{name, assocID, i(version)});
 	}
 
 	/**
 	 * @see		ApplicationService#changeAssociationType
 	 */
 	public void changeAssociationType(String assocID, int version, String typeID, int typeVersion) {
-		update("UPDATE Association SET TypeID='" + typeID + "', TypeVersion=" +
-			typeVersion + " WHERE ID='" + assocID + "' AND Version=" + version);
+		update("UPDATE Association SET TypeID = ?, TypeVersion = ? WHERE ID = ? AND Version = ?",
+	       new Object[]{typeID, i(typeVersion), assocID, i(version)});
 	}
 
 	// --- deleting ---
@@ -1001,8 +997,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 				System.out.println("> (#) " + topicmapID + ":" + topicmapVersion + " " + topicID + ":" + topicVersion +
 					" (" + x + ", " + y + ")");
 			}
-			update("INSERT INTO ViewTopic VALUES ('" + topicmapID + "', " + topicmapVersion + ", '" + topicID +
-				"', " + topicVersion + ", " + x + ", " + y + ")");
+			update("INSERT INTO ViewTopic VALUES (?, ?, ?, ?, ?, ?)", new Object[]{topicmapID, i(topicmapVersion), topicID, i(topicVersion), i(x), i(y)});
 		}
 	}
 
@@ -1016,8 +1011,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 			if (LOG_CM) {
 				System.out.println("> (#) " + topicmapID + ":" + topicmapVersion + " " + assocID + ":" + assocVersion);
 			}
-			update("INSERT INTO ViewAssociation VALUES ('" + topicmapID + "', " + topicmapVersion + ", '" + assocID +
-				"', " + assocVersion + ")");
+			update("INSERT INTO ViewAssociation VALUES (?, ?, ?, ?)", new Object[]{topicmapID, i(topicmapVersion), assocID, i(assocVersion)});
 		} else {
 			// ### System.out.println("> RelationalCorporateMemory.createViewAssociation(): \"" +
 			//	assocID + "\" already in view \"" + topicmapID + "\"");
@@ -1111,10 +1105,10 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 * @see		ApplicationService#updateView
 	 */
 	public void updateView(String srcTopicmapID, int srcTopicmapVersion, String destTopicmapID, int destTopicmapVersion) {
-		String setClause = " SET ViewTopicID='" + destTopicmapID + "', ViewTopicVersion=" + destTopicmapVersion +
-			" WHERE ViewTopicID='" + srcTopicmapID + "' AND ViewTopicVersion=" + srcTopicmapVersion;
-		int c1 = update("UPDATE ViewTopic" + setClause, IMPLIED_N);
-		int c2 = update("UPDATE ViewAssociation" + setClause, IMPLIED_N);
+		String setClause = " SET ViewTopicID = ?, ViewTopicVersion = ? WHERE ViewTopicID = ? AND ViewTopicVersion = ?";
+		Object[] setParams = new Object[]{destTopicmapID, i(destTopicmapVersion), srcTopicmapID, i(srcTopicmapVersion)};
+		int c1 = update("UPDATE ViewTopic" + setClause, setParams, IMPLIED_N);
+		int c2 = update("UPDATE ViewAssociation" + setClause, setParams, IMPLIED_N);
 		if (LOG_CM) {
 			System.out.println("> (>) \"" + srcTopicmapID + "\"," + srcTopicmapVersion + " --> \"" + destTopicmapID +
 				"\"," + destTopicmapVersion + ": " + c1 + " view topics, " + c2 + " view associations");
@@ -1125,9 +1119,9 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 * @see		ApplicationService#moveTopic
 	 */
 	public void updateViewTopic(String topicmapID, int topicmapVersion, String topicID, int x, int y) {
-		update("UPDATE ViewTopic SET x=" + x + ", y=" + y + " WHERE ViewTopicID='" + topicmapID + "' AND " +
-			"ViewTopicVersion=" + topicmapVersion + " AND TopicID='" + topicID +
-			"'", IMPLIED_NO);	// ### implied ? -- probably IMPLIED_1 ### topic version?
+		update("UPDATE ViewTopic SET x = ?, y = ? WHERE ViewTopicID = ? AND ViewTopicVersion = ? AND TopicID = ?",
+		       new Object[]{i(x), i(y), topicmapID, i(topicmapVersion), topicID}, IMPLIED_NO);
+		// ### implied ? -- probably IMPLIED_1 ### topic version?
 	}
 
 	// ---
@@ -1244,15 +1238,16 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 			System.out.println("> (>) " + topicID + ":" + version + " (update \"" + field + "\" to \"" + value + "\")");
 		}
 		//
-		int rowCount = update("UPDATE TopicProp SET PropValue='" + quote(value) + "' WHERE TopicID='" + topicID +
-			"' AND TopicVersion=" + version + " AND PropName='" + quote(field) + "'", IMPLIED_NO);
+		int rowCount = update("UPDATE TopicProp SET PropValue = ? WHERE TopicID = ?" +
+			" AND TopicVersion = ? AND PropName = ?",
+			new Object[]{value, topicID, i(version), field}, IMPLIED_NO);
 		if (rowCount == 0) {
 			// the topic has no topic data yet -- insert
 			if (LOG_CM) {
 				System.out.println("> (#) " + topicID + ":" + version + " (insert \"" + field + "\" to \"" + value + "\")");
 			}
-			update("INSERT INTO TopicProp (TopicID, TopicVersion, PropName, PropValue) VALUES " +
-				"('" + topicID + "', " + version + ", '" + quote(field) + "', '" + quote(value) + "')");
+			update("INSERT INTO TopicProp (TopicID, TopicVersion, PropName, PropValue) VALUES (?, ?, ?, ?)",
+			       new Object[]{topicID, i(version), field, value});
 		} else if (rowCount > 1) {
 			System.out.println("*** RelationalCorporateMemory.setTopicData(): " +
 				rowCount + " rows updated, \"" + topicID + "\", " + version + ", \"" + field + "\"");
@@ -1313,9 +1308,8 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 				field + "\" to \"" + value + "\")");
 		}
 		//
-		int rowCount = update("UPDATE AssociationProp SET PropValue='" + quote(value) +
-			"' WHERE AssociationID='" + assocID + "' AND AssociationVersion=" +
-			version + " AND PropName='" + quote(field) + "'", IMPLIED_NO);
+		int rowCount = update("UPDATE AssociationProp SET PropValue = ? WHERE AssociationID = ? AND AssociationVersion = ? AND PropName = ?"
+		                      , new Object[]{value, assocID, i(version), field}, IMPLIED_NO);
 		if (rowCount == 0) {
 			// the association has no association data yet -- insert
 			if (LOG_CM) {
@@ -1324,8 +1318,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 			}
 			update("INSERT INTO AssociationProp " +
 				"(AssociationID, AssociationVersion, PropName, PropValue) VALUES " +
-				"('" + assocID + "', " + version + ", '" + quote(field) + "', '" +
-				quote(value) + "')");
+				"(?, ?, ?, ?)", new Object[]{assocID, i(version), field, value});
 		} else if (rowCount > 1) {
 			System.out.println("*** RelationalCorporateMemory.setAssociationData():" +
 				" " + rowCount + " rows updated, \"" + assocID + "\", " + version +
@@ -1352,22 +1345,18 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 
 	// --- ID generator ---
 
+	//TODO common procedure with transaction
 	public synchronized String getNewTopicID() {
-		String query = "SELECT NextKey FROM KeyGenerator WHERE Relation = 'Topic'";
-		int newID = queryNewID(query);	// throws DME
-		query = "UPDATE KeyGenerator SET NextKey=" + (newID + 1) + " WHERE " +
-			"Relation = 'Topic'";
-		update(query);
+		int newID = queryNewID("SELECT NextKey FROM KeyGenerator WHERE Relation = 'Topic'");	// throws DME
+		update("UPDATE KeyGenerator SET NextKey = ? WHERE Relation = 'Topic'", new Object[]{i(newID + 1)});
         //
 		return "t-" + newID;
 	}
 
+	//TODO common procedure with transaction
 	public synchronized String getNewAssociationID() {
-		String query = "SELECT NextKey FROM KeyGenerator WHERE Relation = 'Association'";
-		int newID = queryNewID(query);	// throws DME
-		query = "UPDATE KeyGenerator SET NextKey=" + (newID + 1) + " WHERE " +
-			"Relation = 'Association'";
-		update(query);
+		int newID = queryNewID("SELECT NextKey FROM KeyGenerator WHERE Relation = 'Association'");	// throws DME
+		update("UPDATE KeyGenerator SET NextKey = ? WHERE Relation = 'Association'", new Object[]{i(newID + 1)});
         //
 		return "a-" + newID;
 	}
@@ -1555,11 +1544,6 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	private Vector queryBaseTopics(String query, Object[] params) {
 		return queryBaseTopics(query, params, false);
 	}
-
-// TODO Kommentar wieder raus
-//	private Vector queryBaseTopics(String query) {
-//		return queryBaseTopics(query, new Object[0], false);
-//	}
 
 	private Vector queryBaseTopics(PreparedStatement stmt) {
 		return queryBaseTopics(stmt, false);
@@ -1871,30 +1855,57 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	/**
 	 * Executes an INSERT, UPDATE or DELETE statement.
 	 */
-	private int update(String query) {
-		return update(query, IMPLIED_1);
+//	private int update(String query) {
+//		return update(query, IMPLIED_1);
+//	}
+	/**
+	 * Executes an INSERT, UPDATE or DELETE statement.
+	 */
+	private int update(String query, Object[] params) {
+		return update(query, params, IMPLIED_1);
 	}
 
 	/**
 	 * Executes an INSERT, UPDATE or DELETE statement.
 	 */
-	private int update(String query, int implied) {
+//	private int update(String query, int implied) {
+//		return update(query,new Object[0],implied);
+//	}
+	/**
+	 * Executes an INSERT, UPDATE or DELETE statement.
+	 */
+	private int update(String query, Object[] params, int implied) {
 		try {
-			Statement stmt = createStatement();
-			int rowCount = stmt.executeUpdate(query);
+			return update(createPreparedStatement(query, params), implied);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	/**
+	 * Executes an INSERT, UPDATE or DELETE statement.
+	 */
+	private int update(PreparedStatement stmt, int implied) {
+		try {
+			int rowCount = stmt.executeUpdate();
 			if (implied == IMPLIED_1 && rowCount != 1) {
 				System.out.println("*** RelationalCorporateMemory.update(): " +
-					rowCount + " rows updated:\n\"" + query + "\"");
+					rowCount + " rows updated:\n\"" + stmt + "\"");
 			}
-			stmt.close();
 			return rowCount;
 		} catch (SQLException e) {
 			if (implied != IMPLIED_NO) {
 				System.out.println("*** RelationalCorporateMemory.update(): " + e +
 					" -- INSERT, UPDATE or DELETE statement failed");
-				System.out.println(query);
+				System.out.println(stmt);
 			}
 			return 0;
+		}finally{
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+			}
 		}
 	}
 
