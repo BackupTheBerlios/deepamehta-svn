@@ -393,99 +393,58 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 									String[] sortTopicProps, boolean sortAssociations, boolean descending) {
 		StringBuffer queryBuffer = new StringBuffer();
 		List queryParams=new ArrayList();
+		queryBuffer.append("SELECT Topic.*");
+		queryBuffer.append(sortAssociations ? ", AssociationProp2.PropValue" : "");
+		queryBuffer.append(" FROM Topic INNER JOIN Association ON ");
+		queryBuffer.append("Association.TopicID");
+		queryBuffer.append(3 - relTopicPos);
+		queryBuffer.append("= ?");
+		queryParams.add(topicID);
+		queryBuffer.append(" AND ");
 		// association type condition
-		String assocTypeCond;
 		if (assocTypes != null) {
-			assocTypeCond = associationTypeFilter(assocTypes);
-		// ### Note: assocType is expected to be non-null
+			applyAssociationTypeFilter(assocTypes, queryBuffer, queryParams);
 		} else {
-			assocTypeCond = "Association.TypeID='" + assocType + "'";
+			queryBuffer.append("Association.TypeID = ?");
+			// ### Note: assocType is expected to be non-null
+			queryParams.add(assocType);
 		}
+		queryBuffer.append(" AND ");
+		queryBuffer.append("Association.TopicID");
+		queryBuffer.append(relTopicPos);
+		queryBuffer.append("=Topic.ID");
 		// topic type condition
-		String topicTypeCond;
 		if (relTopicTypeIDs != null) {
-			topicTypeCond = " AND " + topicTypeFilter(relTopicTypeIDs);
+			queryBuffer.append(" AND ");
+			applyTopicTypeFilter(relTopicTypeIDs, queryBuffer, queryParams);
 		} else if (relTopicType != null) {
-			topicTypeCond = " AND Topic.TypeID='" + relTopicType + "'";
-		} else {
-			topicTypeCond = "";
+			queryBuffer.append(" AND Topic.TypeID = ?");
+			queryParams.add(relTopicType);
 		}
 		// topic ID condition
-		String topicIdCond;
 		if (relTopicIDs != null) {
-			topicIdCond = " AND " + topicIdFilter(relTopicIDs);
-		} else {
-			topicIdCond = "";
+			queryBuffer.append(" AND ");
+			applyTopicIdFilter(relTopicIDs, queryBuffer, queryParams);
 		}
-		// --- build query ---
-		// ### in case of set sortAssociations: sort property is not a parameter ("Ordinal Number" is used)
-		// ### ORACLE: in case of set sortTopicProps: 2nd search criteria not yet respected
-		// ### ORACLE: in case of set sortAssociations: PropValue not queried ==> DOESN'T WORK!!!
-		// ### ORACLE: relTopicTypeIDs not yet respected ==> DOESN'T WORK!!!
-		// ### ORACLE: relTopicIDs not yet respected ==> DOESN'T WORK!!!
-		// ### ORACLE: descending not yet respected
-		if (OracleDatabaseProvider.DBMS_HINT_ORACLE == dbmsHint) {
-			String query;
-			query = "SELECT Topic.* FROM Topic, Association" +
-			(topicmapID != null ? ", ViewAssociation" : "") +
-			(assocProp != null || sortAssociations ? ", AssociationProp" : "") +
-			(sortTopicProps != null ? ", TopicProp" : "") + " WHERE " +
-			"Association.TopicID" + (3 - relTopicPos) + "='" + topicID + "' AND " +
-			assocTypeCond + " AND " +
-			"Association.TopicID" + relTopicPos + "=Topic.ID" +
-			(relTopicType != null ? " AND Topic.TypeID='" + relTopicType + "'" : "") +
-			(topicmapID != null ? " AND " +
-			"ViewAssociation.ViewTopicID='" + topicmapID + "' AND " +
-			"ViewAssociation.AssociationID=Association.ID" : "") +
-			(assocProp != null ? " AND " +
-			"AssociationProp.AssociationID=Association.ID AND " +
-			"AssociationProp.PropName='" + assocProp + "' AND " +
-			"AssociationProp.PropValue='" + propValue + "'" : "") +
-			(sortTopicProps != null ? " AND " +
-			"TopicProp.TopicID(+)=Topic.ID AND " +
-			"TopicProp.PropName(+)='" + sortTopicProps[0] + "' ORDER BY PropValue" : "") +
-			(sortAssociations ? " AND " +
-			"AssociationProp.AssociationID(+)=Association.ID AND " +
-			"AssociationProp.PropName(+)='Ordinal Number' ORDER BY PropValue" : "");
-			queryBuffer.append(query);
-		} else {
-			queryBuffer.append("SELECT Topic.*");
-			queryBuffer.append(sortAssociations ? ", AssociationProp2.PropValue" : "");
-			queryBuffer.append(" FROM Topic INNER JOIN Association ON ");
-			queryBuffer.append("Association.TopicID");
-			queryBuffer.append(3 - relTopicPos);
-			queryBuffer.append("= ?");
-			queryParams.add(topicID);
-			queryBuffer.append(" AND ");
-			//TODO
-			queryBuffer.append(assocTypeCond);
-			queryBuffer.append(" AND ");
-			queryBuffer.append("Association.TopicID");
-			queryBuffer.append(relTopicPos);
-			queryBuffer.append("=Topic.ID");
-			//TODO
-			queryBuffer.append(topicTypeCond);
-			queryBuffer.append(topicIdCond);
-			if (topicmapID != null) {
-				queryBuffer.append(" INNER JOIN ViewAssociation ON ");
-				queryBuffer.append("ViewAssociation.ViewTopicID = ? AND ");
-				queryParams.add(topicmapID);
-				queryBuffer.append("ViewAssociation.AssociationID=Association.ID");
-			}
-			if (assocProp != null){
-				queryBuffer.append(" INNER JOIN AssociationProp AssociationProp1 ON ");
-                queryBuffer.append("AssociationProp1.AssociationID=Association.ID AND ");
-                queryBuffer.append("AssociationProp1.PropName = ? AND ");
-				queryParams.add(assocProp);
-                queryBuffer.append("AssociationProp1.PropValue = ?");
-				queryParams.add(propValue);
-			}
-			queryBuffer.append(sortClause(sortTopicProps, descending));
-			if (sortAssociations){
-				queryBuffer.append(" LEFT OUTER JOIN AssociationProp AssociationProp2 ON ");
-				queryBuffer.append("AssociationProp2.AssociationID=Association.ID AND ");
-				queryBuffer.append("AssociationProp2.PropName='Ordinal Number' ORDER BY AssociationProp2.PropValue");
-			}
+		if (topicmapID != null) {
+			queryBuffer.append(" INNER JOIN ViewAssociation ON ");
+			queryBuffer.append("ViewAssociation.ViewTopicID = ? AND ");
+			queryParams.add(topicmapID);
+			queryBuffer.append("ViewAssociation.AssociationID=Association.ID");
+		}
+		if (assocProp != null){
+			queryBuffer.append(" INNER JOIN AssociationProp AssociationProp1 ON ");
+            queryBuffer.append("AssociationProp1.AssociationID=Association.ID AND ");
+            queryBuffer.append("AssociationProp1.PropName = ? AND ");
+			queryParams.add(assocProp);
+            queryBuffer.append("AssociationProp1.PropValue = ?");
+			queryParams.add(propValue);
+		}
+		queryBuffer.append(sortClause(sortTopicProps, descending));
+		if (sortAssociations){
+			queryBuffer.append(" LEFT OUTER JOIN AssociationProp AssociationProp2 ON ");
+			queryBuffer.append("AssociationProp2.AssociationID=Association.ID AND ");
+			queryBuffer.append("AssociationProp2.PropName='Ordinal Number' ORDER BY AssociationProp2.PropValue");
 		}
 		// --- perform query ---
 		// ### System.out.println(">>> " + query);
@@ -2232,6 +2191,12 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 
 	// ---
 
+	private void applyTopicIdFilter(Vector IDs, StringBuffer whereClause, List whereParams) {
+		whereClause.append("Topic.ID IN (");
+		applyIdList(IDs, whereClause, whereParams);
+		whereClause.append(")");
+	}
+
 	//TODO 
 	private String topicIdFilter(Vector topicIDs) {
 		return "Topic.ID IN (" + idList(topicIDs) + ")";
@@ -2246,6 +2211,12 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	//TODO 
 	private String topicTypeFilter(Vector typeIDs) {
 		return "Topic.TypeID IN (" + idList(typeIDs) + ")";
+	}
+
+	private void applyAssociationTypeFilter(Vector typeIDs, StringBuffer whereClause, List whereParams) {
+		whereClause.append("Association.TypeID IN (");
+		applyIdList(typeIDs, whereClause, whereParams);
+		whereClause.append(")");
 	}
 
 	//TODO 
