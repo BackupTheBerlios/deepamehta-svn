@@ -293,8 +293,9 @@
 			</fileset>
 		</sql>
 		<property name="abs-client" location="${client}" />
+		<propertyregex property="abs-client-slash" defaultvalue="${abs-client}" input="${abs-client}" regexp="\\" replace="/"/>
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
-			INSERT INTO TopicProp VALUES ('t-corpwebadm', 1, 'Base URL', 'file://${abs-client}${file.separator}');
+			INSERT INTO TopicProp VALUES ('t-corpwebadm', 1, 'Base URL', 'file://${abs-client-slash}/');
 		</sql>
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${db}/patches">
