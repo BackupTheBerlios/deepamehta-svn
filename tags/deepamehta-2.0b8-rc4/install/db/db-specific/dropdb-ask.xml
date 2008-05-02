@@ -1,0 +1,14 @@
+<project name="DeepaMehta-db-askdropdb">
+	<target name="-askdropdb" unless="dont.db.ask">
+		<echo>
+You are about to delete the database '${db.name}'.
+If you want delete another database, type 'n' and edit config.xml (section 'Database')
+or use command line options -Ddb.name=... -Ddb.userid=...
+		</echo>
+		<input message="Continue? " validargs="y,n" addproperty="do.drop" />
+		<var name="do.db.abort" unset="true"/>
+		<condition property="do.db.abort" value="true">
+			<equals arg1="${do.drop}" arg2="n" />
+		</condition>
+	</target>
+</project>

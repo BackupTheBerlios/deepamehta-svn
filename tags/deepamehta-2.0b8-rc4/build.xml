@@ -1,0 +1,540 @@
+<project name="DeepaMehta" default="-default" basedir=".">
+
+	<description>
+		DeepaMehta build file
+	</description>
+
+	<import file="config.xml" />
+
+	<import file="${db-specific}/${db.create-db}" />
+	<import file="${db-specific}/${db.drop-db}" />
+
+	<import file="build-development.xml" optional="true" />
+	<import file="setup.xml" />
+
+	<path id="dmapps">
+		<pathelement location="${examples}/movies/MoviesTopics.jar" />
+		<!-- configure this -->
+		<pathelement location="${examples}/artfacts/ArtfactsTopics.jar" />
+		<!-- configure this -->
+		<pathelement location="${examples}/hilfelotse/HilfelotseTopics.jar" />
+		<!-- configure this -->
+		<pathelement location="${examples}/messageboard/messageboard.jar" />
+		<!-- configure this -->
+		<pathelement location="${examples}/kompetenzstern/kompetenzstern.jar" />
+		<!-- configure this -->
+		<pathelement location="${appspath}/Kiezatlas/trunk/kiezatlas.jar" />
+		<!-- configure this -->
+		<pathelement location="${appspath}/TeenKom/teenkom.jar" />
+		<!-- configure this -->
+		<pathelement location="${appspath}/OLAP/olap.jar" />
+		<!-- configure this -->
+		<pathelement location="${appspath}/Importer/importer.jar" />
+		<!-- configure this -->
+		<pathelement location="${appspath}/DeepaMehta Coordination/coordination-platform.jar" />
+		<!-- configure this -->
+	</path>
+
+	<target name="-default">
+		<for list="${main-targets}" param="target" trim="true">
+			<sequential>
+				<antcall target="@{target}" />
+			</sequential>
+		</for>
+	</target>
+
+	<!-- Install -->
+
+	<target name="defaultinstall">
+		<ant target="install" inheritall="false">
+			<property name="dont-ask-set-default" value="true" />
+		</ant>
+		<ant target="dm" inheritall="false" />
+	</target>
+
+	<target name="install" depends="config">
+		<input2 message="Do you want to initialize now?" addproperty="do.install.now" validargs="y,n" defaultvalue="y" />
+		<if>
+			<equals arg1="${do.install.now}" arg2="y" />
+			<then>
+				<ant target="initialize" inheritall="false">
+					<property name="dm.instance" value="${dm.instance}" />
+				</ant>
+			</then>
+			<else>
+				<echo message="If you want to initialize the DeepaMehta instance later" />
+				<echo message="please execute 'run initialize'." />
+			</else>
+		</if>
+	</target>
+
+	<target name="initialize" description="initialises the database">
+		<if>
+			<istrue value="${config.finished}" />
+			<then>
+				<echo message="Initialize the DeepaMehta instance '${dm.instance}' now..." />
+				<antcallback target="-initdb" return="do.db.abort" />
+				<!-- example applications -->
+				<antcall target="-installexamples" />
+				<if>
+					<not>
+						<equals arg1="${do.db.abort}" arg2="true" />
+					</not>
+					<then>
+						<propertyfile file="${dm.instance.config-property-file}">
+							<entry key="dm.instance.installed" value="true" />
+						</propertyfile>
+					</then>
+				</if>
+			</then>
+			<else>
+				<echo message="DeepaMehta has not been configured yet." />
+				<ant target="install" inheritall="false" />
+			</else>
+		</if>
+	</target>
+	<target name="-dropdb" depends="-dropdb-do" unless="do.db.abort">
+		<propertyfile file="${dm.instance.config-property-file}">
+			<entry key="dm.instance.installed" value="false" />
+		</propertyfile>
+	</target>
+	<target name="dropdb" description="drops all databases">
+		<echo message="Uninstalling the DeepaMehta instance '${dm.instance}' now..." />
+		<antcall target="-dropdb" />
+		<!-- example applications -->
+		<antcall target="-uninstallexamples" />
+	</target>
+	<target name="uninstall" description="drops all databases">
+		<echo message="Deleting all DeepaMehta related stuff from your hard disk." />
+		<echo message="This instances will be deleted:" />
+		<echo />
+		<for param="list.instance.config.file">
+			<path>
+				<fileset dir="${config}" includes="config-*.properties" />
+			</path>
+			<sequential>
+				<var name="list.instance" unset="true" />
+				<propertyregex property="list.instance" input="@{list.instance.config.file}" regexp="config-(.*).properties" select="\1" />
+				<echo>* ${list.instance}</echo>
+			</sequential>
+		</for>
+		<echo />
+		<input message="Do you want to proceed?" addproperty="do.uninstall.now" validargs="y,n" defaultvalue="n" />
+		<if>
+			<equals arg1="${do.uninstall.now}" arg2="y" />
+			<then>
+				<property name="dont.db.ask" value="true" />
+				<for param="list.instance.config.file">
+					<path>
+						<fileset dir="${config}" includes="config-*.properties" />
+					</path>
+					<sequential>
+						<var name="list.instance" unset="true" />
+						<var name="list.dm-instance" unset="true" />
+						<propertyregex property="list.instance" input="@{list.instance.config.file}" regexp="config-(.*).properties" select="\1" />
+						<ant target="dropdb">
+							<property name="dm.instance" value="${list.instance}" />
+						</ant>
+					</sequential>
+				</for>
+				<delete defaultexcludes="false" includeemptydirs="true">
+					<fileset dir="." defaultexcludes="false" followsymlinks="false" />
+				</delete>
+			</then>
+		</if>
+	</target>
+	<target name="newinstance" description="Creates a new instance">
+		<echo message="Please select the instance configuration the new instance is based on:" />
+		<echo />
+		<for param="list.instance.config.file">
+			<path>
+				<fileset dir="${config}" includes="build-*.properties" />
+			</path>
+			<sequential>
+				<var name="list.instance" unset="true" />
+				<propertyregex property="list.instance" input="@{list.instance.config.file}" regexp="build-(.*).properties" select="\1" />
+				<echo>* ${list.instance}</echo>
+			</sequential>
+		</for>
+		<echo />
+		<input message="Instance name:" addproperty="instance.name" defaultvalue="${dm.instance}" />
+		<if>
+			<or>
+				<resourcecount when="ne" count="1">
+					<fileset dir="${config}" includes="build-${instance.name}.properties" />
+				</resourcecount>
+				<resourcecount when="ne" count="1">
+					<fileset dir="${config}" includes="dm-${instance.name}.properties" />
+				</resourcecount>
+			</or>
+			<then>
+				<fail message="Configuration does not exist!" />
+			</then>
+		</if>
+		<input message="Please enter the new instance name:" addproperty="new.instance.name" defaultvalue="${instance.name}2" />
+		<if>
+			<resourcecount when="eq" count="0">
+				<fileset dir="${config}">
+					<include name="build-${new.instance.name}.properties" />
+					<include name="dm-${new.instance.name}.properties" />
+				</fileset>
+			</resourcecount>
+			<then>
+				<copy file="${config}/build-${instance.name}.properties" tofile="${config}/build-${new.instance.name}.properties" />
+				<copy file="${config}/dm-${instance.name}.properties" tofile="${config}/dm-${new.instance.name}.properties" />
+				<ant target="install">
+					<property name="dm.instance" value="${new.instance.name}" />
+				</ant>
+			</then>
+			<else>
+				<fail message="Configuration does exist already!" />
+			</else>
+		</if>
+	</target>
+	<target name="switchinstance" description="Switches the instance">
+		<var name="path" value="${config}" />
+		<var name="prefix" value="config" />
+		<var name="default" value="${dm.instance}" />
+		<antcallback target="-config-which-generic-instance" return="return.instance">
+			<property name="message" value="Please select the DeepaMehta instance to activate:" />
+			<property name="installed" value="true" />
+		</antcallback>
+		<antcall target="-config-setup-default-instance">
+			<param name="dont.ask" value="true" />
+		</antcall>
+	</target>
+	<target name="-installexamples" depends="-testsyspass">
+		<ant target="-call-examples">
+			<property name="target" value="install" />
+		</ant>
+	</target>
+	<target name="-uninstallexamples" depends="-testsyspass">
+		<ant target="-call-examples">
+			<property name="target" value="uninstall" />
+		</ant>
+	</target>
+
+	<!-- Web-related tasks -->
+	<target name="-installweb-ask" unless="web.deploy.do" />
+	<target name="-installweb-unless" unless="do.web.deploy" depends="-installweb-ask">
+		<echo>
+.-----------------------------------.
+| The deployment is not configured! |
+|-----------------------------------|
+| Please run the config target if   |
+| you want to have your DeepaMehta  |
+| installed into your tomcat.       |
+`-----------------------------------´
+		</echo>
+	</target>
+	<target name="-installweb-if" if="do.web.deploy" depends="-installweb-ask">
+		<!-- copy shared libraries -->
+		<antcall target="-deploylibs" />
+		<copy todir="${web.lib.dir}">
+			<fileset dir="${dm.base-dir}">
+				<include name="${db.libs}" />
+			</fileset>
+		</copy>
+		<copy file="${libpath}/avalon-framework.jar" todir="${web.lib.dir}" />
+		<copy file="${libpath}/commons-fileupload-1.0.jar" todir="${web.lib.dir}" />
+		<copy file="${libpath}/spring-core.jar" todir="${web.lib.dir}" />
+		<copy file="${libpath}/googleapi.jar" todir="${web.lib.dir}" />
+		<!-- deploy web applications -->
+		<ant target="-call-examples-web">
+			<property name="target" value="deploy" />
+		</ant>
+	</target>
+	<target name="-installweb" depends="-installweb-if,-installweb-unless" />
+
+	<target name="deploy" depends="-installweb" description="Does everything to setup your Tomcat." />
+
+	<target name="-deploylibs" if="do.web.deploy">
+		<copy file="${server}/DeepaMehtaService.jar" todir="${web.lib.dir}" />
+		<copy file="${server}/DeepaMehtaTopics.jar" todir="${web.lib.dir}" />
+	</target>
+
+	<!-- The target createdb has been "outsourced" to ${db.create-db}-->
+	<!-- The target dropdb has been "outsourced" to ${db.drop-db}-->
+
+	<target name="-createtables" unless="do.db.abort" depends="-createdb">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${db-specific}">
+				<include name="${db.tables}" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+		<antcall target="-optimize" />
+	</target>
+
+	<target name="-optimize">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${db-specific}">
+				<include name="${db.optimize}" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+	</target>
+
+	<target name="-initdb" unless="do.db.abort" depends="-createtables">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${db}">
+				<include name="cm.sql" />
+				<include name="email.sql" />
+				<include name="auth.sql" />
+				<include name="webcrawler.sql" />
+				<include name="whois.sql" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+		<property name="abs-client" location="${client}" />
+		<propertyregex property="abs-client-slash" defaultvalue="${abs-client}" input="${abs-client}" regexp="\\" replace="/"/>
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			INSERT INTO TopicProp VALUES ('t-corpwebadm', 1, 'Base URL', 'file://${abs-client-slash}/');
+		</sql>
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${db}/patches">
+				<include name="names.sql" />
+				<include name="help.sql" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+		<antcall target="-optimize" />
+	</target>
+
+	<target name="-droptables">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${db-specific}">
+				<include name="${db.drop-tables}" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+	</target>
+
+	<target name="reset">
+		<echo message="Resetting the DeepaMehta instance '${dm.instance}' now..." />
+		<echo message="You are about to reset the database ${db.name} (user '${db.user}', password '${db.password}')." />
+		<echo message="If you want reset another database, type 'n' and edit config.xml (section 'Database')" />
+		<echo message="or use command line options -Ddb.name=... -Ddb.user=... -Ddb.password=..." />
+		<input message="Continue? " validargs="y,n" addproperty="do.reset" />
+		<condition property="do.abort">
+			<equals arg1="${do.reset}" arg2="n" />
+		</condition>
+		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] reset'" />
+		<property name="dont.db.ask" value="true" />
+		<antcall target="dropdb" />
+		<antcall target="initialize" />
+	</target>
+
+	<target name="patchdb">
+		<echo message="You are about to apply the patch ${patch} the database ${db.name} (user '${db.user}', password '${db.password}')." />
+		<echo message="If you want patch another database, type 'n' and edit config.xml (section 'Database')" />
+		<echo message="or use command line options -Ddb.name=... -Ddb.user=... -Ddb.password=... -Dpatch=..." />
+		<input message="Continue? " validargs="y,n" addproperty="do.patch" />
+		<condition property="do.abort">
+			<equals arg1="${do.patch}" arg2="n" />
+		</condition>
+		<fail if="do.abort" message="==> Aborted by user -- revisit with 'ant [options] patchdb'" />
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}" onerror="continue">
+			<fileset file="${patch}" />
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+		<antcall target="-optimize" />
+	</target>
+
+	<!-- Run -->
+
+	<target name="dm" description="runs the monolithic DeepaMehta application, default instance">
+		<java classname="de.deepamehta.service.DeepaMehta" dir="${client}" fork="true">
+			<classpath>
+				<pathelement location="${client}/DeepaMehta.jar" />
+				<path refid="dmapps" />
+				<path refid="javalibs" />
+			</classpath>
+			<sysproperty key="java.endorsed.dirs" path="${endorsedpath}" />
+			<arg value="${dm.instance}" />
+		</java>
+	</target>
+
+	<target name="dms" description="runs the DeepaMehta server">
+		<java classname="de.deepamehta.service.DeepaMehtaServer" dir="${client}" fork="true">
+			<classpath>
+				<pathelement location="${server}/DeepaMehtaService.jar" />
+				<pathelement location="${server}/DeepaMehtaTopics.jar" />
+				<path refid="dmapps" />
+				<path refid="javalibs" />
+			</classpath>
+			<sysproperty key="java.endorsed.dirs" path="${endorsedpath}" />
+			<arg value="${dm.instance}" />
+		</java>
+	</target>
+
+	<target name="dmc" description="runs the DeepaMehta client, connects to local server">
+		<echo message="Connecte zu ${dm.host}:${dm.port}" />
+		<java classname="de.deepamehta.client.DeepaMehtaClient" dir="${client}" fork="true">
+			<classpath>
+				<pathelement location="${client}/DeepaMehtaClient.jar" />
+			</classpath>
+			<arg value="${dm.host}:${dm.port}" />
+		</java>
+	</target>
+
+	<!-- Fix -->
+
+	<target name="fixdb" description="fixes invalid HTML">
+		<java classname="de.deepamehta.service.db.DBFix" dir="${client}" fork="true">
+			<classpath>
+				<pathelement location="${server}/DeepaMehtaService.jar" />
+				<path refid="javalibs" />
+			</classpath>
+			<arg value="${dm.instance}" />
+		</java>
+	</target>
+
+	<!-- Herlper Targets -->
+
+	<target name="-testsyspass">
+		<var name="withsyspass" unset="true" />
+		<condition property="withsyspass" value="true">
+			<isset property="db.syspass" />
+		</condition>
+	</target>
+
+	<target name="-call-examples" depends="-call-examples-noweb,-call-examples-web" />
+	<target name="-call-examples-noweb" depends="-call-examples-both-intern,-call-examples-noweb-intern,-call-external-apps" />
+	<target name="-call-examples-web" depends="-call-examples-both-intern,-call-examples-web-intern  ,-call-external-apps" />
+
+	<target name="-call-examples-noweb-intern">
+		<ant target="-call-example">
+			<property name="example" value="ldap" />
+			<property name="example.name" value="LDAP-Client for browsing users and groups" />
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="movies" />
+			<property name="example.name" value="Demonstration of accessing external datasources" />
+		</ant>
+	</target>
+	<target name="-call-examples-web-intern">
+		<if>
+			<or>
+				<isset property="do.web.deploy" />
+				<istrue value="${example.executeall}" />
+			</or>
+			<then>
+				<ant target="-call-example">
+					<property name="example" value="dm-browser" />
+					<property name="example.name" value="Generic web frontend demo 1" />
+				</ant>
+				<ant target="-call-example">
+					<property name="example" value="dm-search" />
+					<property name="example.name" value="Generic web frontend demo 2" />
+				</ant>
+				<ant target="-call-example">
+					<property name="example" value="dm-topicmapviewer" />
+					<property name="example.name" value="Generic web based topicmap viewer" />
+				</ant>
+				<ant target="-call-example">
+					<property name="example" value="dm-web" />
+					<property name="example.name" value="Generic web frontend demo 3, recommendend" />
+				</ant>
+			</then>
+		</if>
+	</target>
+	<target name="-call-examples-both-intern">
+		<ant target="-call-example">
+			<property name="example" value="kompetenzstern" />
+			<property name="example.name" value="Balanced Scorecard editor and report generator" />
+		</ant>
+		<ant target="-call-example">
+			<property name="example" value="messageboard" />
+			<property name="example.name" value="Graphical forum application and web frontend" />
+		</ant>
+	</target>
+	<target name="-call-external-apps">
+		<!--
+		<ant target="-call-external-app">
+			<property name="app-dir" value="../kiezatlas" />
+		</ant>
+		-->
+	</target>
+
+	<target name="-call-example" depends="-config-ask-example,-testsyspass" if="do.example.execute">
+		<echo>calling target "${target}" in example "${example}" ...</echo>
+		<trycatch property="exceptionProp">
+			<try>
+				<ant antfile="build.xml" dir="${examples}/${example}" target="${target}" inheritall="false">
+					<property name="dm.instance" value="${dm.instance}" />
+					<property name="do.dmdb.abort" value="${do.db.abort}" />
+					<property name="db.syspass" value="${db.syspass}" />
+					<property name="withsyspass" value="${withsyspass}" />
+					<property name="dont.db.ask" value="${dont.db.ask}" />
+					<property name="configuration.isactive" value="${configuration.isactive}" />
+				</ant>
+			</try>
+			<catch>
+				<if>
+					<isset property="exceptions.log" />
+					<then>
+						<echo>${exceptionProp}</echo>
+					</then>
+				</if>
+			</catch>
+		</trycatch>
+		<echo>finished target "${target}" in example "${example}"</echo>
+	</target>
+
+	<target name="-call-external-app" depends="-testsyspass">
+		<echo>calling target "${target}" in extenal application "${app-dir}" ...</echo>
+		<trycatch property="exceptionProp">
+			<try>
+				<ant antfile="build.xml" dir="${app-dir}" target="${target}" inheritall="false">
+					<property name="dm.instance" value="${dm.instance}" />
+					<property name="do.dmdb.abort" value="${do.db.abort}" />
+					<property name="db.syspass" value="${db.syspass}" />
+					<property name="withsyspass" value="${withsyspass}" />
+					<property name="db.ask.dont" value="${dont.db.ask}" />
+					<property name="configuration.isactive" value="${configuration.isactive}" />
+				</ant>
+			</try>
+			<catch>
+				<if>
+					<isset property="exceptions.log" />
+					<then>
+						<echo>${exceptionProp}</echo>
+					</then>
+				</if>
+			</catch>
+		</trycatch>
+		<echo>finished target "${target}" in external application "${app-dir}"</echo>
+	</target>
+
+	<target name="tomcat-start" description="starts the configured config instance">
+		<exec executable="${tomcat.root}/bin/startup.sh" dir="${client}">
+			<env key="JAVA_HOME" value="${java.home}" />
+			<env key="CATALINA_HOME" value="${tomcat.root}" />
+		</exec>
+	</target>
+	<target name="tomcat-stop" description="stops the configured config instance">
+		<exec executable="${tomcat.root}/bin/shutdown.sh" dir="${client}">
+			<env key="JAVA_HOME" value="${java.home}" />
+			<env key="CATALINA_HOME" value="${tomcat.root}" />
+		</exec>
+	</target>
+	<target name="tomcat-log" description="continiuos logging output of the tomcat log">
+		<exec executable="tail">
+			<arg value="-f" />
+			<arg value="${tomcat.root}/logs/catalina.out" />
+		</exec>
+	</target>
+</project>

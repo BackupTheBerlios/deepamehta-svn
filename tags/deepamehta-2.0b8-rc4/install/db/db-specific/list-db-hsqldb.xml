@@ -1,0 +1,37 @@
+<project name="DeepaMehta-db-listdb-hsqldb">
+	<target name="-listdb">
+		<if>
+			<isfileselected file="${db.hsqldb.base-path}">
+				<type type="dir"/>
+			</isfileselected>
+			<then>
+				<for param="dir">
+					<path>
+						<fileset dir="${db.hsqldb.base-path}" includes="*.properties" />
+					</path>
+					<sequential>
+						<var name="name" unset="true" />
+						<basename file="@{dir}" property="name" suffix=".properties" />
+						<if>
+							<not>
+								<isset property="header-printed" />
+							</not>
+							<then>
+								<echo>Existing databases:</echo>
+								<echo />
+								<property name="header-printed" value="true" />
+							</then>
+						</if>
+						<echo>* ${name}</echo>
+					</sequential>
+				</for>
+				<if>
+					<isset property="header-printed" />
+					<then>
+						<echo />
+					</then>
+				</if>
+			</then>
+		</if>
+	</target>
+</project>

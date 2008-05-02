@@ -1,0 +1,440 @@
+package de.deepamehta.topics;
+
+import de.deepamehta.BaseTopic;
+import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.PresentableAssociation;
+import de.deepamehta.PresentableTopic;
+import de.deepamehta.service.ApplicationService;
+import de.deepamehta.service.CorporateCommands;
+import de.deepamehta.service.CorporateDirectives;
+import de.deepamehta.service.Session;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
+
+
+/**
+ * An email.
+ * <p>
+ * <hr>
+ * Last sourcecode change: 25.3.2008 (2.0b8)<br>
+ * Last documentation update: 21.11.2001 (2.0a13-post1)<br>
+ * J&ouml;rg Richter<br>
+ * jri@freenet.de
+ */
+public class EmailTopic extends LiveTopic {
+
+	private static final String TEXT_NO_SUBJECT = "<No Subject>";
+
+	// email states
+	private static final String EMAIL_STATE_DRAFT = "Draft";
+	private static final String EMAIL_STATE_RECEIVED = "Received";
+	private static final String EMAIL_STATE_SENT = "Sent";
+
+	// commands
+	private static final String ITEM_SEND = "Send";
+	private static final String CMD_SEND = "send";
+	private static final String ICON_SEND = "sendEmail.gif";
+
+	private static final String ITEM_REPLY = "Reply";
+	private static final String CMD_REPLY = "reply";
+
+	private static final String ITEM_FORWARD = "Forward";
+	private static final String CMD_FORWARD = "forward";
+	
+	// "Email" -> "Recipient" (User)
+	public static final String ASSOCTYPE_EMAILADDRESSEE = "at-emailaddressee";	// ###
+	public static final String ASSOCTYPE_ATTACHEMENT = "at-attachement";
+
+	public class LocateRcptsResult  {
+		public ArrayList	aRcpts;
+		public boolean		bUsedAttached;
+	}
+
+
+
+	// *******************
+	// *** Constructor ***
+	// *******************
+
+
+
+	public EmailTopic(BaseTopic topic, ApplicationService as) {
+		super(topic, as);
+	}
+
+
+
+	// **********************
+	// *** Defining Hooks ***
+	// **********************
+
+
+
+	// ------------------
+	// --- Life Cycle ---
+	// ------------------
+
+
+
+	public CorporateDirectives evoke(Session session, String topicmapID, String viewmode) {
+		CorporateDirectives directives = super.evoke(session, topicmapID, viewmode);
+		setProperty(PROPERTY_STATUS, EMAIL_STATE_DRAFT);
+		String author = as.getEmailAddress(session.getUserID());	// may return null
+		if (author != null) {
+			setProperty(PROPERTY_FROM, author);
+		}
+		as.createLiveAssociation(as.getNewAssociationID(), ASSOCTYPE_SENDER, getID(), session.getUserID(), session, directives);
+		return directives;
+	}
+
+
+
+	// --------------------------
+	// --- Providing Commands ---
+	// --------------------------
+
+
+
+	public CorporateCommands contextCommands(String topicmapID, String viewmode,
+								Session session, CorporateDirectives directives) {
+		CorporateCommands commands = new CorporateCommands(as);
+		//
+		int editorContext = as.editorContext(topicmapID);
+		commands.addNavigationCommands(this, editorContext, session);
+		// --- send/reply/forward ---
+		String s = getProperty(PROPERTY_STATUS);
+		commands.addSeparator();
+		if (s.equals(EMAIL_STATE_DRAFT)) {
+			commands.addCommand(ITEM_SEND, CMD_SEND, FILESERVER_IMAGES_PATH, ICON_SEND);
+		} else if (s.equals(EMAIL_STATE_RECEIVED)) {
+			commands.addCommand(ITEM_REPLY, CMD_REPLY);
+			commands.addCommand(ITEM_FORWARD, CMD_FORWARD);
+		} else if (s.equals(EMAIL_STATE_SENT)) {
+			commands.addCommand(ITEM_FORWARD, CMD_FORWARD);
+		} else {
+			throw new DeepaMehtaException("unexpected email status: \"" + s + "\"");
+		}
+		//
+		commands.addStandardCommands(this, editorContext, viewmode, session, directives);
+		//
+		return commands;
+	}
+
+
+
+	// --------------------------
+	// --- Executing Commands ---
+	// --------------------------
+
+
+
+	public CorporateDirectives executeCommand(String command, Session session,
+													String topicmapID, String viewmode) {
+		CorporateDirectives directives = new CorporateDirectives();
+		if (command.equals(CMD_SEND)) {
+			sendMail(directives);
+		} else if (command.equals(CMD_REPLY)) {
+			createDraftForReply(session.getUserID(), 1, directives);
+		} else if (command.equals(CMD_FORWARD)) {
+			createDraftForForward(session.getUserID(), 1, directives);
+		} else {
+			return super.executeCommand(command, session, topicmapID, viewmode);
+		}
+		return directives;
+	}
+
+
+
+	// ---------------------------
+	// --- Handling Properties ---
+	// ---------------------------
+
+
+
+	public String getNameProperty() {
+		return PROPERTY_SUBJECT;
+	}
+
+
+
+	// ***************
+	// *** Methods ***
+	// ***************
+
+
+
+	private void sendMail(CorporateDirectives directives) throws DeepaMehtaException {
+		Hashtable data = getProperties();
+		if (!data.get(PROPERTY_STATUS).equals(EMAIL_STATE_DRAFT)) {
+			return;
+		}
+		LocateRcptsResult locRes = locateRcpts();
+		ArrayList aRcpts = locRes.aRcpts;
+		if (aRcpts.size() == 0) {
+			return;
+		}
+		String author = (String) data.get(PROPERTY_FROM);
+		System.out.println(">>> EmailTopic.sendMail(): " + this + ", author=\"" + author + "\"");
+		Properties mprops = new Properties();
+		mprops.put("mail.smtp.host", as.getSMTPServer());	// throws DME
+		javax.mail.Session session = javax.mail.Session.getDefaultInstance(mprops, null);
+		session.setDebug(true);
+		try {
+			MimeMessage msg = new MimeMessage(session);
+			msg.setFrom(new InternetAddress(author));
+			InternetAddress[] address = new InternetAddress[aRcpts.size()];
+			for (int i = 0; i < aRcpts.size(); i++) {
+				address[i] = new InternetAddress((String)aRcpts.get(i));
+			}
+			msg.setRecipients(Message.RecipientType.TO, address);
+			String subject = (String) data.get(PROPERTY_SUBJECT);
+			if (subject == null || subject.equals("")) {
+				subject = TEXT_NO_SUBJECT;
+			}
+			msg.setSubject(subject);
+			Date d = new Date();
+			msg.setSentDate(d);			
+			String msgText = (String) data.get(PROPERTY_TEXT);
+			addAttachs(msgText, msg);
+			//
+			Transport.send(msg);
+			//
+			setProperty(PROPERTY_STATUS, EMAIL_STATE_SENT);
+			setProperty(PROPERTY_DATE, d.toString());
+		} catch (MessagingException me) {
+			throw new DeepaMehtaException(me.toString());
+		}
+	}
+
+	public static void sendMail(String smtpServer, String from, String to, String subject, String body) {
+		Properties props = new Properties();
+		props.put("mail.smtp.host", smtpServer);
+		javax.mail.Session session = javax.mail.Session.getDefaultInstance(props);	// ### authenticator=null
+		session.setDebug(true);	// ###
+		try {
+			MimeMessage msg = new MimeMessage(session);
+			msg.setFrom(new InternetAddress(from));
+			msg.setRecipients(Message.RecipientType.TO, to);
+			if (subject == null || subject.equals("")) {
+				subject = TEXT_NO_SUBJECT;
+			}
+			msg.setSubject(subject);
+			msg.setText(body);
+			msg.setSentDate(new Date());
+			//
+			Transport.send(msg);
+		} catch (MessagingException me) {
+			throw new DeepaMehtaException(me.toString());
+		}
+	}
+
+	// ---
+
+	public LocateRcptsResult locateRcpts() {
+		LocateRcptsResult res = new LocateRcptsResult();
+		ArrayList aOut = new ArrayList();
+		res.aRcpts = aOut;
+		res.bUsedAttached = false;
+		HashSet setCheck = new HashSet();
+		String sRcpts = getProperty(PROPERTY_TO);
+		if (sRcpts != null) {
+			StringTokenizer st = new StringTokenizer(sRcpts, ",;");
+			while (st.hasMoreTokens()) {
+				String val = st.nextToken();
+				String key = new String(val);
+				key = key.toLowerCase().trim();
+				if (!setCheck.contains(key)) {
+					setCheck.add(key);
+					aOut.add(val);
+				}
+			}
+		}
+		Enumeration eRcpts = as.getRelatedTopics(getID(), ASSOCTYPE_EMAILADDRESSEE, 2).elements();
+		while (eRcpts.hasMoreElements()) {
+			BaseTopic user = (BaseTopic) eRcpts.nextElement();
+			String val = as.getEmailAddress(user.getID());
+			if ((val != null) && (val.length() > 0)) {
+				String key = new String(val);
+				key = key.toLowerCase().trim();
+				if (!setCheck.contains(key)) {
+					setCheck.add(key);
+					aOut.add(val);
+					res.bUsedAttached = true;
+				}
+			}
+		}
+		return res;
+	}
+	
+	public void addAttachs(String msgText, MimeMessage msg) throws MessagingException {
+		Enumeration docs = as.getRelatedTopics(getID(), ASSOCTYPE_ATTACHEMENT, 1).elements();
+		Multipart mp = null;
+		while (docs.hasMoreElements()) {
+			BaseTopic doc = (BaseTopic)docs.nextElement();
+			if (doc.getType().equals(TOPICTYPE_DOCUMENT)) {
+				String sFileName = as.getTopicProperty(doc.getID(), doc.getVersion(), "File");
+				String sFile = FILESERVER_DOCUMENTS_PATH + sFileName;
+				MimeBodyPart mbp = new MimeBodyPart();
+				FileDataSource ds = new FileDataSource(sFile);
+				DataHandler dh = new DataHandler(ds);
+				mbp.setDataHandler(dh);
+				String sFileDoc = doc.getName();
+				if ((sFileDoc != null) && !sFileDoc.equals("")){
+					mbp.setFileName(sFileDoc);
+				} else {
+					mbp.setFileName(sFileName);
+				}
+				if (mp == null) {
+					mp = new MimeMultipart();
+					MimeBodyPart mbpText = new MimeBodyPart();
+					mbpText.setContent(msgText, "text/plain");
+					mp.addBodyPart(mbpText);
+				}
+				mp.addBodyPart(mbp);
+			}
+		}
+		if (mp != null) {
+			msg.setContent(mp);
+		} else {
+			msg.setContent(msgText, "text/plain");
+		}
+	}
+
+	public void createDraftForReply(String userID, int userVersion, CorporateDirectives directives) {
+		Hashtable data = getProperties();
+		if (!data.get(PROPERTY_STATUS).equals(EMAIL_STATE_RECEIVED)) {
+			return;
+		}
+		String rcpts = (String)data.get("AuthorAddress");
+		String author = as.getEmailAddress(userID);		// ### null
+		String subject = "RE:" + (String)data.get(PROPERTY_SUBJECT);
+		String date = "";
+		String msgText = formatPassedMsgText(data, "     ");
+		String topicID = as.cm.getNewTopicID();
+		as.cm.createTopic(topicID, 1, TOPICTYPE_EMAIL, 1, subject);
+		Hashtable elementData = new Hashtable();
+		elementData.put(PROPERTY_FROM, author);
+		elementData.put(PROPERTY_TO, rcpts);
+		elementData.put(PROPERTY_SUBJECT, subject);
+		elementData.put("UID", "0");
+		elementData.put(PROPERTY_STATUS, EMAIL_STATE_DRAFT);
+		elementData.put(PROPERTY_DATE, date);
+		elementData.put(PROPERTY_TEXT, msgText);
+		as.cm.setTopicData(topicID, 1, elementData);
+		String assocID = as.cm.getNewAssociationID();
+		as.cm.createAssociation(assocID, 1, ASSOCTYPE_ASSOCIATION, 1, topicID, 1, userID, 1);
+		PresentableTopic presTopic = new PresentableTopic(topicID, 1, TOPICTYPE_EMAIL, 1, subject, getID(), "");
+		directives.add(DIRECTIVE_SHOW_TOPIC, presTopic, Boolean.TRUE, "");
+	}
+	
+	public void createDraftForForward(String userID, int userVersion, CorporateDirectives directives) {
+		Hashtable data = getProperties();
+		if (!data.get(PROPERTY_STATUS).equals(EMAIL_STATE_RECEIVED) &&
+			!data.get(PROPERTY_STATUS).equals(EMAIL_STATE_SENT)) {
+			return;
+		}
+		String rcpts = "";
+		String author = as.getEmailAddress(userID);		// ### null
+		String subject = "FW:" + (String)data.get(PROPERTY_SUBJECT);
+		String date = "";
+		String msgText = formatPassedMsgText(data, "");
+		String topicID = as.cm.getNewTopicID();
+		as.cm.createTopic(topicID, 1, TOPICTYPE_EMAIL, 1, subject);
+		Hashtable elementData = new Hashtable();
+		elementData.put(PROPERTY_FROM, author);
+		elementData.put(PROPERTY_TO, rcpts);
+		elementData.put(PROPERTY_SUBJECT, subject);
+		elementData.put("UID", "0");
+		elementData.put(PROPERTY_STATUS, EMAIL_STATE_DRAFT);
+		elementData.put(PROPERTY_DATE, date);
+		elementData.put(PROPERTY_TEXT, msgText);
+		as.cm.setTopicData(topicID, 1, elementData);
+		String assocID = as.cm.getNewAssociationID();
+		as.cm.createAssociation(assocID, 1, ASSOCTYPE_ASSOCIATION, 1, topicID, 1, userID, userVersion);
+		Vector vAssocs = copyAttachsAssocs(topicID);
+		PresentableTopic presTopic = new PresentableTopic(topicID, 1, TOPICTYPE_EMAIL, 1, subject, getID(), "");
+		directives.add(DIRECTIVE_SHOW_TOPIC, presTopic, Boolean.TRUE, "");
+		showAssocs(vAssocs, directives);		
+	}
+	
+	public Vector copyAttachsAssocs(String topicID) {
+		BaseTopic attdoc = null;
+		Vector vAssocs = new Vector();
+		Enumeration attachs = as.getRelatedTopics(getID(), ASSOCTYPE_ATTACHEMENT, 1).elements();
+		while (attachs.hasMoreElements()) {
+			attdoc = (BaseTopic)attachs.nextElement();
+			if (attdoc.getType().equals(TOPICTYPE_DOCUMENT)) {
+				String assocID = as.cm.getNewAssociationID();
+				as.cm.createAssociation( assocID, 1, ASSOCTYPE_ATTACHEMENT, 1, attdoc.getID(), 1, topicID, 1);
+				PresentableAssociation presAssoc = new PresentableAssociation(
+					assocID, 1, ASSOCTYPE_ATTACHEMENT, 1, "", attdoc.getID(), 1, topicID, 1);
+				vAssocs.add(presAssoc);
+			}
+		}
+		return vAssocs;
+	}
+
+	public void showAssocs(Vector vAssocs, CorporateDirectives directives) {
+		Enumeration assocs = vAssocs.elements();
+		while (assocs.hasMoreElements()) {
+			PresentableAssociation presAssoc = (PresentableAssociation) assocs.nextElement();
+			directives.add(DIRECTIVE_SHOW_ASSOCIATION, presAssoc, Boolean.TRUE, "");
+		}		
+	}
+	
+	public String formatPassedMsgText(Hashtable data, String sIndent) {
+		String sTextOut = "\n" + sIndent +"-----Original Message:-----\n";
+		String sHeader = formatMsgHeaderAbstract(data, sIndent);
+		sTextOut += sHeader;
+		sTextOut += "\n";
+		String sMsgOrig = (String)data.get(PROPERTY_TEXT);
+		sTextOut += indentText(sMsgOrig, sIndent);
+		return sTextOut;
+	}
+	
+	public String formatMsgHeaderAbstract(Hashtable data, String sIndent) {
+		String sTextOut = new String();
+		sTextOut += sIndent + "From:\t" + (String) data.get(PROPERTY_FROM) + "\n";
+		sTextOut += sIndent + "Sent:\t" + (String) data.get(PROPERTY_DATE) + "\n";
+		sTextOut += sIndent + "To:\t" + (String) data.get(PROPERTY_TO) + "\n";
+		sTextOut += sIndent + "Subject:\t" + (String) data.get(PROPERTY_SUBJECT) + "\n";
+		return sTextOut;
+	}
+	
+	public String indentText(String sTextIn, String sIndent) {
+		String sTextOut = "";
+		boolean bIndent = true;
+		StringTokenizer st = new StringTokenizer(sTextIn, "\n\r", true);
+		while (st.hasMoreTokens()) {
+			String s = st.nextToken();
+			if (bIndent) {
+				bIndent = false;
+				sTextOut += sIndent;
+			}
+			if (s.charAt(0) == '\n') {
+				bIndent = true;
+			}
+			sTextOut += s;
+		}
+		return sTextOut;
+	}
+}

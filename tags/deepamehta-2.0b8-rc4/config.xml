@@ -1,0 +1,65 @@
+<project name="DeepaMehta Config file">
+	<condition property="dm.base-dir" value=".">
+		<not>
+			<isset property="dm.base-dir" />
+		</not>
+	</condition>
+
+	<property name="config.properties" value="${dm.base-dir}/config.properties" />
+
+	<property file="${config.properties}" />
+	<property file="${dm.base-dir}/build.properties" />
+	<property file="${config}/config.properties" />
+	<property file="${config}/build.properties" />
+	<property file="${dm.instance.config-property-file}" />
+	<property file="${dm.instance.property-file}" />
+	<property file="${dm.instance.build-property-file}" />
+
+	<property name="db.type.property-file" value="${config}/db-${db.type}.properties" />
+
+	<property file="${db.type.property-file}" />
+
+	<property name="main-targets" value="defaultinstall" />
+
+	<path id="dblibs">
+		<fileset dir="${dm.base-dir}">
+			<include name="${db.libs}" />
+		</fileset>
+	</path>
+	<path id="javalibs">
+		<fileset dir="${dm.base-dir}">
+			<include name="${db.libs}" />
+		</fileset>
+		<pathelement location="${dm.base-dir}/${libpath}/servlet.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/mail.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/activation.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/jndi.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/batik.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/fop.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/xml4j.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/avalon-framework.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/commons-fileupload-1.0.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/googleapi.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/spring-core.jar" />
+		<pathelement location="${dm.base-dir}/${libpath}/commons-logging.jar" />
+	</path>
+	<pathconvert property="jarclasspath" pathsep=" " refid="javalibs">
+		<!-- The classpath inside the .JAR archive is always interpreted relative to the location
+		     of the archive itself. Thus, if the archive resides in install/client/somename.jar and
+		     the libs reside in libs/, the JRE has to look in ../../libs/. The following option
+		     takes care of this. -->
+		<map from="${dm.base-dir}/${libpath}" to="../../libs" />
+	</pathconvert>
+
+	<condition property="do.web.deploy" value="true">
+		<istrue value="${web.deploy.do}" />
+	</condition>
+
+	<condition property="dont.db.ask" value="true">
+		<istrue value="${db.ask.dont}" />
+	</condition>
+
+	<taskdef resource="org/apache/tools/ant/taskdefs/antinput.properties" />
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+	<taskdef name="for" classname="net.sf.antcontrib.logic.ForTask" />
+</project>
