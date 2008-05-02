@@ -1,0 +1,13 @@
+<project name="DeepaMehta-db-asksyspass">
+	<condition property="ask.abort">
+		<or>
+			<istrue value="${withsyspass}" />
+			<isset property="do.db.abort" />
+		</or>
+	</condition>
+	<target name="-asksyspass" unless="ask.abort">
+		<var name="return.syspass" unset="true" />
+		<extendedinput message="Please enter the database ${db.sysuser} password:" addproperty="return.syspass" inputhandler="org.apache.tools.ant.input.PasswordInputHandler" />
+		<!--input message="Please enter the database ${db.sysuser} password: " addproperty="return.syspass" /-->
+	</target>
+</project>

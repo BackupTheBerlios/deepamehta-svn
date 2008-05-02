@@ -1,0 +1,45 @@
+td {
+	font-family: Lucida Grande;
+	font-size: 9px;
+
+	padding: 0px;
+
+	border-style: solid;
+	border-width: 1px;
+	border-color: #CCCCCC;
+
+}
+
+.appointment {
+	background: #FFFFFF;
+}
+
+/* Month View */
+
+ul {
+	margin-top: 0px;
+	margin-left: 12px;
+}
+
+.out-of-range {
+	background: #CCCCCC;
+}
+
+.year-and-month {
+	font-size: 10px;
+	text-align: center;
+	border-width: 0px;
+	padding: 4px;
+}
+
+.weekday {
+	font-size: 10px;
+	text-align: center;
+	border-width: 0px;
+	padding: 4px;
+}
+
+.day-of-month {
+	font-size: 10px;
+	text-align: right;
+}

@@ -1,0 +1,6 @@
+<project name="DeepaMehta-db-createdb-MKDIR" >
+	<import file="createdb-ask.xml"/>
+	<target name="-createdb" depends="-askcreatedb" unless="do.createdb.abort">
+		<mkdir dir="${db.hsqldb.base-path}"/>
+	</target>
+</project>

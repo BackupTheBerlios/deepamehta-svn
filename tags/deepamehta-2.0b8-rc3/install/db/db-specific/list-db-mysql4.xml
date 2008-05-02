@@ -1,0 +1,29 @@
+<project name="DeepaMehta-db-listdb-mysql4">
+	<import file="asksyspass.xml" />
+	<target name="-listdb" depends="-asksyspass">
+		<path id="dblibs">
+			<fileset dir="${dm.base-dir}">
+				<include name="${db.libs}" />
+			</fileset>
+		</path>
+		<if>
+			<isset property="return.syspass" />
+			<then>
+				<var name="db.syspass" value="${return.syspass}" />
+			</then>
+		</if>
+		<trycatch property="exceptionProp">
+			<try>
+				<echo>Existing databases:</echo>
+				<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.syspass}" classpathref="dblibs" print="true" showheaders="false" onerror="continue">
+					SHOW DATABASES;
+				</sql>
+			</try>
+			<catch>
+				<echo message="${exceptionProp}" />
+				<var name="db.syspass" unset="true" />
+				<var name="withsyspass" unset="true" />
+			</catch>
+		</trycatch>
+	</target>
+</project>

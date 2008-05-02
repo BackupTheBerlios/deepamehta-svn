@@ -1,0 +1,57 @@
+<project name="LDAP" default="jar" basedir=".">
+
+	<description>
+		LDAP
+	</description>
+
+	<property name="jar" value="LDAPTopics.jar"/>
+	<property name="build" location="build"/>
+
+	<property name="dm.base-dir" location="../../.." />
+
+	<import file="${dm.base-dir}/config.xml" />
+
+	<target name="init" description="create build directory">
+		<mkdir dir="${build}"/>
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
+			<classpath>
+				<pathelement location="${server}/DeepaMehtaService.jar"/>
+				<pathelement location="${server}/DeepaMehtaTopics.jar"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+   	    <jar jarfile="${jar}" basedir="${build}">
+			<include name="de/deepamehta/topics/*.class" />
+		</jar>
+	</target>
+
+	<target name="build" depends="jar"/>
+
+	<target name="cleanup" description="remove build directory">
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${build}"/>
+		</delete>
+	</target>
+
+	<target name="-strip">
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="src"/>
+		</delete>
+	</target>
+
+	<target name="install">
+		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
+			<fileset dir="${examples}">
+				<include name="ldap/ldap.sql" />
+			</fileset>
+			<fileset dir="${db-specific}">
+				<include name="${db.close-session}" />
+			</fileset>
+		</sql>
+	</target>
+</project>
