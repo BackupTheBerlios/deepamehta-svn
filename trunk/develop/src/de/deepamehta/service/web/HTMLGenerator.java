@@ -31,13 +31,12 @@ import java.util.Vector;
 /**
  * <p>
  * <hr>
- * Last sourcecode change: 15.11.2007 (2.0b8)<br>
- * Last documentation update: 16.9.2002 (2.0a16-pre3)<br>
+ * Last sourcecode change: 04.05.2008 (2.0b8)<br>
+ * Last documentation update: 04.05.2008 (2.0b8-rc3)<br>
  * J&ouml;rg Richter / Malte Rei&szlig;ig<br><br>
  * jri@freenet.de / mre@deepamehta.de
  */
 public class HTMLGenerator implements DeepaMehtaConstants {
-
 
 
 	// *************
@@ -269,13 +268,28 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		//
 		return html.toString();
 	}
-	// ---
+
+	// --- info for TopicBean (3 forms)
 	
 	public String info(TopicBean topicBean) {
 		return info(topicBean, DeepaMehtaConstants.BEAN_LAYOUT_2COLUMN);
 	}
 	
 	public String info(TopicBean topicBean, int layoutStyle) {
+		return info(topicBean, layoutStyle, false, new Action[0]);
+	}
+	
+	/**
+	 * Uses html action on infoBoxField with a given action name and topicBeanID
+	 * At the moment works just with BEAN_LAYOUT_BOX on infoBoxFields
+	 * 	 * 
+	 * @param topicBean object to be rendered
+	 * @param layoutStyle default is: <code>BEAN_LAYOUT_BOX</code>; others are <code>BEAN_LAYOUT_2COLUMN; BEAN_LAYOUT_FLOW</code>;
+	 * @param multiLink link/action flag, just works with layoutstyle BEAN_LAYOUT_BOX
+	 * @param actions at the moment actions[0].name and topicBeanID are appended into a topicname link
+	 * @return
+	 */
+	public String info(TopicBean topicBean, int layoutStyle, boolean multiLink, Action[] actions) {
 		StringBuffer html = new StringBuffer("");
 		// don´t want to touch the original info method, resulting in more redundancy
 		if (layoutStyle == DeepaMehtaConstants.BEAN_LAYOUT_BOX) {
@@ -285,7 +299,8 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 			while (e.hasMoreElements()) {
 				TopicBeanField field = (TopicBeanField) e.nextElement();
 				// specific field render method
-				infoBoxField(field, html);
+				// delegate actions
+				infoBoxField(field, html, multiLink, actions);
 			}
 			html.append("</div><br/> \r");
 			return html.toString();
@@ -314,6 +329,64 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		} else {
 			throw new DeepaMehtaException("unxepected Bean Layout: " + layoutStyle);
 		}
+	}
+	
+	private void infoBoxField(TopicBeanField field, StringBuffer html) {
+		this.infoBoxField(field, html, false, new Action[0]);
+	}
+	
+	/**
+	 * Renders the specific TopicBeanField with actionLink provided for the topicBeanID 
+	 * This could use the actionsButtons method to inherit more actions right nearby the row of the topic
+	 * 
+	 * @param field
+	 * @param html
+	 * @param multiLink provided link action flag
+	 * @param actions actions[0].name and topicBeanID are used for a href
+	 */
+	private void infoBoxField(TopicBeanField field, StringBuffer html, boolean multiLink, Action[] actions) {
+		// special field render method for Modern Box Layout
+		html.append("<span class=\"label\"> " + field.name + ": </span>");
+		String color = "transparent";
+		String content = "value";
+		switch (field.type) {
+		case TopicBeanField.TYPE_SINGLE:
+			if (field.value != null) {
+				String text = field.value;
+				text = DeepaMehtaUtils.emailToHtml(text);
+				text = DeepaMehtaUtils.weblinksToHtml(text);
+				text = DeepaMehtaUtils.replaceLF(text);
+				html.append("<span class=\"content\">"
+		            			+ text + "<br>" +
+							"</span>\r");
+			}
+			break;
+		case TopicBeanField.TYPE_MULTI:
+			Enumeration e = field.values.elements();
+			html.append("<div class=\"multiBox\" id=\"containerBox\">");
+			while (e.hasMoreElements()) {
+				BaseTopic topic = (BaseTopic) e.nextElement();
+				html.append("<span class=\"content\">");
+				//parse for links
+				String text = topic.getName();
+				text = DeepaMehtaUtils.emailToHtml(text);
+				text = DeepaMehtaUtils.weblinksToHtml(text);
+				// link action executed through action name and id appension to the request url 
+				// ### may use this also for the other 2 layout modes
+				if (!multiLink) {
+					html.append(imageTag(topic) + " " + text + "<br>");
+				} else {
+					// take the first action in the actions array and take the name for the link
+					html.append(imageTag(topic)  + " <a href=\"controller?action=" + actions[0].name + "&id=" + topic.getID() + "\">" + text + "</a><br>");
+				}
+				html.append("</span>");
+			}
+			html.append("</div>");
+			break;
+		default:
+			throw new DeepaMehtaException("unexpected topic bean field type: " + field.type);
+		}
+		html.append("<br/>\r");
 	}
 	
 	private void infoFlowField(TopicBeanField field, StringBuffer html) {
@@ -349,44 +422,6 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		}
 		html.append("<br/>\r");
 	}	
-	
-	private void infoBoxField(TopicBeanField field, StringBuffer html) {
-		// special field render method for Modern Box Layout
-		html.append("<span class=\"label\"> " + field.name + ": </span>");
-		String color = "transparent";
-		String content = "value";
-		switch (field.type) {
-		case TopicBeanField.TYPE_SINGLE:
-			if (field.value != null) {
-				content = field.value; 
-				content = DeepaMehtaUtils.emailToHtml(content);
-				content = DeepaMehtaUtils.weblinksToHtml(content);
-				content = DeepaMehtaUtils.replaceLF(content);
-				html.append("<span class=\"content\">"
-				            	+ content + "<br>" +
-							"</span>");
-			}
-			break;
-		case TopicBeanField.TYPE_MULTI:
-			Enumeration e = field.values.elements();
-			html.append("<div class=\"multiBox\" id=\"containerBox\">");
-			while (e.hasMoreElements()) {
-				BaseTopic topic = (BaseTopic) e.nextElement();
-				html.append("<span class=\"content\">");
-				//parse for links
-				String text = topic.getName();
-				text = DeepaMehtaUtils.emailToHtml(text);
-				text = DeepaMehtaUtils.weblinksToHtml(text);
-				html.append(imageTag(topic) + " " + text + "<br>");
-				html.append("</span>");
-			}
-			html.append("</div>");
-			break;
-		default:
-			throw new DeepaMehtaException("unexpected topic bean field type: " + field.type);
-		}
-		html.append("<br/>\r");
-	}
 
 	private void info2ColumnField(TopicBeanField field, StringBuffer html) {
 		// special field render method for Table 2 Column Layout
