@@ -103,23 +103,6 @@ public class KriteriumTopic extends LiveTopic implements KS {
 		boolean hasSubCriteria = !getSubCriteria().isEmpty();
 		boolean hasRelatedDocuments = !getRelatedDocuments().isEmpty();
 		boolean addHideDelete = isSubCriteria();
-		/* ### if (insideTemplate) {
-			// ### Note: a kriterium can only be renamed inside a template
-			// commands.addRenameTopicCommand(this);	### obsolete
-			// ### KompetenzsternTopic.addSetOrderCommand(this, commands, directives, as); ### obsolete
-		} */
-		// ### compare to BewertungsebeneTopic.contextCommands()
-		/* ### if (!session.getUserPreferences().showSidebar) {
-			Vector moreHiddenProps = new Vector();
-			if (insideTemplate) {
-				moreHiddenProps.addElement(PROPERTY_DESCRIPTION);
-			} else {
-				moreHiddenProps.addElement(PROPERTY_NAME);
-			}
-			if (commands.addTopicPropertyCommands(this, moreHiddenProps, session)) {
-				commands.addSeparator();
-			}
-		} */
 		//
 		if (!insideTemplate) {
         	// --- Unterkriterien anzeigen ---

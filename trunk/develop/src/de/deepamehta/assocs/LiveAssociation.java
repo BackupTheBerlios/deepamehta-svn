@@ -143,6 +143,7 @@ public class LiveAssociation extends BaseAssociation implements DeepaMehtaConsta
 
 
 
+	// ### compare to LiveTopic.nameChanged()
 	public CorporateDirectives nameChanged(String name) {
 		CorporateDirectives directives = new CorporateDirectives();
 		directives.add(DIRECTIVE_SET_ASSOC_NAME, getID(), name, new Integer(getVersion()));

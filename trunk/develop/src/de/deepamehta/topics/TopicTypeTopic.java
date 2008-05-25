@@ -27,7 +27,7 @@ import java.util.Hashtable;
  * A Topic Type.
  * <p>
  * <hr>
- * Last functional change: 28.10.2007 (2.0b8)<br>
+ * Last functional change: 20.5.2008 (2.0b8)<br>
  * Last documentation update: 29.11.2000 (2.0a7)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -131,39 +131,30 @@ public class TopicTypeTopic extends TypeTopic {
 	/**
 	 * @see		de.deepamehta.service.ApplicationService#changeTopicName
 	 */
-	public CorporateDirectives nameChanged(String name, String topicmapID, String viewmode) {
-		// change name of this topic type
-		CorporateDirectives directives = super.nameChanged(name, topicmapID, viewmode);
+	public CorporateDirectives nameChanged(String name, String topicmapID, Session session) {
+		// >>> compare to UserTopic.nameChanged()
+		// >>> compare to WorkspaceTopic.nameChanged()
+		//
+		CorporateDirectives directives = super.nameChanged(name, topicmapID, session);
 		//
 		if (isSearchType()) {
-			System.out.println("> TopicTypeTopic.nameChanged(): " + this +
-				" is already a search type -- no further search type renamed");
+			System.out.println("> TopicTypeTopic.nameChanged(): " + this + " is a search type -- do nothing");
 			return directives;
 		}
-		// --- get search type ---
-		BaseTopic containerType = as.getContainerType(getID());
-		// error check
-		if (containerType == null) {
+		// --- rename search type ---
+		BaseTopic searchType = as.getSearchType(getID());
+		// error check ### move to getSearchType()
+		if (searchType == null) {
 			System.out.println("*** TopicTypeTopic.nameChanged(): the search-" +
 				"type of type " + this + " is unknown -- search-type not renamed");
 			directives.add(DIRECTIVE_SHOW_MESSAGE, "The search-type of type \"" + getName() +
 				"\" is unknown", new Integer(NOTIFICATION_WARNING));
 			return directives;
 		}
-		// --- change name of search type ---
-		try {
-			String containerName = as.containerTypeName(name);
-			TopicTypeTopic containerTypeProxy = (TopicTypeTopic) as.getLiveTopic(containerType);
-			directives.add(containerTypeProxy.nameChanged(containerName, topicmapID, viewmode));
-			// set name
-			cm.setTopicData(containerType.getID(), 1, PROPERTY_NAME, containerName);
-		} catch (DeepaMehtaException e) {
-			// ### should be avoided
-			System.out.println("*** TopicTypeTopic.nameChanged(): " + e.getMessage() +
-				" -- search type only renamed in corporate memory");
-			cm.changeTopicName(containerType.getID(), containerType.getVersion(), name);
-			// ### name property
-		}
+		//
+		String searchTypeName = as.searchTypeName(name);
+		directives.add(as.setTopicProperty(searchType, PROPERTY_NAME, searchTypeName, topicmapID, session));
+		//
 		return directives;
 	}
 
@@ -483,9 +474,9 @@ public class TopicTypeTopic extends TypeTopic {
 	 */
 	private void createSearchType(String topicmapID, Session session, CorporateDirectives directives) throws DeepaMehtaException {
 		String containerTypeID = as.getNewTopicID();
-		String containerTypeName = as.containerTypeName(getName());		// may throw
+		String searchTypeName = as.searchTypeName(getName());		// may throw
 		// Note: the search type must be created directly in CM, especially evoke() is not called
-		cm.createTopic(containerTypeID, 1, TOPICTYPE_TOPICTYPE, 1, containerTypeName);
+		cm.createTopic(containerTypeID, 1, TOPICTYPE_TOPICTYPE, 1, searchTypeName);
 		//
 		TypeTopic superType = getSupertype();
 		System.out.println(">>> TopicTypeTopic.createSearchType(): supertype of " + this + " is " + superType);
@@ -497,7 +488,7 @@ public class TopicTypeTopic extends TypeTopic {
 		// associate this type with search type
 		cm.createAssociation(as.getNewAssociationID(), 1, SEMANTIC_CONTAINER_TYPE, 1, containerTypeID, 1, getID(), 1);
 		// set properties of search type
-		cm.setTopicData(containerTypeID, 1, PROPERTY_NAME, containerTypeName);
+		cm.setTopicData(containerTypeID, 1, PROPERTY_NAME, searchTypeName);
 		cm.setTopicData(containerTypeID, 1, PROPERTY_OWNER_ID, session.getUserID());
 	}
 }

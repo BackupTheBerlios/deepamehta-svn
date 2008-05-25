@@ -66,7 +66,7 @@ import java.util.Vector;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last functional change: 25.3.2008 (2.0b8)<br>
+ * Last functional change: 20.5.2008 (2.0b8)<br>
  * Last documentation update: 25.3.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -1526,15 +1526,27 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// ---
 
 	/**
-	 * Triggers the nameChanged() hook of the specified topic.
+	 * Updates the topic name at all 3 spots (memory, database, and client) and triggers the nameChanged() hook.
 	 * <p>
-	 * References checked: 20.4.2008 (2.0b8)
+	 * Note: this is not directly called by application developers but always as a reaction of changed topic properties.
+	 * <p>
+	 * References checked: 20.5.2008 (2.0b8)
 	 *
 	 * @see		#setTopicProperties
 	 */
-	public CorporateDirectives changeTopicName(String topicID, int version, String name, String topicmapID, String viewmode) {
+	private CorporateDirectives changeTopicName(String topicID, int version, String name, String topicmapID, Session session) {
+		LiveTopic topic = getLiveTopic(topicID, version);
+		// update memory
+		topic.setName(name);
+		// update corporate memory (database)
+		cm.changeTopicName(topicID, version, name);
+		// update client
+		CorporateDirectives directives = new CorporateDirectives();
+		directives.add(DIRECTIVE_SET_TOPIC_NAME, topicID, name, new Integer(version));
 		// --- trigger nameChanged() hook ---
-		return getLiveTopic(topicID, version).nameChanged(name, topicmapID, viewmode);
+		directives.add(topic.nameChanged(name, topicmapID, session));
+		//
+		return directives;
 	}
 
 	/**
@@ -1667,6 +1679,13 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 
 
+	// --- setTopicProperty (2 forms) ---
+
+	public CorporateDirectives setTopicProperty(BaseTopic topic, String propName, String propValue,
+																		String topicmapID, Session session) {
+		return setTopicProperty(topic.getID(), topic.getVersion(), propName, propValue, topicmapID, session);
+	}
+
 	/**
 	 * Sets a topic property at application service level.
 	 * <p>
@@ -1675,17 +1694,19 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @see		de.deepamehta.kompetenzstern.topics.KompetenzsternTopic#propertiesChanged
 	 */
 	public CorporateDirectives setTopicProperty(String topicID, int version, String propName, String propValue,
-												String topicmapID, String viewmode, Session session) {
+																		String topicmapID, Session session) {
 		Hashtable props = new Hashtable();
 		props.put(propName, propValue);
 		return setTopicProperties(topicID, version, props, topicmapID, session);
 	}
 
+	// ---
+
 	/**
 	 * Sets topic properties at application service level.
 	 * <p>
-	 * The 4 topic hooks <code>propertiesChangeAllowed()</code>, <code>propertiesChanged()</code>, <code>getNameProperty()</code>,
-	 * and <code>getTopicName()</code> are potentially triggered.
+	 * The 5 topic hooks <code>propertiesChangeAllowed()</code>, <code>propertiesChanged()</code>, <code>getNameProperty()</code>,
+	 * <code>getTopicName()</code>, and <code>nameChanged()</code> are potentially triggered.
 	 * <p>
 	 * References checked: 17.4.2008 (2.0b8)
 	 *
@@ -1709,10 +1730,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			LiveTopic topic = getLiveTopic(topicID, version);	// may throw DME
 			// trigger propertiesChangeAllowed() hook
 			if (topic.propertiesChangeAllowed(oldProps, props, directives)) {
-				// update cm
-				setTopicProperties(topicID, version, props);
-				// --- trigger propertiesChanged() hook ---
-				directives.add(topic.propertiesChanged(props, oldProps, topicmapID, VIEWMODE_USE, session));
+				// update corporate memory (database)
+				cm.setTopicData(topicID, version, props);
 				// --- topic name behavoir ---
 				String name;
 				// trigger getNameProperty() hook
@@ -1724,8 +1743,12 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 					name = topic.getTopicName(props, oldProps);
 				}
 				if (name != null) {
-					directives.add(changeTopicName(topicID, version, name, topicmapID, VIEWMODE_USE));
+					// trigger nameChanged() hook
+					directives.add(changeTopicName(topicID, version, name, topicmapID, session));
 				}
+				// ---
+				// trigger propertiesChanged() hook
+				directives.add(topic.propertiesChanged(props, oldProps, topicmapID, VIEWMODE_USE, session));
 			}
 		} catch (DeepaMehtaException e) {
 			directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(), new Integer(NOTIFICATION_WARNING));
@@ -3570,7 +3593,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @see		#getAllTopics(String typeID, int x, int y)
 	 * @see		de.deepamehta.topics.TopicTypeTopic#nameChanged
 	 */
-	public BaseTopic getContainerType(String typeID) {
+	public BaseTopic getSearchType(String typeID) {
 		Vector types = cm.getRelatedTopics(typeID, SEMANTIC_CONTAINER_TYPE, 1);
 		// error check 1
 		if (types.size() == 0) {
@@ -4389,21 +4412,21 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// ---
 
 	/**
-	 * References checked: 2.10.2002 (2.0a16-pre5)
+	 * References checked: 20.5.2008 (2.0b8)
 	 *
 	 * @see		de.deepamehta.topics.TopicTypeTopic#nameChanged
-	 * @see		de.deepamehta.topics.TopicTypeTopic#createContainerType
+	 * @see		de.deepamehta.topics.TopicTypeTopic#createSearchType
 	 */
-	public String containerTypeName(String typeName) throws DeepaMehtaException {
-		String containerTypeName = typeName + " " + CONTAINER_SUFFIX_NAME;
+	public String searchTypeName(String typeName) throws DeepaMehtaException {
+		String searchTypeName = typeName + " " + CONTAINER_SUFFIX_NAME;
 		// error check
-		int len = containerTypeName.length();
+		int len = searchTypeName.length();
 		if (len > MAX_NAME_LENGTH) {
-			throw new DeepaMehtaException("container type name for \"" + typeName + "\" too long: \"" +
-				containerTypeName + "\", " + len + " characters, maximum is " + MAX_NAME_LENGTH + " characters");
+			throw new DeepaMehtaException("search type name for \"" + typeName + "\" too long: \"" +
+				searchTypeName + "\", " + len + " characters, maximum is " + MAX_NAME_LENGTH + " characters");
 		}
 		//
-		return containerTypeName;
+		return searchTypeName;
 	}
 
 

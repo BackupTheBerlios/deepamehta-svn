@@ -85,7 +85,7 @@ import javax.swing.ImageIcon;
  *     ({@link #importFromFile})</li>
  * </ol>
  * <hr>
- * Last functional change: 3.2.2008 (2.0b8)<br>
+ * Last functional change: 20.5.2008 (2.0b8)<br>
  * Last documentation update: 11.12.2001 (2.0a14-pre4)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -240,9 +240,8 @@ public class TopicMapTopic extends LiveTopic {
 
 
 
-	public CorporateDirectives nameChanged(String name, String topicmapID, String viewmode) {
-		// rename this map
-		CorporateDirectives directives = super.nameChanged(name, topicmapID, viewmode);
+	public CorporateDirectives nameChanged(String name, String topicmapID, Session session) {
+		CorporateDirectives directives = super.nameChanged(name, topicmapID, session);
 		// rename editor
 		directives.add(DIRECTIVE_RENAME_EDITOR, getID(), name);
 		//
@@ -784,7 +783,7 @@ public class TopicMapTopic extends LiveTopic {
 									Session session, CorporateDirectives directives) {
 		TypeTopic typeProxy = as.type(typeID, 1);	// version=1
 		String typeName = typeProxy.getName();
-		BaseTopic containerType = as.getContainerType(typeID);
+		BaseTopic containerType = as.getSearchType(typeID);
 		// error check 1
 		if (containerType == null) {
 			throw new DeepaMehtaException("the container-type of type \"" +

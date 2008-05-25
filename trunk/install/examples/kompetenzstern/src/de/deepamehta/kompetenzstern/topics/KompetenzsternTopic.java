@@ -46,7 +46,7 @@ import java.util.Vector;
  * underlying {@link TemplateTopic Template}, but this isn't completely achieved yet.
  * <p>
  * <hr>
- * Last functional change: 11.9.2007 (2.0b8)<br>
+ * Last functional change: 20.5.2008 (2.0b8)<br>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -358,7 +358,7 @@ public class KompetenzsternTopic extends TopicMapTopic implements KS {
 			newProps.get(PROPERTY_ERFASSER) != null) {
 			// --- set background image ---
 			directives = as.setTopicProperty(getID(), getVersion(), PROPERTY_BACKGROUND_IMAGE,
-				backgroundFilename(kriterien, werte), topicmapID, viewmode, session);
+				backgroundFilename(kriterien, werte), topicmapID, session);
 			checkBackground(directives);
 		} else {
 			directives = super.propertiesChanged(newProps, oldProps, topicmapID, viewmode, session);

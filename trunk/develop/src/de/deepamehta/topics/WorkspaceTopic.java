@@ -28,7 +28,7 @@ import java.util.Vector;
  * this <code>WorkspaceTopic</code> is renamed.
  * <p>
  * <hr>
- * Last functional change: 25.3.2008 (2.0b8)<br>
+ * Last functional change: 20.5.2008 (2.0b8)<br>
  * Last documentation update: 29.4.2001 (2.0a10-pre7)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -118,25 +118,25 @@ public class WorkspaceTopic extends LiveTopic {
 
 
 
-	public CorporateDirectives nameChanged(String name, String topicmapID, String viewmode) {
+	public CorporateDirectives nameChanged(String name, String topicmapID, Session session) {
 		// >>> compare to UserTopic.nameChanged()
+		// >>> compare to TopicTypeTopic.nameChanged()
 		//
-		// change name of this workspace
-		CorporateDirectives directives = super.nameChanged(name, topicmapID, viewmode);
+		CorporateDirectives directives = super.nameChanged(name, topicmapID, session);
 		// rename workspace topicmap
-		BaseTopic workspace = as.getWorkspaceTopicmap(getID(), directives);
-		if (workspace != null) {
-			directives.add(as.getLiveTopic(workspace).nameChanged(name, topicmapID, viewmode));
+		BaseTopic workspaceTopicmap = as.getWorkspaceTopicmap(getID(), directives);
+		if (workspaceTopicmap != null) {
+			directives.add(as.setTopicProperty(workspaceTopicmap, PROPERTY_NAME, name, topicmapID, session));
 		}
 		// rename chat
-		BaseTopic chat = as.getChatboard(this, directives);
-		if (chat != null) {
-			directives.add(as.getLiveTopic(chat).nameChanged(name + " Chats", topicmapID, viewmode));	// ### hardcoded
+		BaseTopic chatboard = as.getChatboard(this, directives);
+		if (chatboard != null) {
+			directives.add(as.setTopicProperty(chatboard, PROPERTY_NAME, name + " Chats", topicmapID, session));	// ### hardcoded
 		}
 		// rename message board
-		BaseTopic board = as.getMessageboard(this, directives);
-		if (board != null) {
-			directives.add(as.getLiveTopic(board).nameChanged(name + " Forum", topicmapID, viewmode));	// ### hardcoded
+		BaseTopic messageboard = as.getMessageboard(this, directives);
+		if (messageboard != null) {
+			directives.add(as.setTopicProperty(messageboard, PROPERTY_NAME, name + " Forum", topicmapID, session));	// ### hardcoded
 		}
 		//
 		return directives;

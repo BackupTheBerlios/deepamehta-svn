@@ -48,7 +48,7 @@ import java.util.Vector;
  * {@link de.deepamehta.service.ApplicationService#initTypeTopic}<br>
  * <p>
  * <hr>
- * Last functional change: 22.1.2007 (2.0b8)<br>
+ * Last functional change: 20.5.2008 (2.0b8)<br>
  * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -597,7 +597,7 @@ public abstract class TypeTopic extends LiveTopic implements Type {
 	 * @see     AssociationTypeTopic#exportTypeDefinition
 	 */
 	protected final TypeTopic getSearchType() throws DeepaMehtaException, AmbiguousSemanticException {
-		BaseTopic containertype = as.getContainerType(getID());
+		BaseTopic containertype = as.getSearchType(getID());
 		return containertype != null ? (TypeTopic) as.getLiveTopic(containertype) : null;	// ### session, directives?
 	}
 

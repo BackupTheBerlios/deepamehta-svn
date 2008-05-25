@@ -27,7 +27,7 @@ import java.util.Vector;
  * with every constructor call).
  * <p>
  * <hr>
- * Last functional change: 17.4.2008 (2.0b8)<br>
+ * Last functional change: 20.5.2008 (2.0b8)<br>
  * Last documentation update: 17.11.2000 (2.0a7-pre3)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -333,7 +333,6 @@ public class CorporateDirectives extends Directives {
 					break;
 				case DIRECTIVE_SET_TOPIC_NAME:
 					topicID = (String) param1;
-					changeTopicName(topicID, ((Integer) param3).intValue(), (String) param2, as);
 					addToSyncList(syncList, topicID);
 					break;
 				case DIRECTIVE_SET_TOPIC_LABEL:
@@ -757,19 +756,6 @@ public class CorporateDirectives extends Directives {
 	}
 
 	// ---
-
-	/**
-	 * Called for {@link #DIRECTIVE_SET_TOPIC_NAME}
-	 *
-	 * @see		#updateCorporateMemory
-	 */
-	private void changeTopicName(String topicID, int version, String name, ApplicationService as) {
-		LiveTopic topic = as.getLiveTopic(topicID, version);
-		// --- change name in live corporate memory ---
-		topic.setName(name);
-		// --- change name in corporate memory ---
-		as.cm.changeTopicName(topicID, version, name);
-	}
 
 	/**
 	 * Called for {@link #DIRECTIVE_SET_ASSOC_NAME}

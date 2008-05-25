@@ -22,7 +22,7 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 25.3.2008 (2.0b8)<br>
+ * Last functional change: 25.5.2008 (2.0b8)<br>
  * Last documentation update: 6.7.2007 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -504,16 +504,13 @@ public class CalendarTopic extends LiveTopic {
 		while (e.hasMoreElements()) {
 			BaseTopic appointment = (BaseTopic) e.nextElement();
 			Hashtable props = as.getTopicProperties(appointment);
-			String name = (String) props.get(PROPERTY_NAME);	// note: appointment.getName() doesn't work here, because the
-			// propertiesChanged() hook is triggered after the properties are updated in CM but _before_ the topic name
-			// is updated in CM.
 			String description = getHTMLBodyContent((String) props.get(PROPERTY_DESCRIPTION));
 			String beginDate = (String) props.get(PROPERTY_BEGIN_DATE);
 			String beginTime = (String) props.get(PROPERTY_BEGIN_TIME);
 			String endDate = (String) props.get(PROPERTY_END_DATE);
 			String endTime = (String) props.get(PROPERTY_END_TIME);
 			html.append("<p>" + timeRange(beginDate, beginTime, endDate, endTime) +
-				" <b>" + name + "</b></p>" + description);
+				" <b>" + appointment.getName() + "</b></p>" + description);
 		}
 		html.append("</body></html>");
 		return html.toString();
@@ -589,12 +586,10 @@ public class CalendarTopic extends LiveTopic {
 			// find free slot for the day (a column)
 			WeekAppointmentModel[] daySlot = findFreeDaySlot(weekAppointmentModel, dayOfWeek, beginSegment, segmentCount);
 			// 1) add beginning segment to model
-			String appointmentName = getProperty(appointment, PROPERTY_NAME);
+			String appointmentName = appointment.getName();
 			AppointmentTopic at = (AppointmentTopic) as.getLiveTopic(appointment);
 			BaseTopic location = at.getLocation();
 			Vector attendees = at.getAttendees();
-			// Note: appointment.getName() doesn't work here, because the propertiesChanged() hook is triggered after
-			// the properties are updated in CM but _before_ the topic name is updated in CM.
 			System.out.println("add appointment \"" + appointmentName + "\"");
 			daySlot[beginSegment] = new WeekAppointmentModel(appointment.getID(), appointmentName, beginTime, location,
 				attendees, segmentCount);
@@ -762,15 +757,12 @@ public class CalendarTopic extends LiveTopic {
 			}
 			// --- add to model ---
 			int dayOfMonth = DeepaMehtaUtils.getDay(beginDate);
-			String appointmentName = getProperty(appointment, PROPERTY_NAME);	// note: appointment.getName() doesn't work here, because the
-			// propertiesChanged() hook is triggered after the properties are updated in CM but _before_ the topic name
-			// is updated in CM.
 			Vector dayModel = monthAppointmentModel[dayOfMonth - 1];
 			if (dayModel == null) {
 				dayModel = new Vector();
 				monthAppointmentModel[dayOfMonth - 1] = dayModel;
 			}
-			dayModel.addElement(new MonthAppointmentModel(appointment.getID(), appointmentName));		// ### could sort appointments by begin time
+			dayModel.addElement(new MonthAppointmentModel(appointment.getID(), appointment.getName()));		// ### could sort appointments by begin time
 		}
 		//
 		return monthAppointmentModel;
@@ -843,10 +835,8 @@ public class CalendarTopic extends LiveTopic {
 		// find free event slot (a row)
 		EventModel[] eventSlot = findFreeEventSlot(eventModel, beginDay, endDay);
 		// 1) add beginning day to model
-		String eventName = getProperty(event, PROPERTY_NAME);
+		String eventName = event.getName();
 		int dayCount = endDay - beginDay + 1;
-		// Note: event.getName() doesn't work here, because the propertiesChanged() hook is triggered after
-		// the properties are updated in CM but _before_ the topic name is updated in CM.
 		System.out.println("add event \"" + eventName + "\"");
 		eventSlot[beginDay] = new EventModel(event.getID(), eventName, dayCount);
 		// 2) add ocupied days to model

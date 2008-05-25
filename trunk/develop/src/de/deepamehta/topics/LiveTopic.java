@@ -47,7 +47,7 @@ import java.util.Vector;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last sourcecode change: 25.3.2008 (2.0b8)<br>
+ * Last sourcecode change: 20.5.2008 (2.0b8)<br>
  * Last documentation update: 3.2.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -261,10 +261,8 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * @see		UserTopic#nameChanged
 	 * @see		WorkspaceTopic#nameChanged
 	 */
-	public CorporateDirectives nameChanged(String name, String topicmapID, String viewmode) {
-		CorporateDirectives directives = new CorporateDirectives();
-		directives.add(DIRECTIVE_SET_TOPIC_NAME, getID(), name, new Integer(getVersion()));
-		return directives;
+	public CorporateDirectives nameChanged(String name, String topicmapID, Session session) {
+		return new CorporateDirectives();
 	}
 
 	/**

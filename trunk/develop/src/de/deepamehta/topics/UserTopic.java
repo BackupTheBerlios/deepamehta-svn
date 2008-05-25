@@ -24,7 +24,7 @@ import java.util.Vector;
  * is renamed.
  * <p>
  * <hr>
- * Last functional change: 25.3.2008 (2.0b8)<br>
+ * Last functional change: 20.5.2008 (2.0b8)<br>
  * Last documentation update: 29.11.2000 (2.0a7)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -94,15 +94,15 @@ public class UserTopic extends PersonTopic {
 
 
 
-	public CorporateDirectives nameChanged(String name, String topicmapID, String viewmode) {
+	public CorporateDirectives nameChanged(String name, String topicmapID, Session session) {
 		// >>> compare to WorkspaceTopic.nameChanged()
+		// >>> compare to TopicTypeTopic.nameChanged()
 		//
-		// change name of this user
-		CorporateDirectives directives = super.nameChanged(name, topicmapID, viewmode);
-		// change name of users personal workspace
-		BaseTopic workspace = as.getWorkspaceTopicmap(getID(), directives);
-		if (workspace != null) {
-			directives.add(as.getLiveTopic(workspace).nameChanged(name, topicmapID, viewmode));
+		CorporateDirectives directives = super.nameChanged(name, topicmapID, session);
+		// rename workspace topicmap (personal workspace)
+		BaseTopic workspaceTopicmap = as.getWorkspaceTopicmap(getID(), directives);
+		if (workspaceTopicmap != null) {
+			directives.add(as.setTopicProperty(workspaceTopicmap, PROPERTY_NAME, name, topicmapID, session));
 		}
 		//
 		return directives;
