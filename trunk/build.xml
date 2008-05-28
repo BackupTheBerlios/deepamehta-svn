@@ -99,10 +99,31 @@
 		</propertyfile>
 	</target>
 	<target name="dropdb" description="drops all databases">
-		<echo message="Uninstalling the DeepaMehta instance '${dm.instance}' now..." />
+		<echo message="Uninstalling the DeepaMehta database '${dm.instance}' now..." />
 		<antcall target="-dropdb" />
 		<!-- example applications -->
 		<antcall target="-uninstallexamples" />
+	</target>
+	<target name="dropinstance">
+		<input2 message="Do you want to drop the instance '${dm.instance}' now?" addproperty="do.drop.now" validargs="y,n" defaultvalue="n" />
+		<if>
+			<equals arg1="${do.drop.now}" arg2="y" />
+			<then>
+				<property name="dont.db.ask" value="true" />
+				<echo message="Uninstalling the DeepaMehta instance '${dm.instance}' now..." />
+				<antcall target="dropdb" />
+				<if>
+					<not>
+						<equals arg1="${do.db.abort}" arg2="true" />
+					</not>
+					<then>
+						<delete>
+							<fileset dir="${config}" includes="config-${dm.instance}.properties" />
+						</delete>
+					</then>
+				</if>
+			</then>
+		</if>
 	</target>
 	<target name="uninstall" description="drops all databases">
 		<echo message="Deleting all DeepaMehta related stuff from your hard disk." />
@@ -171,20 +192,25 @@
 				<fail message="Configuration does not exist!" />
 			</then>
 		</if>
-		<input message="Please enter the new instance name:" addproperty="new.instance.name" defaultvalue="${instance.name}2" />
+		<input message="Please enter the new instance name:" addproperty="return.instance" defaultvalue="${instance.name}2" />
 		<if>
 			<resourcecount when="eq" count="0">
 				<fileset dir="${config}">
-					<include name="build-${new.instance.name}.properties" />
-					<include name="dm-${new.instance.name}.properties" />
+					<include name="build-${return.instance}.properties" />
+					<include name="dm-${return.instance}.properties" />
 				</fileset>
 			</resourcecount>
 			<then>
-				<copy file="${config}/build-${instance.name}.properties" tofile="${config}/build-${new.instance.name}.properties" />
-				<copy file="${config}/dm-${instance.name}.properties" tofile="${config}/dm-${new.instance.name}.properties" />
-				<ant target="install">
-					<property name="dm.instance" value="${new.instance.name}" />
-				</ant>
+				<copy file="${config}/build-${instance.name}.properties" tofile="${config}/build-${return.instance}.properties" />
+				<copy file="${config}/dm-${instance.name}.properties" tofile="${config}/dm-${return.instance}.properties" />
+
+				<property file="${config}/build-${return.instance}.properties" prefix="temporary" />
+				<input message="Please enter the description:" addproperty="new.config.name" defaultvalue="${temporary.config.name}" />
+				<propertyfile file="${config}/build-${returnn.instance}.properties">
+					<entry key="config.name" value="${new.config.name}" />
+				</propertyfile>
+				<antcall target="-config-setup-default-instance">
+				</antcall>
 			</then>
 			<else>
 				<fail message="Configuration does exist already!" />
@@ -293,9 +319,10 @@
 			</fileset>
 		</sql>
 		<property name="abs-client" location="${client}" />
-		<propertyregex property="abs-client-slash" defaultvalue="${abs-client}" input="${abs-client}" regexp="\\" replace="/"/>
+		<propertyregex property="abs-client-slash" defaultvalue="${abs-client}" input="${abs-client}" regexp="\\" replace="/" />
+		<propertyregex property="abs-client-abs" defaultvalue="${abs-client-slash}" input="${abs-client-slash}" regexp="'" replace="${db.single-quote-replacement}" />
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
-			INSERT INTO TopicProp VALUES ('t-corpwebadm', 1, 'Base URL', 'file://${abs-client-slash}/');
+			INSERT INTO TopicProp VALUES ('t-corpwebadm', 1, 'Base URL', 'file://${abs-client-abs}/');
 		</sql>
 		<sql driver="${db.driver}" url="${db.url}" userid="${db.user}" password="${db.password}" classpathref="javalibs" autocommit="${db.autocommit}">
 			<fileset dir="${db}/patches">

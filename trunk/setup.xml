@@ -349,19 +349,28 @@ these files or execute 'run config' again.
 				<propertyregex property="list.instance" input="${list.dm-instance}" regexp="${prefix}-(.*)" select="\1" />
 				<var name="temporary.config.web.compatible" unset="true" />
 				<var name="temporary.config.name" unset="true" />
+				<property file="${path}/config-${list.instance}.properties" prefix="temporary" />
 				<property file="${path}/build-${list.instance}.properties" prefix="temporary" />
 				<if>
-					<or>
-						<not>
-							<isset property="do.web.deploy" />
-						</not>
-						<not>
-							<isfalse value="${temporary.config.web.compatible}" />
-						</not>
-						<not>
-							<isset property="temporary.config.web.compatible" />
-						</not>
-					</or>
+					<and>
+						<or>
+							<not>
+								<isset property="do.web.deploy" />
+							</not>
+							<not>
+								<isfalse value="${temporary.config.web.compatible}" />
+							</not>
+							<not>
+								<isset property="temporary.config.web.compatible" />
+							</not>
+						</or>
+						<or>
+							<not>
+								<istrue value="${installed}"/>
+							</not>
+							<istrue value="${temporary.dm.instance.installed}"/>
+						</or>
+					</and>
 					<then>
 						<if>
 							<not>

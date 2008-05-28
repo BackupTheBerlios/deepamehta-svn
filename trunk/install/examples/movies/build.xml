@@ -167,8 +167,8 @@
 		</condition>
 	</target>
 
-	<target name="-dropmoviesdb" depends="-testmoviessyspass">
-		<ant antfile="${db-specific}/${movies.db.drop-db}" target="-dropdb" inheritrefs="true">
+	<target name="-dropmoviesdb" depends="-testmoviessyspass" unless="do.db.abort">
+		<ant antfile="${db-specific}/${movies.db.drop-db}" target="-dropdb-do" inheritrefs="true">
 			<property name="db.libs" value="${movies.db.libs}" />
 			<property name="db.driver" value="${movies.db.driver}" />
 			<property name="db.sysurl" value="${movies.db.sysurl}" />

@@ -116,7 +116,7 @@
 		</ant>
 	</target>
 
-	<target name="sign" depends="build" description="sign client">
+	<target name="sign" description="sign client">
 		<signjar jar="${client}/DeepaMehtaClient.jar" alias="tomcat" storepass="kspw01" keypass="kspw01" signedjar="${client}/sDeepaMehtaClient.jar" />
 	</target>
 
