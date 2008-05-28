@@ -31,7 +31,7 @@ import java.util.Vector;
 /**
  * <p>
  * <hr>
- * Last sourcecode change: 26.5.2008 (2.0b8)<br>
+ * Last sourcecode change: 27.5.2008 (2.0b8)<br>
  * Last documentation update: 16.9.2002 (2.0a16-pre3)<br>
  * J&ouml;rg Richter / Malte Rei&szlig;ig<br><br>
  * jri@freenet.de / mre@deepamehta.de
@@ -110,7 +110,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		return message.format(args);
 	}
 
-	// --- list (14 forms) ---
+	// --- list (15 forms) ---
 
 	public String list(Vector topics) {
 		return list(topics, null, null, null, null, null, null);
@@ -138,10 +138,6 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		return list(topics, null, propSel, false, null, infoAction, null, null, extraTopics);
 	}
 
-	public String list(Vector topics, String[] propSel, boolean hideSel, String infoAction) {
-		return list(topics, null, propSel, hideSel, null, infoAction, null, null, null);
-	}
-
 	public String list(Vector topics, String[] propSel, Action[] actions, String infoAction) {
 		return list(topics, propSel, actions, infoAction, null);
 	}
@@ -158,14 +154,24 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		return list(topics, selectedID, propSel, false, null, infoAction, infoActionParams, null);
 	}
 
-	public String list(Vector topics, String selectedID, String[] propSel, Action[] actions,
-										String infoAction, String infoActionParams, Hashtable colWidths) {
+	public String list(Vector topics, String selectedID, String[] propSel, boolean hideSel, String infoAction,
+																								boolean doZebraStriping) {
+		return list(topics, selectedID, propSel, hideSel, null, infoAction, null, null, null, doZebraStriping);
+	}
+
+	public String list(Vector topics, String selectedID, String[] propSel, Action[] actions, String infoAction,
+																			String infoActionParams, Hashtable colWidths) {
 		return list(topics, selectedID, propSel, false, actions, infoAction, infoActionParams, colWidths);
 	}
 
-	public String list(Vector topics, String selectedID, String[] propSel, boolean hideSel, Action[] actions,
-									String infoAction, String infoActionParams, Hashtable colWidths) {
+	public String list(Vector topics, String selectedID, String[] propSel, boolean hideSel, Action[] actions, String infoAction,
+																			String infoActionParams, Hashtable colWidths) {
 		return list(topics, selectedID, propSel, hideSel, actions, infoAction, infoActionParams, colWidths, null);
+	}
+
+	public String list(Vector topics, String selectedID, String[] propSel, boolean hideSel, Action[] actions, String infoAction,
+									String infoActionParams, Hashtable colWidths, Hashtable extraTopics) {
+		return list(topics, selectedID, propSel, hideSel, actions, infoAction, infoActionParams, colWidths, extraTopics, false);
 	}
 
 	/**
@@ -173,8 +179,8 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	 *
 	 * @param	topics	list of topics (BaseTopics) or topic IDs (Strings)
 	 */
-	public String list(Vector topics, String selectedID, String[] propSel, boolean hideSel, Action[] actions,
-									String infoAction, String infoActionParams, Hashtable colWidths, Hashtable extraTopics) {
+	public String list(Vector topics, String selectedID, String[] propSel, boolean hideSel, Action[] actions, String infoAction,
+									String infoActionParams, Hashtable colWidths, Hashtable extraTopics, boolean doZebraStriping) {
 		if (topics.size() == 0) {
 			return "";
 		}
@@ -195,7 +201,9 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		for (int i = 0; i < topics.size(); i++) {
 			o = topics.elementAt(i);
 			String topicID = o instanceof BaseTopic ? ((BaseTopic) o).getID() : (String) o;
-   			html.append("<tr valign=\"top\"" + (topicID.equals(selectedID) ? " bgcolor=\"#F0F0F0\"" : "") + ">");
+			String classAttr = topicID.equals(selectedID) ? " class=\"list-highlight\"" : doZebraStriping ?
+				i % 2 == 0 ? " class=\"list-evenrow\"" : " class=\"list-oddrow\"" : "";
+   			html.append("<tr valign=\"top\"" + classAttr + ">");
 			if (extraTopics != null) {
 				extraTopics((Vector) extraTopics.get(topicID), html);
 			}
@@ -285,7 +293,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	
 	public String info(TopicBean topicBean, int layoutStyle) {
 		StringBuffer html = new StringBuffer("");
-		// donå«t want to touch the original info method, resulting in more redundancy
+		// don't want to touch the original info method, resulting in more redundancy
 		if (layoutStyle == DeepaMehtaConstants.BEAN_LAYOUT_BOX) {
 			// render Modern Box Layout
 			html.append("<div class=\"infoContainer\" id=\"container\">\r");
@@ -1174,9 +1182,13 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		}
 		//
 		Vector topics = as.cm.getTopics(relTopicTypeID);	// ### can be very big
-		Vector selectedTopics = as.getRelatedTopics(topicID, assocTypeID, relTopicTypeID, 2,
-			false, true);	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
-		Vector selectedTopicIDs = DeepaMehtaUtils.topicIDs(selectedTopics);
+		// get current topic selection
+		Vector selectedTopicIDs = null;
+		if (topicID != null) {
+			Vector selectedTopics = as.getRelatedTopics(topicID, assocTypeID, relTopicTypeID, 2,
+				false, true);	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
+			selectedTopicIDs = DeepaMehtaUtils.topicIDs(selectedTopics);
+		}
 		//
 		html.append("<tr valign=\"top\"><td><small>" + fieldLabel + "</small></td><td>");
 		html.append("<select name=\"" + prefix + PARAM_RELATION + PARAM_SEPARATOR + rel.id + "\"" +
@@ -1498,8 +1510,11 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		option(option, value, selected, html);
 	}
 
+	/**
+	 * @param	selectedValues	may be <CODE>null</CODE>
+	 */
 	private void option(String option, String value, Vector selectedValues, StringBuffer html) {
-		boolean selected = selectedValues.contains(value != null ? value : option);
+		boolean selected = selectedValues != null ? selectedValues.contains(value != null ? value : option) : false;
 		option(option, value, selected, html);
 	}
 

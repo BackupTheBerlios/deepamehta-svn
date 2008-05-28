@@ -1924,13 +1924,13 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 
 	private PreparedStatement createPreparedStatement(String query, Object[] params) throws SQLException {
 		PreparedStatement stmt = createPreparedStatement(query);
-
+		//
 		for (int i = 0; i < params.length; i++) {
 			Object param = params[i];
 			if (param instanceof String) {
-				stmt.setString(i+1, (String) param);
+				stmt.setString(i + 1, (String) param);
 			} else if (param instanceof Integer) {
-				stmt.setInt(i+1, ((Integer) param).intValue());
+				stmt.setInt(i + 1, ((Integer) param).intValue());
 			} else {
 				throw new RuntimeException("Unknown Object Type " + param.getClass().toString());
 			}
@@ -1938,12 +1938,13 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		return stmt;
 	}
 
+	// ---
 	
 	private Integer i(int i) {
 		return new Integer(i);
 	}
 
-
+	// ---
 
 	/**
 	 * The <CODE>resultSet</CODE> is expected to contain the topic fields aliased as
