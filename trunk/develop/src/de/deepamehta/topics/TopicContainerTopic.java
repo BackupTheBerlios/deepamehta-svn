@@ -151,10 +151,8 @@ public class TopicContainerTopic extends ContainerTopic {
 	}
 
 	protected String getAppearance(String id, String name, Session session, CorporateDirectives directives) {
-		// ### the versions are set to 1
 		// >>> compare to ElementContainerTopic.getAppearance()
-		// ### as.checkLiveTopic(new BaseTopic(id, 1, getContentTypeID(), 1, name), session, directives);
-		return as.getIconfile(id, 1);
+		return as.getIconfile(id, 1);	// ### version=1
 	}
 
 	/**

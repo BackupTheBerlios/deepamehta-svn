@@ -364,6 +364,7 @@
 
 	<target name="patchdb">
 		<echo message="You are about to apply the patch ${patch} the database ${db.name} (user '${db.user}', password '${db.password}')." />
+		<echo message="Databse URL: ${db.url}" />
 		<echo message="If you want patch another database, type 'n' and edit config.xml (section 'Database')" />
 		<echo message="or use command line options -Ddb.name=... -Ddb.user=... -Ddb.password=... -Dpatch=..." />
 		<input message="Continue? " validargs="y,n" addproperty="do.patch" />

@@ -9,10 +9,10 @@ import de.deepamehta.service.Session;
 /**
  * ### This is the entry point for authentification. There is only one topic of this type in
  * the system which is associated to exactly one LoginTopic.
- * <P>
+ * <p>
  * The actual authentification procedure will be managed by the LoginCheck object which
  * is represented by the LoginTopic.
- * <P>
+ * <p>
  * The association is from the authentification source topic to the login topic (type
  * {@link #SEMANTIC_AUTHENTIFICATION_SOURCE}).
  */
@@ -23,30 +23,16 @@ public class AuthentificationSourceTopic extends LiveTopic {
 	}
 
 	/**
-	 * If the login check by the LoginCheck object succeeded, a lookup is performed to
-	 * determine if the user is already represented by a user object. ### If the user is
-	 * logged in for the first time, a new user object with associated personal map
-	 * will be created.
+	 * ### If the login check by the LoginCheck object succeeded, a lookup is performed to
+	 * determine if the user is already represented by a user object.
 	 *
 	 * @see		de.deepamehta.service.InteractionConnection#login
 	 */
 	public BaseTopic loginCheck(String username, String password, Session session) {
 		try {
+			// Check if the user is a registered DeepaMehta user
 			if (loginCheck(username, password)) {
-				// Check if the user is a registered DeepaMehta user already
-				// ### possibly the check isn't sufficient. Must the user exist in the
-				// "Users and Groups" view?
 				BaseTopic user = cm.getTopic(TOPICTYPE_USER, username, 1);
-				/* ### if (user == null) {
-					System.out.println(">>> AuthentificationSourceTopic: register new " +
-						"DeepaMehta user \"" + username + "\"");
-					// register new DeepaMehta user ### also if CM is used for authentification?
-					// ### Note: programatically registered users will not appear in the
-					// "Users and Groups" view
-					user = new BaseTopic(as.getNewTopicID(), 1, TOPICTYPE_USER, 1, username);
-					as.createLiveTopic(user, false, session);
-					as.evokeLiveTopic(user, session, null, null);
-				} */
 				return user;
 			}
 		} catch (Exception e) {

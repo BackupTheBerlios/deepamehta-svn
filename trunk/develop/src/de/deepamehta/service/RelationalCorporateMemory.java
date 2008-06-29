@@ -956,7 +956,8 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 				System.out.println("> (#) " + topicmapID + ":" + topicmapVersion + " " + topicID + ":" + topicVersion +
 					" (" + x + ", " + y + ")");
 			}
-			update("INSERT INTO ViewTopic VALUES (?, ?, ?, ?, ?, ?)", new Object[]{topicmapID, i(topicmapVersion), topicID, i(topicVersion), i(x), i(y)});
+			update("INSERT INTO ViewTopic VALUES (?, ?, ?, ?, ?, ?)", new Object[]{topicmapID, i(topicmapVersion),
+				topicID, i(topicVersion), i(x), i(y)});
 		}
 	}
 
@@ -1075,12 +1076,13 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	}
 
 	/**
+	 * References checked: 24.6.2008 (2.0b8)
+	 *
 	 * @see		ApplicationService#moveTopic
 	 */
 	public void updateViewTopic(String topicmapID, int topicmapVersion, String topicID, int x, int y) {
 		update("UPDATE ViewTopic SET x = ?, y = ? WHERE ViewTopicID = ? AND ViewTopicVersion = ? AND TopicID = ?",
-		       new Object[]{i(x), i(y), topicmapID, i(topicmapVersion), topicID}, IMPLIED_NO);
-		// ### implied ? -- probably IMPLIED_1 ### topic version?
+		       new Object[]{i(x), i(y), topicmapID, i(topicmapVersion), topicID});
 	}
 
 	// ---
@@ -1809,14 +1811,8 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		return count;
 	}
 
-	// --- update (2 forms) ---
+	// --- update (3 forms) ---
 
-	/**
-	 * Executes an INSERT, UPDATE or DELETE statement.
-	 */
-//	private int update(String query) {
-//		return update(query, IMPLIED_1);
-//	}
 	/**
 	 * Executes an INSERT, UPDATE or DELETE statement.
 	 */
@@ -1824,12 +1820,6 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		return update(query, params, IMPLIED_1);
 	}
 
-	/**
-	 * Executes an INSERT, UPDATE or DELETE statement.
-	 */
-//	private int update(String query, int implied) {
-//		return update(query,new Object[0],implied);
-//	}
 	/**
 	 * Executes an INSERT, UPDATE or DELETE statement.
 	 */
@@ -1850,7 +1840,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 			int rowCount = stmt.executeUpdate();
 			if (implied == IMPLIED_1 && rowCount != 1) {
 				System.out.println("*** RelationalCorporateMemory.update(): " +
-					rowCount + " rows updated:\n\"" + stmt + "\"");
+					rowCount + " rows updated while 1 is expected");
 			}
 			return rowCount;
 		} catch (SQLException e) {
@@ -1860,7 +1850,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 				System.out.println(stmt);
 			}
 			return 0;
-		}finally{
+		} finally {
 			try {
 				stmt.close();
 			} catch (SQLException e) {

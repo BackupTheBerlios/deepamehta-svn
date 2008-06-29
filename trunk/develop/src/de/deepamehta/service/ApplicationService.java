@@ -66,7 +66,7 @@ import java.util.Vector;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last functional change: 20.5.2008 (2.0b8)<br>
+ * Last functional change: 24.6.2008 (2.0b8)<br>
  * Last documentation update: 25.3.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -265,20 +265,25 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 
 
-	// ---------------------------------------------
-	// --- Accessing Proxy Topics / Associations ---
-	// ---------------------------------------------
+	// -------------------------------------------------
+	// --- Accessing Live Topics / Live Associations ---
+	// -------------------------------------------------
 
 
 
 	// --- getLiveTopic (4 forms) ---
 
-	public LiveTopic getLiveTopic(String id, int version) throws DeepaMehtaException {
-		return getLiveTopic(id, version, null, null);
+	public LiveTopic getLiveTopic(String topicID, int version) throws DeepaMehtaException {
+		return getLiveTopic(topicID, version, null, null);
 	}
 
-	public LiveTopic getLiveTopic(String id, int version, Session session, CorporateDirectives directives) throws DeepaMehtaException {
-		return checkLiveTopic(id, version, session, directives);
+	public LiveTopic getLiveTopic(String topicID, int version, Session session, CorporateDirectives directives) throws DeepaMehtaException {
+		// error check
+		if (topicID == null) {
+			throw new DeepaMehtaException("null passed as topic ID");
+		}
+		//
+		return checkLiveTopic(topicID, version, session, directives);
 	}
 
 	public LiveTopic getLiveTopic(BaseTopic topic) throws DeepaMehtaException {
@@ -298,7 +303,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	public LiveAssociation getLiveAssociation(BaseAssociation assoc) throws DeepaMehtaException {
 		if (assoc == null) {
-			throw new DeepaMehtaException("null passed to getLiveAssociation()");
+			throw new DeepaMehtaException("null passed instead a BaseAssociation");
 		}
 		return getLiveAssociation(assoc.getID(), assoc.getVersion());
 	}
@@ -321,24 +326,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// ---
 
 	/**
-	 * ### should have parameters "topicID" and "version" instead of "topic"
-	 * <p>
-	 * References checked: 14.12.2001 (2.0a14-pre4)
+	 * References checked: 24.6.2008 (2.0b8)
 	 *
 	 * @param	session		passed to init() hook (init levels 1-3)
 	 *
-	 * @see		#getLoginCheck
-	 * @see		#type
-	 * @see		CorporateCommands#addTopicCommands
-	 * @see		#startSession
-	 * @see		#addGroupWorkspaces
-	 * @see		#addCorporateSpace
-	 * @see		#addViewsInUse
-	 * @see		de.deepamehta.topics.LiveTopic#setDataSource
-	 * @see		de.deepamehta.topics.PropertyTopic#setPropertyDefinition
-	 * @see		de.deepamehta.topics.TopicContainerTopic#getAppearance
-	 * @see		de.deepamehta.topics.TypeTopic#getSupertype
-	 * @see		de.deepamehta.topics.TypeTopic#makeTypeDefinition
+	 * @see		#getLiveTopic(String id, int version, Session session, CorporateDirectives directives)
 	 */
 	private LiveTopic checkLiveTopic(String id, int version, Session session, CorporateDirectives directives)
 																	throws DeepaMehtaException, TopicInitException {
@@ -532,6 +524,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			if (d != null) {
 				directives.add(d);
 			}
+			//
+			newTopic = getLiveTopic(topic);
 			// --- evoke ---
 			// ### Note: a topic is evoked also if init(1) fails. Consider this case:
 			// interactively created datasource topics have no URL and driver set, thus the
@@ -541,7 +535,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			// will trigger evoke, but the topic could already be in CM if revealed before
 			if (evoke) {
 				try {
-					directives.add(evokeLiveTopic(topic, session, topicmapID, viewmode));	// DME, ASE
+					directives.add(newTopic.evoke(session, topicmapID, viewmode));	// DME, ASE
 				} catch (DeepaMehtaException e) {
 					System.out.println("*** ApplicationService.createLiveTopic(): " + e);
 					directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(), new Integer(NOTIFICATION_ERROR));
@@ -551,7 +545,6 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 				}
 			}
 			// --- init(2) and init(3) ---
-			newTopic = getLiveTopic(topic);
 			directives.add(newTopic.init(INITLEVEL_2, session));	// throws TopicInitException
 			directives.add(newTopic.init(INITLEVEL_3, session));	// throws TopicInitException
 		} catch (TopicInitException e) {
@@ -1334,32 +1327,6 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		} catch (AmbiguousSemanticException e) {
 			throw new TopicInitException(e.getMessage());
 		}
-	}
-
-	// ---
-
-	/**
-	 * Evokes the specified live topic.
-	 * <p>
-	 * Accesses the specified topic in live corporate memory and triggers its
-	 * {@link de.deepamehta.topics.LiveTopic#evoke evoke()} hook with the
-	 * specified parameters.
-	 *
-	 * @throws	DeepaMehtaException, AmbiguousSemanticException. Exceptions occurring
-	 *			while topic evocation are propagated.
-	 *
-	 * @see		CorporateDirectives#evokeLiveTopic
-	 * @see		CorporateDirectives#createProxyTypeTopic
-	 * @see		CorporateDirectives#changeTopicType
-	 * @see		### de.deepamehta.topics.AuthentificationSourceTopic#loginCheck
-	 * @see		### de.deepamehta.topics.CorporateSearchTopic#addContainerByType
-	 * @see		### de.deepamehta.topics.CorporateSearchTopic#createCopyOfSearchTopic
-	 */
-	public CorporateDirectives evokeLiveTopic(BaseTopic topic, Session session,
-									String topicmapID, String viewmode) throws
-									DeepaMehtaException, AmbiguousSemanticException {
-		// --- trigger evoke() hook ---
-		return getLiveTopic(topic).evoke(session, topicmapID, viewmode);
 	}
 
 	// ---
@@ -2307,15 +2274,14 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * presentable type topics.
 	 *
 	 * @param	triggerInit		if <code>true</code> the <code>init(2)</code> and
-	 *							<code>init(3)</code> hooks of the corresponding proxy
+	 *							<code>init(3)</code> hooks of the corresponding
 	 *							type topics are triggered ###
 	 *
 	 * @see		#loadKernelTopics							2x	true
 	 * @see		CorporateTopicMap#initLiveTopics			4x	false
 	 * @see		CorporateDirectives#updateCorporateMemory		false
 	 */
-	void initTypeTopics(Enumeration typeTopics, boolean triggerInit,
-								Session session, CorporateDirectives directives) {
+	void initTypeTopics(Enumeration typeTopics, boolean triggerInit, Session session, CorporateDirectives directives) {
 		// >>> compare to initTopics()
 		PresentableType typeTopic;
 		while (typeTopics.hasMoreElements()) {
@@ -2323,15 +2289,12 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			try {
 				initTypeTopic(typeTopic, triggerInit, session);
 			} catch (TopicInitException e) {
-				System.out.println("*** ApplicationService.initTypeTopics(): " +
-					e.getMessage());
+				System.out.println("*** ApplicationService.initTypeTopics(): " + e.getMessage());
 				if (directives != null) {
-					directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(),
-						new Integer(NOTIFICATION_WARNING));
+					directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(), new Integer(NOTIFICATION_WARNING));
 				}
 			} catch (Exception e) {
-				System.out.println("*** ApplicationService.initTypeTopics(): " +
-					e + " -- " + typeTopic + " not properly inited");
+				System.out.println("*** ApplicationService.initTypeTopics(): " + e + " -- " + typeTopic + " not properly inited");
 				e.printStackTrace();
 			}
 		}
@@ -4676,18 +4639,18 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @see		CorporateDirectives#showTopic
 	 */
 	void initTopicAppearance(PresentableTopic topic) throws DeepaMehtaException {
-		LiveTopic proxyTopic = getLiveTopic(topic);					// may throw DME
-		if (proxyTopic.getIndividualAppearanceMode() == APPEARANCE_CUSTOM_ICON) {
-			topic.setIcon(proxyTopic.getIndividualAppearanceParam());
+		LiveTopic t = getLiveTopic(topic);					// may throw DME
+		if (t.getIndividualAppearanceMode() == APPEARANCE_CUSTOM_ICON) {
+			topic.setIcon(t.getIndividualAppearanceParam());
 		}
 	}
 
 	/**
 	 * @see		#initTypeTopic
 	 */
-	private void initTypeAppearance(PresentableType typeTopic, TypeTopic typeProxy) {
-		typeTopic.setTypeIconfile(typeProxy.getIconfile());		// throws DME
-		typeTopic.setAssocTypeColor(typeProxy.getAssocTypeColor());
+	private void initTypeAppearance(PresentableType type, TypeTopic typeTopic) {
+		type.setTypeIconfile(typeTopic.getIconfile());		// throws DME
+		type.setAssocTypeColor(typeTopic.getAssocTypeColor());
 	}
 
 	// ---
@@ -5053,7 +5016,6 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * ### just passed to corporate memory -- to be dropped
 	 *
-	 * @see		#addTypeToView
 	 * @see		#personalizeTopics
 	 * @see		CorporateDirectives#createLiveTopic	createLiveTopic() performExistenceCheck=true
 	 * @see		de.deepamehta.topics.UserTopic#createPersonalWorkspace

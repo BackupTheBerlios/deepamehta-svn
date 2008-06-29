@@ -54,7 +54,7 @@ import javax.xml.transform.stream.StreamSource;
 /**
  * <p>
  * <hr>
- * Last functional change: 17.4.2008 (2.0b8)<br>
+ * Last functional change: 25.6.2008 (2.0b8)<br>
  * Last documentation update: 28.9.2002 (2.0a16-pre4)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -182,12 +182,30 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 
 
 
+	// --- createTopic (2 forms) ---
+
 	/**
 	 * Utility method to create a topic directly from form data.
 	 */
 	protected final String createTopic(String typeID, RequestParameter params, Session session) {
-		String topicID = as.getNewTopicID();
-		processForm(typeID, topicID, params.getTable(), true, session);			// doCreate=true
+		return createTopic(typeID, params, session, null, null);
+	}
+
+	/**
+	 * Utility method to create a topic directly from form data.
+	 *
+	 * @param	topicmapID	may be null. Might be required by specific application logic, as triggered e.g.
+	 *						by the propertiesChanged() hook.
+	 * @param	topicID		the ID for the newly created topic. If <code>null</code>, a new topic ID is created.
+	 *
+	 * @return	the ID of the created topic
+	 */
+	protected final String createTopic(String typeID, RequestParameter params, Session session,
+																					String topicmapID, String topicID) {
+		if (topicID == null) {
+			topicID = as.getNewTopicID();
+		}
+		processForm(typeID, topicID, params.getTable(), true, session, topicmapID, VIEWMODE_USE);		// doCreate=true
 		//
 		return topicID;
 	}

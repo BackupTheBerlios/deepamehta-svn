@@ -179,10 +179,8 @@ public abstract class ElementContainerTopic extends ContainerTopic {
 	protected String getAppearance(String id, String name, Session session,
 													CorporateDirectives directives) {
 		// ### inidividual appearance of already evoked elements is not considered.
-		// ### the version is set to 1
 		// >>> compare to TopicContainerTopic.getAppearance()
-		// ### as.checkLiveTopic(new BaseTopic(id, 1, getContentTypeID(), 1, name), session, directives);
-		return as.getIconfile(getContentTypeID(), 1);	// ### was (id, 1)
+		return as.getIconfile(getContentTypeID(), 1);	// ### was (id, 1) ### version=1
 	}
 
 	/**
