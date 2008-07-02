@@ -54,10 +54,9 @@ import javax.xml.transform.stream.StreamSource;
 /**
  * <p>
  * <hr>
- * Last functional change: 25.6.2008 (2.0b8)<br>
- * Last documentation update: 28.9.2002 (2.0a16-pre4)<br>
+ * Last change: 29.6.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class DeepaMehtaServlet extends HttpServlet implements ApplicationServiceHost, DeepaMehtaConstants {
 
@@ -163,11 +162,13 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 
 
 
-	protected String performAction(String action, RequestParameter params, Session session) throws ServletException {
+	protected String performAction(String action, RequestParameter params, Session session, CorporateDirectives directives)
+																										throws ServletException {
 		throw new DeepaMehtaException("unexpected action: \"" + action + "\"");
 	}
 
-	protected void preparePage(String page, RequestParameter params, Session session) throws ServletException {
+	protected void preparePage(String page, RequestParameter params, Session session, CorporateDirectives directives)
+																										throws ServletException {
 	}
 
 	protected void addResources(HTMLGenerator html) {
@@ -187,8 +188,8 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 	/**
 	 * Utility method to create a topic directly from form data.
 	 */
-	protected final String createTopic(String typeID, RequestParameter params, Session session) {
-		return createTopic(typeID, params, session, null, null);
+	protected final String createTopic(String typeID, RequestParameter params, Session session, CorporateDirectives directives) {
+		return createTopic(typeID, params, session, directives, null, null);
 	}
 
 	/**
@@ -200,26 +201,26 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 	 *
 	 * @return	the ID of the created topic
 	 */
-	protected final String createTopic(String typeID, RequestParameter params, Session session,
+	protected final String createTopic(String typeID, RequestParameter params, Session session, CorporateDirectives directives,
 																					String topicmapID, String topicID) {
 		if (topicID == null) {
 			topicID = as.getNewTopicID();
 		}
-		processForm(typeID, topicID, params.getTable(), true, session, topicmapID, VIEWMODE_USE);		// doCreate=true
+		processForm(typeID, topicID, params.getTable(), true, session, directives, topicmapID, VIEWMODE_USE);		// doCreate=true
 		//
 		return topicID;
 	}
 
 	// --- updateTopic (2 forms) ---
 
-	protected final String updateTopic(String typeID, RequestParameter params, Session session) {
-		return updateTopic(typeID, params, session, null, null);
+	protected final String updateTopic(String typeID, RequestParameter params, Session session, CorporateDirectives directives) {
+		return updateTopic(typeID, params, session, directives, null, null);
 	}
 
-	protected final String updateTopic(String typeID, RequestParameter params, Session session,
+	protected final String updateTopic(String typeID, RequestParameter params, Session session, CorporateDirectives directives,
 																String topicmapID, String viewmode) {
 		String topicID = params.getValue("id");												// ### hardcoded
-		processForm(typeID, topicID, params.getTable(), false, session, topicmapID, viewmode);			// doCreate=false
+		processForm(typeID, topicID, params.getTable(), false, session, directives, topicmapID, viewmode);			// doCreate=false
 		//
 		return topicID;
 	}
@@ -389,14 +390,15 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 	 * @see		#updateStrongRelations
 	 * @see		de.deepamehta.messageboard.MessageBoardServlet#performAction
 	 */
-	private void processForm(String typeID, String topicID, Hashtable params, boolean doCreate, Session session) {
-		processForm(typeID, topicID, params, doCreate, session, null, null);
+	private void processForm(String typeID, String topicID, Hashtable params, boolean doCreate, Session session,
+																								CorporateDirectives directives) {
+		processForm(typeID, topicID, params, doCreate, session, directives, null, null);
 	}
 
 	private void processForm(String typeID, String topicID, Hashtable params, boolean doCreate, Session session,
-																				String topicmapID, String viewmode) {
-		System.out.println(">>> processForm(): doCreate=\"" + doCreate + "\" typeID=\"" + typeID + "\" topicID=\"" + topicID + "\"");
-		CorporateDirectives directives = new CorporateDirectives();
+															CorporateDirectives directives, String topicmapID, String viewmode) {
+		System.out.println(">>> processForm(): doCreate=\"" + doCreate +
+			"\" typeID=\"" + typeID + "\" topicID=\"" + topicID + "\"");
 		//
 		if (doCreate) {
 			as.createLiveTopic(topicID, typeID, "", topicmapID, viewmode, session, directives);
@@ -404,11 +406,10 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 		// properties
 		Hashtable props = getProperties(params, typeID);
 		directives.add(as.setTopicProperties(topicID, 1, props, topicmapID, session));
-		directives.updateCorporateMemory(as, session, topicmapID, viewmode);
 		// weak relations
 		updateWeakRelations(typeID, topicID, getWeakRelationParameters(params));
 		// strong relations
-		updateStrongRelations(typeID, topicID, getStrongRelationParameters(params), doCreate, session);
+		updateStrongRelations(typeID, topicID, getStrongRelationParameters(params), doCreate, session, directives);
 	}
 
 	// ---
@@ -451,17 +452,22 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 															throws IOException, ServletException {
 		RequestParameter params = new RequestParameter(request);
 		Session session = getSession(request);
+		CorporateDirectives directives = new CorporateDirectives();
 		String action = params.getValue("action");
 		String method = request.getMethod();
     	System.out.println(">>> DeepaMehtaServlet: " + method + (!method.equals("GET") ? " (content type=\"" +
     		request.getContentType() + "\")" : "") + " action=\"" + action + "\"");
     	//
     	// --- trigger performAction() hook ---
-    	String page = performAction(action, params, session);
+    	String page = performAction(action, params, session, directives);
     	//
     	// --- trigger preparePage() hook ---
-    	preparePage(page, params, session);
+    	preparePage(page, params, session, directives);
     	//
+    	// process directives
+		directives.updateCorporateMemory(as, session, null, null);
+		// Note: topicmapID=null, viewmode=null ### should be OK because in web interface there is no "default topicmap"
+		//
     	if (generatorMethod.equals(HTML_GENERATOR_JSP)) {
 	    	redirectToPage(page, request, response);
     	} else if (generatorMethod.equals(HTML_GENERATOR_XSLT)) {
@@ -681,7 +687,8 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 	 *
 	 * @see		#processForm
 	 */
-	private void updateStrongRelations(String typeID, String topicID, Hashtable params, boolean doCreate, Session session) {
+	private void updateStrongRelations(String typeID, String topicID, Hashtable params, boolean doCreate, Session session,
+																								CorporateDirectives directives) {
 		TypeTopic type = as.type(typeID, 1);	// ### version=1
 		Enumeration e = params.keys();
 		while (e.hasMoreElements()) {
@@ -715,8 +722,8 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 				relTopicID = as.getNewTopicID();
 				cm.createAssociation(as.getNewAssociationID(), 1, rel.assocTypeID, 1, topicID, 1, relTopicID, 1);
 			}
-			// recursive call (indirect)
-			processForm(rel.relTopicTypeID, relTopicID, strongParams, newDoCreate, session);
+			// recursive call (indirect)	// ### topicmapID, viewmode?
+			processForm(rel.relTopicTypeID, relTopicID, strongParams, newDoCreate, session, directives);
 		}
 	}
 

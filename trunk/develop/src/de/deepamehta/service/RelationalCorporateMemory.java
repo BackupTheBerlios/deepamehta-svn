@@ -31,12 +31,11 @@ import java.util.Vector;
 
 /**
  * A RDBMS implementation of {@link CorporateMemory}.
- * <P>
- * <HR>
- * Last functional change: 24.5.2006 (2.0b6-post3)<BR>
- * Last documentation update: 26.7.2001 (2.0a11-pre11)<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * <p>
+ * <hr>
+ * Last change: 30.6.2008 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
+ * jri@deepamehta.de
  */
 class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants {
 
@@ -198,13 +197,13 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 
 	/**
 	 * Private unified form of getTopics().
-	 * <P>
-	 * Note: either typeID or typeIDs must be set (to a non-<CODE>null</CODE> value).
+	 * <p>
+	 * Note: either typeID or typeIDs must be set (to a non-<code>null</code> value).
 	 *
 	 * @param	typeID			the ID of the topic type to match
 	 * @param	typeIDs			the IDs of the topic types to match, if a non-
-	 *							<CODE>null</CODE> value is passed the value of the
-	 *							<CODED>typeID</CODE> parameter is ignored
+	 *							<code>null</code> value is passed the value of the
+	 *							<code>typeID</code> parameter is ignored
 	 */
 	private Vector getTopics(String typeID, Vector typeIDs, String nameFilter, Hashtable propertyFilter, String relatedTopicID,
 														String assocTypeID, String topicmapID, boolean caseSensitiv) {
@@ -228,7 +227,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 *
 	 * @param	searchString		specified substring (property filter)
 	 *
-	 * @return	hashtable where:<BR>
+	 * @return	hashtable where:<br>
 	 * 				<ul><li>key is BaseTopic 
 	 * 				<li>value is name of property, which contains given substring</ul>
 	 *
@@ -373,20 +372,20 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 
 	/**
 	 * Private unified form for 9 of latter 10 getRelatedTopics() forms.
-	 * <P>
-	 * Note: either assocType or assocTypes must be set (to a non-<CODE>null</CODE> value).
+	 * <p>
+	 * Note: either assocType or assocTypes must be set (to a non-<code>null</code> value).
 	 *
 	 * @param	assocType		the ID of the association type to match
 	 * @param	assocTypes		the IDs of the association types to match, if a non-
-	 *							<CODE>null</CODE> value is passed the value of the
-	 *							<CODED>assocType</CODE> parameter is ignored
-	 * @param	relTopicType	the ID of the topic type to match, if <CODE>null</CODE>
+	 *							<code>null</code> value is passed the value of the
+	 *							<code>assocType</code> parameter is ignored
+	 * @param	relTopicType	the ID of the topic type to match, if <code>null</code>
 	 *							all topic types are matching
 	 * @param	relTopicTypeIDs	the IDs of topic types to match, if a non-
-	 *							<CODE>null</CODE> value is passed the value of the
-	 *							<CODED>relTopicType</CODE> parameter is ignored
-	 * @param	relTopicPos		position nr of the related topic, must be <CODE>1</CODE> or <CODE>2</CODE>
-	 * @param	relTopicIDs		ID filter. If <CODE>null</CODE> no ID filter is applied.
+	 *							<code>null</code> value is passed the value of the
+	 *							<code>relTopicType</code> parameter is ignored
+	 * @param	relTopicPos		position nr of the related topic, must be <code>1</code> or <code>2</code>
+	 * @param	relTopicIDs		ID filter. If <code>null</code> no ID filter is applied.
 	 */
 	private Vector getRelatedTopics(String topicID, String assocType, Vector assocTypes, String relTopicType, Vector relTopicTypeIDs,
 									int relTopicPos, Vector relTopicIDs, String assocProp, String propValue, String topicmapID,
@@ -836,8 +835,8 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	/**
 	 * References checked: 8.11.2001 (2.0a13-pre5)
 	 *
-	 * @return	2-element array:<BR>
-	 *				element 1: vector of {@link de.deepamehta.PresentableTopic}<BR>
+	 * @return	2-element array:<br>
+	 *				element 1: vector of {@link de.deepamehta.PresentableTopic}<br>
 	 *				element 2: vector of {@link de.deepamehta.PresentableAssociation}
 	 *
 	 * @see		LiveTopic#navigateByTopictype
@@ -849,8 +848,8 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	/**
 	 * References checked: 10.8.2001 (2.0a11)
 	 *
-	 * @return	2-element array:<BR>
-	 *				element 1: vector of {@link de.deepamehta.PresentableTopic}<BR>
+	 * @return	2-element array:<br>
+	 *				element 1: vector of {@link de.deepamehta.PresentableTopic}<br>
 	 *				element 2: vector of {@link de.deepamehta.PresentableAssociation}
 	 *
 	 * @see		LiveTopic#navigateByTopictype
@@ -881,8 +880,8 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	/**
 	 * References checked: 10.8.2001 (2.0a11)
 	 *
-	 * @return	2-element array:<BR>
-	 *				element 1: vector of {@link de.deepamehta.PresentableTopic}<BR>
+	 * @return	2-element array:<br>
+	 *				element 1: vector of {@link de.deepamehta.PresentableTopic}<br>
 	 *				element 2: vector of {@link de.deepamehta.PresentableAssociation}
 	 *
 	 * @see		LiveTopic#navigateByAssoctype
@@ -911,7 +910,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 * Returns all IDs of topics of the specified type who are contained in the
 	 * specified topicmap and viewmode.
 	 *
-	 * @return	Vector of <CODE>String</CODE>s.
+	 * @return	Vector of <code>String</code>s.
 	 *
 	 * @see		ApplicationService#getAllTopics(String typeID, String topicmapID, String viemode)
 	 */
@@ -926,7 +925,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	// --- getAssociationIDs (2 forms) ---
 
 	/**
-	 * @return	Vector of <CODE>String</CODE>s.
+	 * @return	Vector of <code>String</code>s.
 	 *
 	 * @see		ApplicationService#getAssociationIDs(String topicmapID, String viewMode, String userID, String topicID, int version, String assocType)
 	 */
@@ -935,7 +934,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	}
 
 	/**
-	 * @return	Vector of <CODE>String</CODE>s.
+	 * @return	Vector of <code>String</code>s.
 	 *
 	 * @see		ApplicationService#getAssociationIDs(String topicmapID, String viewMode, String userID, String topicID, int version, String assocType)
 	 */
@@ -1174,9 +1173,9 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	// --- setTopicData (2 forms) ---
 
 	/**
-	 * @param	topicData	Topic data to set<BR>
-	 *						Key: field name (<CODE>String</CODE>)<BR>
-	 *						Value: value (<CODE>String</CODE>)
+	 * @param	topicData	Topic data to set<br>
+	 *						Key: field name (<code>String</code>)<br>
+	 *						Value: value (<code>String</code>)
 	 */
 	public void setTopicData(String topicID, int version, Hashtable topicData) {
 		Enumeration e = topicData.keys();
@@ -1248,9 +1247,9 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	// --- setAssociationData (2 forms) ---
 
 	/**
-	 * @param	assocData	Association data to set<BR>
-	 *						Key: field name (<CODE>String</CODE>)<BR>
-	 *						Value: value (<CODE>String</CODE>)
+	 * @param	assocData	Association data to set<br>
+	 *						Key: field name (<code>String</code>)<br>
+	 *						Value: value (<code>String</code>)
 	 */
 	public void setAssociationData(String assocID, int version, Hashtable assocData) {
 		Enumeration e = assocData.keys();
@@ -1269,8 +1268,8 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 				field + "\" to \"" + value + "\")");
 		}
 		//
-		int rowCount = update("UPDATE AssociationProp SET PropValue = ? WHERE AssociationID = ? AND AssociationVersion = ? AND PropName = ?"
-		                      , new Object[]{value, assocID, i(version), field}, IMPLIED_NO);
+		int rowCount = update("UPDATE AssociationProp SET PropValue = ? WHERE AssociationID = ? AND " +
+			"AssociationVersion = ? AND PropName = ?", new Object[]{value, assocID, i(version), field}, IMPLIED_NO);
 		if (rowCount == 0) {
 			// the association has no association data yet -- insert
 			if (LOG_CM) {
@@ -1364,7 +1363,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 
 
 	/**
-	 * @return	Vector of <CODE>String</CODE>s.
+	 * @return	Vector of <code>String</code>s.
 	 *
 	 * @see		#getTopicIDs(String typeID, String topicmapID)
 	 * @see		#getAssociationIDs(String assocTypeID, String topicmapID, String viewMode,
@@ -1612,8 +1611,8 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 * <p>
 	 * References checked: 10.8.2001 (2.0a11)
 	 *
-	 * @return	array of 2 vectors:<BR>
-	 *				vector 1: vector of {@link de.deepamehta.PresentableTopic}<BR>
+	 * @return	array of 2 vectors:<br>
+	 *				vector 1: vector of {@link de.deepamehta.PresentableTopic}<br>
 	 *				vector 2: vector of {@link de.deepamehta.PresentableAssociation}
 	 *
 	 * @see		#getRelatedViewTopicsByTopictype
@@ -1708,7 +1707,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	}
 
 	/**
-	 * @return	Vector of {@link de.deepamehta.PresentableType}.<BR>
+	 * @return	Vector of {@link de.deepamehta.PresentableType}.<br>
 	 *			Note: the geometry mode of the topics is set to {@link #GEOM_MODE_FREE}.
 	 *
 	 * @see		#getTopicTypes
@@ -1739,9 +1738,9 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 
 	/**
 	 * Executes the specified query and returns the property value (TopicData.FieldValue).
-	 * If the property doesn't exists resp. is <CODE>null</CODE> an empty string is
+	 * If the property doesn't exists resp. is <code>null</code> an empty string is
 	 * returned.
-	 * <P>
+	 * <p>
 	 * References checked: 13.8.2001 (2.0a11)
 	 *
 	 * @see		#getTopicData(String topicID, int version, String fieldname)
@@ -1825,7 +1824,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 */
 	private int update(String query, Object[] params, int implied) {
 		try {
-			return update(createPreparedStatement(query, params), implied);
+			return update(createPreparedStatement(query, params), query, params, implied);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -1834,20 +1833,26 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 
 	/**
 	 * Executes an INSERT, UPDATE or DELETE statement.
+	 *
+	 * @param	query	for diagnosis only
+	 * @param	params	for diagnosis only
 	 */
-	private int update(PreparedStatement stmt, int implied) {
+	private int update(PreparedStatement stmt, String query, Object[] params, int implied) {
 		try {
 			int rowCount = stmt.executeUpdate();
 			if (implied == IMPLIED_1 && rowCount != 1) {
 				System.out.println("*** RelationalCorporateMemory.update(): " +
-					rowCount + " rows updated while 1 is expected");
+					rowCount + " rows updated while 1 is expected, query and paramters:");
+				System.out.println("    " + query);
+				printObjectArray(params);
 			}
 			return rowCount;
 		} catch (SQLException e) {
 			if (implied != IMPLIED_NO) {
 				System.out.println("*** RelationalCorporateMemory.update(): " + e +
-					" -- INSERT, UPDATE or DELETE statement failed");
-				System.out.println(stmt);
+					" -- INSERT, UPDATE or DELETE statement failed, query and paramters:");
+				System.out.println("    " + query);
+				printObjectArray(params);
 			}
 			return 0;
 		} finally {
@@ -1899,7 +1904,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 
 
 	// ----------------------
-	// --- helper methods ---
+	// --- Helper Methods ---
 	// ----------------------
 
 
@@ -1934,15 +1939,24 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		return new Integer(i);
 	}
 
+	private void printObjectArray(Object[] array) {
+		System.out.print("    [");
+		for (int i = 0; i < array.length; i++) {
+			System.out.print(i > 0 ? ", " : "");
+			System.out.print(array[i]);
+		}
+		System.out.println("]");
+	}
+
 	// ---
 
 	/**
-	 * The <CODE>resultSet</CODE> is expected to contain the topic fields aliased as
-	 * <CODE>TopicID</CODE>, <CODE>TopicVersion</CODE>, <CODE>TopicTypeID</CODE>,
-	 * <CODE>TopicTypeVersion</CODE> and <CODE>TopicName</CODE>
+	 * The <code>resultSet</code> is expected to contain the topic fields aliased as
+	 * <code>TopicID</code>, <code>TopicVersion</code>, <code>TopicTypeID</code>,
+	 * <code>TopicTypeVersion</code> and <code>TopicName</code>
 	 * (see {@link #getRelatedViewTopicsByTopictype},
 	 * {@link #getRelatedViewTopicsByAssoctype}).
-	 * <P>
+	 * <p>
 	 * References checked: 10.8.2001 (2.0a11)
 	 *
 	 * @see		#queryPresentableTopics(String query, String queryTopicID)

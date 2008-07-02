@@ -47,7 +47,7 @@ import java.util.Vector;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last sourcecode change: 20.5.2008 (2.0b8)<br>
+ * Last sourcecode change: 30.6.2008 (2.0b8)<br>
  * Last documentation update: 3.2.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@freenet.de
@@ -604,7 +604,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#setTopicProperties
 	 */
-	public boolean propertiesChangeAllowed(Hashtable oldData, Hashtable newData, CorporateDirectives directives) {
+	public boolean propertyChangeAllowed(String propName, String propValue, Session session, CorporateDirectives directives) {
 		return true;
 	}
 

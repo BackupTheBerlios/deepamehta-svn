@@ -66,10 +66,9 @@ import java.util.Vector;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last functional change: 24.6.2008 (2.0b8)<br>
- * Last documentation update: 25.3.2008 (2.0b8)<br>
+ * Last change: 1.7.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public final class ApplicationService extends BaseTopicMap implements LoginCheck, DeepaMehtaConstants {
 
@@ -1493,30 +1492,6 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// ---
 
 	/**
-	 * Updates the topic name at all 3 spots (memory, database, and client) and triggers the nameChanged() hook.
-	 * <p>
-	 * Note: this is not directly called by application developers but always as a reaction of changed topic properties.
-	 * <p>
-	 * References checked: 20.5.2008 (2.0b8)
-	 *
-	 * @see		#setTopicProperties
-	 */
-	private CorporateDirectives changeTopicName(String topicID, int version, String name, String topicmapID, Session session) {
-		LiveTopic topic = getLiveTopic(topicID, version);
-		// update memory
-		topic.setName(name);
-		// update corporate memory (database)
-		cm.changeTopicName(topicID, version, name);
-		// update client
-		CorporateDirectives directives = new CorporateDirectives();
-		directives.add(DIRECTIVE_SET_TOPIC_NAME, topicID, name, new Integer(version));
-		// --- trigger nameChanged() hook ---
-		directives.add(topic.nameChanged(name, topicmapID, session));
-		//
-		return directives;
-	}
-
-	/**
 	 * @see		InteractionConnection#performChangeTopicName
 	 */
 	CorporateDirectives changeTopicNameChained(String topicID, int version, String name, Session session, String result) {
@@ -1672,7 +1647,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * Sets topic properties at application service level.
 	 * <p>
-	 * The 5 topic hooks <code>propertiesChangeAllowed()</code>, <code>propertiesChanged()</code>, <code>getNameProperty()</code>,
+	 * The 5 topic hooks <code>propertyChangeAllowed()</code>, <code>propertiesChanged()</code>, <code>getNameProperty()</code>,
 	 * <code>getTopicName()</code>, and <code>nameChanged()</code> are potentially triggered.
 	 * <p>
 	 * References checked: 17.4.2008 (2.0b8)
@@ -1693,34 +1668,75 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		//
 		try {
 			Hashtable oldProps = getTopicProperties(topicID, version);
-			props = removeUnchangedProperties(props, oldProps);
 			LiveTopic topic = getLiveTopic(topicID, version);	// may throw DME
-			// trigger propertiesChangeAllowed() hook
-			if (topic.propertiesChangeAllowed(oldProps, props, directives)) {
-				// update corporate memory (database)
-				cm.setTopicData(topicID, version, props);
-				// --- topic name behavoir ---
-				String name;
-				// trigger getNameProperty() hook
-				String nameProp = topic.getNameProperty();
-				if (nameProp != null) {
-					name = (String) props.get(nameProp);
-				} else {
-					// trigger getTopicName() hook
-					name = topic.getTopicName(props, oldProps);
-				}
-				if (name != null) {
-					// trigger nameChanged() hook
-					directives.add(changeTopicName(topicID, version, name, topicmapID, session));
-				}
-				// ---
-				// trigger propertiesChanged() hook
-				directives.add(topic.propertiesChanged(props, oldProps, topicmapID, VIEWMODE_USE, session));
-			}
+			// only consider changed properties
+			props = removeUnchangedProperties(props, oldProps);
+			// ask application weather property change is allowed
+			removeProhibitedProperties(props, topic, session, directives);
+			// write changed properties to database (corporate memory)
+			cm.setTopicData(topicID, version, props);
+			// trigger topic naming behavoir
+			performTopicNamingBehavior(topic, props, oldProps, topicmapID, session, directives);
+			// inform application about changed properties (trigger propertiesChanged() hook)
+			directives.add(topic.propertiesChanged(props, oldProps, topicmapID, VIEWMODE_USE, session));
 		} catch (DeepaMehtaException e) {
 			directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(), new Integer(NOTIFICATION_WARNING));
 			System.out.println("*** ApplicationService.setTopicProperties(): " + e);
 		}
+		//
+		return directives;
+	}
+
+	private void removeProhibitedProperties(Hashtable props, LiveTopic topic, Session session, CorporateDirectives directives) {
+		Enumeration e = props.keys();
+		while (e.hasMoreElements()) {
+			String propName = (String) e.nextElement();
+			String propValue = (String) props.get(propName);
+			// --- trigger propertyChangeAllowed() hook ---
+			if (!topic.propertyChangeAllowed(propName, propValue, session, directives)) {
+				props.remove(propName);
+			}
+		}
+	}
+
+	private void performTopicNamingBehavior(LiveTopic topic, Hashtable props, Hashtable oldProps, String topicmapID,
+																			Session session, CorporateDirectives directives) {
+		String name;
+		// trigger getNameProperty() hook
+		String nameProp = topic.getNameProperty();
+		if (nameProp != null) {
+			name = (String) props.get(nameProp);
+		} else {
+			// trigger getTopicName() hook
+			name = topic.getTopicName(props, oldProps);
+		}
+		if (name != null) {
+			// trigger nameChanged() hook
+			directives.add(changeTopicName(topic, name, topicmapID, session));
+		}
+	}
+
+	/**
+	 * Updates the topic name at all 3 spots (memory, database, and client) and triggers the nameChanged() hook.
+	 * <p>
+	 * Note: this is not directly called by application developers but always as a reaction of changed topic properties.
+	 * <p>
+	 * References checked: 20.5.2008 (2.0b8)
+	 *
+	 * @see		#setTopicProperties
+	 */
+	private CorporateDirectives changeTopicName(LiveTopic topic, String name, String topicmapID, Session session) {
+		String topicID = topic.getID();
+		int version = topic.getVersion();
+		// update memory
+		topic.setName(name);
+		// update corporate memory (database)
+		cm.changeTopicName(topicID, version, name);
+		// update client
+		CorporateDirectives directives = new CorporateDirectives();
+		directives.add(DIRECTIVE_SET_TOPIC_NAME, topicID, name, new Integer(version));
+		// --- trigger nameChanged() hook ---
+		directives.add(topic.nameChanged(name, topicmapID, session));
 		//
 		return directives;
 	}
@@ -5102,20 +5118,16 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @see		#setTopicProperties(String topicID, int version, Hashtable props, String topicmapID, String viewmode, Session session)
 	 * @see		#setAssocProperties(String assocID, int version, Hashtable props, String topicmapID, String viewmode, Session session)
 	 */
-	private Hashtable removeUnchangedProperties(Hashtable newData, Hashtable oldData) {
-		Hashtable result = (Hashtable) newData.clone();
+	private Hashtable removeUnchangedProperties(Hashtable newProps, Hashtable oldProps) {
+		Hashtable result = (Hashtable) newProps.clone();
 		//
 		Enumeration e = result.keys();
-		String prop;
 		while (e.hasMoreElements()) {
-			prop = (String) e.nextElement();
-			String oldValue = (String) oldData.get(prop);
-			String newValue = (String) result.get(prop);
-			if (newValue.equals(oldValue)) {
-				result.remove(prop);
-				// ### oldData.remove(prop);
-			} else if (oldValue == null && newValue.equals("")) {
-				result.remove(prop);
+			String propName = (String) e.nextElement();
+			String oldValue = (String) oldProps.get(propName);
+			String newValue = (String) result.get(propName);
+			if (newValue.equals(oldValue) || oldValue == null && newValue.equals("")) {
+				result.remove(propName);
 			}
 		}
 		//
@@ -5293,26 +5305,21 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 *
 	 * @see		#createCustomLiveTopic
 	 */
-	private void addErrorNotification(String errorText, String errorText2,
-									CorporateDirectives directives, String className) {
+	private void addErrorNotification(String errorText, String errorText2, CorporateDirectives directives, String className) {
 		addErrorNotification(errorText, errorText2, directives);
 		//
 		if (className.startsWith("org/xml/")) {
 			if (directives != null) {
-				directives.add(DIRECTIVE_SHOW_MESSAGE, ">>> Make shure IBMs XML parser " +
-					"(xml4j.jar) is installed correctly at server side",
-					new Integer(NOTIFICATION_ERROR));
+				directives.add(DIRECTIVE_SHOW_MESSAGE, ">>> Make shure IBMs XML parser (xml4j.jar) " +
+					"is installed correctly at server side", new Integer(NOTIFICATION_ERROR));
 			}
-			System.out.println(">>> Make shure IBMs XML parser (xml4j.jar) is " +
-				"installed correctly");
+			System.out.println(">>> Make shure IBMs XML parser (xml4j.jar) is installed correctly");
 		} else if (className.startsWith("javax/activation/")) {
 			if (directives != null) {
-				directives.add(DIRECTIVE_SHOW_MESSAGE, ">>> Make shure Suns activation " +
-					"framework (activation.jar) is installed correctly at server side",
-					new Integer(NOTIFICATION_ERROR));
+				directives.add(DIRECTIVE_SHOW_MESSAGE, ">>> Make shure Suns activation framework (activation.jar) " +
+					"is installed correctly at server side", new Integer(NOTIFICATION_ERROR));
 			}
-			System.out.println(">>> Make shure Suns activation framework " +
-				"(activation.jar) is installed correctly");
+			System.out.println(">>> Make shure Suns activation framework (activation.jar) is installed correctly");
 		}
 	}
 
@@ -5321,14 +5328,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 *
 	 * @see		#createCustomLiveTopic
 	 */
-	private void addErrorNotification(String errorText, String errorText2,
-														CorporateDirectives directives) {
+	private void addErrorNotification(String errorText, String errorText2, CorporateDirectives directives) {
 		if (directives != null) {
-			directives.add(DIRECTIVE_SHOW_MESSAGE, errorText2 + " (" + errorText + ")",
-				new Integer(NOTIFICATION_ERROR));
+			directives.add(DIRECTIVE_SHOW_MESSAGE, errorText2 + " (" + errorText + ")", new Integer(NOTIFICATION_ERROR));
 		}
-		System.out.println("*** ApplicationService.createCustomLiveTopic(): " + errorText +
-			" -- " + errorText2);
+		System.out.println("*** ApplicationService.createCustomLiveTopic(): " + errorText + " -- " + errorText2);
 	}
 
 	// ---
@@ -5352,19 +5356,19 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		directives.add(getLiveTopic(topic).published());
 	}
 
-	public String getConfigurationProperty(String property){
+	public String getConfigurationProperty(String property) {
 		return applicationServiceInstance.getConfigurationProperty(property);
 	}
 
 
 
-	// ******************************************************
+	// *******************************************************
 	// *** Implementation of interface java.util.TimerTask ***
-	// ******************************************************
+	// *******************************************************
 
 
 
-	private class StatisticsThread extends TimerTask{
+	private class StatisticsThread extends TimerTask {
 
 		/**
 		 * The body of the statistics thread.

@@ -9,6 +9,7 @@ import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableType;
 import de.deepamehta.TopicInitException;
 import de.deepamehta.assocs.LiveAssociation;
+import de.deepamehta.service.web.Notification;
 import de.deepamehta.topics.LiveTopic;
 import de.deepamehta.util.DeepaMehtaUtils;
 
@@ -22,15 +23,11 @@ import java.util.Vector;
 
 
 /**
- * ### Note: other as the name suggests ("Corporate") a <code>CorporateDirectives</code>
- * object isn't aware of the LCM (the application is not required to pass the LCM
- * with every constructor call).
  * <p>
  * <hr>
- * Last functional change: 20.5.2008 (2.0b8)<br>
- * Last documentation update: 17.11.2000 (2.0a7-pre3)<br>
+ * Last change: 30.6.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class CorporateDirectives extends Directives {
 
@@ -628,6 +625,29 @@ public class CorporateDirectives extends Directives {
 			throw new DeepaMehtaException("error while writing directive of type " + type +
 				" -- probably caused by wrong usage through application programmer", e);
 		}
+	}
+
+
+
+	// **********************
+	// *** Utility Method ***
+	// **********************
+
+
+
+	public Vector getNotifications() {
+		Vector notifications = new Vector();
+		//
+		Enumeration e = directives.elements();
+		while (e.hasMoreElements()) {
+			Directive directive = (Directive) e.nextElement();
+			if (directive.type == DIRECTIVE_SHOW_MESSAGE) {
+				String message = (String) directive.param1;
+				int notificationType = ((Integer) directive.param2).intValue();
+				notifications.addElement(new Notification(message, notificationType));
+			}
+		}
+		return notifications;
 	}
 
 

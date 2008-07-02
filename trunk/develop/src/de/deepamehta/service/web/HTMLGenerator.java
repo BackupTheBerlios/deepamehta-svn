@@ -4,6 +4,7 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.Directive;
 import de.deepamehta.OrderedItem;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Relation;
@@ -31,7 +32,7 @@ import java.util.Vector;
 /**
  * <p>
  * <hr>
- * Last sourcecode change: 27.5.2008 (2.0b8)<br>
+ * Last sourcecode change: 30.6.2008 (2.0b8)<br>
  * Last documentation update: 16.9.2002 (2.0a16-pre3)<br>
  * J&ouml;rg Richter / Malte Rei&szlig;ig<br><br>
  * jri@freenet.de / mre@deepamehta.de
@@ -49,6 +50,8 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	ApplicationService as;
 	Locale locale;
 	Vector resources = new Vector();	// base type is ResourceBundle
+
+	String[] notificationClass = {null, "notification-info", "notification-warning", "notification-error"};
 
 
 
@@ -108,6 +111,28 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		//
 		Object[] args = {arg, arg};
 		return message.format(args);
+	}
+
+	// ---
+
+	/**
+	 * Renders a list of notifications.
+	 *
+	 * @param	notifications	a vector of {@link de.deepamehta.service.web.Notification} objects
+	 *
+	 * @return	a nested <code>DIV</code> element, or empty string if the vector contains no elements
+	 */
+	public String notification(Vector notifications) {
+		StringBuffer html = new StringBuffer(notifications.size() > 0 ? "<div class=\"notification\">\r": "");
+		//
+		Enumeration e = notifications.elements();
+		while (e.hasMoreElements()) {
+			Notification notification = (Notification) e.nextElement();
+			html.append("<div class=\"" + notificationClass[notification.type] + "\">" + notification.message + "</div>\r");
+		}
+		html.append(notifications.size() > 0 ? "</div>\r" : "");
+		//
+		return html.toString();
 	}
 
 	// --- list (15 forms) ---

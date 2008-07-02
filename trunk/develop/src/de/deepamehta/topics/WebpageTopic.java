@@ -20,52 +20,51 @@ import java.util.Vector;
 
 /**
  * This active topic represents a webpage by means of a URL.
- * <P>
- * <H4>Active behavoir</H4>
+ * <p>
+ * <h4>Active behavoir</h4>
  *
- * ### The active <I>displaing in browser</I> behavoir of a <CODE>WorkspaceTopic</CODE> is 
+ * ### The active <i>displaing in browser</i> behavoir of a <code>WorkspaceTopic</code> is 
  * loading the webpage in the clients browser once the user triggers the default action.
- * <P>
- * The active <I>downloading</I> behavoir of a <CODE>WorkspaceTopic</CODE> is
+ * <p>
+ * The active <i>downloading</i> behavoir of a <code>WorkspaceTopic</code> is
  * downloading the webpage in the servers file system (### to client in future).
- * <P>
- * The active <I>notification enabling</I> behavoir of a <CODE>WorkspaceTopic</CODE> is
- * creating association of type <CODE>notification</CODE> between <CODE>WorkspaceTopic</CODE>
- * and <CODE>UserTopic</CODE> that means that user wants to be notified about existence
+ * <p>
+ * The active <i>notification enabling</i> behavoir of a <code>WorkspaceTopic</code> is
+ * creating association of type <code>notification</code> between <code>WorkspaceTopic</code>
+ * and <code>UserTopic</code> that means that user wants to be notified about existence
  * and last changes of this webpage.
- * <P>
- * The active <I>notification disabling</I> behavoir of a <CODE>WorkspaceTopic</CODE> is
- * deleting association of type <CODE>notification</CODE> between <CODE>WorkspaceTopic</CODE>
- * and <CODE>UserTopic</CODE> that means that user does not want to be notified about 
+ * <p>
+ * The active <i>notification disabling</i> behavoir of a <code>WorkspaceTopic</code> is
+ * deleting association of type <code>notification</code> between <code>WorkspaceTopic</code>
+ * and <code>UserTopic</code> that means that user does not want to be notified about 
  * existence and last changes of this webpage.
- * <P>
- * The active <I>properties change allowed</I> behavoir of a <CODE>WorkspaceTopic</CODE> is
- * checking of <CODE>URL</CODE> and <CODE>Checking Interval</CODE> properties. If the 
- * <CODE>URL</CODE> property is entered without prefix <CODE>http://</CODE>, this prefix is
- * automaticaly added. If some error is found in propeties, <CODE>DeepaMehtaException</CODE>
+ * <p>
+ * The active <i>properties change allowed</i> behavoir of a <code>WorkspaceTopic</code> is
+ * checking of <code>URL</code> and <code>Checking Interval</code> properties. If the 
+ * <code>URL</code> property is entered without prefix <code>http://</code>, this prefix is
+ * automaticaly added. If some error is found in propeties, <code>DeepaMehtaException</code>
  * with description of error is thrown and changes are rejected.
- * <P>
- * The active <I>properties changed</I> behavoir of a <CODE>WorkspaceTopic</CODE> is
- * reacting on changes in <CODE>URL</CODE> and <CODE>Checking Interval</CODE> properties. 
- * If the notification thread is already running for this topic, <CODE>URL</CODE> 
- * and <CODE>Checking Interval</CODE> properties are updated in this thread.
- * <P>
- * The active <I>property disabling</I> behavoir of a <CODE>WorkspaceTopic</CODE> is
- * disabling the <CODE>Last Modified</CODE> property.
- * <P>
- * The active <I>retrieve domain information</I> behavoir gets the domain information from
+ * <p>
+ * The active <i>properties changed</i> behavoir of a <code>WorkspaceTopic</code> is
+ * reacting on changes in <code>URL</code> and <code>Checking Interval</code> properties. 
+ * If the notification thread is already running for this topic, <code>URL</code> 
+ * and <code>Checking Interval</code> properties are updated in this thread.
+ * <p>
+ * The active <i>property disabling</i> behavoir of a <code>WorkspaceTopic</code> is
+ * disabling the <code>Last Modified</code> property.
+ * <p>
+ * The active <i>retrieve domain information</i> behavoir gets the domain information from
  *  the appropriate whois server.
- * <P> 
+ * <p> 
  * The class contains two internal classes: {@link WebpageTopic.WebpageParserCallback 
  * WebpageParserCallback} (parsing of HTML text) 
  * and {@link WebpageTopic.WebpageChecker WebpageChecker} (thread used to check 
  * changes on webpages).
- * <P>
- * <HR>
- * Last functional change: 14.12.2006 (2.0b8)<BR>
- * Last documentation update: 21.3.2001<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * <p>
+ * <hr>
+ * Last change: 30.6.2008 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
+ * jri@deepamehta.de
  */
 public class WebpageTopic extends LiveTopic {
 
@@ -159,19 +158,18 @@ public class WebpageTopic extends LiveTopic {
 
 
 
-	public boolean propertiesChangeAllowed(Hashtable oldData, Hashtable newData, CorporateDirectives directives) {
-		String urlString = (String) newData.get(PROPERTY_URL);
-		if (urlString != null) {
+	public boolean propertyChangeAllowed(String propName, String propValue, Session session, CorporateDirectives directives) {
+		if (propName.equals(PROPERTY_URL)) {
 			try {
-				new URL(urlString);
+				new URL(propValue);
 			} catch (MalformedURLException e) {
-				String errText = "\"" + urlString + "\" is not a valid URL";
+				String errText = "\"" + propValue + "\" is not a valid URL";
 				directives.add(DIRECTIVE_SHOW_MESSAGE, errText, new Integer(NOTIFICATION_WARNING));
-				System.out.println("*** WebpageTopic.propertiesChangeAllowed(): " + errText);
+				System.out.println("*** WebpageTopic.propertyChangeAllowed(): " + errText);
 				return false;
 			}
 		}
-		return super.propertiesChangeAllowed(oldData, newData, directives);
+		return super.propertyChangeAllowed(propName, propValue, session, directives);
 	}
 
 	/**
@@ -204,7 +202,7 @@ public class WebpageTopic extends LiveTopic {
 				// download this webpage
 				download(topicmapID, viewmode, session, directives);
 			} catch (MalformedURLException e) {
-				// ### should never happen because prohibited by propertiesChangeAllowed()
+				// ### should never happen because prohibited by propertyChangeAllowed()
 				System.out.println("*** WebpageTopic.propertiesChanged(): " + e);
 			}
 		}
@@ -252,8 +250,8 @@ public class WebpageTopic extends LiveTopic {
 
 
 	/**
-	 * Returns the corresponding website (type <CODE>tt-website</CODE>) of this webpage
-	 * resp. <CODE>null</CODE> if no website is associated.
+	 * Returns the corresponding website (type <code>tt-website</code>) of this webpage
+	 * resp. <code>null</code> if no website is associated.
 	 *
 	 * @see		de.deepamehta.topics.TopicMapTopic#isGroupTopicmap
 	 */
