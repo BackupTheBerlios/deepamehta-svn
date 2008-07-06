@@ -4,6 +4,7 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.messageboard.topics.MessageBoardTopic;
 import de.deepamehta.messageboard.topics.MessageTopic;
+import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
 import de.deepamehta.service.web.DeepaMehtaServlet;
 import de.deepamehta.service.web.RequestParameter;
@@ -19,10 +20,9 @@ import javax.servlet.ServletException;
 /**
  * <p>
  * <hr>
- * Last functional change: 12.2.2008 (2.0b8)<br>
- * Last documentation update: 10.1.2003 (2.0a17-pre5)<br>
+ * Last change: 5.7.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class MessageBoardServlet extends DeepaMehtaServlet implements MessageBoard {
 
@@ -39,7 +39,8 @@ public class MessageBoardServlet extends DeepaMehtaServlet implements MessageBoa
 
 
 
-	protected String performAction(String action, RequestParameter params, Session session) throws ServletException {
+	protected String performAction(String action, RequestParameter params, Session session, CorporateDirectives directives)
+																									throws ServletException {
 		if (action == null) {
 			// store in session
 			setMode(MODE_SHOW_MESSAGE, session);
@@ -69,7 +70,7 @@ public class MessageBoardServlet extends DeepaMehtaServlet implements MessageBoa
 				if (params.getParameter("button").equals("OK")) {
 					// create message
 					prepareMessage(params);
-					String messageID = createTopic(TOPICTYPE_MESSAGE, params, session);
+					String messageID = createTopic(TOPICTYPE_MESSAGE, params, session, directives);
 					finalizeMessage(messageID, session);
 					// store in session
 					setMessage(messageID, session);
@@ -121,11 +122,11 @@ public class MessageBoardServlet extends DeepaMehtaServlet implements MessageBoa
     		setPageNr(pageNr - 1, session);
 			return PAGE_MESSAGE_BOARD;
 		} else {
-			return super.performAction(action, params, session);
+			return super.performAction(action, params, session, directives);
 		}
 	}
 
-	protected void preparePage(String page, RequestParameter params, Session session) {
+	protected void preparePage(String page, RequestParameter params, Session session, CorporateDirectives directives) {
 		if (page.equals(PAGE_MESSAGE_BOARD)) {
     		// --- update session attributes ---
     		setExtendedNodes(session);
@@ -183,7 +184,7 @@ public class MessageBoardServlet extends DeepaMehtaServlet implements MessageBoa
 			params.setParameter(PROPERTY_NAME, "<no subject>");
 		}
 		// qutoe HTML and XML tags
-		String message = DeepaMehtaUtils.quoteHTML(params.getParameter(PROPERTY_DESCRIPTION), true);	// allowSomeTags=true
+		String message = DeepaMehtaUtils.encodeHTMLTags(params.getParameter(PROPERTY_DESCRIPTION), true);	// allowSomeTags=true
 		params.setParameter(PROPERTY_DESCRIPTION, message);
 	}
 

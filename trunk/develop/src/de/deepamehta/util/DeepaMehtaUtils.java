@@ -34,10 +34,9 @@ import java.util.regex.Pattern;
 /**
  * <p>
  * <hr>
- * Last functional change: 19.1.2008 (2.0b8)<br>
- * Last documentation update: 28.7.2001 (2.0a11)<br>
- * Malte Rei&szlig;ig<br>
- * mre@deepamehta.de
+ * Last change: 4.7.2008 (2.0b8)<br>
+ * J&ouml;rg Richter / Malte Rei&szlig;ig<br>
+ * jri@deepamehta.de / mre@deepamehta.de
  */
 public class DeepaMehtaUtils implements DeepaMehtaConstants {
 
@@ -313,8 +312,6 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 
 
 
-	// ---
-
 	public static Rectangle getBounds(PresentableTopicMap topicmap) {
 		return initBounds(topicmap, null);
 	}
@@ -375,21 +372,21 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 
 
 
-	// ---------------------------
-	// --- String Manipulation ---
-	// ---------------------------
+	// ----------------------
+	// --- HTML Utilities ---
+	// ----------------------
 
 
 
 	/**
-	 * Useful when PropertyData (particularly HTML data)
-	 * are written directly to property fields.
+	 * Encodes certain characters into HTML entities.
+	 * For the time being only one encoding is performed: " -> &quot;
+	 * <p>
+	 * Useful when text appears in HTML <input> element.
 	 */
-	/* ### public static String encodeSpecialCharacters(String in) {
-		int len = in.length();
-		StringBuffer out = new StringBuffer();
-		for (int i = 0; i < len; i++) {
-			char c = in.charAt(i);
+	public static String encodeHTMLEntities(String text) {
+		return replace(text, '"', "&quot;");
+		/* ###
 			if (c == '<') {
 				out.append("&lt;");
 			} else if (c == '>') {
@@ -398,12 +395,8 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 				out.append("&amp;");
 			} else if (c == '\"') {
 				out.append("&quot;");
-			} else {
-				out.append(c);
-			}
-		}
-		return out.toString();
-	} */
+		*/
+	}
 
 	/**
 	 * decodes one special character from HTML text
@@ -430,7 +423,163 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		return specChar;
 	} */
 
+	// --- encodeHTMLTags (2 forms) ---
+
+	static public String encodeHTMLTags(String text) {
+		return encodeHTMLTags(text, false);
+	}
+
+	static public String encodeHTMLTags(String text, boolean allowSomeTags) {
+		StringBuffer quotedText = new StringBuffer(text);
+		int i = 0;
+		while ((i = quotedText.indexOf("<", i)) != -1) {
+			boolean quote;
+			// check weather to quote
+			if (allowSomeTags) {
+				int wordStart = i + 1 < quotedText.length() && quotedText.charAt(i + 1) == '/' ? i + 2 : i + 1;
+				String tag = getWord(quotedText, wordStart);
+				quote = !ALLOWED_TAGS.contains(tag);
+			} else {
+				quote = true;
+			}
+			// perform quoting
+			if (quote) {
+				quotedText.replace(i, i + 1, "&lt;");
+			}
+			//
+			i ++;
+		}
+		return quotedText.toString();
+	}
+
+	static private String getWord(StringBuffer str, int fromIndex) {
+		int i = fromIndex;
+		while (i < str.length() && Character.isLetter(str.charAt(i))) {
+			i++;
+		}
+		return str.substring(fromIndex, i);
+	}
+
 	// ---
+
+	static public String emailToHTML(String text) {
+		String emailRegex = "[\\w\\d-_/\\.]*@+[\\w\\d-_/\\.]*";
+	    Pattern pattern = Pattern.compile(emailRegex);
+	    Matcher matcher = pattern.matcher(text);
+	    int lastIndex = 0;
+	    StringBuffer html = new StringBuffer();
+	    while (matcher.find()) {
+	    	//
+	    	html.append(text.substring(lastIndex, matcher.start()));
+	    	int before = matcher.start()-13;
+	    	if (before >= 0 && "href=\"mailto:".equals(text.substring(before, matcher.start()))) {
+	    		html.append(matcher.group());
+	    	} else {
+	    		html.append("<a href=\"mailto:" + matcher.group() + "\">" + matcher.group() + "</a>");
+	    	}	    	
+	    	lastIndex = matcher.end();
+	    }
+	    html.append(text.substring(lastIndex));
+	    return html.toString();
+		
+	}
+	
+	static public String weblinksToHTML(String text) {
+		// not conform to rfc uri; regex not for java found under http://www.faqs.org/rfcs/rfc2396.html, sufficient until now
+		String test = "http://[\\w\\d-_/\\.\\?\\%\\@\\$\\;\\&\\=\\\"\\#]*";
+		Pattern pattern = Pattern.compile(test);
+	    Matcher matcher = pattern.matcher(text);
+	    int lastIndex = 0;
+	    StringBuffer html = new StringBuffer();
+	    while (matcher.find()) {
+	    	//
+	    	html.append(text.substring(lastIndex, matcher.start()));
+	    	int before = matcher.start()-6;
+	    	if (before >= 0 && "href=\"".equals(text.substring(before, matcher.start()))) {
+	    		html.append(matcher.group());
+	    	} else {
+	    		html.append("<a href=\"" + matcher.group() + "\" target=\"blank\">" + matcher.group() + "</a>");
+	    	}	    	
+	    	lastIndex = matcher.end();
+	    }
+	    html.append(text.substring(lastIndex));
+	    return html.toString();
+	}
+
+	// ---
+
+	static public String replaceLF(String text) {
+		text = text.replaceAll("\r\n", "<br>");
+		text = text.replaceAll("\r", "<br>");		// originates from web
+		text = text.replaceAll("\n", "<br>");		// originates from graphical client
+		// ### text = DeepaMehtaUtils.replace(text, '\r', "<br>");		// originates from web
+		// ### text = DeepaMehtaUtils.replace(text, '\n', "<br>");		// originates from graphical client
+		return text;
+	}
+
+	// ---
+
+	/**
+	 * Transforms plain text for being displayed in an HTML page.
+	 * Four transformations are performed:
+	 * <ul>
+	 * <li>Angle brackets into &amp;lt; entity</li>
+	 * <li>Line breaks into &lt;br> tag</li>
+	 * <li>Email addresses (containing an <code>@</code>) into &lt;a> tag (<code>mailto:</code>)</li>
+	 * <li>Web addresses (beginning with <code>http:</code>) into &lt;a> tag</li>
+	 * </ul>
+	 */
+	static public String transformToHTML(String text) {
+		text = encodeHTMLTags(text);
+		text = emailToHTML(text);
+		text = weblinksToHTML(text);
+		text = replaceLF(text);
+		return text;
+	}	
+
+	// ---
+
+	/**
+	 * @see		de.deepamehta.service.web.DeepaMehtaServlet#addObject
+	 */
+	static public String html2xml(String html) {
+		// ### too simple
+		StringBuffer xml = new StringBuffer();
+		// close image tags
+		int pos = 0;
+		int pos1 = html.indexOf("<img");
+		while (pos1 != -1) {
+			int pos2 = html.indexOf(">", pos1);
+			xml.append(html.substring(pos, pos2 + 1));
+			xml.append("</img>");
+			pos = pos2 + 1;
+			pos1 = html.indexOf("<img", pos);
+		}
+		xml.append(html.substring(pos));
+		// close br tags
+		html = xml.toString();
+		xml.setLength(0);
+		//
+		pos = 0;
+		pos1 = html.indexOf("<br>");
+		while (pos1 != -1) {
+			xml.append(html.substring(pos, pos1 + 4));
+			xml.append("</br>");
+			pos = pos1 + 4;
+			pos1 = html.indexOf("<br>", pos);
+		}
+		xml.append(html.substring(pos));
+		//
+		return xml.toString();
+	}
+
+
+
+	// ---------------------------
+	// --- String Manipulation ---
+	// ---------------------------
+
+
 
 	/**
 	 * ### to be dropped, use a StringTokenizer or split() instead
@@ -476,60 +625,6 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		return result.toString();
 	}
 
-	static public String replaceLF(String text) {
-		text = text.replaceAll("\r\n", "<br>");
-		text = text.replaceAll("\r", "<br>");		// originates from web
-		text = text.replaceAll("\n", "<br>");		// originates from graphical client
-		// ### text = DeepaMehtaUtils.replace(text, '\r', "<br>");		// originates from web
-		// ### text = DeepaMehtaUtils.replace(text, '\n', "<br>");		// originates from graphical client
-		return text;
-	}
-	
-	static public String emailToHtml(String text) {
-		// Compile and get a reference to a Pattern object.
-		String emailRegex = "[\\w\\d-_/\\.]*@+[\\w\\d-_/\\.]*";
-	    Pattern pattern = Pattern.compile(emailRegex);
-	    Matcher matcher = pattern.matcher(text);
-	    int lastIndex = 0;
-	    StringBuffer html = new StringBuffer();
-	    while (matcher.find()) {
-	    	//
-	    	html.append(text.substring(lastIndex, matcher.start()));
-	    	int before = matcher.start()-13;
-	    	if (before >= 0 && "href=\"mailto:".equals(text.substring(before, matcher.start()))) {
-	    		html.append(matcher.group());
-	    	} else {
-	    		html.append("<a href=\"mailto:" + matcher.group() + "\">" + matcher.group() + "</a>");
-	    	}	    	
-	    	lastIndex = matcher.end();
-	    }
-	    html.append(text.substring(lastIndex));
-	    return html.toString();
-		
-	}
-	
-	static public String weblinksToHtml(String text) {
-		// not conform to rfc uri; regex not for java found under http://www.faqs.org/rfcs/rfc2396.html, sufficient until now
-		String test = "http://[\\w\\d-_/\\.\\?\\%\\@\\$\\;\\&\\=\\\"\\#]*";
-		Pattern pattern = Pattern.compile(test);
-	    Matcher matcher = pattern.matcher(text);
-	    int lastIndex = 0;
-	    StringBuffer html = new StringBuffer();
-	    while (matcher.find()) {
-	    	//
-	    	html.append(text.substring(lastIndex, matcher.start()));
-	    	int before = matcher.start()-6;
-	    	if (before >= 0 && "href=\"".equals(text.substring(before, matcher.start()))) {
-	    		html.append(matcher.group());
-	    	} else {
-	    		html.append("<a href=\"" + matcher.group() + "\" target=\"blank\">" + matcher.group() + "</a>");
-	    	}	    	
-	    	lastIndex = matcher.end();
-	    }
-	    html.append(text.substring(lastIndex));
-	    return html.toString();
-	}
-
 	// ---
 
 	static public String align(String str) {
@@ -548,81 +643,6 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 			result.append(str);
 		}
 		return result.toString();
-	}
-
-	// ---
-
-	/**
-	 * @see		de.deepamehta.service.web.DeepaMehtaServlet#addObject
-	 */
-	static public String html2xml(String html) {
-		// ### too simple
-		StringBuffer xml = new StringBuffer();
-		// close image tags
-		int pos = 0;
-		int pos1 = html.indexOf("<img");
-		while (pos1 != -1) {
-			int pos2 = html.indexOf(">", pos1);
-			xml.append(html.substring(pos, pos2 + 1));
-			xml.append("</img>");
-			pos = pos2 + 1;
-			pos1 = html.indexOf("<img", pos);
-		}
-		xml.append(html.substring(pos));
-		// close br tags
-		html = xml.toString();
-		xml.setLength(0);
-		//
-		pos = 0;
-		pos1 = html.indexOf("<br>");
-		while (pos1 != -1) {
-			xml.append(html.substring(pos, pos1 + 4));
-			xml.append("</br>");
-			pos = pos1 + 4;
-			pos1 = html.indexOf("<br>", pos);
-		}
-		xml.append(html.substring(pos));
-		//
-		return xml.toString();
-	}
-
-	// --- quoteHTML (2 forms) ---
-
-	static public String quoteHTML(String text) {
-		return quoteHTML(text, false);
-	}
-
-	static public String quoteHTML(String text, boolean allowSomeTags) {
-		StringBuffer quotedText = new StringBuffer(text);
-		int i = 0;
-		while ((i = quotedText.indexOf("<", i)) != -1) {
-			boolean quote;
-			// check weather to quote
-			if (allowSomeTags) {
-				int wordStart = i + 1 < quotedText.length() && quotedText.charAt(i + 1) == '/' ? i + 2 : i + 1;
-				String tag = getWord(quotedText, wordStart);
-				quote = !ALLOWED_TAGS.contains(tag);
-			} else {
-				quote = true;
-			}
-			// perform quoting
-			if (quote) {
-				quotedText.replace(i, i + 1, "&lt;");
-			}
-			//
-			i ++;
-		}
-		return quotedText.toString();
-	}
-
-	// ---
-
-	static private String getWord(StringBuffer str, int fromIndex) {
-		int i = fromIndex;
-		while (i < str.length() && Character.isLetter(str.charAt(i))) {
-			i++;
-		}
-		return str.substring(fromIndex, i);
 	}
 
 
@@ -840,7 +860,7 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 		return mBytes + "M";
 	}
 
-/*
+/* ###
 	public static boolean isCompatible(String version, String requiredVersion) {
 		if (version.equals(requiredVersion)) {
 			return true;
@@ -881,22 +901,25 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 
 
 
-	// -----------------
-	// --- Mics      ---
-	// -----------------
+	// ------------
+	// --- Misc ---
+	// ------------
 
 
 
+	// ###
 	static public void printStackTrace() {
-		printStackTrace(10,1);
+		printStackTrace(10, 1);
 	}
 
+	// ###
 	static public void printStackTrace(int depth) {
-		printStackTrace(depth,1);
+		printStackTrace(depth, 1);
 	}
 
+	// ###
 	static public void printStackTrace(int depth, int skip) {
-		if (false){
+		if (false) {
 			skip++;
 			System.err.println("----");
 			Exception e = new Exception();

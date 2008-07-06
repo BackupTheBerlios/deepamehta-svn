@@ -3,6 +3,7 @@ package de.deepamehta.kompetenzstern;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.kompetenzstern.topics.KompetenzsternTopic;
 import de.deepamehta.kompetenzstern.topics.KriteriumTopic;
+import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
 import de.deepamehta.service.web.DeepaMehtaServlet;
 import de.deepamehta.service.web.RequestParameter;
@@ -14,16 +15,16 @@ import javax.servlet.ServletException;
 
 
 /**
- * <P>
- * <HR>
- * Last sourcecode change: 29.10.2004 (2.0b3)<BR>
- * Last documentation update: 15.1.2003 (2.0a17-pre6)<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * <p>
+ * <hr>
+ * Last change: 5.7.2008 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
+ * jri@deepamehta.de
  */
 public class KSServlet extends DeepaMehtaServlet implements KS {
 
-	protected String performAction(String action, RequestParameter params, Session session) throws ServletException {
+	protected String performAction(String action, RequestParameter params, Session session, CorporateDirectives directives)
+																									throws ServletException {
 		if (action == null) {
 			return PAGE_HOME;
 		} else if (action.equals(ACTION_GO_HOME)) {
@@ -32,7 +33,7 @@ public class KSServlet extends DeepaMehtaServlet implements KS {
 		} else if (action.equals(ACTION_SHOW_KS_FORM)) {
 			return PAGE_KS_FORM;
 		} else if (action.equals(ACTION_CREATE_KS)) {
-			String ksID = createTopic(TOPICTYPE_KOMPETENZSTERN, params, session);
+			String ksID = createTopic(TOPICTYPE_KOMPETENZSTERN, params, session, directives);
 			setKS(ksID, session);
 			return PAGE_HOME;
 		} else if (action.equals(ACTION_EDIT_KS)) {
@@ -40,7 +41,7 @@ public class KSServlet extends DeepaMehtaServlet implements KS {
 			setKS(ksID, session);
 			return PAGE_KS_FORM;
 		} else if (action.equals(ACTION_UPDATE_KS)) {
-			updateTopic(TOPICTYPE_KOMPETENZSTERN, params, session);
+			updateTopic(TOPICTYPE_KOMPETENZSTERN, params, session, directives);
 			return PAGE_HOME;
 		} else if (action.equals(ACTION_DELETE_KS)) {
 			String ksID = params.getValue("id");
@@ -53,14 +54,14 @@ public class KSServlet extends DeepaMehtaServlet implements KS {
 			return PAGE_CRITERIA_FORM;
 		} else if (action.equals(ACTION_UPDATE_CRITERIA)) {
 			String ksID = getKSID(session);
-			updateTopic(getKSCritTypeID(session), params, session, ksID, VIEWMODE_USE);
+			updateTopic(getKSCritTypeID(session), params, session, directives, ksID, VIEWMODE_USE);
 			return PAGE_KS_FORM;
 		} else {
-			return super.performAction(action, params, session);
+			return super.performAction(action, params, session, directives);
 		}
 	}
 
-	protected void preparePage(String page, RequestParameter params, Session session) {
+	protected void preparePage(String page, RequestParameter params, Session session, CorporateDirectives directives) {
 		if (page.equals(PAGE_HOME)) {
 	   		// get all kompetenzsterne
 			Vector ksList = cm.getTopics(TOPICTYPE_KOMPETENZSTERN);

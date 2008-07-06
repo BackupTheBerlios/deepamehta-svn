@@ -1,6 +1,7 @@
 package de.deepamehta.topicmapviewer;
 
 import de.deepamehta.BaseTopic;
+import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
 import de.deepamehta.service.web.DeepaMehtaServlet;
 import de.deepamehta.service.web.RequestParameter;
@@ -16,8 +17,8 @@ import javax.servlet.ServletException;
 
 public class TopicmapViewerServlet extends DeepaMehtaServlet implements TopicmapViewer {
 
-	protected String performAction(String action, RequestParameter params, Session session)
-																		throws ServletException {
+	protected String performAction(String action, RequestParameter params, Session session, CorporateDirectives directives)
+																									throws ServletException {
 		if (action == null) {
 			return PAGE_TOPICMAP_LIST;
 		} else if (action.equals(ACTION_SHOW_TOPICMAP)) {
@@ -32,11 +33,11 @@ public class TopicmapViewerServlet extends DeepaMehtaServlet implements Topicmap
 			session.setAttribute("geometryData", geometryData);
 			return PAGE_TOPICMAP;
 		} else {
-			return super.performAction(action, params, session);
+			return super.performAction(action, params, session, directives);
 		}
 	}
 
-	protected void preparePage(String page, RequestParameter params, Session session) {
+	protected void preparePage(String page, RequestParameter params, Session session, CorporateDirectives directives) {
 		if (page.equals(PAGE_TOPICMAP_LIST)) {
 			Vector workspaces = cm.getTopics(TOPICTYPE_WORKSPACE);
 			Hashtable topicmaps = getTopicmaps(workspaces);

@@ -26,10 +26,9 @@ import java.util.Vector;
  * </ol>
  * <p>
  * <hr>
- * Last functional change: 30.3.2008 (2.0b8)<br>
- * Last documentation update: 7.12.2000 (2.0a8-pre2)<br>
+ * Last change: 4.7.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public interface DeepaMehtaConstants {
 
@@ -459,9 +458,9 @@ public interface DeepaMehtaConstants {
     static final int LAYOUT_COLS = 2;
     
     // --- Layout Styles ---
-    static final int BEAN_LAYOUT_2COLUMN = 0;
-    static final int BEAN_LAYOUT_FLOW = 1;
-    static final int BEAN_LAYOUT_BOX = 2;
+    static final int LAYOUT_STYLE_2COLUMN = 0;
+    static final int LAYOUT_STYLE_FLOW = 1;
+    static final int LAYOUT_STYLE_BOX = 2;
 
 	// --- Form Layout Settings ---
     static final int INPUTFIELD_WIDTH = 50;

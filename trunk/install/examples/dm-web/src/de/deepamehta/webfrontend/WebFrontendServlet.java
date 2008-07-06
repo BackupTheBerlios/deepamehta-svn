@@ -3,6 +3,7 @@ package de.deepamehta.webfrontend;
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
 import de.deepamehta.service.TopicBean;
 import de.deepamehta.service.web.DeepaMehtaServlet;
@@ -17,8 +18,8 @@ import javax.servlet.ServletException;
 
 public class WebFrontendServlet extends DeepaMehtaServlet implements WebFrontend {
 
-	protected String performAction(String action, RequestParameter params, Session session)
-																		throws ServletException {
+	protected String performAction(String action, RequestParameter params, Session session, CorporateDirectives directives)
+																									throws ServletException {
 		if (action == null) {
 			return PAGE_LOGIN;
 		} else if (action.equals(ACTION_TRY_LOGIN)) {
@@ -50,22 +51,22 @@ public class WebFrontendServlet extends DeepaMehtaServlet implements WebFrontend
 			return PAGE_TOPIC_LIST;
 		} else if (action.equals(ACTION_CREATE_TOPIC)) {
 			String typeID = getTypeID(session);
-			createTopic(typeID, params, session);
+			createTopic(typeID, params, session, directives);
 			return PAGE_TOPIC_LIST;
 		} else if (action.equals(ACTION_UPDATE_TOPIC)) {
 			String typeID = getTypeID(session);
-			updateTopic(typeID, params, session);
+			updateTopic(typeID, params, session, directives);
 			return PAGE_TOPIC_LIST;
 		} else if (action.equals(ACTION_DELETE_TOPIC)) {
 			String topicID = params.getValue("topicID");
 			deleteTopic(topicID);
 			return PAGE_TOPIC_LIST;
 		} else {
-			return super.performAction(action, params, session);
+			return super.performAction(action, params, session, directives);
 		}
 	}
 
-	protected void preparePage(String page, RequestParameter params, Session session) {
+	protected void preparePage(String page, RequestParameter params, Session session, CorporateDirectives directives) {
 		if (page.equals(PAGE_HOME)) {
 			session.setAttribute("baseURL", as.getCorporateWebBaseURL());
 			//

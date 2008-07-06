@@ -435,7 +435,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * <p>
 	 * ### should return a LiveTopic and have "directives" as a parameter<br>
 	 * <p>
-	 * References checked: 27.9.2007 (2.0b8)
+	 * References checked: 3.7.2008 (2.0b8)
 	 *
 	 * @param	session		passed to init() hook (init level 1)
 	 *
@@ -448,8 +448,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @see		#createLiveTopic
 	 * @see		#createLiveTopics
 	 */
-	private CorporateDirectives createLiveTopic(BaseTopic topic, boolean override, Session session)
-																		throws TopicInitException {
+	private CorporateDirectives createLiveTopic(BaseTopic topic, boolean override, Session session) throws TopicInitException {
 		// ### error check
 		if (topic == null) {
 			throw new DeepaMehtaException("null is passed instead a BaseTopic");
@@ -504,8 +503,9 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
-	 * The topic is created, loaded, evoked and fully inited.
-	 * No existence check is performed. All Exceptions are catched.
+	 * Creates a topic in corporate memory and loads it into memory.
+	 * The topic is fully inited (evoke() and init() hooks are triggered).
+	 * All Exceptions are catched.
 	 * <p>
 	 * References checked: 6.7.2002 (2.0a15-pre9)
 	 *
@@ -526,12 +526,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			//
 			newTopic = getLiveTopic(topic);
 			// --- evoke ---
-			// ### Note: a topic is evoked also if init(1) fails. Consider this case:
-			// interactively created datasource topics have no URL and driver set, thus the
-			// datasource can't be opened and init(1) will fail. However he datasource must
+			// ### Note: a topic is evoked also if init(1) fails. Consider this case: interactively created datasource topics
+			// have no URL and driver set, thus the datasource can't be opened and init(1) will fail. However he datasource must
 			// be evoked() to get stored in corporate memory.
-			// ### Note 2: consider this case: reveal a topic from an ElementContainer
-			// will trigger evoke, but the topic could already be in CM if revealed before
+			// ### Note 2: consider this case: reveal a topic from an ElementContainer will trigger evoke, but the topic could
+			// already be in CM if revealed before
 			if (evoke) {
 				try {
 					directives.add(newTopic.evoke(session, topicmapID, viewmode));	// DME, ASE
@@ -1671,7 +1670,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			LiveTopic topic = getLiveTopic(topicID, version);	// may throw DME
 			// only consider changed properties
 			props = removeUnchangedProperties(props, oldProps);
-			// ask application weather property change is allowed
+			// ask application weather property change is allowed (trigger propertyChangeAllowed() hook)
 			removeProhibitedProperties(props, topic, session, directives);
 			// write changed properties to database (corporate memory)
 			cm.setTopicData(topicID, version, props);

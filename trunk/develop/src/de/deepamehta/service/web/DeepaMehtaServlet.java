@@ -54,7 +54,7 @@ import javax.xml.transform.stream.StreamSource;
 /**
  * <p>
  * <hr>
- * Last change: 29.6.2008 (2.0b8)<br>
+ * Last change: 4.7.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -118,15 +118,13 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 		System.out.println(">>> HTML generator method: \"" + generatorMethod + "\"");
 	}
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-    														throws IOException, ServletException {
-    	performRequest(request, response);
-    }
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		performRequest(request, response);
+	}
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-    														throws IOException, ServletException {
-    	performRequest(request, response);	// ###
-    }
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		performRequest(request, response);	// ###
+	}
 
 	public void destroy() {
 		System.out.println("--- DeepaMehtaServlet destroyed (" + getClass() + ") ---");
@@ -401,7 +399,14 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 			"\" typeID=\"" + typeID + "\" topicID=\"" + topicID + "\"");
 		//
 		if (doCreate) {
-			as.createLiveTopic(topicID, typeID, "", topicmapID, viewmode, session, directives);
+			// ### Note: the topic name is not yet set ("") but only through topic naming behavoir as triggered by
+			// setTopicProperties(). As a consequence the topic name is not known inside the propertyChangeAllowed() hook
+			// and can't be used for reporting -- bad ### not true anymore, 4.7.2008
+			// Note: the topic name is temprarily set to the value of the "Name" field.
+			String[] val = (String[]) params.get(PROPERTY_NAME);
+			String name = val != null ? val[0] : "";
+			//
+			as.createLiveTopic(topicID, typeID, name /* "" */, topicmapID, viewmode, session, directives);
 		}
 		// properties
 		Hashtable props = getProperties(params, typeID);
@@ -455,35 +460,35 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 		CorporateDirectives directives = new CorporateDirectives();
 		String action = params.getValue("action");
 		String method = request.getMethod();
-    	System.out.println(">>> DeepaMehtaServlet: " + method + (!method.equals("GET") ? " (content type=\"" +
-    		request.getContentType() + "\")" : "") + " action=\"" + action + "\"");
-    	//
-    	// --- trigger performAction() hook ---
-    	String page = performAction(action, params, session, directives);
-    	//
-    	// --- trigger preparePage() hook ---
-    	preparePage(page, params, session, directives);
-    	//
-    	// process directives
+		System.out.println(">>> DeepaMehtaServlet: " + method + (!method.equals("GET") ? " (content type=\"" +
+			request.getContentType() + "\")" : "") + " action=\"" + action + "\"");
+		//
+		// --- trigger performAction() hook ---
+		String page = performAction(action, params, session, directives);
+		//
+		// --- trigger preparePage() hook ---
+		preparePage(page, params, session, directives);
+		//
+		// process directives
 		directives.updateCorporateMemory(as, session, null, null);
 		// Note: topicmapID=null, viewmode=null ### should be OK because in web interface there is no "default topicmap"
 		//
-    	if (generatorMethod.equals(HTML_GENERATOR_JSP)) {
-	    	redirectToPage(page, request, response);
-    	} else if (generatorMethod.equals(HTML_GENERATOR_XSLT)) {
-    		buildPage(page, session, request, response);
-    	} else {
-    		// ### never happens
-    		throw new DeepaMehtaException("unexpected HTML generator method: " + generatorMethod);
-    	}
+		if (generatorMethod.equals(HTML_GENERATOR_JSP)) {
+			redirectToPage(page, request, response);
+		} else if (generatorMethod.equals(HTML_GENERATOR_XSLT)) {
+			buildPage(page, session, request, response);
+		} else {
+			// ### never happens
+			throw new DeepaMehtaException("unexpected HTML generator method: " + generatorMethod);
+		}
 	}
 
 	// ---
 
 	private void redirectToPage(String page, HttpServletRequest request, HttpServletResponse response)
 																throws IOException, ServletException {
-	   	sc.getRequestDispatcher("/pages/" + page + ".jsp").forward(request, response);
-	   	// ### should the extension be part of the "page" parameter? Consider static .html files
+		sc.getRequestDispatcher("/pages/" + page + ".jsp").forward(request, response);
+		// ### should the extension be part of the "page" parameter? Consider static .html files
 	}
 
 	private void buildPage(String page, Session session, HttpServletRequest request, HttpServletResponse response) {
