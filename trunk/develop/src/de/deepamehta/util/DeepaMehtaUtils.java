@@ -523,14 +523,15 @@ public class DeepaMehtaUtils implements DeepaMehtaConstants {
 	 * Transforms plain text for being displayed in an HTML page.
 	 * Four transformations are performed:
 	 * <ul>
-	 * <li>Angle brackets into &amp;lt; entity</li>
+	 * <li>### Angle brackets into &amp;lt; entity</li>
 	 * <li>Line breaks into &lt;br> tag</li>
 	 * <li>Email addresses (containing an <code>@</code>) into &lt;a> tag (<code>mailto:</code>)</li>
 	 * <li>Web addresses (beginning with <code>http:</code>) into &lt;a> tag</li>
 	 * </ul>
 	 */
 	static public String transformToHTML(String text) {
-		text = encodeHTMLTags(text);
+		// ### text = encodeHTMLTags(text);		// ### bug #14137 is open again, but we must comment this line
+												// ### for Kiezatlas "Administrator Infos" property
 		text = emailToHTML(text);
 		text = weblinksToHTML(text);
 		text = replaceLF(text);
