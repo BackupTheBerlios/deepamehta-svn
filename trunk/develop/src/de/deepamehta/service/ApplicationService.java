@@ -66,7 +66,7 @@ import java.util.Vector;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last change: 1.7.2008 (2.0b8)<br>
+ * Last change: 7.8.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -905,24 +905,26 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// --- createNewContainer (2 forms) ---
 
 	/**
-	 * ### Creates a container with standard name.
+	 * Creates a container that results from a "Search" command (### this container has a standard name).
+	 * <p>
+	 * References checked: 6.8.2008 (2.0b8)
 	 * <p>
 	 * <table>
 	 * <tr><td><b>Called by</b></td>												<td><code>evokeContent</code></td></tr>
 	 * <tr><td>{@link #performGoogleSearch}</td>									<td><code>false</code></td></tr>
-	 * <tr><td>{@link de.deepamehta.topics.TopicContainerTopic#processQuery}</td>	<td><code>false</code></td></tr>
-	 * <tr><td>{@link de.deepamehta.topics.ElementContainerTopic#processQuery}</td>	<td><code>true</code></td></tr>
+	 * <tr><td>{@link de.deepamehta.topics.TopicContainerTopic#performQuery}</td>	<td><code>false</code></td></tr>
+	 * <tr><td>{@link de.deepamehta.topics.ElementContainerTopic#performQuery}</td>	<td><code>true</code></td></tr>
 	 * </table>
 	 */
-	public CorporateDirectives createNewContainer(LiveTopic relatedTopic, String containerType, String nameFilter,
+	public CorporateDirectives createNewContainer(LiveTopic relatedTopic, String containerTypeID, String nameFilter,
 											Hashtable propertyFilter, String relatedTopicID, String relatedTopicSemantic,
 											int topicCount, Vector topics, boolean evokeContent) {
-		return createNewContainer(relatedTopic, containerType, nameFilter, propertyFilter, relatedTopicID,
+		return createNewContainer(relatedTopic, containerTypeID, nameFilter, propertyFilter, relatedTopicID,
 			relatedTopicSemantic, topicCount, topics, evokeContent, null, true);	// name=null, revealContent=true
 	}
 
 	/**
-	 * ### Creates a container with a custom name.
+	 * Creates a container that results from a "What's related?" command (### this container has a custom name).
 	 * <p>
 	 * Creates and returns the client directives to perform the following task: create a new container, associate
 	 * the container with the specified <code>relatedTopic</code> by means of an association of type
@@ -930,8 +932,10 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * "Revealing the contents" means showing the contained topics and associating them with the container by means
 	 * of associations of type {@link #SEMANTIC_CONTAINER_HIERARCHY}.
 	 * <p>
-	 * If the <code>relatedTopic</code> is itself a container and it has the same content no new container is created,
+	 * If the <code>relatedTopic</code> is itself a container and it has the same content, no new container is created,
 	 * but the content is revealed as described.
+	 * <p>
+	 * References checked: 6.8.2008 (2.0b8)
 	 * <p>
 	 * <table>
 	 * <tr><td><b>Called by</b></td>													<td><code>evokeContent</code></td></tr>
@@ -939,7 +943,9 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * <tr><td>{@link de.deepamehta.topics.LiveTopic#navigateByAssoctype}</td>			<td><code>false</code></td></tr>
 	 * </table>
 	 *
-	 * @param	relatedTopic			the topic the container is visually associated.
+	 * @param	relatedTopic			the topic the container is visually associated. This can be<br>
+	 *									1) another container (in case of "Search" command)<br>
+	 *									2) an arbitrary topic (in case of "What's related?" command)<br>
 	 *									Note: don't confuse this paramter with the relation filter
 	 * @param	containerTypeID			type ID of the container to be created
 	 * @param	nameFilter				name filter, if <code>null</code> no name filter is set
@@ -948,7 +954,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @param	relatedTopicSemantic	part of relation filter, if <code>null</code> the association type doesn't matter
 	 * @param	topicCount				number of topics contained in the container
 	 * @param	topics					topics contained in the container (vector of {@link de.deepamehta.PresentableTopic}s),
-	 *									Note: only used if topicCount <= MAX_REVEALING
+	 *									Note: only used if topicCount <= MAX_LISTING
 	 *
 	 */
 	public CorporateDirectives createNewContainer(LiveTopic relatedTopic, String containerTypeID, String nameFilter,
@@ -957,26 +963,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		CorporateDirectives directives = new CorporateDirectives();
 		//
 		String containerLabel = Integer.toString(topicCount);
-		// --- create container properties ---
-		Hashtable containerProps;
-		containerProps = (Hashtable) propertyFilter.clone();
-		// determine query elements
-		String queryElements = queryElements(propertyFilter);
-		if (nameFilter != null && nameFilter.length() > 0) {
-			if (queryElements.length() > 0) {
-				queryElements += ",";
-			}
-			queryElements += PROPERTY_SEARCH;
-			containerProps.put(PROPERTY_SEARCH, nameFilter);
-		}
-		containerProps.put("QueryElements", queryElements);
-		containerProps.put("ElementCount", containerLabel);
-		if (relatedTopicID != null) {
-			containerProps.put(PROPERTY_RELATED_TOPIC_ID, relatedTopicID);
-			if (relatedTopicSemantic != null) {
-				containerProps.put(PROPERTY_RELATED_TOPIC_SEMANTIC, relatedTopicSemantic);
-			}
-		}
+		Hashtable containerProps = buildContainerProperties(nameFilter, propertyFilter, relatedTopicID, relatedTopicSemantic,
+																							topicCount, topics, containerLabel);
 		// only create container if the query has been narrowed against the query of this container
 		String containerID;
 		if (relatedTopic instanceof ContainerTopic &&
@@ -986,7 +974,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			containerID = relatedTopic.getID();
 			directives.add(DIRECTIVE_SET_TOPIC_LABEL, containerID, containerLabel, new Integer(1), containerProps);	// ### version=1
 		} else {
-			System.out.println("> ContainerTopic.createNewContainer(): query narrowed (now " + propertyFilter + ") -- create new container");
+			System.out.println("> ContainerTopic.createNewContainer(): query narrowed (now " + propertyFilter +
+				") -- create new container");
 			// --- create new container ---
 			containerID = cm.getNewTopicID();
 			String containerName = containerName(name, nameFilter, propertyFilter);
@@ -1007,6 +996,56 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			directives.add(DIRECTIVE_SHOW_ASSOCIATIONS, assocs, Boolean.TRUE);
 		}
 		return directives;
+	}
+
+	private Hashtable buildContainerProperties(String nameFilter, Hashtable propertyFilter, String relatedTopicID,
+											String relatedTopicSemantic, int topicCount, Vector topics, String containerLabel) {
+		Hashtable containerProps = (Hashtable) propertyFilter.clone();
+		// query elements
+		String queryElements = queryElements(propertyFilter);
+		if (nameFilter != null && nameFilter.length() > 0) {
+			if (queryElements.length() > 0) {
+				queryElements += ",";
+			}
+			queryElements += PROPERTY_SEARCH;
+			containerProps.put(PROPERTY_SEARCH, nameFilter);
+		}
+		containerProps.put(PROPERTY_QUERY_ELEMENTS, queryElements);
+		containerProps.put(PROPERTY_ELEMENT_COUNT, containerLabel);
+		// relation filter
+		if (relatedTopicID != null) {
+			containerProps.put(PROPERTY_RELATED_TOPIC_ID, relatedTopicID);
+			if (relatedTopicSemantic != null) {
+				containerProps.put(PROPERTY_RELATED_TOPIC_SEMANTIC, relatedTopicSemantic);
+			}
+		}
+		// result
+		containerProps.put(PROPERTY_RESULT, buildResultView(topicCount, topics));
+		//
+		return containerProps;
+	}
+
+	private String buildResultView(int topicCount, Vector topics) {
+		StringBuffer html = new StringBuffer("<html><body>");
+		if (topicCount <= MAX_LISTING) {
+			Enumeration e = topics.elements();
+			while (e.hasMoreElements()) {
+				PresentableTopic topic = (PresentableTopic) e.nextElement();
+				int appMode = topic.getAppearanceMode();
+				if (appMode != APPEARANCE_CUSTOM_ICON) {
+					System.out.println("*** appMode=" + appMode + " -- " + topic);
+				}
+				String iconfile = topic.getAppearanceParam();
+				String id = topic.fromDatasource() ? topic.getOriginalID() : topic.getID();
+				html.append("<img src=\"" + FILESERVER_ICONS_PATH + iconfile + "\"> ");
+				html.append("<a href=\"http://" + ACTION_REVEAL_TOPIC + "/" + id + "\">" + topic.getName() + "</a><br>");
+			}
+		} else {
+			html.append("<p><i>Search result too large to be shown (" + topicCount + " entries).</i></p>");
+			html.append("<p><i>Refine your search and press return inside an input field.</i></p>");
+		}
+		html.append("</body></html>");
+		return html.toString();
 	}
 
 	// --- getTopicProperty (2 forms) ---
@@ -4418,18 +4457,22 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * Creates a vector of {@link de.deepamehta.PresentableTopic}s corresponding to
 	 * the {@link de.deepamehta.BaseTopic}s in the specified vector.
+	 * <p>
+	 * References checked: 7.8.2008 (2.0b8)
 	 *
 	 * @return	Vector of {@link de.deepamehta.PresentableTopic}
 	 *
-	 * @see		de.deepamehta.topics.TopicContainerTopic#processQuery
+	 * @see		de.deepamehta.topics.TopicContainerTopic#performQuery
 	 */
 	public Vector createPresentableTopics(String topicmapID, Vector baseTopics, String nearTopicID) {
 		Vector topics = new Vector();
 		//
 		Enumeration e = baseTopics.elements();
 		while (e.hasMoreElements()) {
-			BaseTopic topic = (BaseTopic) e.nextElement();
-			topics.addElement(createPresentableTopic(topic, nearTopicID, topicmapID));
+			BaseTopic t = (BaseTopic) e.nextElement();
+			PresentableTopic topic = createPresentableTopic(t, nearTopicID, topicmapID);
+			topic.setIcon(getIconfile(t));
+			topics.addElement(topic);
 		}
 		return topics;
 	}
@@ -4466,8 +4509,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @see		#createPresentableTopic(BaseTopic topic)	(above)
 	 * @see		de.deepamehta.topics.TopicMapTopic#openSharedTopicmap
 	 */
-	public PresentableTopic createPresentableTopic(BaseTopic topic, String appTopicID)
-															throws DeepaMehtaException {
+	public PresentableTopic createPresentableTopic(BaseTopic topic, String appTopicID) throws DeepaMehtaException {
 		PresentableTopic presentableTopic = new PresentableTopic(topic);
 		// ### version is set to 1
 		String iconfile = getIconfile(appTopicID, 1);	// may throw DME
@@ -4485,8 +4527,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		Vector topics = cm.getTopics(typeID, name);
 		int count = topics.size();
 		if (count == 0) {
-			PresentableTopic topic = new PresentableTopic(getNewTopicID(), 1, typeID, 1,
-				name, nearTopicID);
+			PresentableTopic topic = new PresentableTopic(getNewTopicID(), 1, typeID, 1, name, nearTopicID);
 			topic.setEvoke(true);
 			return topic;
 		} else {

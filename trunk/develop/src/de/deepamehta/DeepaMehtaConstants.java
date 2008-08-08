@@ -26,7 +26,7 @@ import java.util.Vector;
  * </ol>
  * <p>
  * <hr>
- * Last change: 4.7.2008 (2.0b8)<br>
+ * Last change: 6.8.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -143,9 +143,12 @@ public interface DeepaMehtaConstants {
 	static final String PROPERTY_CW_BASE_URL = "Base URL";						// "CorporateWeb Settings"
 	static final String PROPERTY_SMTP_SERVER = "SMTP Server";					// "CorporateWeb Settings"
 	static final String PROPERTY_GOOGLE_KEY = "Google Key";						// "CorporateWeb Settings"
-	static final String PROPERTY_SEARCH = "Search";								// "TopicSearch"
+	static final String PROPERTY_SEARCH = "Search";								// "Search"
+	static final String PROPERTY_QUERY_ELEMENTS = "QueryElements";				// "Search"
+	static final String PROPERTY_ELEMENT_COUNT = "ElementCount";				// "Search"
 	static final String PROPERTY_RELATED_TOPIC_ID = "RelatedTopicID";			// "Search"
 	static final String PROPERTY_RELATED_TOPIC_SEMANTIC = "AssociationTypeID";	// "Search"
+	static final String PROPERTY_RESULT = "Result";								// "Search"
 	static final String PROPERTY_ROLE_EDITOR = "Editor";						// "Membership"
 	static final String PROPERTY_ROLE_PUBLISHER = "Publisher";					// "Membership"
 	// property values
@@ -208,8 +211,8 @@ public interface DeepaMehtaConstants {
 	static final int TEXT_EDITOR_HEIGHT = 200;
 	static final int INPUT_LINE_WIDTH = 220;
 	static final int INPUT_LINE_HEIGHT = 64;
-	static final int MAX_REVEALING = 7;
-	static final int MAX_LISTING = 100;
+	static final int MAX_REVEALING = 7;	// cognitive limit 1
+	static final int MAX_LISTING = 150;	// cognitive limit 2
 	static final int NEW_TOPIC_X = 20;	// ### to be dropped
 	static final int NEW_TOPIC_Y = 20;	// ### to be dropped
 	static final int NEAR_MIN = 40;
@@ -404,10 +407,6 @@ public interface DeepaMehtaConstants {
 	static final String CMD_DELETE_ASSOC = "deleteAssociation";
 	static final String CMD_DELETE_TOPICMAP = "deleteTopicmap";
 	static final String CMD_SET_PROPERTY = "setProperty";				// changes model
-	// ### static final String CMD_EDIT_TOPIC_PROPERTY = "editTopicProperty";	// opens detail
-	// ### static final String CMD_VIEW_TOPIC_PROPERTY = "viewTopicProperty";	// opens detail
-	// ### static final String CMD_EDIT_ASSOC_PROPERTY = "editAssocProperty";	// opens detail
-	// ### static final String CMD_VIEW_ASSOC_PROPERTY = "viewAssocProperty";	// opens detail
 	static final String CMD_ASSIGN_TOPIC = "assignTopic";
 	static final String CMD_ASSIGN_NEW_TOPIC = "assignNewTopic";
 	static final String CMD_SHOW_HELP = "showHelp";						// changes model
@@ -441,8 +440,9 @@ public interface DeepaMehtaConstants {
 	static final String CMD_PROCESS_STRING = "processDroppedString";
 	static final String CMD_CHOOSE_COLOR = "chooseColor";
 	static final String CMD_FOLLOW_HYPERLINK = "followHyperlink";
-	// ### static final String CMD_CHOOSE_BACKGROUND_COLOR = "chooseBackgroundColor";
-	// ### static final String CMD_SET_WORKSPACE = "setWorkspace";
+
+	// hyperlink actions
+	static final String ACTION_REVEAL_TOPIC = "revealTopic";
 
 
 

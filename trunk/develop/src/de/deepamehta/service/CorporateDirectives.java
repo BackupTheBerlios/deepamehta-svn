@@ -25,7 +25,7 @@ import java.util.Vector;
 /**
  * <p>
  * <hr>
- * Last change: 30.6.2008 (2.0b8)<br>
+ * Last change: 7.8.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -44,8 +44,8 @@ public class CorporateDirectives extends Directives {
 	 *
 	 * @see		ApplicationService#deleteLiveTopic
 	 * @see		ApplicationService#performTopicAction
-	 * @see		de.deepamehta.topics.TopicContainerTopic#processQuery
-	 * @see		de.deepamehta.topics.ElementContainerTopic#processQuery
+	 * @see		de.deepamehta.topics.TopicContainerTopic#performQuery
+	 * @see		de.deepamehta.topics.ElementContainerTopic#performQuery
 	 * @see		de.deepamehta.topics.ElementContainerTopic#autoSearch
 	 */
 	public CorporateDirectives() {
@@ -710,7 +710,7 @@ public class CorporateDirectives extends Directives {
 				props = new Hashtable();
 			}
 			// set owner
-			if (!topic.isVirtual() && !session.isDemo()) {		// Note: a demo user has no user ID (null)
+			if (!topic.fromDatasource() && !session.isDemo()) {		// Note: a demo user has no user ID (null)
 				props.put(PROPERTY_OWNER_ID, session.getUserID());
 			}
 			//

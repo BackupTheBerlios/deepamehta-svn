@@ -88,10 +88,9 @@ import java.util.Vector;
  * </OL>
  * <P>
  * <HR>
- * Last functional change: 29.1.2008 (2.0b8)<BR>
- * Last documentation update: 13.3.2001 (2.0a10-pre1)<BR>
+ * Last change: 7.8.2008 (2.0b8)<BR>
  * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public abstract class ContainerTopic extends LiveTopic {
 
@@ -104,7 +103,8 @@ public abstract class ContainerTopic extends LiveTopic {
 
 
 	/**
-	 * ### The query represented by this container.
+	 * Part of the query represented by this container: the property filter.
+	 * <p>
 	 * The containers query is immutable -- once set it will not change over the lifetime
 	 * of the container.
 	 * <P>
@@ -127,13 +127,15 @@ public abstract class ContainerTopic extends LiveTopic {
 	protected Hashtable containerPropertyFilter = new Hashtable();
 
 	/**
-	 * Name filter.
+	 * Part of the query represented by this container: the name filter.
 	 * <P>
 	 * Note: Remains uninitialized if no name filter is set for this container
 	 */
 	protected String containerNameFilter;
 
 	/**
+	 * Part of the query represented by this container: the relation filter.
+	 * <p>
 	 * The topic to which an association must exists to the the topics of this container.
 	 * <P>
 	 * Initialized by {@link #initContainer}.<BR>
@@ -141,6 +143,9 @@ public abstract class ContainerTopic extends LiveTopic {
 	 */
 	protected BaseTopic containerRelatedTopic;
 
+	/**
+	 * Part of the query represented by this container: the relation filter
+	 */
 	protected String relatedTopicSemantic;
 
 	// ---
@@ -227,7 +232,7 @@ public abstract class ContainerTopic extends LiveTopic {
 														Session session, CorporateDirectives directives) {
 		// Note: super.contextCommands() isn't called here because a container has no standard commands
 		CorporateCommands commands = new CorporateCommands(as);
-		// "Show Result"
+		// "Show Result" ### to be dropped
 		Commands cmdGroup = commands.addCommandGroup(as.string(ITEM_SHOW_CONTENT), FILESERVER_IMAGES_PATH, ICON_SHOW_RESULT);
 		if (getContentSize() <= MAX_LISTING) {
 			Enumeration e = getContent().elements();
@@ -272,28 +277,35 @@ public abstract class ContainerTopic extends LiveTopic {
 		if (cmd.equals(CMD_DEFAULT)) {
 			// reveal content
 			CorporateDirectives directives = triggerQuery(topicmapID);
-			// ### let the superclass show the topic detail
-			// directives.add(super.executeCommand(command, session));
 			return directives;
 		} else if (cmd.equals(CMD_SUBMIT_FORM)) {
 			// filtering
 			Hashtable containerProps = getProperties();
 			String nameFilter = (String) containerProps.get(PROPERTY_SEARCH);
-			return processQuery(nameFilter, queryProperties(containerProps), null, null, topicmapID);
-		} else if (cmd.equals(CMD_SHOW_CONTENT)) {
+			return performQuery(nameFilter, queryProperties(containerProps), null, null, topicmapID);
+		} else if (cmd.equals(CMD_FOLLOW_HYPERLINK)) {
+			CorporateDirectives directives = new CorporateDirectives();
+			String url = st.nextToken();
+			String urlPrefix = "http://";
+			if (!url.startsWith(urlPrefix)) {
+				System.out.println("*** ContainerTopic.executeCommand(): URL \"" + url + "\" not recognized by " +
+					"CMD_FOLLOW_HYPERLINK");
+				return directives;
+			}
+			String action = url.substring(urlPrefix.length());
+			if (action.startsWith(ACTION_REVEAL_TOPIC)) {
+				String id = action.substring(ACTION_REVEAL_TOPIC.length() + 1);	// +1 to skip /
+				revealResultTopic(id, topicmapID, directives);
+			} else {
+				System.out.println("*** ContainerTopic.executeCommand(): URL \"" + url + "\" not recognized by " +
+					"CMD_FOLLOW_HYPERLINK");
+			}
+			return directives;
+		} else if (cmd.equals(CMD_SHOW_CONTENT)) {	// ### to be dropped
 			// reveal one topic
 			CorporateDirectives directives = new CorporateDirectives();
 			String id = st.nextToken();
-			String topicID = revealTopic(id, topicmapID, directives);
-			// reveal association(s) if relation filter is set
-			if (containerRelatedTopic != null) {
-				Vector assocs = cm.getAssociations(topicID, containerRelatedTopic.getID(), true);	// ignoreDirection=true
-				Enumeration e = assocs.elements();
-				while (e.hasMoreElements()) {
-					BaseAssociation assoc = (BaseAssociation) e.nextElement();
-					directives.add(DIRECTIVE_SHOW_ASSOCIATION, new PresentableAssociation(assoc));
-				}
-			}
+			revealResultTopic(id, topicmapID, directives);
 			return directives;
 		} else if (cmd.equals(CMD_GROUP_BY)) {
 			// grouping
@@ -312,6 +324,12 @@ public abstract class ContainerTopic extends LiveTopic {
 
 
 
+	public Hashtable getPropertyBaseURLs() {
+		Hashtable baseURLs = new Hashtable();
+		baseURLs.put(PROPERTY_RESULT, as.getCorporateWebBaseURL());
+		return baseURLs;
+	}
+
 	public Vector disabledProperties(Session session) {
 		return disabledProperties;
 	}
@@ -325,7 +343,7 @@ public abstract class ContainerTopic extends LiveTopic {
 
 
 	public String getLabel() {
-		return getProperty("ElementCount");
+		return getProperty(PROPERTY_ELEMENT_COUNT);
 	}
 
 
@@ -375,13 +393,15 @@ public abstract class ContainerTopic extends LiveTopic {
 
 
 	/**
-	 * References checked: 27.11.2004 (2.0b4)
+	 * Triggers this search.
+	 * <p>
+	 * References checked: 6.8.2008 (2.0b8)
 	 *
 	 * @see		#executeCommand
 	 * @see		TopicMapTopic#searchByTopicType
 	 */
-	public CorporateDirectives triggerQuery(String topicmapID) {
-		return processQuery(containerNameFilter, containerPropertyFilter, containerRelatedTopic, relatedTopicSemantic, topicmapID);
+	CorporateDirectives triggerQuery(String topicmapID) {
+		return performQuery(containerNameFilter, containerPropertyFilter, containerRelatedTopic, relatedTopicSemantic, topicmapID);
 	}
 
 	/**
@@ -420,7 +440,7 @@ public abstract class ContainerTopic extends LiveTopic {
 	protected abstract String getContentTypeID();
 
 	/**
-	 * Returns a list of all topics contained in this container.
+	 * Returns a list of all topics contained in this container. ### to be dropped
 	 * 
 	 * @return	all topics of this container as vector of 2-element <CODE>String</CODE>
 	 *			arrays:<BR>
@@ -435,16 +455,21 @@ public abstract class ContainerTopic extends LiveTopic {
 	protected abstract int getContentSize();
 
 	/**
+	 * ### to be dropped
+	 *
 	 * @see		#contextCommands
 	 */
-	protected abstract String getAppearance(String id, String name,
-								Session session, CorporateDirectives directives);
+	protected abstract String getAppearance(String id, String name, Session session, CorporateDirectives directives);
 
 	/**
-	 * @see		#triggerQuery
+	 * Performs the specified search and returns the directives to reveal the result.
+	 * <p>
+	 * References checked: 6.8.2008 (2.0b8)
+	 *
 	 * @see		#executeCommand
+	 * @see		#triggerQuery
 	 */
-	protected abstract CorporateDirectives processQuery(String nameFilter, Hashtable propertyFilter,
+	protected abstract CorporateDirectives performQuery(String nameFilter, Hashtable propertyFilter,
 												BaseTopic relatedTopic, String relatedTopicSemantic, String topicmapID);
 
 	protected abstract CorporateDirectives autoSearch(String groupingProperty);
@@ -487,11 +512,12 @@ public abstract class ContainerTopic extends LiveTopic {
 		// editor acts as query form).
 		//
 		// --- remove internal used properties ---
-		containerProperties.remove("QueryElements");
-		containerProperties.remove("ElementCount");
+		containerProperties.remove(PROPERTY_QUERY_ELEMENTS);
+		containerProperties.remove(PROPERTY_ELEMENT_COUNT);
 		containerProperties.remove(PROPERTY_RELATED_TOPIC_ID);
 		containerProperties.remove(PROPERTY_RELATED_TOPIC_SEMANTIC);
 		containerProperties.remove(PROPERTY_SEARCH);
+		containerProperties.remove(PROPERTY_RESULT);
 		containerProperties.remove(PROPERTY_OWNER_ID);
 		// --- remove empty properties ---
 		Enumeration e = containerProperties.keys();
@@ -528,7 +554,8 @@ public abstract class ContainerTopic extends LiveTopic {
 	 */
 	private void initContainer(Session session, CorporateDirectives directives) {
 		// --- disabledProperties ---
-		this.disabledProperties = queryFields(getProperty("QueryElements"));
+		this.disabledProperties = queryFields(getProperty(PROPERTY_QUERY_ELEMENTS));
+		this.disabledProperties.addElement(PROPERTY_RESULT);
 		// --- containerRelatedTopic, relatedTopicSemantic ---
 		// Note: only initialized if a relation filter is used
 		try {
@@ -553,8 +580,10 @@ public abstract class ContainerTopic extends LiveTopic {
 		while (propNames.hasMoreElements()) {
 			String propName = (String) propNames.nextElement();
 			String propValue = (String) containerProps.get(propName);
-			if (propName.equals(PROPERTY_SEARCH)) {		// ###
+			if (propName.equals(PROPERTY_SEARCH)) {				// ###
 				this.containerNameFilter = propValue;
+			} else if (propName.equals(PROPERTY_RESULT)) {		// ###
+				// do nothing
 			} else {
 				if (propValue != null) {
 					this.containerPropertyFilter.put(propName, propValue);
@@ -565,6 +594,19 @@ public abstract class ContainerTopic extends LiveTopic {
 						" has no value -- the property filter will not work properly",
 						new Integer(NOTIFICATION_WARNING));
 				}
+			}
+		}
+	}
+
+	private void revealResultTopic(String id, String topicmapID, CorporateDirectives directives) {
+		String topicID = revealTopic(id, topicmapID, directives);	// call abstract method
+		// --- reveal association(s) if relation filter is set ---
+		if (containerRelatedTopic != null) {
+			Vector assocs = cm.getAssociations(topicID, containerRelatedTopic.getID(), true);	// ignoreDirection=true
+			Enumeration e = assocs.elements();
+			while (e.hasMoreElements()) {
+				BaseAssociation assoc = (BaseAssociation) e.nextElement();
+				directives.add(DIRECTIVE_SHOW_ASSOCIATION, new PresentableAssociation(assoc));
 			}
 		}
 	}

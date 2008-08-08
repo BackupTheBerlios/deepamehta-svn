@@ -18,10 +18,9 @@ import java.util.Vector;
  * {@link de.deepamehta.service.CorporateMemory corporate memory}.
  * <P>
  * <HR>
- * Last functional change: 27.11.2004 (2.0b4)<BR>
- * Last documentation update: 25.11.2000 (2.0a7-pre6)<BR>
+ * Last change: 7.8.2008 (2.0b8)<BR>
  * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class TopicContainerTopic extends ContainerTopic {
 
@@ -99,7 +98,7 @@ public class TopicContainerTopic extends ContainerTopic {
 
 	/**
 	 * @see		#getContent
-	 * @see		#processQuery
+	 * @see		#performQuery
 	 */
 	protected  String getContentTypeID() throws DeepaMehtaException {
 		// error check
@@ -150,6 +149,7 @@ public class TopicContainerTopic extends ContainerTopic {
 		return getContent().size();		// ### not yet optimized
 	}
 
+	// ### to be dropped
 	protected String getAppearance(String id, String name, Session session, CorporateDirectives directives) {
 		// >>> compare to ElementContainerTopic.getAppearance()
 		return as.getIconfile(id, 1);	// ### version=1
@@ -158,10 +158,10 @@ public class TopicContainerTopic extends ContainerTopic {
 	/**
 	 * @throws	DeepaMehtaException	if this container doesn't know its content type
 	 *
-	 * @see		ContainerTopic#triggerQuery
 	 * @see		ContainerTopic#executeCommand
+	 * @see		ContainerTopic#triggerQuery
 	 */
-	protected CorporateDirectives processQuery(String nameFilter, Hashtable propertyFilter,
+	protected CorporateDirectives performQuery(String nameFilter, Hashtable propertyFilter,
 											BaseTopic relatedTopic, String relatedTopicSemantic, String topicmapID)
 											throws DeepaMehtaException {
 		// error check
@@ -175,7 +175,7 @@ public class TopicContainerTopic extends ContainerTopic {
 		Vector topics = cm.getTopics(getContentTypeID(), nameFilter, propertyFilter, relatedTopicID, relatedTopicSemantic);
 		int topicCount = topics.size();
 		//
-		System.out.println("> TopicContainerTopic.processQuery(): \"" + propertyFilter +
+		System.out.println("> TopicContainerTopic.performQuery(): \"" + propertyFilter +
 			"\" -- " + topicCount + " topics found");
 		//
 		Vector presentableTopics = as.createPresentableTopics(topicmapID, topics, getID());

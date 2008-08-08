@@ -23,10 +23,9 @@ import java.util.Vector;
  * elements into topics along with properties.
  * <P>
  * <HR>
- * Last functional change: 27.11.2004 (2.0b4)<BR>
- * Last documentation update: 16.11.2000 (2.0a7-pre3)<BR>
+ * Last change: 7.8.2008 (2.0b8)<BR>
  * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public abstract class ElementContainerTopic extends ContainerTopic {
 
@@ -106,7 +105,7 @@ public abstract class ElementContainerTopic extends ContainerTopic {
 	 * <P>
 	 * The default implementation returns the entered data directly.
 	 *
-	 * @see		#processQuery
+	 * @see		#performQuery
 	 */
 	protected Hashtable queryData(Hashtable formData) {
 		return formData;
@@ -175,9 +174,9 @@ public abstract class ElementContainerTopic extends ContainerTopic {
 		}
 	}
 
+	// ### to be dropped
 	// Note: id is the element ID, not a topicID
-	protected String getAppearance(String id, String name, Session session,
-													CorporateDirectives directives) {
+	protected String getAppearance(String id, String name, Session session, CorporateDirectives directives) {
 		// ### inidividual appearance of already evoked elements is not considered.
 		// >>> compare to TopicContainerTopic.getAppearance()
 		return as.getIconfile(getContentTypeID(), 1);	// ### was (id, 1) ### version=1
@@ -188,11 +187,12 @@ public abstract class ElementContainerTopic extends ContainerTopic {
 	 *
 	 * @throws	DeepaMehtaException	if this container doesn't know its data source
 	 *
-	 * @see		ContainerTopic#triggerQuery
 	 * @see		ContainerTopic#executeCommand
+	 * @see		ContainerTopic#triggerQuery
 	 */
-	protected CorporateDirectives processQuery(String nameFilter, Hashtable propertyFilter,
-									BaseTopic relatedTopic, String relatedTopicSemantic, String topicmapID) throws DeepaMehtaException {
+	protected CorporateDirectives performQuery(String nameFilter, Hashtable propertyFilter,
+											BaseTopic relatedTopic, String relatedTopicSemantic, String topicmapID)
+											throws DeepaMehtaException {
 		// error check 1
 		if (dataSource == null) {
 			throw new DeepaMehtaException("the datasource of " + this + " is not known");
@@ -204,7 +204,7 @@ public abstract class ElementContainerTopic extends ContainerTopic {
 		Hashtable attributes = queryData(propertyFilter);
 		//
 		if (attributes == null) {
-			System.out.println(">>> ElementContainerTopic.processQuery(): subquery of " + this +
+			System.out.println(">>> ElementContainerTopic.performQuery(): subquery of " + this +
 				" returns nothing -- performing main query aborted");
 			directives.add(DIRECTIVE_PLAY_SOUND, NOTIFICATION_SOUNDS[SOUND_NO_RESULT]);
 			return directives;
@@ -219,12 +219,12 @@ public abstract class ElementContainerTopic extends ContainerTopic {
 			// --- query the data source ---
 			int elementCount = getElementCount(attributes, relatedTopic);
 			Vector topics = null;
-			if (elementCount <= MAX_REVEALING) {
+			if (elementCount <= MAX_LISTING) {
 				Vector elements = getElements(attributes, relatedTopic);
 				topics = createTopicsFromElements(elements);
 			}
 			//
-			System.out.println("> ElementContainerTopic.processQuery(): " + attributes +
+			System.out.println("> ElementContainerTopic.performQuery(): " + attributes +
 				" -- " + elementCount + " elements found");
 			//
 			String relTopicID = relatedTopic == null ? "" : relatedTopic.getID();
@@ -355,7 +355,7 @@ public abstract class ElementContainerTopic extends ContainerTopic {
 
 	/**
 	 * @see		#getContent
-	 * @see		#processQuery
+	 * @see		#performQuery
 	 */
 	private Vector getElements(Hashtable attributes, BaseTopic relatedTopic) throws Exception {
 		if (relatedTopic == null) {
@@ -388,8 +388,8 @@ public abstract class ElementContainerTopic extends ContainerTopic {
 		Hashtable topicData;
 		topicData = (Hashtable) formData.clone();
 		topicData.put(groupingField, groupingValue);
-		topicData.put("QueryElements", queryElements);
-		topicData.put("ElementCount", foundStr);
+		topicData.put(PROPERTY_QUERY_ELEMENTS, queryElements);
+		topicData.put(PROPERTY_ELEMENT_COUNT, foundStr);
 		// create new container topic
 		String containerID = cm.getNewTopicID();
 		// the version of a new container topic is 1
@@ -409,12 +409,12 @@ public abstract class ElementContainerTopic extends ContainerTopic {
 	 * Creates {@link de.deepamehta.PresentableTopic}s corresponding to the
 	 * elements in the specified vector.
 	 * <P>
-	 * Presumption 1: there are not more than {@link #MAX_REVEALING} elements.<BR>
+	 * Presumption 1: there are not more than {@link #MAX_LISTING} elements.<BR>
 	 * Presumption 2: the element data contain a field <CODE>ID</CODE>.
 	 *
 	 * @return	Vector of {@link de.deepamehta.PresentableTopic}
 	 *
-	 * @see		#processQuery
+	 * @see		#performQuery
 	 */
 	private Vector createTopicsFromElements(Vector elements) {
 		Vector topics = new Vector();
@@ -451,9 +451,11 @@ public abstract class ElementContainerTopic extends ContainerTopic {
 		PresentableTopic topic = new PresentableTopic(topicID, 1, typeID, 1, name, getID(), "");
 		// --- trigger makeProperties() hook ---
 		Hashtable props = as.triggerMakeProperties(typeID, elementData);
-		topic.setProperties(props);
-		topic.setVirtual(true);
 		//
+		topic.setOriginalID(elementID);
+		topic.setProperties(props);
+		topic.setIcon(as.getIconfile(getContentTypeID(), 1));		// ### inidividual appearance of already
+																	// ### evoked elements is not considered
 		return topic;
 	}
 

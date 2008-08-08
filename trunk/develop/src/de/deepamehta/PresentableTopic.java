@@ -38,10 +38,9 @@ import java.util.Hashtable;
  * </UL>
  * <P>
  * <HR>
- * Last functional change: 18.4.2004 (2.0b3-pre2)<BR>
- * Last documentation update: 9.10.2002 (2.0a16-pre5)<BR>
+ * Last change: 7.8.2008 (2.0b8)<BR>
  * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class PresentableTopic extends BaseTopic implements DeepaMehtaConstants {
 
@@ -118,7 +117,7 @@ public class PresentableTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	private Hashtable properties;
 	private boolean evoke;
-	private boolean virtual;	// indicates the topic originates from a datasource
+	private String originalID;	// if set: indicates the topic originates from a datasource
 
 
 
@@ -378,12 +377,27 @@ public class PresentableTopic extends BaseTopic implements DeepaMehtaConstants {
 
 	// ---
 
-	public boolean isVirtual() {
-		return virtual;
+	/**
+	 * References checked: 7.8.2008 (2.0b8)
+	 *
+	 * @see		de.deepamehta.topics.ElementContainerTopic#createTopicFromElement
+	 */
+	public void setOriginalID(String originalID) {
+		this.originalID = originalID;
 	}
 
-	public void setVirtual(boolean virtual) {
-		this.virtual = virtual;
+	public String getOriginalID() {
+		return originalID;
+	}
+
+	/**
+	 * References checked: 7.8.2008 (2.0b8)
+	 *
+	 * @see		de.deepamehta.service.CorporateDirectives#showTopic
+	 * @see		de.deepamehta.service.ApplicationService#buildResultView
+	 */
+	public boolean fromDatasource() {
+		return getOriginalID() != null;
 	}
 
 	// ---

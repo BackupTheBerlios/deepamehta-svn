@@ -169,7 +169,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 
 	/**
 	 * @see		de.deepamehta.topics.TopicContainerTopic#getContent
-	 * @see		de.deepamehta.topics.TopicContainerTopic#processQuery
+	 * @see		de.deepamehta.topics.TopicContainerTopic#performQuery
 	 */
 	public Vector getTopics(String typeID, String nameFilter, Hashtable propertyFilter) {
 		return getTopics(typeID, nameFilter, propertyFilter, null);
