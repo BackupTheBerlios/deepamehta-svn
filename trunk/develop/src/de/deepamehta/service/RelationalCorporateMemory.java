@@ -33,7 +33,7 @@ import java.util.Vector;
  * A RDBMS implementation of {@link CorporateMemory}.
  * <p>
  * <hr>
- * Last change: 30.6.2008 (2.0b8)<br>
+ * Last change: 9.8.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -1160,14 +1160,13 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	// --- getTopicData (2 forms) ---
 
 	public Hashtable getTopicData(String topicID, int version) {
-		return queryTopicData("SELECT PropName, PropValue FROM TopicProp WHERE " +
-			"TopicID='" + topicID + "' AND TopicVersion=" + version);
+		return queryProperties("SELECT PropName, PropValue FROM TopicProp WHERE " +
+			"TopicID=? AND TopicVersion=?", new Object[]{topicID, i(version)});
 	}
 
-	public String getTopicData(String topicID, int version, String fieldname) {
-		return queryTopicDataField("SELECT PropValue FROM TopicProp WHERE " +
-			"TopicID='" + topicID + "' AND TopicVersion=" + version + " AND " +
-			"PropName='" + fieldname + "'");
+	public String getTopicData(String topicID, int version, String propName) {
+		return queryProperty("SELECT PropValue FROM TopicProp WHERE " +
+			"TopicID=? AND TopicVersion=? AND PropName=?", new Object[]{topicID, i(version), propName});
 	}
 
 	// --- setTopicData (2 forms) ---
@@ -1234,14 +1233,13 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	// --- getAssociationData (2 forms) ---
 
 	public Hashtable getAssociationData(String assocID, int version) {
-		return queryTopicData("SELECT PropName, PropValue FROM AssociationProp WHERE " +
-			"AssociationID='" + assocID + "' AND AssociationVersion=" + version);
+		return queryProperties("SELECT PropName, PropValue FROM AssociationProp WHERE " +
+			"AssociationID=? AND AssociationVersion=?", new Object[]{assocID, i(version)});
 	}
 
-	public String getAssociationData(String assocID, int version, String fieldname) {
-		return queryTopicDataField("SELECT PropValue FROM AssociationProp WHERE " +
-			"AssociationID='" + assocID + "' AND AssociationVersion=" + version +
-			" AND PropName='" + fieldname + "'");
+	public String getAssociationData(String assocID, int version, String propName) {
+		return queryProperty("SELECT PropValue FROM AssociationProp WHERE " +
+			"AssociationID=? AND AssociationVersion=? AND PropName=?", new Object[]{assocID, i(version), propName});
 	}
 
 	// --- setAssociationData (2 forms) ---
@@ -1416,34 +1414,6 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		}
 		return result;
 	}
-
-	/* ###
-	/ **
-	 * @see		#createPresentableTopic
-	 *
-	 * @return	null if geometry not exists
-	 * /
-	private Point queryGeometry(String query) {
-		Point p = null;
-		try {
-			Statement stmt = createStatement();
-			ResultSet resultSet = stmt.executeQuery(query);
-			if (resultSet.next()) {
-				int x = resultSet.getInt("x");
-				int y = resultSet.getInt("y");
-				if (resultSet.next()) {
-					System.out.println("*** RelationalCorporateMemory.queryGeometry(): more " +
-						"than one geometry entries fetched:\n" + query);
-				}
-				p = new Point(x, y);
-			}
-			stmt.close();
-		} catch (SQLException e) {
-			System.out.println("*** RelationalCorporateMemory.queryGeometry(): " + e +
-																  " -- nothing returned");
-		}
-		return p;
-	} */
 
 	/**
 	 * @see		#getViewTopicVersion(String topicmapID, int topicmapVersion, String viewMode, String topicID)
@@ -1736,21 +1706,22 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		return result;
 	}
 
+	// ---
+
 	/**
-	 * Executes the specified query and returns the property value (TopicData.FieldValue).
-	 * If the property doesn't exists resp. is <code>null</code> an empty string is
-	 * returned.
+	 * Executes the specified query and returns the property value.
+	 * If the property doesn't exists resp. is <code>null</code> an empty string is returned.
 	 * <p>
 	 * References checked: 13.8.2001 (2.0a11)
 	 *
-	 * @see		#getTopicData(String topicID, int version, String fieldname)
-	 * @see		#getAssociationData(String assocID, int version, String fieldname)
+	 * @see		#getTopicData(String topicID, int version, String propName)
+	 * @see		#getAssociationData(String assocID, int version, String propName)
 	 */
-	private String queryTopicDataField(String query) {
+	private String queryProperty(String query, Object[] params) {
 		String value = "";
 		try {
-			Statement stmt = createStatement();
-			ResultSet resultSet = stmt.executeQuery(query);
+			PreparedStatement stmt = createPreparedStatement(query, params);
+			ResultSet resultSet = stmt.executeQuery();
 			if (resultSet.next()) {
 				value = resultSet.getString("PropValue");
 				// Oracle workaround
@@ -1760,8 +1731,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 			}
 			stmt.close();
 		} catch (SQLException e) {
-			System.out.println("*** RelationalCorporateMemory.queryTopicDataField(): " +
-				e + " -- nothing returned");
+			System.out.println("*** RelationalCorporateMemory.queryProperty(): " + e + " -- nothing returned");
 		}
 		return value;
 	}
@@ -1770,17 +1740,15 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 * @see		#getTopicData
 	 * @see		#getAssociationData
 	 */
-	private Hashtable queryTopicData(String query) {
+	private Hashtable queryProperties(String query, Object[] params) {
 		Hashtable topicData = new CaseInsensitveHashtable();	// the result
 		try {
-			Statement stmt = createStatement();
-			ResultSet resultSet = stmt.executeQuery(query);
-			String propName, propVal;
+			PreparedStatement stmt = createPreparedStatement(query, params);
+			ResultSet resultSet = stmt.executeQuery();
 			while (resultSet.next()) {
-				propName = resultSet.getString("PropName");
-				propVal = resultSet.getString("PropValue");
-				// ### oracle workaround, works because the storage layer doesn't rely
-				// on NULL values
+				String propName = resultSet.getString("PropName");
+				String propVal = resultSet.getString("PropValue");
+				// Oracle workaround
 				if (propVal == null) {
 					propVal = "";
 				}
@@ -1788,11 +1756,12 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 			}
 			stmt.close();
 		} catch (SQLException e) {
-			System.out.println("*** RelationalCorporateMemory.queryTopicData(): " + e +
-				" -- nothing returned");
+			System.out.println("*** RelationalCorporateMemory.queryProperties(): " + e + " -- nothing returned");
 		}
 		return topicData;
 	}
+
+	// ---
 
 	private int queryCount(String query) {
 		int count = -1;
@@ -1926,8 +1895,14 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 				stmt.setString(i + 1, (String) param);
 			} else if (param instanceof Integer) {
 				stmt.setInt(i + 1, ((Integer) param).intValue());
+			} else if (param == null) {
+				System.out.println("*** RelationalCorporateMemory.createPreparedStatement(): " +
+					"parameter " + i + " is missing (null), query and paramters:");
+				System.out.println("    " + query);
+				printObjectArray(params);
+				throw new DeepaMehtaException("parameter is missing in statement (see DeepaMehta log for details)");
 			} else {
-				throw new RuntimeException("Unknown Object Type " + param.getClass().toString());
+				throw new DeepaMehtaException("parameter has unexpected type (" + param.getClass().toString() + ")");
 			}
 		}
 		return stmt;

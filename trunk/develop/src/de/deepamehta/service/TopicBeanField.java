@@ -19,8 +19,8 @@ public class TopicBeanField {
 
 	public int type;
 	public String name;
-	public String value;
-	public Vector values;
+	public String value;	// used for TYPE_SINGLE. Must not be null.
+	public Vector values;	// used for TYPE_MULTI. Must not be null.
 
 	TopicBeanField(String name, String value) {
 		type = TYPE_SINGLE;

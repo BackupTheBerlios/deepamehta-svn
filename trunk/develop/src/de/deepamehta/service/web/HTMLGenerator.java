@@ -32,7 +32,7 @@ import java.util.Vector;
 /**
  * <p>
  * <hr>
- * Last change: 4.7.2008 (2.0b8)<br>
+ * Last change: 9.8.2008 (2.0b8)<br>
  * J&ouml;rg Richter / Malte Rei&szlig;ig<br>
  * jri@deepamehta.de / mre@deepamehta.de
  */
@@ -847,6 +847,8 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	 */
 	private boolean formFields(TypeTopic type, String id, boolean deep, String prefix, TypeTopic formType,
 												String[] propSel, boolean hideSel, Hashtable hints, StringBuffer html) {
+		// ### compare to infoFields()
+		// ### compare to ApplicationService.addFieldsToTopicBean()
 		boolean containsFileField = false;		// return variable
    		Hashtable props;
    		if (id == null) {
@@ -878,34 +880,21 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 				// Note: the hook returns _parameter names_ and the page delivers _field labels_
 				if ((hiddenProps == null || !hiddenProps.contains(propName)) && !propIsHidden(propLabel, propSel, hideSel)) {
 					String hint = hints != null ? (String) hints.get(propName) : null;
-					boolean isFileField = formField(propDef, propLabel, propValue, prefix, hint, html);
-					if (isFileField) {
+					if (formField(propDef, propLabel, propValue, prefix, hint, html)) {
 						containsFileField = true;
 					}
 				}
 			} else if (item instanceof Relation) {
 				if (deep) {
 					Relation rel = (Relation) item;
+					// query selected topics
+					Vector relTopics = id != null ? as.getRelatedTopics(id, rel.assocTypeID, rel.relTopicTypeID, 2,
+						false, true) : new Vector();	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
+					//
 					if (rel.webForm.equals(WEB_FORM_TOPIC_SELECTOR)) {
-						relationFormField(rel, id, prefix, propSel, hideSel, html);
+						relationFormField(rel, relTopics, prefix, propSel, hideSel, html);
 					} else if (rel.webForm.equals(WEB_FORM) || rel.webForm.equals(WEB_FORM_DEEP)) {
-						String relTopicTypeID = rel.relTopicTypeID;
-						TypeTopic relTopicType = as.type(relTopicTypeID, 1);
-						//
-						String relTopicID = null;
-						if (id != null) {
-							Vector relTopics = as.getRelatedTopics(id, rel.assocTypeID, relTopicTypeID, 2,
-								false, true);	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
-							if (relTopics.size() > 0) {	// ### only the first related topic is considered
-								relTopicID = ((BaseTopic) relTopics.firstElement()).getID();
-							}
-						}
-						// recursive call
-						String newPrefix = prefix + PARAM_RELATION + PARAM_SEPARATOR + rel.id + LEVEL_SEPARATOR;
-						boolean newDeep = rel.webForm.equals(WEB_FORM_DEEP);
-						boolean isFileField = formFields(relTopicType, relTopicID, newDeep, newPrefix, formType,
-							propSel, hideSel, hints, html);
-						if (isFileField) {
+						if (relationFormFields(rel, relTopics, prefix, formType, propSel, hideSel, hints, html)) {
 							containsFileField = true;
 						}
 					} else {
@@ -923,16 +912,19 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	}
 
 	/**
-	 * Renders the properties of a single topic.
+	 * Renders the fields of a single topic.
+	 *
+	 * @param	type		the type of the topic. Acts as "template": all fields of this type definition are rendered.
+	 * @param	topicID		the ID of the topic. If null, fields are rendered with empty values.
 	 *
 	 * @see		#list
 	 * @see		#info
 	 * @see		#infoFields
 	 */
 	private void infoFields(TypeTopic type, String topicID, TypeTopic infoType, boolean deep, int layout,
-													String[] propSel, boolean hideSel, String infoAction,
-													String infoActionParams, StringBuffer html) {
-   		Hashtable props = as.getTopicProperties(topicID, 1);
+							String[] propSel, boolean hideSel, String infoAction, String infoActionParams, StringBuffer html) {
+		// ### compare to formFields()
+		// ### compare to ApplicationService.addFieldsToTopicBean()
 		// --- trigger hiddenProperties(type, relTopicTypeID) hook ---
 		Vector hiddenProps = as.triggerHiddenProperties(infoType, type.getID());		// may return null
 		// --- create info fields (LAYOUT_COLS: <tr>, LAYOUT_ROWS: <td>) ---
@@ -943,30 +935,25 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 				PropertyDefinition propDef = (PropertyDefinition) item;
 				String propName = propDef.getPropertyName();
 				String propLabel = as.triggerPropertyLabel(propDef, infoType, type.getID());
+				String propValue = topicID != null ? as.getTopicProperty(topicID, 1, propName) : "";
 				// Note: the hook returns _parameter names_ and the page delivers _field labels_
 				if ((hiddenProps == null || !hiddenProps.contains(propName)) && !propIsHidden(propLabel, propSel, hideSel)) {
-					if (infoField(propDef, propLabel, topicID, props, layout, infoAction, infoActionParams, html)) {
+					if (infoField(propDef, propLabel, propValue, topicID, layout, infoAction, infoActionParams, html)) {
 						infoAction = null;
 					}
 				}
 			} else if (item instanceof Relation) {
 				if (deep) {
 					Relation rel = (Relation) item;
+					// query selected topics
+					Vector selectedTopics = topicID != null ? as.getRelatedTopics(topicID, rel.assocTypeID, rel.relTopicTypeID, 2,
+						false, true) : new Vector();	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
+					//
 					if (rel.webInfo.equals(WEB_INFO_TOPIC_NAME)) {
-						relationInfoField(rel, topicID, layout, propSel, hideSel, html);
+						relationInfoField(rel, selectedTopics, layout, propSel, hideSel, html);
 					} else if (rel.webInfo.equals(WEB_INFO) || rel.webInfo.equals(WEB_INFO_DEEP)) {
-						String relTopicTypeID = rel.relTopicTypeID;
-						TypeTopic relTopicType = as.type(relTopicTypeID, 1);
-						//
-						String relTopicID = null;
-						Vector selectedTopics = as.getRelatedTopics(topicID, rel.assocTypeID, relTopicTypeID, 2,
-							false, true);	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
-						if (selectedTopics.size() > 0) {	// ### only the first related topic is considered
-							relTopicID = ((BaseTopic) selectedTopics.firstElement()).getID();
-						}
-						// recursive call
-						boolean newDeep = rel.webInfo.equals(WEB_INFO_DEEP);
-						infoFields(relTopicType, relTopicID, infoType, newDeep, layout, propSel, hideSel, infoAction, infoActionParams, html);
+						relationInfoFields(rel, selectedTopics, infoType, layout, propSel, hideSel,
+							infoAction, infoActionParams, html);
 					} else {
 						throw new DeepaMehtaException("unexpected web info mode: \"" + rel.webInfo + "\"");
 					}
@@ -1107,18 +1094,16 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		return isFileField;
 	}
 
-	private boolean infoField(PropertyDefinition propDef, String propLabel, String topicID, Hashtable props, int layout,
+	private boolean infoField(PropertyDefinition propDef, String propLabel, String propValue, String topicID, int layout,
 											String infoAction, String infoActionParams, StringBuffer html) {
 		boolean infolinkAdded = false;
 		//
-		String propName = propDef.getPropertyName();
 		String visual = propDef.getVisualization();
 		// skip hidden properties
 		if (visual.equals(VISUAL_HIDDEN)) {
 			return infolinkAdded;
 		}
 		//
-		String propValue = (String) props.get(propName);
 		if (visual.equals(VISUAL_SWITCH)) {
 			propValue = SWITCH_ON.equals(propValue) ? SWITCH_ON : SWITCH_OFF;
 		} else if (visual.equals(VISUAL_PASSWORD_FIELD)) {
@@ -1161,31 +1146,22 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	 *
 	 * @see		formFields
 	 */
-	private void relationFormField(Relation rel, String topicID, String prefix, String[] propSel, boolean hideSel,
+	private void relationFormField(Relation rel, Vector selectedTopics, String prefix, String[] propSel, boolean hideSel,
 																									StringBuffer html) {
+		// ### compare to relationInfoField()
+		// ### compare to ApplicationService.addRelationFieldToTopicBean
 		// ### compare to CorporateCommands.addRelationCommand()
-		String relName = rel.name;
-		String relTopicTypeID = rel.relTopicTypeID;
-		String cardinality = rel.cardinality;
-		String assocTypeID = rel.assocTypeID;
 		//
-		TypeTopic relTopicType = as.type(relTopicTypeID, 1);
-		boolean many = cardinality.equals(CARDINALITY_MANY);
-		String fieldLabel = !relName.equals("") ? relName : many ? relTopicType.getPluralNaming() : relTopicType.getName();
+		TypeTopic relTopicType = as.type(rel.relTopicTypeID, 1);
+		boolean many = rel.cardinality.equals(CARDINALITY_MANY);
+		String fieldLabel = !rel.name.equals("") ? rel.name : many ? relTopicType.getPluralNaming() : relTopicType.getName();
 		//
 		// ### Note: relation fields are identified "by label"
 		if (propIsHidden(fieldLabel, propSel, hideSel)) {
 			return;
 		}
-		//
-		Vector topics = as.cm.getTopics(relTopicTypeID);	// ### can be very big
-		// get current topic selection
-		Vector selectedTopicIDs = null;
-		if (topicID != null) {
-			Vector selectedTopics = as.getRelatedTopics(topicID, assocTypeID, relTopicTypeID, 2,
-				false, true);	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
-			selectedTopicIDs = DeepaMehtaUtils.topicIDs(selectedTopics);
-		}
+		// --- generate topic selector ---
+		Vector topics = as.cm.getTopics(rel.relTopicTypeID);	// ### can be very big
 		//
 		html.append("<tr valign=\"top\"><td><small>" + fieldLabel + "</small></td><td>");
 		html.append("<select name=\"" + prefix + PARAM_RELATION + PARAM_SEPARATOR + rel.id + "\"" +
@@ -1196,35 +1172,52 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		Enumeration e = topics.elements();
 		while (e.hasMoreElements()) {
 			BaseTopic topic = (BaseTopic) e.nextElement();
-			option(topic.getName(), topic.getID(), selectedTopicIDs, html);
+			option(topic.getName(), topic.getID(), DeepaMehtaUtils.topicIDs(selectedTopics), html);
 		}
 		html.append("</select>\r");
 		html.append("</td></tr>\r");
 	}
 
 	/**
+	 * @return	<code>true</code> if one of the input fields is of type "file", <code>false</code> otherwise.
+	 */
+	private boolean relationFormFields(Relation rel, Vector selectedTopics, String prefix, TypeTopic formType,
+														String[] propSel, boolean hideSel, Hashtable hints, StringBuffer html) {
+		// ### compare to relationInfoFields()
+		// ### compare to ApplicationService.addRelationFieldsToTopicBean
+		//
+		String relTopicID = null;
+		if (selectedTopics.size() > 0) {
+			// ### only the first related topic is considered
+			relTopicID = ((BaseTopic) selectedTopics.firstElement()).getID();
+		}
+		TypeTopic relTopicType = as.type(rel.relTopicTypeID, 1);
+		prefix = prefix + PARAM_RELATION + PARAM_SEPARATOR + rel.id + LEVEL_SEPARATOR;
+		boolean deep = rel.webForm.equals(WEB_FORM_DEEP);
+		// recursive call
+		return formFields(relTopicType, relTopicID, deep, prefix, formType, propSel, hideSel, hints, html);
+	}
+
+	// ---
+
+	/**
 	 * @see		infoFields
 	 */
-	private void relationInfoField(Relation rel, String topicID, int layout, String[] propSel, boolean hideSel,
-																			 StringBuffer html) {
+	private void relationInfoField(Relation rel, Vector selectedTopics, int layout, String[] propSel, boolean hideSel,
+																									StringBuffer html) {
+		// ### compare to relationFormField()
+		// ### compare to ApplicationService.addRelationFieldToTopicBean
 		// ### compare to CorporateCommands.addRelationCommand()
-		String relName = rel.name;
-		String relTopicTypeID = rel.relTopicTypeID;
-		String cardinality = rel.cardinality;
-		String assocTypeID = rel.assocTypeID;
 		//
-		TypeTopic relTopicType = as.type(relTopicTypeID, 1);
-		boolean many = cardinality.equals(CARDINALITY_MANY);
-		String fieldLabel = !relName.equals("") ? relName : many ? relTopicType.getPluralNaming() : relTopicType.getName();
+		TypeTopic relTopicType = as.type(rel.relTopicTypeID, 1);
+		boolean many = rel.cardinality.equals(CARDINALITY_MANY);
+		String fieldLabel = !rel.name.equals("") ? rel.name : many ? relTopicType.getPluralNaming() : relTopicType.getName();
 		//
 		// ### Note: relation fields are identified "by label"
 		if (propIsHidden(fieldLabel, propSel, hideSel)) {
 			return;
 		}
-		//
-		Vector selectedTopics = as.getRelatedTopics(topicID, assocTypeID, relTopicTypeID, 2,
-			false, true);	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
-		// --- generate name and value ---
+		// --- generate topic names ---
 		if (layout == LAYOUT_COLS) {
 			html.append("<tr valign=\"top\"><td><small>" + fieldLabel + "</small></td>");
 		}
@@ -1239,6 +1232,25 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		if (layout == LAYOUT_COLS) {
 			html.append("</tr>\r");
 		}
+	}
+
+	/**
+	 * @see		infoFields
+	 */
+	private void relationInfoFields(Relation rel, Vector selectedTopics, TypeTopic infoType, int layout,
+							String[] propSel, boolean hideSel, String infoAction, String infoActionParams, StringBuffer html) {
+		// ### compare to relationFormFields()
+		// ### compare to ApplicationService.addRelationFieldsToTopicBean
+		//
+		String relTopicID = null;
+		if (selectedTopics.size() > 0) {
+			// ### only the first related topic is considered
+			relTopicID = ((BaseTopic) selectedTopics.firstElement()).getID();
+		}
+		TypeTopic relTopicType = as.type(rel.relTopicTypeID, 1);
+		boolean deep = rel.webInfo.equals(WEB_INFO_DEEP);
+		// recursive call
+		infoFields(relTopicType, relTopicID, infoType, deep, layout, propSel, hideSel, infoAction, infoActionParams, html);
 	}
 
 	/**
@@ -1274,7 +1286,8 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		return link(action, params, topicID, text, quoteHTML, false, html);
 	}
 
-	private boolean link(String action, String params, String topicID, String text, boolean quoteHTML, boolean bold, StringBuffer html) {
+	private boolean link(String action, String params, String topicID, String text, boolean quoteHTML, boolean bold,
+																										StringBuffer html) {
 		boolean linkAdded = false;
 		//
 		if (action != null) {
