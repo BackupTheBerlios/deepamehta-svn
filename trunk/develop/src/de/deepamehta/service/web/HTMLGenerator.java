@@ -336,15 +336,6 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 			}
 			html.append("</div>\r");
 			return html.toString();
-		} else if (layoutStyle == DeepaMehtaConstants.LAYOUT_STYLE_BOX) {
-			html.append("<div class=\"info-container\">\r");
-			Enumeration e = topicBean.fields.elements();
-			while (e.hasMoreElements()) {
-				TopicBeanField field = (TopicBeanField) e.nextElement();
-				infoFieldBoxLayout(field, html);
-			}
-			html.append("</div>\r");
-			return html.toString();
 		} else {
 			throw new DeepaMehtaException("unxepected Bean Layout: " + layoutStyle);
 		}
@@ -386,8 +377,8 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	 * Renders a TopicBean Field according to "flow" layout style ({@link LAYOUT_STYLE_FLOW}).
 	 */
 	private void infoFieldFlowLayout(TopicBeanField field, StringBuffer html) {
-		html.append("<p>");
-		html.append("<span class=\"info-label\"> " + field.name + ": </span>");
+		html.append("<p class=\"info\">");
+		html.append("<span class=\"info-label\">" + field.name + ": </span>");
 		switch (field.type) {
 		case TopicBeanField.TYPE_SINGLE:
 			if (field.value != null) {
@@ -409,36 +400,6 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 			throw new DeepaMehtaException("unexpected topic bean field type: " + field.type);
 		}
 		html.append("</p>\r");
-	}	
-	
-	/**
-	 * Renders a TopicBean Field according to "box" layout style ({@link LAYOUT_STYLE_BOX}).
-	 */
-	private void infoFieldBoxLayout(TopicBeanField field, StringBuffer html) {
-		html.append("<span class=\"info-label\"> " + field.name + ": </span>");
-		switch (field.type) {
-		case TopicBeanField.TYPE_SINGLE:
-			if (field.value != null) {
-				String text = DeepaMehtaUtils.transformToHTML(field.value); 
-				html.append("<span class=\"info-content\">" + text + "<br></span>");
-			}
-			break;
-		case TopicBeanField.TYPE_MULTI:
-			Enumeration e = field.values.elements();
-			html.append("<div class=\"info-multibox\">");
-			while (e.hasMoreElements()) {
-				BaseTopic topic = (BaseTopic) e.nextElement();
-				html.append("<span class=\"info-content\">");
-				String text = DeepaMehtaUtils.transformToHTML(topic.getName());
-				html.append(imageTag(topic) + " " + text + "<br>");
-				html.append("</span>");
-			}
-			html.append("</div>");
-			break;
-		default:
-			throw new DeepaMehtaException("unexpected topic bean field type: " + field.type);
-		}
-		html.append("<br>\r");
 	}
 
 	// --- form (8 forms) ---
@@ -667,7 +628,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		// ### alt=\"" + topic.getName() + "\" removed for kiezatlas, list servlet excel updates
 		String iconfile = as.getLiveTopic(topic).getIconfile();
 		return "<img src=\"" + as.getCorporateWebBaseURL() + FILESERVER_ICONS_PATH + iconfile + "\"" +
-			" border=\"0\"" + 
+			" style=\"vertical-align: middle; border-style: none\"" +
 			(withTooltip ? " title=\"" + topic.getName() + "\"" : "") + ">";
 	}
 

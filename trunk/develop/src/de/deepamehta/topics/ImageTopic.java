@@ -13,12 +13,11 @@ import java.util.StringTokenizer;
 
 
 /**
- * <P>
- * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
- * Last documentation update: 18.7.2003 (2.0b2)<BR>
+ * <p>
+ * <hr>
+ * Last change: 11.9.2007 (2.0b8)<br>
  * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class ImageTopic extends FileTopic {
 
@@ -94,7 +93,7 @@ public class ImageTopic extends FileTopic {
 	public Detail getDetail() {
 		String image = getProperty(PROPERTY_FILE);
 		String title = getProperty(PROPERTY_NAME);
-		String imagefile = as.getCorporateWebBaseURL() + "images/" + image;
+		String imagefile = as.getCorporateWebBaseURL() + FILESERVER_IMAGES_PATH + image;
 		System.out.println(">>> ImageTopic.getDetail(): imagefile=\"" + imagefile + "\"");
 		Detail detail = new Detail(DETAIL_TOPIC, DETAIL_CONTENT_IMAGE, imagefile,
         	Boolean.FALSE, title, "??");	// ### param2 is not used ### command?
