@@ -1176,10 +1176,10 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * Consulted while server side processing of <code>DIRECTIVE_SELECT_TOPIC</code>.
 	 * <p>
-	 * References checked: 22.1.2008 (2.0b8)
+	 * References checked: 18.8.2008 (2.0b8)
 	 *
-	 * @see		CorporateDirectives#updateCorporateMemory
 	 * @see		CorporateCommands#addRetypeTopicCommand
+	 * @see		CorporateDirectives#updateCorporateMemory
 	 */
 	boolean retypeTopicIsAllowed(String topicID, int version, Session session) {
 		// --- trigger retypeAllowed() hook ---
@@ -1188,27 +1188,34 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		//
 		boolean isSearch = type(topic).isSearchType();
 		String userID = session.getUserID();
-		return allowed && !isSearch && (isTopicOwner(topicID, session) || isAdministrator(userID));
+		return allowed && !isSearch &&
+			(isTopicOwner(topicID, session) || isAdministrator(userID) || hasEditorRole(userID, topic.getType()));
 	}
 
 	/**
 	 * Consulted while server side processing of <code>DIRECTIVE_SELECT_ASSOCIATION</code>.
 	 * <p>
-	 * References checked: 22.1.2008 (2.0b8)
+	 * References checked: 18.8.2008 (2.0b8)
 	 *
-	 * @see		CorporateDirectives#updateCorporateMemory
 	 * @see		CorporateCommands#addRetypeAssociationCommand
+	 * @see		CorporateDirectives#updateCorporateMemory
 	 */
 	boolean retypeAssociationIsAllowed(String assocID, int version, Session session) {
-		boolean isSearch = type(getLiveAssociation(assocID, version)).isSearchType();
+		// ### --- trigger retypeAllowed() hook ---
+		LiveAssociation assoc = getLiveAssociation(assocID, version);
+		// ### boolean allowed = topic.retypeAllowed(session);
+		// ### hook not yet exists for associations
+		//
+		boolean isSearch = type(assoc).isSearchType();
 		String userID = session.getUserID();
-		return !isSearch && (isAssocOwner(assocID, session) || isAdministrator(userID));
+		return !isSearch &&
+			(isAssocOwner(assocID, session) || isAdministrator(userID) || hasEditorRole(userID, assoc.getType()));
 	}
 
 	// ---
 
 	/**
-	 * References checked: 22.1.2008 (2.0b8)
+	 * References checked: 18.8.2008 (2.0b8)
 	 *
 	 * @see		CorporateCommands#addDeleteTopicCommand
 	 */
@@ -1217,15 +1224,22 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		boolean allowed = getLiveTopic(topic).deleteAllowed(session);
 		//
 		String userID = session.getUserID();
-		return allowed && (isTopicOwner(topic.getID(), session) || isAdministrator(userID));
+		return allowed &&
+			(isTopicOwner(topic.getID(), session) || isAdministrator(userID) || hasEditorRole(userID, topic.getType()));
 	}
 
+	/**
+	 * References checked: 18.8.2008 (2.0b8)
+	 *
+	 * @see		CorporateCommands#addDeleteAssociationCommand
+	 */
 	boolean deleteAssociationIsAllowed(BaseAssociation assoc, Session session) {
 		// ### --- trigger deleteAllowed() hook ---
 		// ### boolean allowed = getLiveTopic(topic).deleteAllowed(session);
+		// ### hook not yet exists for associations
 		//
 		String userID = session.getUserID();
-		return isAssocOwner(assoc.getID(), session) || isAdministrator(userID);
+		return isAssocOwner(assoc.getID(), session) || isAdministrator(userID) || hasEditorRole(userID, assoc.getType());
 	}
 
 	// ---
@@ -2762,7 +2776,16 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
+	 * References checked: 18.8.2008 (2.0b8)
+	 *
 	 * @param	typeID		a topic type ID or an association type ID
+	 *
+	 * @see		#retypeTopicIsAllowed
+	 * @see		#retypeAssociationIsAllowed
+	 * @see		#deleteTopicIsAllowed
+	 * @see		#deleteAssociationIsAllowed
+	 * @see		de.deepamehta.topics.LiveTopic#disabledProperties
+	 * @see		de.deepamehta.assocs.LiveAssociation#disabledProperties
 	 */
 	public boolean hasEditorRole(String userID, String typeID) {
 		Vector workspaces = cm.getRelatedTopics(typeID, SEMANTIC_WORKSPACE_TYPES, TOPICTYPE_WORKSPACE, 1);
