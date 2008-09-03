@@ -50,14 +50,14 @@ public class ApplicationServiceInstance implements DeepaMehtaConstants {
 	}
 
 	/**
-	 * @param	configFile	path to <CODE>dms.rc</CODE> file, can be absolute or relative to the servlet engines
-	 *						working directory
+	 * @param	configFile	path to <CODE>install/config/dm.properties</CODE> file,
+	 *						can be absolute or relative to the servlet engines working directory
 	 */
 	private ApplicationServiceInstance(String name, String configFile) throws DeepaMehtaException {
 		String port = null;
 		try {
-			conf = new Configuration(name,configFile);
-
+			conf = new Configuration(name, configFile);
+			//
 			this.name = conf.getProperty(ConfigurationConstants.Instance.DM_INSTANCE);
 			port = conf.getProperty(ConfigurationConstants.Instance.DM_PORT);
 			this.port = Integer.parseInt(port);
@@ -170,7 +170,7 @@ public class ApplicationServiceInstance implements DeepaMehtaConstants {
 		} catch (DeepaMehtaException e) {
 			throw e;
 		} catch (Throwable e) {
-			throw new DeepaMehtaException(errText + " (" + e + ")");
+			throw new DeepaMehtaException(errText, e);
 		}
 		//
 		return cm;

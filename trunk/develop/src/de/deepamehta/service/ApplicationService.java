@@ -2625,18 +2625,21 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
-	 * ### move to PersonTopic?
+	 * Returns the email address of a person or an institution.
 	 *
-	 * @return	the email address of the specified person, or <code>null</code> if no email address is assigned.
+	 * @param	topicID		the ID of a person topic or an institution topic.
+	 *
+	 * @return	the email address, or <code>null</code> if no email address is assigned.
 	 */
-	public String getEmailAddress(String personID) {
-		Vector adrs = cm.getRelatedTopics(personID, SEMANTIC_EMAIL_ADDRESS, TOPICTYPE_EMAIL_ADDRESS, 2);
+	public String getEmailAddress(String topicID) {
+		Vector adrs = cm.getRelatedTopics(topicID, SEMANTIC_EMAIL_ADDRESS, TOPICTYPE_EMAIL_ADDRESS, 2);
 		if (adrs.size() == 0) {
 			return null;
 		}
 		String adr = getTopicProperty((BaseTopic) adrs.firstElement(), PROPERTY_EMAIL_ADDRESS);
 		if (adrs.size() > 1) {
-			System.out.println("*** person \"" + personID + "\" has " + adrs.size() + " email addresses -- only \"" + adr + "\" is respected");
+			System.out.println("*** person/institution \"" + topicID + "\" has " + adrs.size() +
+				" email addresses -- only \"" + adr + "\" is respected");
 		}
 		return adr;
 	}

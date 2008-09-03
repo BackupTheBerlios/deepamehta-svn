@@ -36,17 +36,6 @@ INSERT INTO AssociationProp VALUES ('a-178', 1, 'Ordinal Number', '40');
 INSERT INTO AssociationProp VALUES ('a-179', 1, 'Ordinal Number', '50');
 
 
---- "attachement" ---
-INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-attachement', 'attachement');
-INSERT INTO TopicProp VALUES ('at-attachement', 1, 'Name', 'attachement');
-INSERT INTO TopicProp VALUES ('at-attachement', 1, 'Color', '#408000');
-
---- "e-mail addressee" ---
-INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-emailaddressee', 'e-mail addressee');
-INSERT INTO TopicProp VALUES ('at-emailaddressee', 1, 'Name', 'e-mail addressee');
-INSERT INTO TopicProp VALUES ('at-emailaddressee', 1, 'Color', '#FF8000');
-
-
 
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-date', 'Date');
 INSERT INTO TopicProp VALUES ('pp-date', 1, 'Name', 'Date');

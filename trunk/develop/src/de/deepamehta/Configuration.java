@@ -6,21 +6,32 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
 public class Configuration extends Properties {
 
 	private static final long serialVersionUID = 1L;
-
 	private static Configuration globalInstance;
+	private static Logger logger = Logger.getLogger("de.deepamehta");
 
+	private String configDir;
 	private String dbTypePropertyFile;
 
+	/**
+	 * @param	configFile	path to <CODE>install/config/dm.properties</CODE> file,
+	 *						can be absolute or relative to the servlet engines working directory
+	 */
 	public Configuration(String configFile) {
 		this(null, configFile);
 	}
 
+	/**
+	 * @param	configFile	path to <CODE>install/config/dm.properties</CODE> file,
+	 *						can be absolute or relative to the servlet engines working directory
+	 */
 	public Configuration(String name, String configFile) {
 		super();
 		if (globalInstance == null) {
@@ -28,24 +39,22 @@ public class Configuration extends Properties {
 		}
 		try {
 			loadProperties(configFile);
+			configDir = new File(configFile).getAbsoluteFile().getParentFile().getAbsolutePath() + "/";
 			dbTypePropertyFile = getProperty(ConfigurationConstants.Database.DB_TYPE_PROPERTY_FILE);
-			putAll(System.getProperties());
-			loadProperties(new File(configFile).getAbsoluteFile().getParentFile().getAbsolutePath() + "/config.properties");
-			putAll(System.getProperties());
+			putAll(System.getProperties());		// ### required?
+			loadProperties(configDir + "config.properties");
+			putAll(System.getProperties());		// ### required?
 			if (null != name) {
 				setProperty(ConfigurationConstants.Instance.DM_INSTANCE, name);
 			} else {
 				// loadProperties(getProperty(ConfigurationConstants.Instance.DM_CONFIG_PROPERTY_FILE));
-				name = getProperty(ConfigurationConstants.Instance.DM_INSTANCE);
+				name = getProperty(ConfigurationConstants.Instance.DM_INSTANCE);		// ### required?
 			}
 			resolveReferences();
-			loadProperties(getProperty(ConfigurationConstants.Instance.DM_INSTANCE_PROPERTY_FILE));
-			// loadProperties(new File(configFile).getAbsoluteFile().getParentFile().getAbsolutePath() + "/config.properties");
-			loadProperties(getProperty(ConfigurationConstants.Instance.DM_INSTANCE_CONFIG_PROPERTY_FILE));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			loadProperties(configDir + getProperty(ConfigurationConstants.Instance.DM_INSTANCE_PROPERTY_FILE));
+			loadProperties(configDir + getProperty(ConfigurationConstants.Instance.DM_INSTANCE_CONFIG_PROPERTY_FILE));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Error loading configuration file", e);
 		}
 		resolveReferences();
 	}
@@ -56,11 +65,10 @@ public class Configuration extends Properties {
 		c.setProperty(ConfigurationConstants.Database.DB_TYPE, dbType);
 		c.resolveReferences();
 		try {
-			c.loadProperties(c.getProperty(ConfigurationConstants.Database.DB_TYPE_PROPERTY_FILE));
+			c.loadProperties(globalInstance.configDir + c.getProperty(ConfigurationConstants.Database.DB_TYPE_PROPERTY_FILE));
 			c.resolveReferences();
-		} catch (Exception e) {
-			System.out.println(">>> Unable to resolve config file for database specific settings.");
-			System.out.println(">>> You may have luck when only accessing global setting...");
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, "Error loading configuration file", e);
 		}
 		return c;
 	}
@@ -70,7 +78,7 @@ public class Configuration extends Properties {
 	}
 
 	private void loadProperties(String configFile) throws IOException, FileNotFoundException {
-		System.out.println("Loading Configuration properties " + configFile);
+		logger.info("Loading configuration file \"" + configFile + "\"");
 		Properties p = new Properties();
 		p.load(new FileInputStream(configFile));
 		putAll(p);
@@ -92,7 +100,7 @@ public class Configuration extends Properties {
 						String var = val.substring(from + 2, to);
 						String rep = (String) get(var);
 						if (null == rep) {
-							System.out.println("unable to resolve " + var + "! maybe later...");
+							logger.info("unable to resolve " + var + "! maybe later...");
 							break;
 						}
 						val.replace(from, to + 1, rep);

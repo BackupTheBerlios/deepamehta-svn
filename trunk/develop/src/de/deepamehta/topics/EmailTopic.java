@@ -35,10 +35,9 @@ import javax.mail.internet.MimeMultipart;
  * An email.
  * <p>
  * <hr>
- * Last sourcecode change: 25.3.2008 (2.0b8)<br>
- * Last documentation update: 21.11.2001 (2.0a13-post1)<br>
+ * Last change: 2.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class EmailTopic extends LiveTopic {
 
@@ -50,6 +49,14 @@ public class EmailTopic extends LiveTopic {
 	private static final String EMAIL_STATE_SENT = "Sent";
 
 	// commands
+	private static final String ITEM_ADD_RECIPIENTS = "Add recipients";
+	private static final String CMD_ADD_RECIPIENTS = "addRecipients";
+	private static final String ICON_ADD_RECIPIENTS = "person.gif";
+
+	private static final String ITEM_ATTACH_DOCUMENT = "Attach a document";
+	private static final String CMD_ATTACH_DOCUMENT = "attachDocument";
+	private static final String ICON_ATTACH_DOCUMENT = "document.gif";
+
 	private static final String ITEM_SEND = "Send";
 	private static final String CMD_SEND = "send";
 	private static final String ICON_SEND = "sendEmail.gif";
@@ -59,15 +66,6 @@ public class EmailTopic extends LiveTopic {
 
 	private static final String ITEM_FORWARD = "Forward";
 	private static final String CMD_FORWARD = "forward";
-	
-	// "Email" -> "Recipient" (User)
-	public static final String ASSOCTYPE_EMAILADDRESSEE = "at-emailaddressee";	// ###
-	public static final String ASSOCTYPE_ATTACHEMENT = "at-attachement";
-
-	public class LocateRcptsResult  {
-		public ArrayList	aRcpts;
-		public boolean		bUsedAttached;
-	}
 
 
 
@@ -124,6 +122,8 @@ public class EmailTopic extends LiveTopic {
 		String s = getProperty(PROPERTY_STATUS);
 		commands.addSeparator();
 		if (s.equals(EMAIL_STATE_DRAFT)) {
+			commands.addCommand(ITEM_ADD_RECIPIENTS, CMD_ADD_RECIPIENTS, FILESERVER_ICONS_PATH, ICON_ADD_RECIPIENTS);
+			commands.addCommand(ITEM_ATTACH_DOCUMENT, CMD_ATTACH_DOCUMENT, FILESERVER_ICONS_PATH, ICON_ATTACH_DOCUMENT);
 			commands.addCommand(ITEM_SEND, CMD_SEND, FILESERVER_IMAGES_PATH, ICON_SEND);
 		} else if (s.equals(EMAIL_STATE_RECEIVED)) {
 			commands.addCommand(ITEM_REPLY, CMD_REPLY);
@@ -152,6 +152,10 @@ public class EmailTopic extends LiveTopic {
 		CorporateDirectives directives = new CorporateDirectives();
 		if (command.equals(CMD_SEND)) {
 			sendMail(directives);
+		} else if (command.equals(CMD_ADD_RECIPIENTS)) {
+			createChildTopic(TOPICTYPE_RECIPIENT_LIST, SEMANTIC_RECIPIENT_LIST, session, directives);
+		} else if (command.equals(CMD_ATTACH_DOCUMENT)) {
+			createChildTopic(TOPICTYPE_DOCUMENT, SEMANTIC_EMAIL_ATTACHMENT, session, directives);
 		} else if (command.equals(CMD_REPLY)) {
 			createDraftForReply(session.getUserID(), 1, directives);
 		} else if (command.equals(CMD_FORWARD)) {
@@ -176,23 +180,22 @@ public class EmailTopic extends LiveTopic {
 
 
 
-	// ***************
-	// *** Methods ***
-	// ***************
+	// **********************
+	// *** Custom Methods ***
+	// **********************
 
 
 
 	private void sendMail(CorporateDirectives directives) throws DeepaMehtaException {
-		Hashtable data = getProperties();
-		if (!data.get(PROPERTY_STATUS).equals(EMAIL_STATE_DRAFT)) {
+		Hashtable props = getProperties();
+		if (!props.get(PROPERTY_STATUS).equals(EMAIL_STATE_DRAFT)) {
 			return;
 		}
-		LocateRcptsResult locRes = locateRcpts();
-		ArrayList aRcpts = locRes.aRcpts;
-		if (aRcpts.size() == 0) {
+		Vector recipientAddresses = getRecipientAddresses();
+		if (recipientAddresses.size() == 0) {
 			return;
 		}
-		String author = (String) data.get(PROPERTY_FROM);
+		String author = (String) props.get(PROPERTY_FROM);
 		System.out.println(">>> EmailTopic.sendMail(): " + this + ", author=\"" + author + "\"");
 		Properties mprops = new Properties();
 		mprops.put("mail.smtp.host", as.getSMTPServer());	// throws DME
@@ -201,19 +204,22 @@ public class EmailTopic extends LiveTopic {
 		try {
 			MimeMessage msg = new MimeMessage(session);
 			msg.setFrom(new InternetAddress(author));
-			InternetAddress[] address = new InternetAddress[aRcpts.size()];
-			for (int i = 0; i < aRcpts.size(); i++) {
-				address[i] = new InternetAddress((String)aRcpts.get(i));
+			// set "to"
+			InternetAddress[] address = new InternetAddress[recipientAddresses.size()];
+			for (int i = 0; i < recipientAddresses.size(); i++) {
+				address[i] = new InternetAddress((String) recipientAddresses.elementAt(i));
 			}
 			msg.setRecipients(Message.RecipientType.TO, address);
-			String subject = (String) data.get(PROPERTY_SUBJECT);
+			// set "subject"
+			String subject = (String) props.get(PROPERTY_SUBJECT);
 			if (subject == null || subject.equals("")) {
 				subject = TEXT_NO_SUBJECT;
 			}
 			msg.setSubject(subject);
+			//
 			Date d = new Date();
 			msg.setSentDate(d);			
-			String msgText = (String) data.get(PROPERTY_TEXT);
+			String msgText = (String) props.get(PROPERTY_TEXT);
 			addAttachs(msgText, msg);
 			//
 			Transport.send(msg);
@@ -249,44 +255,27 @@ public class EmailTopic extends LiveTopic {
 
 	// ---
 
-	public LocateRcptsResult locateRcpts() {
-		LocateRcptsResult res = new LocateRcptsResult();
-		ArrayList aOut = new ArrayList();
-		res.aRcpts = aOut;
-		res.bUsedAttached = false;
-		HashSet setCheck = new HashSet();
-		String sRcpts = getProperty(PROPERTY_TO);
-		if (sRcpts != null) {
-			StringTokenizer st = new StringTokenizer(sRcpts, ",;");
-			while (st.hasMoreTokens()) {
-				String val = st.nextToken();
-				String key = new String(val);
-				key = key.toLowerCase().trim();
-				if (!setCheck.contains(key)) {
-					setCheck.add(key);
-					aOut.add(val);
-				}
+	public Vector getRecipients() {
+		return as.getRelatedTopics(getID(), SEMANTIC_EMAIL_RECIPIENT, 2);
+	}
+
+	public Vector getRecipientAddresses() {
+		Vector recipientAddresses = new Vector();
+		//
+		Enumeration e = getRecipients().elements();
+		while (e.hasMoreElements()) {
+			BaseTopic recipient = (BaseTopic) e.nextElement();
+			String emailAddress = as.getEmailAddress(recipient.getID());
+			if (emailAddress != null && emailAddress.length() > 0) {
+				recipientAddresses.addElement(emailAddress);
 			}
 		}
-		Enumeration eRcpts = as.getRelatedTopics(getID(), ASSOCTYPE_EMAILADDRESSEE, 2).elements();
-		while (eRcpts.hasMoreElements()) {
-			BaseTopic user = (BaseTopic) eRcpts.nextElement();
-			String val = as.getEmailAddress(user.getID());
-			if ((val != null) && (val.length() > 0)) {
-				String key = new String(val);
-				key = key.toLowerCase().trim();
-				if (!setCheck.contains(key)) {
-					setCheck.add(key);
-					aOut.add(val);
-					res.bUsedAttached = true;
-				}
-			}
-		}
-		return res;
+		//
+		return recipientAddresses;
 	}
 	
 	public void addAttachs(String msgText, MimeMessage msg) throws MessagingException {
-		Enumeration docs = as.getRelatedTopics(getID(), ASSOCTYPE_ATTACHEMENT, 1).elements();
+		Enumeration docs = as.getRelatedTopics(getID(), SEMANTIC_EMAIL_ATTACHMENT, 2).elements();
 		Multipart mp = null;
 		while (docs.hasMoreElements()) {
 			BaseTopic doc = (BaseTopic)docs.nextElement();
@@ -379,14 +368,14 @@ public class EmailTopic extends LiveTopic {
 	public Vector copyAttachsAssocs(String topicID) {
 		BaseTopic attdoc = null;
 		Vector vAssocs = new Vector();
-		Enumeration attachs = as.getRelatedTopics(getID(), ASSOCTYPE_ATTACHEMENT, 1).elements();
+		Enumeration attachs = as.getRelatedTopics(getID(), SEMANTIC_EMAIL_ATTACHMENT, 2).elements();
 		while (attachs.hasMoreElements()) {
-			attdoc = (BaseTopic)attachs.nextElement();
+			attdoc = (BaseTopic) attachs.nextElement();
 			if (attdoc.getType().equals(TOPICTYPE_DOCUMENT)) {
 				String assocID = as.cm.getNewAssociationID();
-				as.cm.createAssociation( assocID, 1, ASSOCTYPE_ATTACHEMENT, 1, attdoc.getID(), 1, topicID, 1);
-				PresentableAssociation presAssoc = new PresentableAssociation(
-					assocID, 1, ASSOCTYPE_ATTACHEMENT, 1, "", attdoc.getID(), 1, topicID, 1);
+				as.cm.createAssociation(assocID, 1, SEMANTIC_EMAIL_ATTACHMENT, 1, topicID, 1, attdoc.getID(), 1);
+				PresentableAssociation presAssoc = new PresentableAssociation(assocID, 1,
+					SEMANTIC_EMAIL_ATTACHMENT, 1, "", topicID, 1, attdoc.getID(), 1);
 				vAssocs.add(presAssoc);
 			}
 		}

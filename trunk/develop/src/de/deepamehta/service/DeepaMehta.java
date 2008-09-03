@@ -105,7 +105,7 @@ public class DeepaMehta extends JApplet implements ApplicationServiceHost, Deepa
 			ps.mainWindow.setVisible(true);
 		} catch (DeepaMehtaException e) {
 			System.out.println("*** " + errText + " (" + e.getMessage() + ")");
-			// ### e.printStackTrace();
+			e.printStackTrace();
 		} catch (Throwable e) {
 			System.out.println("*** DeepaMehta.initApplication(): " + e);
 			e.printStackTrace();

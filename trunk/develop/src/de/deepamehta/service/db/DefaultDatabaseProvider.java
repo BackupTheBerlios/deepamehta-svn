@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 
 
@@ -37,6 +38,8 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	public static final DbmsHint DBMS_HINT_SQL92 = new DbmsHint("SQL92");
 
 	private static final String DEFAULT_DB_TYPE = "mysql";
+
+	private static Logger logger = Logger.getLogger("de.deepamehta");
 
 	private final LinkedList freeCons = new LinkedList();
 
@@ -76,16 +79,18 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		}
 		String libs = c2.getProperty(ConfigurationConstants.Database.DB_LIBS);
 		String driverClazz = c2.getProperty(ConfigurationConstants.Database.DB_DRIVER);
-
-		System.out.println("Using Database");
-		System.out.println("  Type : " + dbType);
-		System.out.println("  URL : " + jdbcURL);
-		System.out.println("  Driver : " + driverClazz);
-
-		loadClassFromLibs(libs, driverClazz);
+		//
+		logger.info("Using Database\n" + 
+			"    Type: " + dbType + "\n" +
+			"    URL: " + jdbcURL + "\n" +
+			"    Driver: " + driverClazz);
+		//
+		// ### loadClassFromLibs(libs, driverClazz);
+		driverClass = Class.forName(driverClazz);		// ###
 		driver = (Driver) driverClass.newInstance();
-		if (!driver.acceptsURL(jdbcURL))
+		if (!driver.acceptsURL(jdbcURL)) {
 			throw new DeepaMehtaException("JDBC-Driver and JDBC-Url does not match!");
+		}
 		String user = conf.getProperty(ConfigurationConstants.Database.DB_USER);
 		if ((null != user) || ("".equals(user))) {
 			setConnectionProperty("user", user);
@@ -94,6 +99,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		}
 	}
 
+	/* ###
 	private void loadClassFromLibs(String libs, String driverClazz) throws ClassNotFoundException {
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 		Resource[] resources;
@@ -103,8 +109,9 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 			throw new ClassNotFoundException(e.getMessage(), e);
 		}
 		loadClassFromLibs(resources, driverClazz);
-	}
+	} */
 
+	/* ###
 	private void loadClassFromLibs(Resource[] resources, String clazz) throws ClassNotFoundException {
 		URL[] urls = new URL[resources.length];
 		try {
@@ -126,16 +133,17 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 			throw new ClassNotFoundException(e.getMessage(), e);
 		}
 		loadClassFromLibs(urls, clazz);
-	}
+	} */
 
+	/* ###
 	private void loadClassFromLibs(URL[] urls, String clazz) throws ClassNotFoundException {
-		System.out.println("Using separate Classloader for:");
+		logger.info("Using separate Classloader for:");
 		for (int i = 0; i < urls.length; i++) {
-			System.out.println("  " + urls[i].toExternalForm());
+			logger.info("  " + urls[i].toExternalForm());
 		}
 		URLClassLoader classLoader = new URLClassLoader(urls);
 		driverClass = classLoader.loadClass(clazz);
-	}
+	} */
 
 	public synchronized Connection getConnection() throws SQLException {
 		if (0 == freeCons.size()) {
@@ -160,7 +168,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		Connection con = driver.connect(jdbcURL, conProps);
 		con.setAutoCommit(true);
 		allCons.add(con);
-		System.out.println("DB-Connections: ALL:" + allCons.size() + " FREE:" + freeCons.size());
+		logger.info("DB-Connections: ALL:" + allCons.size() + " FREE:" + freeCons.size());
 		return con;
 	}
 
@@ -189,7 +197,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 
 	public void release() {
 		try {
-			System.out.println("all / free connections : " + allCons.size() + " / " + freeCons.size());
+			logger.info("all / free connections : " + allCons.size() + " / " + freeCons.size());
 			closeAllCons();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -201,7 +209,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 
 	private static PrintStream dblog = null;
 	static {
-		/* DEBUG */
+		/* DEBUG ### */
 		if (false) {
 			try {
 				dblog = new PrintStream(new FileOutputStream("db.log"));
@@ -216,5 +224,4 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 			dblog.println(arg0);
 		}
 	}
-
 }

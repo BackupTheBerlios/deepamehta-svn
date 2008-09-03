@@ -26,7 +26,7 @@ import java.util.Vector;
  * </ol>
  * <p>
  * <hr>
- * Last change: 15.8.2008 (2.0b8)<br>
+ * Last change: 2.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -516,6 +516,7 @@ public interface DeepaMehtaConstants {
 	static final String TOPICTYPE_FAX_NUMBER = "tt-faxnumber";
 	static final String TOPICTYPE_EMAIL_ADDRESS = "tt-emailaddress";
 	static final String TOPICTYPE_EMAIL = "tt-email";
+	static final String TOPICTYPE_RECIPIENT_LIST = "tt-recipientlist";
 	static final String TOPICTYPE_CALENDAR = "tt-calendar";
 	static final String TOPICTYPE_APPOINTMENT = "tt-event";	// topic type "Appointment" has ID "tt-event" for historical reasons
 	static final String TOPICTYPE_EVENT = "tt-alldayevent";
@@ -555,8 +556,10 @@ public interface DeepaMehtaConstants {
 	static final String ASSOCTYPE_NAVIGATION = "at-navigation";
 	static final String ASSOCTYPE_PREFERENCE = "at-preference";
 	static final String ASSOCTYPE_GOOGLE_RESULT = "at-googleresult";
+	// email feature
 	static final String ASSOCTYPE_RECIPIENT = "at-recipient";
 	static final String ASSOCTYPE_SENDER = "at-sender";
+	static final String ASSOCTYPE_ATTACHMENT = "at-attachment";
 
 
 
@@ -579,9 +582,6 @@ public interface DeepaMehtaConstants {
 
 	// direction is from user to MIME Configuration
 	static final String SEMANTIC_CONFIGURATION_MAP = ASSOCTYPE_ASSOCIATION;
-
-	// direction is from user to email address
-	static final String SEMANTIC_EMAIL_ADDRESS = ASSOCTYPE_ASSOCIATION;
 
 	// direction is from user to topic map
 	static final String SEMANTIC_VIEW_IN_USE = ASSOCTYPE_VIEW_IN_USE;
@@ -678,6 +678,23 @@ public interface DeepaMehtaConstants {
 
 	// direction is from appointment to person
 	static final String SEMANTIC_APPOINTMENT_ATTENDEE = ASSOCTYPE_ASSOCIATION;
+
+	// *** Email ***
+
+	// direction is from user to email address
+	static final String SEMANTIC_EMAIL_ADDRESS = ASSOCTYPE_ASSOCIATION;
+
+	// direction is from email to recipient list
+	static final String SEMANTIC_RECIPIENT_LIST = ASSOCTYPE_ASSOCIATION;
+
+	// direction is from email to person resp. institution
+	static final String SEMANTIC_EMAIL_RECIPIENT = ASSOCTYPE_RECIPIENT;
+
+	// direction is from email to user
+	static final String SEMANTIC_EMAIL_SENDER = ASSOCTYPE_SENDER;
+
+	// direction is from email to document
+	static final String SEMANTIC_EMAIL_ATTACHMENT = ASSOCTYPE_ATTACHMENT;
 
 
 
