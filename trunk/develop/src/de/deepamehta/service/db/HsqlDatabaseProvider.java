@@ -16,8 +16,9 @@ public class HsqlDatabaseProvider extends DefaultDatabaseProvider {
 	private class CheckpointThread extends TimerTask {
 		public void run() {
 			try {
-				if (doNextCheckPoint)
+				if (doNextCheckPoint) {
 					checkpoint();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -25,7 +26,7 @@ public class HsqlDatabaseProvider extends DefaultDatabaseProvider {
 	}
 
 	/** HSQLDB DBMS Hint */
-	public static final DbmsHint DBMS_HINT_HSQLDB = new DbmsHint("HSQLDB");
+	public static final String DBMS_HINT_HSQLDB = "HSQLDB";
 
 	/** String for detecting HSQLDB in the jdbc-driver-name */
 	private static final String DBMS_HINT_HSQLDB_STR = "hsqldb";
@@ -42,12 +43,12 @@ public class HsqlDatabaseProvider extends DefaultDatabaseProvider {
 		new Timer().scheduleAtFixedRate(new CheckpointThread(), rate, rate);
 	}
 
-	public DbmsHint getDbmsHint() {
+	public String getDbmsHint() {
 		return DBMS_HINT_HSQLDB;
 	}
 
 	public void freeConnection(Connection con) throws SQLException {
-		//checkpoint(con);
+		// ### checkpoint(con);
 		super.freeConnection(con);
 	}
 
@@ -76,43 +77,5 @@ public class HsqlDatabaseProvider extends DefaultDatabaseProvider {
 	public void checkPointNeeded() {
 		super.checkPointNeeded();
 		doNextCheckPoint = true;
-	}
-
-	public void logStatement(String stmt) {
-		super.logStatement(stmt);
-		/* DEBUG */
-		if (false) {
-			// do not use the AutoFreeConnectionStatement
-			// as it would result in an endless loop
-			try {
-				Connection connection = getConnection();
-				try {
-					Statement statement = connection.createStatement();
-					ResultSet rs = statement.executeQuery("EXPLAIN PLAN FOR " + stmt);
-					ResultSetMetaData md = rs.getMetaData();
-					int cc = md.getColumnCount();
-					StringBuffer buf = new StringBuffer();
-					for (int i = 1; i <= cc; i++) {
-						buf.append(md.getColumnName(i) + ";");
-					}
-					super.logStatement(buf.toString());
-					buf = new StringBuffer();
-					while (rs.next()) {
-						for (int i = 1; i <= cc; i++) {
-							buf.append(rs.getString(i) + ";");
-						}
-						super.logStatement(buf.toString());
-					}
-					super.logStatement("");
-					statement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} finally {
-					freeConnection(connection);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 }

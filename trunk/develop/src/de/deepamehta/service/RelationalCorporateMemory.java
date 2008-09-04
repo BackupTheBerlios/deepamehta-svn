@@ -10,7 +10,6 @@ import de.deepamehta.PresentableType;
 import de.deepamehta.assocs.LiveAssociation;
 import de.deepamehta.service.db.DatabaseProvider;
 import de.deepamehta.service.db.OracleDatabaseProvider;
-import de.deepamehta.service.db.DatabaseProvider.DbmsHint;
 import de.deepamehta.topics.LiveTopic;
 import de.deepamehta.util.CaseInsensitveHashtable;
 import de.deepamehta.util.DeepaMehtaUtils;
@@ -33,7 +32,7 @@ import java.util.Vector;
  * A RDBMS implementation of {@link CorporateMemory}.
  * <p>
  * <hr>
- * Last change: 9.8.2008 (2.0b8)<br>
+ * Last change: 4.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -64,7 +63,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 */
 	private DatabaseProvider provider;
 
-	private DbmsHint dbmsHint;
+	private String dbmsHint;
 
 
 
@@ -83,7 +82,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		provider.getDatabaseOptimizer().optimize();
 
 		this.dbmsHint = dbProvider.getDbmsHint();
-		System.out.println(">    DBMS hint: \"" + dbmsHint.getName() + "\"");
+		System.out.println(">    DBMS hint: \"" + dbmsHint + "\"");
 	}
 
 	

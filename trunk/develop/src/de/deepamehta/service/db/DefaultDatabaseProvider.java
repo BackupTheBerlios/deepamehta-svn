@@ -4,9 +4,6 @@ import de.deepamehta.Configuration;
 import de.deepamehta.ConfigurationConstants;
 import de.deepamehta.DeepaMehtaException;
 
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -23,6 +20,7 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 
 
@@ -35,7 +33,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 	}
 
 	/** SQL92 DBMS Hint */
-	public static final DbmsHint DBMS_HINT_SQL92 = new DbmsHint("SQL92");
+	public static final String DBMS_HINT_SQL92 = "SQL92";
 
 	private static final String DEFAULT_DB_TYPE = "mysql";
 
@@ -85,8 +83,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 			"    URL: " + jdbcURL + "\n" +
 			"    Driver: " + driverClazz);
 		//
-		// ### loadClassFromLibs(libs, driverClazz);
-		driverClass = Class.forName(driverClazz);		// ###
+		driverClass = Class.forName(driverClazz);
 		driver = (Driver) driverClass.newInstance();
 		if (!driver.acceptsURL(jdbcURL)) {
 			throw new DeepaMehtaException("JDBC-Driver and JDBC-Url does not match!");
@@ -99,52 +96,6 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		}
 	}
 
-	/* ###
-	private void loadClassFromLibs(String libs, String driverClazz) throws ClassNotFoundException {
-		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		Resource[] resources;
-		try {
-			resources = resolver.getResources("file:" + libs);
-		} catch (IOException e) {
-			throw new ClassNotFoundException(e.getMessage(), e);
-		}
-		loadClassFromLibs(resources, driverClazz);
-	} */
-
-	/* ###
-	private void loadClassFromLibs(Resource[] resources, String clazz) throws ClassNotFoundException {
-		URL[] urls = new URL[resources.length];
-		try {
-			for (int i = 0; i < resources.length; i++) {
-				Resource res = resources[i];
-				File file = res.getFile();
-				String path = file.getCanonicalPath();
-				String urlString;
-				if (file.isDirectory()) {
-					urlString = "file:" + path + "/";
-				} else {
-					urlString = "jar:file:" + path + "!/";
-				}
-				urls[i] = new URL(urlString);
-			}
-		} catch (MalformedURLException e) {
-			throw new ClassNotFoundException(e.getMessage(), e);
-		} catch (IOException e) {
-			throw new ClassNotFoundException(e.getMessage(), e);
-		}
-		loadClassFromLibs(urls, clazz);
-	} */
-
-	/* ###
-	private void loadClassFromLibs(URL[] urls, String clazz) throws ClassNotFoundException {
-		logger.info("Using separate Classloader for:");
-		for (int i = 0; i < urls.length; i++) {
-			logger.info("  " + urls[i].toExternalForm());
-		}
-		URLClassLoader classLoader = new URLClassLoader(urls);
-		driverClass = classLoader.loadClass(clazz);
-	} */
-
 	public synchronized Connection getConnection() throws SQLException {
 		if (0 == freeCons.size()) {
 			return newConnection();
@@ -152,7 +103,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		return (Connection) freeCons.removeFirst();
 	}
 
-	public DbmsHint getDbmsHint() {
+	public String getDbmsHint() {
 		return DBMS_HINT_SQL92;
 	}
 
@@ -168,7 +119,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		Connection con = driver.connect(jdbcURL, conProps);
 		con.setAutoCommit(true);
 		allCons.add(con);
-		logger.info("DB-Connections: ALL:" + allCons.size() + " FREE:" + freeCons.size());
+		logger.info("Number of database connections: " + allCons.size() + " total, " + freeCons.size() + " free");
 		return con;
 	}
 
@@ -197,31 +148,16 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 
 	public void release() {
 		try {
-			logger.info("all / free connections : " + allCons.size() + " / " + freeCons.size());
+			logger.info("Number of database connections: " + allCons.size() + " total, " + freeCons.size() + " free");
 			closeAllCons();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Error releasing database provider ...", e);
 		}
 	}
 
 	public void checkPointNeeded() {
 	}
 
-	private static PrintStream dblog = null;
-	static {
-		/* DEBUG ### */
-		if (false) {
-			try {
-				dblog = new PrintStream(new FileOutputStream("db.log"));
-			} catch (FileNotFoundException e) {
-				dblog = System.err;
-			}
-		}
-	}
-
 	public void logStatement(String arg0) {
-		if (null != dblog) {
-			dblog.println(arg0);
-		}
 	}
 }

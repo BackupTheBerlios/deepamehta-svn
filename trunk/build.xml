@@ -263,8 +263,6 @@
 		</copy>
 		<copy file="${libpath}/avalon-framework.jar" todir="${web.lib.dir}" />
 		<copy file="${libpath}/commons-fileupload-1.0.jar" todir="${web.lib.dir}" />
-		<copy file="${libpath}/commons-logging.jar" todir="${web.lib.dir}" />
-		<copy file="${libpath}/spring-core.jar" todir="${web.lib.dir}" />
 		<copy file="${libpath}/googleapi.jar" todir="${web.lib.dir}" />
 		<!-- deploy web applications -->
 		<ant target="-call-examples-web">

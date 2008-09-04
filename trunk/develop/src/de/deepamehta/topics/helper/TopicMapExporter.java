@@ -46,15 +46,14 @@ import javax.xml.transform.stream.StreamSource;
 
 /**
  * Export utilities for the following purposes:
- * <UL>
- * <LI>A topicmap can be exported to XML, SVG or PDF.
- * <LI>
- * </UL>
- * <HR>
- * Last functional change: 1.5.2004 (2.0b3-pre2)<BR>
- * Last documentation update: 12.4.2002 (2.0a14-post1)<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * <ul>
+ * <li>A topicmap can be exported to XML, SVG or PDF.
+ * <li>
+ * </ul>
+ * <hr>
+ * Last change: 1.5.2004 (2.0b3-pre2)<br>
+ * J&ouml;rg Richter<br>
+ * jri@deepamehta.de
  */
 public class TopicMapExporter implements DeepaMehtaConstants {
 
@@ -62,12 +61,6 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 	 * XML parser to turn the HTML-formatted content of styled properties into SAX events.
 	 */
 	private static SAXParser parser = new SAXParser();
-
-	/* ### private static SAXParserFactory parserFactory;
-	static {
-		parserFactory = SAXParserFactory.newInstance();
-		parserFactory.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
-	} */
 
 	/**
 	 * The topicmap to be exported.
@@ -87,7 +80,7 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 
 	/**
 	 * Constructor.
-	 * <P>
+	 * <p>
 	 * References checked: 9.11.2004 (2.0b3)
 	 *
 	 * @param   topicmap	the topicmap to be exported.
@@ -109,7 +102,7 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 	/**
 	 * Exports the topicmap to a ZIP archive file, containing XML files for use mode,
 	 * build mode, and all necessary documents and icon files.
-	 * <P>
+	 * <p>
 	 * References checked: 12.4.2002 (2.0a14-post1)
 	 *
 	 * @param   fileBasename the name of the exported file, without suffix
@@ -204,7 +197,7 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 	 *
 	 * @param   out			the OutputStream into the ZIP archive
 	 * @param   filename	the filename of the generated XML file
-	 * @param   collector	collects document and icon files for export, may be <CODE>null</CODE>.
+	 * @param   collector	collects document and icon files for export, may be <code>null</code>.
 	 *
 	 * @see		#createTopicmapArchive
 	 */
@@ -230,7 +223,7 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 	/**
 	 * Transforms the specified topicmap by using the specified XSL stylesheet.
 	 * ### The resulting SAX events are handled by the specified handler.
-	 * <P>
+	 * <p>
 	 * References checked: 18.10.2003 (2.0b2)
 	 *
 	 * @param   topicmap        topicmap to transform
@@ -268,14 +261,14 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 
 	/**
 	 * ### Creates XML representation for the specified topics.
-	 * <P>
+	 * <p>
 	 * References checked: 21.1.2003 (2.0a17-pre7)
 	 *
 	 * @param   topics		the topics to be exported, enumeration of BaseTopics
 	 * @param   handler		SAX event handler
-	 * @param   visible		<CODE>true</CODE> means that the association will be visible in the exported map
+	 * @param   visible		<code>true</code> means that the association will be visible in the exported map
 	 * @param   as			the ApplicationService that provides the BaseAssociations
-	 * @param   collector	collects document and icon files for export ###, may be <CODE>null</CODE>.
+	 * @param   collector	collects document and icon files for export ###, may be <code>null</code>.
 	 *
 	 * @see     de.deepamehta.topics.TopicMapTopic#exportTopicmap
 	 * @see     de.deepamehta.topics.CMImportExportTopic#exportCM
@@ -290,12 +283,12 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 
 	/**
 	 * ### Creates XML representation for the specified associations.
-	 * <P>
+	 * <p>
 	 * References checked: 13.4.2002 (2.0a14-post1)
 	 *
 	 * @param   assocs		the BaseAssociations to be exported
 	 * @param   handler		SAX event handler
-	 * @param   visible		<CODE>true</CODE> means that the association will be visible in the exported map
+	 * @param   visible		<code>true</code> means that the association will be visible in the exported map
 	 * @param   as			the ApplicationService that provides the BaseAssociations
 	 *
 	 * @see     de.deepamehta.topics.TopicMapTopic#exportTopicmap
@@ -316,9 +309,9 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 	 *
 	 * @param   topic   	the topic to be exported
 	 * @param   handler		SAX event handler
-	 * @param   visible 	<CODE>true</CODE> means that geometry will be saved
+	 * @param   visible 	<code>true</code> means that geometry will be saved
 	 * @param   as			the ApplicationService that provides the BaseAssociations
-	 * @param   collector   collects document and icon files for export, may be <CODE>null</CODE>
+	 * @param   collector   collects document and icon files for export, may be <code>null</code>
 	 *
 	 * @see		#exportTopics
 	 */
@@ -363,7 +356,7 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 	 *
 	 * @param   assoc		the association to be exported to XML
 	 * @param   handler		SAX event handler
-	 * @param   visible		<CODE>true</CODE> means that the association will be visible in the exported map
+	 * @param   visible		<code>true</code> means that the association will be visible in the exported map
 	 * @param   as			the ApplicationService that provides the BaseAssociations
 	 *
 	 * @see		#exportAssociations
@@ -396,10 +389,10 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 
 	/**
 	 * Exports the type definitons of the specified types.
-	 * <P>
+	 * <p>
 	 * References checked: 17.1.2003 (2.0a17-pre6)
 	 *
-	 * @param   types		the types to be exported (enumeration of <CODE>Type</CODE>)
+	 * @param   types		the types to be exported (enumeration of <code>Type</code>)
 	 * @param   handler     SAX event handler
 	 * @param   collector   collects document and icon files for export
 	 *
@@ -420,7 +413,7 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 	 * <p>
 	 * References checked: 1.5.2004 (2.0b3-pre2)
 	 *
-	 * @param   properties  input properties <CODE>Hashtable</CODE>
+	 * @param   properties  input properties <code>Hashtable</code>
 	 * @param   id			id of the origin topic/association, for debugging only
 	 * @param   handler		SAX event handler
 	 * @param   exportCData specifies if styled properties should be exported as CDATA
@@ -466,7 +459,7 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 	 * @param   handler     SAX event handler
 	 * @param   tagName     the name of the tag
 	 * @param   attributes  the attributes of this tag as a map of key-value pairs,
-	 * 						may be <CODE>null</CODE>.
+	 * 						may be <code>null</code>.
 	 */
 	public static void startElement(ContentHandler handler, String tagName,
 									Hashtable attributes) throws SAXException {

@@ -5,28 +5,21 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+
+
 public interface DatabaseProvider {
-	public static class DbmsHint extends org.apache.avalon.framework.Enum{
-		protected DbmsHint(String name) {
-			super(name);
-		}
-	}
-
-	void release();
 	
+	String getDbmsHint();
+	//
 	Connection getConnection() throws SQLException;
-
-	DbmsHint getDbmsHint();
-
 	void freeConnection(Connection con) throws SQLException;
-
+	//
 	Statement getStatement() throws SQLException;
-
-	void checkPointNeeded();
-
-	DatabaseOptimizer getDatabaseOptimizer();
-
-	public void logStatement(String arg0);
-
 	PreparedStatement getPreparedStatement(String sql) throws SQLException;
+	public void logStatement(String sql);
+	//
+	void checkPointNeeded();
+	DatabaseOptimizer getDatabaseOptimizer();
+	//
+	void release();
 }

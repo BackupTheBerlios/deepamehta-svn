@@ -40,7 +40,6 @@
 		<pathelement location="${dm.base-dir}/${libpath}/avalon-framework.jar" />
 		<pathelement location="${dm.base-dir}/${libpath}/commons-fileupload-1.0.jar" />
 		<pathelement location="${dm.base-dir}/${libpath}/googleapi.jar" />
-		<pathelement location="${dm.base-dir}/${libpath}/spring-core.jar" />
 		<pathelement location="${dm.base-dir}/${libpath}/commons-logging.jar" />
 	</path>
 	<pathconvert property="jarclasspath" pathsep=" " refid="javalibs">
