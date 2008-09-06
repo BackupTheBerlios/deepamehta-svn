@@ -35,7 +35,7 @@ import javax.mail.internet.MimeMultipart;
  * An email.
  * <p>
  * <hr>
- * Last change: 2.9.2008 (2.0b8)<br>
+ * Last change: 6.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -49,10 +49,6 @@ public class EmailTopic extends LiveTopic {
 	private static final String EMAIL_STATE_SENT = "Sent";
 
 	// commands
-	private static final String ITEM_ADD_RECIPIENTS = "Add recipients";
-	private static final String CMD_ADD_RECIPIENTS = "addRecipients";
-	private static final String ICON_ADD_RECIPIENTS = "person.gif";
-
 	private static final String ITEM_ATTACH_DOCUMENT = "Attach a document";
 	private static final String CMD_ATTACH_DOCUMENT = "attachDocument";
 	private static final String ICON_ATTACH_DOCUMENT = "document.gif";
@@ -122,7 +118,6 @@ public class EmailTopic extends LiveTopic {
 		String s = getProperty(PROPERTY_STATUS);
 		commands.addSeparator();
 		if (s.equals(EMAIL_STATE_DRAFT)) {
-			commands.addCommand(ITEM_ADD_RECIPIENTS, CMD_ADD_RECIPIENTS, FILESERVER_ICONS_PATH, ICON_ADD_RECIPIENTS);
 			commands.addCommand(ITEM_ATTACH_DOCUMENT, CMD_ATTACH_DOCUMENT, FILESERVER_ICONS_PATH, ICON_ATTACH_DOCUMENT);
 			commands.addCommand(ITEM_SEND, CMD_SEND, FILESERVER_IMAGES_PATH, ICON_SEND);
 		} else if (s.equals(EMAIL_STATE_RECEIVED)) {
@@ -147,13 +142,10 @@ public class EmailTopic extends LiveTopic {
 
 
 
-	public CorporateDirectives executeCommand(String command, Session session,
-													String topicmapID, String viewmode) {
+	public CorporateDirectives executeCommand(String command, Session session, String topicmapID, String viewmode) {
 		CorporateDirectives directives = new CorporateDirectives();
 		if (command.equals(CMD_SEND)) {
 			sendMail(directives);
-		} else if (command.equals(CMD_ADD_RECIPIENTS)) {
-			createChildTopic(TOPICTYPE_RECIPIENT_LIST, SEMANTIC_RECIPIENT_LIST, session, directives);
 		} else if (command.equals(CMD_ATTACH_DOCUMENT)) {
 			createChildTopic(TOPICTYPE_DOCUMENT, SEMANTIC_EMAIL_ATTACHMENT, session, directives);
 		} else if (command.equals(CMD_REPLY)) {
@@ -191,7 +183,7 @@ public class EmailTopic extends LiveTopic {
 		if (!props.get(PROPERTY_STATUS).equals(EMAIL_STATE_DRAFT)) {
 			return;
 		}
-		Vector recipientAddresses = getRecipientAddresses();
+		Vector recipientAddresses = collectRecipientAddresses();
 		if (recipientAddresses.size() == 0) {
 			return;
 		}
@@ -259,21 +251,37 @@ public class EmailTopic extends LiveTopic {
 		return as.getRelatedTopics(getID(), SEMANTIC_EMAIL_RECIPIENT, 2);
 	}
 
-	public Vector getRecipientAddresses() {
+	public Vector getRecipientLists() {
+		return as.getRelatedTopics(getID(), SEMANTIC_EMAIL_RECIPIENT, TOPICTYPE_RECIPIENT_LIST, 2);
+	}
+
+	public Vector collectRecipientAddresses() {
 		Vector recipientAddresses = new Vector();
-		//
-		Enumeration e = getRecipients().elements();
+		// persons and institutions
+		addRecipientAddresses(getRecipients(), recipientAddresses);
+		// recipient lists
+		Enumeration e = getRecipientLists().elements();
 		while (e.hasMoreElements()) {
-			BaseTopic recipient = (BaseTopic) e.nextElement();
-			String emailAddress = as.getEmailAddress(recipient.getID());
-			if (emailAddress != null && emailAddress.length() > 0) {
-				recipientAddresses.addElement(emailAddress);
-			}
+			RecipientListTopic recipientList = (RecipientListTopic) as.getLiveTopic((BaseTopic) e.nextElement());
+			addRecipientAddresses(recipientList.getSelectedRecipients(), recipientAddresses);
 		}
 		//
 		return recipientAddresses;
 	}
-	
+
+	private void addRecipientAddresses(Vector recipients, Vector recipientAddresses) {
+		Enumeration e = recipients.elements();
+		while (e.hasMoreElements()) {
+			BaseTopic recipient = (BaseTopic) e.nextElement();
+			String emailAddress = as.getEmailAddress(recipient.getID());
+			if (emailAddress != null && emailAddress.length() > 0 && !recipientAddresses.contains(emailAddress)) {
+				recipientAddresses.addElement(emailAddress);
+			}
+		}
+	}
+
+	// ---
+
 	public void addAttachs(String msgText, MimeMessage msg) throws MessagingException {
 		Enumeration docs = as.getRelatedTopics(getID(), SEMANTIC_EMAIL_ATTACHMENT, 2).elements();
 		Multipart mp = null;

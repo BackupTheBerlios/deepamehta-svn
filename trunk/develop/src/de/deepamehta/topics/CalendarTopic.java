@@ -22,10 +22,9 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 25.5.2008 (2.0b8)<br>
- * Last documentation update: 6.7.2007 (2.0b8)<br>
+ * Last change: 6.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class CalendarTopic extends LiveTopic {
 
@@ -51,7 +50,6 @@ public class CalendarTopic extends LiveTopic {
 	private static final String ACTION_SELECT_MONTH_MODE = "selectMonthMode";
 	private static final String ACTION_GO_BACK = "goBack";
 	private static final String ACTION_GO_FORWARD = "goForward";
-	private static final String ACTION_REVEAL_TOPIC = "revealTopic";
 
 	// properties
 	private static final String PROPERTY_DISPLAY_MODE = "Display Mode";
@@ -122,10 +120,7 @@ public class CalendarTopic extends LiveTopic {
 				return directives;
 			}
 			String action = url.substring(urlPrefix.length());
-			if (action.startsWith(ACTION_REVEAL_TOPIC)) {
-				String topicID = action.substring(ACTION_REVEAL_TOPIC.length() + 1);	// +1 to skip /
-				revealTopic(topicID, directives);
-			} else if (action.equals(ACTION_SELECT_DAY_MODE)) {
+			if (action.equals(ACTION_SELECT_DAY_MODE)) {
 				selectDayMode(directives);
 			} else if (action.equals(ACTION_SELECT_WEEK_MODE)) {
 				selectWeekMode(directives);
@@ -136,13 +131,14 @@ public class CalendarTopic extends LiveTopic {
 			} else if (action.equals(ACTION_GO_FORWARD)) {
 				navigate(1, directives);
 			} else {
-				System.out.println("*** CalendarTopic.executeCommand(): URL \"" + url + "\" not recognized by " +
-					"CMD_FOLLOW_HYPERLINK");
+				// delegate to super class to handle ACTION_REVEAL_TOPIC
+				return super.executeCommand(command, session, topicmapID, viewmode);
 			}
-			return directives;
 		} else {
 			return super.executeCommand(command, session, topicmapID, viewmode);
 		}
+		//
+		return directives;
 	}
 
 
@@ -871,30 +867,6 @@ public class CalendarTopic extends LiveTopic {
 
 	private Vector getCalendarPersons() {
 		return cm.getRelatedTopics(getID(), SEMANTIC_CALENDAR_PERSON, TOPICTYPE_PERSON, 2);
-	}
-
-	// ---
-
-	/**
-	 * Reveals a calender realted topic in the near of this calendar.
-	 *
-	 * @param	topicID		the topic ID of an appointment, an event, or an attendee.
-	 */
-	private void revealTopic(String topicID, CorporateDirectives directives) {
-		PresentableTopic topic = new PresentableTopic(as.getLiveTopic(topicID, 1), getID());
-		Boolean evoke = Boolean.FALSE;
-		// create a "virtual" association of type "Search Result" if not yet exist
-		BaseAssociation a = cm.getAssociation(SEMANTIC_CONTAINER_HIERARCHY, getID(), topicID);
-		if (a == null) {
-			String assocID = as.getNewAssociationID();
-			a = new BaseAssociation(assocID, 1, SEMANTIC_CONTAINER_HIERARCHY, 1, "", getID(), 1, topicID, 1);
-			evoke = Boolean.TRUE;
-		}
-		//
-		PresentableAssociation assoc = new PresentableAssociation(a);
-		directives.add(DIRECTIVE_SHOW_TOPIC, topic);
-		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, evoke);
-		directives.add(DIRECTIVE_SELECT_TOPIC, topicID);
 	}
 
 	// ---

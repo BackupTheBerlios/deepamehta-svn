@@ -66,7 +66,7 @@ import java.util.Vector;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last change: 9.8.2008 (2.0b8)<br>
+ * Last change: 5.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -647,6 +647,19 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		} else {
 			// association exists already
 			return assoc.getID();
+		}
+	}
+
+	// ---
+
+	// ### bypasses the application service
+	public final void toggleAssociation(String topicID1, String topicID2, String assocTypeID) {
+		BaseAssociation assoc = cm.getAssociation(assocTypeID, topicID1, topicID2);
+		if (assoc != null) {
+			cm.deleteAssociation(assoc.getID());
+		} else {
+			String assocID = getNewAssociationID();
+			cm.createAssociation(assocID, 1, assocTypeID, 1, topicID1, 1, topicID2, 1);
 		}
 	}
 
@@ -4366,8 +4379,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 */
 	public void addViewInUse(String viewID, Session session) {
 		System.out.println(">>> remember open view \"" + viewID + "\" for user \"" + session.getUserName() + "\"");
-		cm.createAssociation(getNewAssociationID(), 1, SEMANTIC_VIEW_IN_USE, 1,
-			session.getUserID(), 1, viewID, 1);
+		cm.createAssociation(getNewAssociationID(), 1, SEMANTIC_VIEW_IN_USE, 1, session.getUserID(), 1, viewID, 1);
 	}
 
 	/**
@@ -5081,8 +5093,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			}
 			if (doMapping) {
 				assoc.setID(getNewAssociationID());
-				cm.createAssociation(assoc.getID(), 1, assoc.getType(), 1,
-					assoc.getTopicID1(), 1, assoc.getTopicID2(), 1);
+				cm.createAssociation(assoc.getID(), 1, assoc.getType(), 1, assoc.getTopicID1(), 1, assoc.getTopicID2(), 1);
 			}
 			//
 			createViewAssociation(topicmapID, topicmapVersion, viewMode, assoc.getID(), assoc.getVersion(),

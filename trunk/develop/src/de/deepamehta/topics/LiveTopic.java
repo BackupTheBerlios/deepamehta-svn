@@ -47,10 +47,9 @@ import java.util.Vector;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last sourcecode change: 30.6.2008 (2.0b8)<br>
- * Last documentation update: 3.2.2008 (2.0b8)<br>
+ * Last change: 6.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
@@ -538,13 +537,27 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 			// Note: there is no standard behavoir for "submitForm" command -- do nothing
 			// just avoid "command not implemented" exception
 		} else if (cmd.equals(CMD_FOLLOW_HYPERLINK)) {
-			// Note: there is no standard behavoir for "followHyperlink" command -- do nothing
-			// just avoid "command not implemented" exception
+			String url = st.nextToken();
+			String urlPrefix = "http://";
+			// error check
+			if (!url.startsWith(urlPrefix)) {
+				System.out.println("*** CalendarTopic.executeCommand(): URL \"" + url + "\" not recognized by " +
+					"CMD_FOLLOW_HYPERLINK");
+				return directives;
+			}
+			//
+			String action = url.substring(urlPrefix.length());
+			if (action.startsWith(ACTION_REVEAL_TOPIC)) {
+				String topicID = action.substring(ACTION_REVEAL_TOPIC.length() + 1);	// +1 to skip /
+				revealTopic(topicID, directives);
+			} else {
+				throw new DeepaMehtaException("hyperlink action \"" + action + "\" not recognized");
+			}
 		} else {
 			if (as.editorContext(topicmapID) == EDITOR_CONTEXT_PERSONAL) {
 				handleWorkspaceCommand(command, topicmapID, viewmode, session, directives);
 			} else {
-				throw new DeepaMehtaException("command not implemented");
+				throw new DeepaMehtaException("command not recognized");
 			}
 		}
 		//
@@ -1335,7 +1348,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		rename(childID, typeID, "", session, directives);	// ### default action is hardcoded
 	}
 
-	// ---
+	// --- revelTopic (2 forms) ---
 
 	/**
 	 * Extends the specified directives to perform this task: Create an association to the specified existing
@@ -1352,6 +1365,28 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 			getID(), getVersion(), topicID, 1, true);		// performExistenceCheck=true
 		directives.add(DIRECTIVE_SHOW_TOPIC, topic);
 		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, Boolean.TRUE);			// ### should evoke conditionally?
+		directives.add(DIRECTIVE_SELECT_TOPIC, topicID);
+	}
+
+	/**
+	 * Reveals a "virtual" realted topic in the near of this topic.
+	 *
+	 * @param	topicID		the ID of the topic to reveal.
+	 */
+	public final void revealTopic(String topicID, CorporateDirectives directives) {
+		PresentableTopic topic = new PresentableTopic(as.getLiveTopic(topicID, 1), getID());
+		Boolean evoke = Boolean.FALSE;
+		// create a "virtual" association of type "Search Result" if not yet exist
+		BaseAssociation a = cm.getAssociation(SEMANTIC_CONTAINER_HIERARCHY, getID(), topicID);
+		if (a == null) {
+			String assocID = as.getNewAssociationID();
+			a = new BaseAssociation(assocID, 1, SEMANTIC_CONTAINER_HIERARCHY, 1, "", getID(), 1, topicID, 1);
+			evoke = Boolean.TRUE;
+		}
+		//
+		PresentableAssociation assoc = new PresentableAssociation(a);
+		directives.add(DIRECTIVE_SHOW_TOPIC, topic);
+		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, evoke);
 		directives.add(DIRECTIVE_SELECT_TOPIC, topicID);
 	}
 

@@ -10,18 +10,17 @@ import java.io.Serializable;
 
 /**
  * Basis model of a {@link Topic} as stored in corporate memory.
- * <P>
- * <CODE>BaseTopic</CODE> adds the <CODE>version</CODE> field and the
- * <CODE>getVersion()</CODE> method -- the base for version control.
- * <P>
- * <CODE>BaseTopic</CODE> adds the <CODE>write()</CODE> method -- the base for
+ * <p>
+ * <code>BaseTopic</code> adds the <code>version</code> field and the
+ * <code>getVersion()</code> method -- the base for version control.
+ * <p>
+ * <code>BaseTopic</code> adds the <code>write()</code> method -- the base for
  * transmitting a topic over a network connection.
- * <P>
- * <HR>
- * Last functional change: 28.6.2002 (2.0a15-pre9)<BR>
- * Last documentation update: 15.12.2001 (2.0a14-pre5)<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * <p>
+ * <hr>
+ * Last change: 28.6.2002 (2.0a15-pre9)<br>
+ * J&ouml;rg Richter<br>
+ * jri@deepamehta.de
  */
 public class BaseTopic implements Topic, Serializable {
 
@@ -101,33 +100,20 @@ public class BaseTopic implements Topic, Serializable {
 
 
 
+	// overrides Object
 	public boolean equals(Object obj) {
 		return obj != null && ((BaseTopic) obj).id.equals(id);
 	}
 
-	// ---
+	// overrides Object
+	public String toString() {
+		return type + ":" + typeVersion + " \"" + name + "\" (" + id + ":" + version + ")";
+	}
 
-	/**
-	 * Initializer.
-	 */
-	/* ### public void set(BaseTopic topic) {
-		this.id = topic.id;
-		this.type = topic.type;
-		this.name = topic.name;
-		this.version = topic.version;
-		this.typeVersion = topic.typeVersion;
-	} */
+	// ---
 
 	public void setOrdinalNr(int ordNr) {
 		this.ordNr = ordNr;
-	}
-/*
-	public BaseTopic cloneSelf() throws CloneNotSupportedException {
-		return (BaseTopic) clone();
-	}
-*/
-	public String toString() {
-		return type + ":" + typeVersion + " \"" + name + "\" (" + id + ":" + version + ")";
 	}
 
 	public int getVersion() {

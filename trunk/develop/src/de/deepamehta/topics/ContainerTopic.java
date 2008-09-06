@@ -297,8 +297,7 @@ public abstract class ContainerTopic extends LiveTopic {
 				String id = action.substring(ACTION_REVEAL_TOPIC.length() + 1);	// +1 to skip /
 				revealResultTopic(id, topicmapID, directives);
 			} else {
-				System.out.println("*** ContainerTopic.executeCommand(): URL \"" + url + "\" not recognized by " +
-					"CMD_FOLLOW_HYPERLINK");
+				throw new DeepaMehtaException("hyperlink action \"" + action + "\" not recognized");
 			}
 			return directives;
 		} else if (cmd.equals(CMD_SHOW_CONTENT)) {	// ### to be dropped

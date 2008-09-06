@@ -10,14 +10,13 @@ import java.util.Vector;
 
 /**
  * This interface specifies the storage layer.
- * <P>
+ * <p>
  * <IMG SRC="../../../../../images/3-tier-cm.gif">
- * <P>
- * <HR>
- * Last functional change: 24.5.2006 (2.0b6-post3)<BR>
- * Last documentation update:  1.1.2000 (2.0a8)<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * <p>
+ * <hr>
+ * Last change: 24.5.2006 (2.0b6-post3)<br>
+ * J&ouml;rg Richter<br>
+ * jri@deepamehta.de
  */
 public interface CorporateMemory {
 
@@ -63,7 +62,7 @@ public interface CorporateMemory {
 	/**
 	 * Returns all IDs of topics of the specified type who are contained in the specified topicmap.
 	 *
-	 * @return	Vector of <CODE>String</CODE>s.
+	 * @return	Vector of <code>String</code>s.
 	 *
 	 * @see		ApplicationService#getAllTopics(String typeID, String topicmapID, String viemode)
 	 */
@@ -79,8 +78,8 @@ public interface CorporateMemory {
 
 
 	BaseAssociation getAssociation(String id, int version);
-	BaseAssociation getAssociation(String type, String topicID1, String topicID2);
-	BaseAssociation getAssociation(Vector types, String topicID1, String topicID2);
+	BaseAssociation getAssociation(String assocTypeID, String topicID1, String topicID2);
+	BaseAssociation getAssociation(Vector assocTypeIDs, String topicID1, String topicID2);
 	//
 	Vector getAssociations();
 	Vector getAssociations(String typeID);
@@ -137,8 +136,9 @@ public interface CorporateMemory {
 	void deleteAssociation(String assocID);
 	// --- existence check ---
 	boolean topicExists(String topicID);
-	boolean associationExists(String topicID1, String topicID2, boolean ignoreDirection);
+	// boolean associationExists(String topicID1, String topicID2, String assocTypeID);	// ### not yet needed
 	boolean associationExists(String topicID1, String topicID2, Vector assocTypeIDs);
+	boolean associationExists(String topicID1, String topicID2, boolean ignoreDirection);
 
 
 
@@ -182,16 +182,16 @@ public interface CorporateMemory {
 	// ---
 
 	/**
-	 * @return	2-element array:<BR>
-	 *				element 1: vector of {@link de.deepamehta.PresentableTopic}<BR>
+	 * @return	2-element array:<br>
+	 *				element 1: vector of {@link de.deepamehta.PresentableTopic}<br>
 	 *				element 2: vector of {@link de.deepamehta.PresentableAssociation}
 	 */
 	Vector[] getRelatedViewTopicsByTopictype(String topicID, String relTopicTypeID);
 	Vector[] getRelatedViewTopicsByTopictype(String topicID, String relTopicTypeID, int relTopicPos, String assocTypeID);
 
 	/**
-	 * @return	2-element array:<BR>
-	 *				element 1: vector of {@link de.deepamehta.PresentableTopic}<BR>
+	 * @return	2-element array:<br>
+	 *				element 1: vector of {@link de.deepamehta.PresentableTopic}<br>
 	 *				element 2: vector of {@link de.deepamehta.PresentableAssociation}
 	 */
 	Vector[] getRelatedViewTopicsByAssoctype(String topicID, String assocTypeID);
@@ -235,7 +235,7 @@ public interface CorporateMemory {
 	 * Returns all views the specified topic is involved in.
 	 *
 	 * @return	The views as vector of {@link de.deepamehta.BaseTopic}s
-	 *			(type <CODE>tt-topicmap</CODE>)
+	 *			(type <code>tt-topicmap</code>)
 	 */
 	Vector getViews(String topicID, int version, String viewmode);
 
@@ -253,9 +253,9 @@ public interface CorporateMemory {
 	String getTopicData(String topicID, int version, String fieldname);
 
 	/**
-	 * @param	topicData	The topic data to store<BR>
-	 *						Key: field name (<CODE>String</CODE>)<BR>
-	 *						Value: value (<CODE>String</CODE>)
+	 * @param	topicData	The topic data to store<br>
+	 *						Key: field name (<code>String</code>)<br>
+	 *						Value: value (<code>String</code>)
 	 */
 	void setTopicData(String topicID, int version, Hashtable topicData);
 	void setTopicData(String topicID, int version, String field, String value);
@@ -268,9 +268,9 @@ public interface CorporateMemory {
 	String getAssociationData(String assocID, int version, String fieldname);
 
 	/**
-	 * @param	assocData	The association data to store<BR>
-	 *						Key: field name (<CODE>String</CODE>)<BR>
-	 *						Value: value (<CODE>String</CODE>)
+	 * @param	assocData	The association data to store<br>
+	 *						Key: field name (<code>String</code>)<br>
+	 *						Value: value (<code>String</code>)
 	 */
 	void setAssociationData(String assocID, int version, Hashtable assocData);
 	void setAssociationData(String assocID, int version, String field, String value);

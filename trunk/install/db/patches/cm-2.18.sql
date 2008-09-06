@@ -3,6 +3,14 @@
 --- Apply this patch if you want to update DeepaMehta 2.0b8-rc4 to 2.0b8 while keeping your content
 ---
 
+
+
+-----------------------------
+--- Update Search Feature ---
+-----------------------------
+
+
+
 -- create property "Result"
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-result', 'Result');
 INSERT INTO TopicProp VALUES ('pp-result', 1, 'Name', 'Result');
@@ -41,6 +49,22 @@ INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-341', '', 'tt-topiccon
 -- assign search type to type
 INSERT INTO Association VALUES ('at-aggregation', 1, 1, 'a-342', '', 'tt-recipientlist-search', 1, 'tt-recipientlist', 1);
 
+-- create relation from "Email" to "Recipient List"
+
+INSERT INTO Association VALUES ('at-relation', 1, 1, 'a-343', '', 'tt-email', 1, 'tt-recipientlist', 1);
+INSERT INTO AssociationProp VALUES ('a-343', 1, 'Cardinality', 'many');
+INSERT INTO AssociationProp VALUES ('a-343', 1, 'Association Type ID', 'at-recipient');
+INSERT INTO AssociationProp VALUES ('a-343', 1, 'Web Info', 'Related Topic Name');
+INSERT INTO AssociationProp VALUES ('a-343', 1, 'Web Form', 'Related Topic Selector');
+INSERT INTO AssociationProp VALUES ('a-343', 1, 'Ordinal Number', '35');
+
+--- create association type: "Attachment" ---
+
+INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-attachment', 'Attachment');
+INSERT INTO TopicProp VALUES ('at-attachment', 1, 'Name', 'Attachment');
+INSERT INTO TopicProp VALUES ('at-attachment', 1, 'Plural Name', 'Attachments');
+INSERT INTO TopicProp VALUES ('at-attachment', 1, 'Color', '#408000');
+
 -- remove association types "attachement" and "e-mail addressee"
 
 DELETE FROM Topic WHERE ID='at-attachement';
@@ -52,10 +76,3 @@ DELETE FROM Topic WHERE ID='at-emailaddressee';
 DELETE FROM TopicProp WHERE TopicID='at-emailaddressee';
 DELETE FROM ViewTopic WHERE TopicID='at-emailaddressee';
 DELETE FROM Association WHERE TypeID='at-emailaddressee';
-
---- create association type: "Attachment" ---
-
-INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-attachment', 'Attachment');
-INSERT INTO TopicProp VALUES ('at-attachment', 1, 'Name', 'Attachment');
-INSERT INTO TopicProp VALUES ('at-attachment', 1, 'Plural Name', 'Attachments');
-INSERT INTO TopicProp VALUES ('at-attachment', 1, 'Color', '#408000');

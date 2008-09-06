@@ -32,7 +32,7 @@ import java.util.Vector;
  * A RDBMS implementation of {@link CorporateMemory}.
  * <p>
  * <hr>
- * Last change: 4.9.2008 (2.0b8)<br>
+ * Last change: 5.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -460,8 +460,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	// --- getAssociation (3 forms) ---
 
 	public BaseAssociation getAssociation(String id, int version) {
-		Vector assocs = queryBaseAssociations("SELECT * FROM Association WHERE ID='" +
-			id + "' AND Version=" + version);
+		Vector assocs = queryBaseAssociations("SELECT * FROM Association WHERE ID='" + id + "' AND Version=" + version);
 		if (assocs.size() == 0) {
 			return null;
 		}
@@ -477,8 +476,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 * @see		ApplicationService#createPresentableAssociation
 	 */
 	public BaseAssociation getAssociation(String assocTypeID, String topicID1, String topicID2) {
-		Vector assocs = queryBaseAssociations("SELECT * FROM Association WHERE " +
-			"TypeID='" + assocTypeID + "' AND " +
+		Vector assocs = queryBaseAssociations("SELECT * FROM Association WHERE TypeID='" + assocTypeID + "' AND " +
 			"TopicID1='" + topicID1 + "' AND TopicID2='" + topicID2 + "'");
 		if (assocs.size() == 0) {
 			return null;
@@ -491,9 +489,9 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		return assoc;
 	}
 
-	public BaseAssociation getAssociation(Vector assocTypes, String topicID1, String topicID2) {
+	public BaseAssociation getAssociation(Vector assocTypeIDs, String topicID1, String topicID2) {
 		Vector assocs = queryBaseAssociations("SELECT * FROM Association WHERE " +
-			associationTypeFilter(assocTypes) + " AND " +
+			associationTypeFilter(assocTypeIDs) + " AND " +
 			"TopicID1='" + topicID1 + "' AND TopicID2='" + topicID2 + "'");
 		if (assocs.size() == 0) {
 			return null;
@@ -710,25 +708,30 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		return exists("SELECT ID FROM Topic WHERE ID='" + topicID + "'");
 	}
 
-	// --- associationExists (2 forms) ---
+	// --- associationExists (3 forms) ---
+
+	/* ### not yet needed
+	public boolean associationExists(String topicID1, String topicID2, String assocTypeID) {
+		String query = "SELECT ID FROM Association WHERE TopicID1='" + topicID1 + "' AND TopicID2='" + topicID2 + "'" +
+			" AND TypeID='" + assocTypeID + "'");
+		return exists(query);
+	} */
+
+	public boolean associationExists(String topicID1, String topicID2, Vector assocTypeIDs) {
+		String query = "SELECT ID FROM Association WHERE TopicID1='" + topicID1 + "' AND TopicID2='" + topicID2 + "'" +
+			" AND " + associationTypeFilter(assocTypeIDs);
+		return exists(query);
+	}
 
 	/**
 	 * @see		ApplicationService#createPresentableAssociation
 	 * @see		de.deepamehta.topics.DataConsumerTopic#createNewTopic
 	 */
-	public boolean associationExists(String topicID1, String topicID2,
-															boolean ignoreDirection) {
-		String query = "SELECT ID FROM Association WHERE TopicID1='" + topicID1 + "' " +
-			"AND TopicID2='" + topicID2 + "'";
+	public boolean associationExists(String topicID1, String topicID2, boolean ignoreDirection) {
+		String query = "SELECT ID FROM Association WHERE TopicID1='" + topicID1 + "' AND TopicID2='" + topicID2 + "'";
 		if (ignoreDirection) {
 			query += " OR TopicID1='" + topicID2 + "' AND TopicID2='" + topicID1 + "'";
 		}
-		return exists(query);
-	}
-
-	public boolean associationExists(String topicID1, String topicID2, Vector assocTypes) {
-		String query = "SELECT ID FROM Association WHERE TopicID1='" + topicID1 + "' " +
-			"AND TopicID2='" + topicID2 + "' AND " + associationTypeFilter(assocTypes);
 		return exists(query);
 	}
 
