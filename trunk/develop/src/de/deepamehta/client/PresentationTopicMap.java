@@ -14,6 +14,7 @@ import java.awt.Point;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Hashtable;
 
 
 
@@ -24,10 +25,9 @@ import java.util.Enumeration;
  * {@link PresentationTopic}'s, {@link PresentationAssociation}'s and {@link PresentationType}'s.
  * <p>
  * <hr>
- * Last functional change: 7.4.2007 (2.0b8)<br>
- * Last documentation update: 17.12.2001 (2.0a14-pre5)<br>
+ * Last change: 8.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class PresentationTopicMap extends PresentableTopicMap implements DeepaMehtaConstants {
 
@@ -90,6 +90,13 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 	private Color bgColor;
 	private Point translation;
 
+	/**
+	 * Key: property name (String)<br>
+	 * Value: scrollbar value (Integer)
+	 */
+	private Hashtable scrollbarValues = new Hashtable();
+	private Hashtable caretPositions = new Hashtable();
+
 
 
 	// ********************
@@ -149,7 +156,9 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 
 	// --- Overrides BaseTopicMap ---
 
-	// ### Note: addAssociation() is not overridden, the topics are registered in PresentationService.initAssociations()
+	public String toString() {
+		return getEditor().getTopicmap().toString();
+	}
 
 	/**
 	 * @see		TopicmapEditorModel#hideAssociation
@@ -160,10 +169,10 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 	public void deleteAssociation(String assocID) throws DeepaMehtaException {
 		// Note: getAssociation() throws DeepaMehtaException
 		((PresentationAssociation) getAssociation(assocID)).unregisterTopics();
-		//	System.out.println("*** BaseTopicMap.deleteAssociation(): \"" + assocID +
-		//		"\" not found -- association not deleted");
 		super.deleteAssociation(assocID);
 	}
+
+	// ### Note: addAssociation() is not overridden, the topics are registered in PresentationService.initAssociations()
 
 	// ---
 
@@ -198,6 +207,14 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 		return translation;
 	}
 
+	public Hashtable getScrollbarValues() {
+		return scrollbarValues;
+	}
+
+	public Hashtable getCaretPositions() {
+		return caretPositions;
+	}
+
 	// ---
 
 	void setBackgroundImage(Image image) {
@@ -227,8 +244,6 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 	 * @see		TopicmapEditorModel#showTopic
 	 */
 	boolean initGeometry(PresentationTopic topic) {
-		/* ### System.out.println(">>> initGeometry(): " + topic + ", already exists: " +
-		topicExists(topic.getID()) + ", geometry mode: " + topic.getGeometryMode()); */
 		// if the topics exists already in this topicmap its geometry is not changed
 		if (topicExists(topic.getID())) {
 			return false;

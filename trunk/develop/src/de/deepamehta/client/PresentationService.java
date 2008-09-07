@@ -453,7 +453,7 @@ public final class PresentationService implements DeepaMehtaConstants, GraphPane
 	}
 
 	/**
-	 * References checked: 24.3.2004 (2.0b2-pre2)
+	 * References checked: 6.9.2008 (2.0b8)
 	 *
 	 * @see		#showNodeMenu
 	 * @see		#showEdgeMenu

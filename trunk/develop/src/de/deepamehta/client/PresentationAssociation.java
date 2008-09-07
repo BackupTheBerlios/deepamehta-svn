@@ -7,16 +7,16 @@ import de.deepamehta.PresentableAssociation;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Hashtable;
 
 
 
 /**
- * <P>
- * <HR>
- * Last functional change: 11.11.2002 (2.0a17-pre1)<BR>
- * Last documentation update: 8.11.2000 (2.0a7-pre2)<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * <p>
+ * <hr>
+ * Last change: 7.9.2008 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
+ * jri@deepamehta.de
  */
 public class PresentationAssociation extends PresentableAssociation implements GraphEdge, DeepaMehtaConstants {
 
@@ -30,6 +30,13 @@ public class PresentationAssociation extends PresentableAssociation implements G
 
 	private PresentationTopic topic1;
 	private PresentationTopic topic2;
+
+	/**
+	 * Key: property name (String)<br>
+	 * Value: scrollbar value (Integer)
+	 */
+	private Hashtable scrollbarValues = new Hashtable();
+	private Hashtable caretPositions = new Hashtable();
 
 
 
@@ -83,6 +90,16 @@ public class PresentationAssociation extends PresentableAssociation implements G
 		return topic2;
 	}
 
+	// ### not part of interface
+	public Hashtable getScrollbarValues() {
+		return scrollbarValues;
+	}
+
+	// ### not part of interface
+	public Hashtable getCaretPositions() {
+		return caretPositions;
+	}
+
 
 
 	// ***************
@@ -93,11 +110,11 @@ public class PresentationAssociation extends PresentableAssociation implements G
 
 	/**
 	 * Chaines the related topics with this association.
-	 * <P>
+	 * <p>
 	 * On the one hand the {@link #topic1} and {@link #topic2} fields of this association
 	 * are initialized by topics lookuped from the specified topicmap. At the other hand
 	 * this association is registered at both of the topics.
-	 * <P>
+	 * <p>
 	 * References checked: 1.4.2003 (2.0a18-pre8)
 	 *
 	 * @see		TopicmapEditorModel#showAssociation

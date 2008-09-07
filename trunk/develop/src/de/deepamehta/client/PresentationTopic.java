@@ -1,6 +1,5 @@
 package de.deepamehta.client;
 
-// import de.deepamehta.BaseTopic;
 import de.deepamehta.Directives;
 import de.deepamehta.PresentableTopic;
 
@@ -8,17 +7,17 @@ import java.awt.Image;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Vector;
 
 
 
 /**
- * <P>
- * <HR>
- * Last functional change: 17.2.2005 (2.0b5)<BR>
- * Last documentation update: 21.4.2001 (2.0a10-pre6)<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * <p>
+ * <hr>
+ * Last change: 7.9.2008 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
+ * jri@deepamehta.de
  */
 public final class PresentationTopic extends PresentableTopic implements GraphNode {
 
@@ -35,12 +34,19 @@ public final class PresentationTopic extends PresentableTopic implements GraphNo
 	/**
 	 * If the topic has individual appearance set (appMode == APPEARANCE_CUSTOM_ICON) this
 	 * field holds the image to display the topic. If no individual appearance is set
-	 * (appMode == APPEARANCE_DEFAULT) this field remains <CODE>null</CODE>.
-	 * <P>
-	 * Accessed by {@link #getImage}.<BR>
+	 * (appMode == APPEARANCE_DEFAULT) this field remains <code>null</code>.
+	 * <p>
+	 * Accessed by {@link #getImage}.<br>
 	 * Initialzed by {@link #setImage}.
 	 */
 	private Image image;
+
+	/**
+	 * Key: property name (String)<br>
+	 * Value: scrollbar value (Integer)
+	 */
+	private Hashtable scrollbarValues = new Hashtable();
+	private Hashtable caretPositions = new Hashtable();
 
 
 
@@ -115,6 +121,16 @@ public final class PresentationTopic extends PresentableTopic implements GraphNo
 
 	public int getImageSize() {
 		return IMAGE_SIZE;
+	}
+
+	// ### not part of interface
+	public Hashtable getScrollbarValues() {
+		return scrollbarValues;
+	}
+
+	// ### not part of interface
+	public Hashtable getCaretPositions() {
+		return caretPositions;
 	}
 
 	public void addEdge(GraphEdge edge) {

@@ -24,10 +24,9 @@ import javax.swing.event.InternalFrameEvent;
  * Editor model for an opened topicmap.
  * <p>
  * <hr>
- * Last functional change: 3.2.2008 (2.0b8)<br>
- * Last documentation update: 7.6.2001 (2.0a11-pre4)<br>
+ * Last change: 3.2.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 class TopicmapEditorModel implements DeepaMehtaConstants {
 

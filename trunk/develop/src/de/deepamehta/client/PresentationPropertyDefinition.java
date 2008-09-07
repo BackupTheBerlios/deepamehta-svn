@@ -74,12 +74,16 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 	/**
 	 * Creates a GUI component for editing a property according to this property definition.
 	 * <p>
-	 * References checked: 10.9.2007 (2.0b8)
+	 * References checked: 6.9.2008 (2.0b8)
 	 *
 	 * @param	actionListener		may be null
 	 *
-	 * @return	A 1- or 2-element array holding the view and the model (depends on
-	 *			visualization mode) 
+	 * @return	An 1- or 2- element array holding the view and the model components (depends on
+	 *			visualization mode)<br>
+	 *			Element 0: the view. This GUI component is added to the property panel.
+	 *				See {@link PropertyPanel#buildPropertyPanel}.<br>
+	 *			Element 1: the (quasi) model. This object is used to read and write the property value.
+	 *				See {@link PropertyPanel.PropertyField#getText} and {@link PropertyPanel.PropertyField#setText}.<br>
 	 *
 	 * @see		PropertyPanel.PropertyField#PropertyPanel.PropertyField
 	 */
@@ -103,7 +107,8 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 			// ### VISUAL_PASSWORD_FIELD doesn't yet support action buttons
 			JComponent field = createPasswordField(actionListener);
 			result[0] = field;
-			result[1] = field;		// ### needed?
+			result[1] = field;		// Note: redundancy is required here, because for all text components the
+									// value is set through the model. See PropertyPanel.PropertyField.setText()
 			return result;
 		} else if (visualization.equals(VISUAL_AREA)) {
 			// ### VISUAL_AREA doesn't yet support action buttons

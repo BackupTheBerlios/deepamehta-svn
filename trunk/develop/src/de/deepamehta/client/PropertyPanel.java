@@ -5,6 +5,7 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Topic;
 import de.deepamehta.Type;
 import de.deepamehta.util.DeepaMehtaUtils;
@@ -21,6 +22,8 @@ import java.util.Hashtable;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -31,6 +34,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
@@ -46,10 +51,9 @@ import javax.swing.text.JTextComponent;
  * <p>
  * This is a singleton, there is only one instance created.
  * <hr>
- * Last functional change: 13.2.2008 (2.0b8)<br>
- * Last documentation update: 13.2.2008 (2.0b8)<br>
+ * Last change: 8.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 class PropertyPanel extends JPanel implements ActionListener, ItemListener, DocumentListener,
 											  HyperlinkListener, DeepaMehtaConstants {
@@ -83,6 +87,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 
 	private PropertyPanelControler controler;
+
+	private static Logger logger = Logger.getLogger("de.deepamehta");
 
 	/**
 	 * Key: &lt;topicmap ID>:&lt;viewmode><br>
@@ -195,7 +201,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 
 	/**
-	 * References checked: 13.2.2008 (2.0b8)
+	 * References checked: 6.9.2008 (2.0b8)
 	 *
 	 * @see		PresentationService#createMainGUI
 	 */
@@ -239,8 +245,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			add(activePanel, BorderLayout.NORTH);
 			add(dataCardPanel);
 		} catch (Exception e) {
-			System.out.println("*** PropertyPanel(): " + e);
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Error constructing property panel ...", e);
 		}
 	}
 
@@ -346,7 +351,6 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 
 	public void hyperlinkUpdate(HyperlinkEvent e) {
-		// ### System.out.println(">>> PropertyPanel.hyperlinkUpdate(): hyperlink event fired: " + e);
 		if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 			String command = CMD_FOLLOW_HYPERLINK + COMMAND_SEPARATOR + e.getURL();
 			executeCommand(command);
@@ -390,6 +394,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	// ---
 
 	/**
+	 * Called from PresentationService when processing {@link #DIRECTIVE_SELECT_TOPIC}.
+	 *
 	 * @see		PresentationService#selectTopic
 	 */
 	void topicSelected(BaseTopic topic, PresentationTopicMap topicmap, String viewmode,
@@ -399,6 +405,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	}
 
 	/**
+	 * Called from PresentationService when processing {@link #DIRECTIVE_SELECT_ASSOCIATION}.
+	 *
 	 * @see		PresentationService#selectAssociation
 	 */
 	void assocSelected(BaseAssociation assoc, PresentationTopicMap topicmap, String viewmode,
@@ -408,6 +416,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	}
 
 	/**
+	 * Called from PresentationService when processing {@link #DIRECTIVE_SELECT_TOPICMAP}.
+	 *
 	 * @see		PresentationService#selectTopicMap
 	 */
 	void topicmapSelected(PresentationTopicMap topicmap, String viewmode,
@@ -472,6 +482,23 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	// ---
 
 	/**
+	 * Returns the selected topic / association / topicmap resp. <code>null</code> if there is no selection.
+	 */
+	private Object getSelectedObject() {
+		if (selected.equals(SELECTED_TOPIC)) {
+			return getTopic();
+		} else if (selected.equals(SELECTED_ASSOCIATION)) {
+			return getAssociation();
+		} else if (selected.equals(SELECTED_TOPICMAP)) {
+			return getTopicmap();
+		} else if (selected.equals(SELECTED_NONE)) {
+			return null;
+		} else {
+			throw new DeepaMehtaException("unexpected selection mode: \"" + selected + "\"");
+		}
+	}
+
+	/**
 	 * Removes the selection.
 	 *
 	 * @see		#removeTopicSelection
@@ -487,6 +514,16 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	// --- Getting info about current selection (8 methods) ---
 
 	// Presumption: there is a selection
+
+	// ### should return PresentationTopic
+	BaseTopic getTopic() {
+		return getSelection().topic;
+	}
+
+	// ### should return PresentationAssociation
+	BaseAssociation getAssociation() {
+		return getSelection().assoc;
+	}
 
 	PresentationTopicMap getTopicmap() {
 		return getSelection().topicmap;
@@ -506,14 +543,6 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	boolean getRetypeAllowed() {
 		return getSelection().retypeIsAllowed;
-	}
-
-	BaseTopic getTopic() {
-		return getSelection().topic;
-	}
-
-	BaseAssociation getAssociation() {
-		return getSelection().assoc;
 	}
 
 	private String getSelected() {
@@ -624,16 +653,14 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	void focusProperty(/* ### String prop */) {
 		Vector propertyFields = getPropertyFields();
 		Enumeration e = propertyFields.elements();
-		// ### boolean hasProps = false;
 		while (e.hasMoreElements()) {
 			PropertyField propField = (PropertyField) e.nextElement();
 			if (!propField.isHidden()) {
-				// ### System.out.println(">>> PropertyPanel.focusProperty(): first property field=\"" + propertyField + "\"");
 				propField.focus();
 				return;
 			}
 		}
-		System.out.println("*** PropertyPanel.focusProperty(): there is no property to focus");
+		logger.warning("there is no property to focus");
 	}
 
 	// ---
@@ -643,6 +670,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	 * <p>
 	 * The properties are stored only, if marked dirty (see {@link #propertiesAreDirty}).
 	 * After storing the resp. flag is cleared.
+	 *
+	 * References checked: 6.9.2008 (2.0b8)
 	 *
 	 * @see		#actionPerformed	4x
 	 * @see		PresentationService#storeProperties
@@ -662,6 +691,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			setSelectionProperties(props, true);
 			propertiesAreDirty = false;
 		}
+		//
+		saveScrollbarValues();
 	}
 
 	/**
@@ -722,8 +753,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			showProperties(properties, baseURLs, topic.getType(), false);
 			setSelectionProperties(properties, false);
 		} else {
-			System.out.println(">>> topic " + topic + " isn't currently selected -- " +
-            	"no need to show properties now");
+			logger.info("topic " + topic + " isn't currently selected -- no need to show properties now");
 		}
 	}
 
@@ -735,8 +765,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			showProperties(properties, baseURLs, assoc.getType(), false);
 			setSelectionProperties(properties, false);
 		} else {
-			System.out.println(">>> association " + assoc + " isn't currently selected -- " +
-            	"no need to show properties now");
+			logger.info("association " + assoc + " isn't currently selected -- no need to show properties now");
 		}
 	}
 
@@ -748,8 +777,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			showProperties(properties, baseURLs, topicmap.getEditor().getTopicmap().getType(), false);
 			setSelectionProperties(properties, false);
 		} else {
-			System.out.println(">>> topicmap " + topicmap.getEditor().getTopicmap() +
-				" isn't currently selected -- no need to show properties now");
+			logger.info("topicmap " + topicmap.getEditor().getTopicmap() + " isn't currently selected -- no need to show " +
+				"properties now");
 		}
 	}
 
@@ -866,16 +895,14 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	private void showProperties(Hashtable properties, Hashtable baseURLs, String typeID, boolean all) {
 		// error check 1
 		if (properties == null) {
-			System.out.println("*** PropertyPanel.showProperties(): " + typeID +
-				" no topic data passed (null) -- properties not shown");
+			logger.warning(typeID + " no topic data passed (null) -- properties not shown");
 			return;
 		}
 		// --- get property fields ---
 		Vector propertyFields = getPropertyFields(typeID);
 		// error check 2 ### can't happen anymore
 		if (propertyFields == null) {
-			System.out.println("*** PropertyPanel.showProperties(): no property " +
-				"fields for \"" + typeID + "\" -- properties not shown");
+			logger.warning("no property fields for \"" + typeID + "\" -- properties not shown");
 			return;
 		}
 		// --- set passed property values into property fields ---
@@ -902,8 +929,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 				String baseURL = (String) baseURLs.get(propName);
 				propField.setText(propValue, baseURL, this, this);	// throws DME
 			} catch (DeepaMehtaException dme) {
-				System.out.println("*** PropertyPanel.showProperties(): \"" + propName + "\" value \"" +
-					propValue + "\" can't be shown (" + dme.getMessage() + ")");
+				logger.warning("\"" + propName + "\" value \"" + propValue + "\" can't be shown (" + dme.getMessage() + ")");
 			}
 		}
 	}
@@ -918,8 +944,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 		Vector propertyFields = getPropertyFields();
 		// error check
 		if (propertyFields == null) {
-			System.out.println("*** PropertyPanel.disableProperties(): no property " +
-				"fields for \"" + getTopic().getType() + "\" -- properties not disbaled");
+			logger.warning("no property fields for \"" + getTopic().getType() + "\" -- properties not disbaled");
 			return;
 		}
 		// ---
@@ -960,20 +985,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	 */
 	private void setPropertiesDirty(String message) {
 		if (!propertiesAreDirty) {
-			// --- reporting ---
-			String text = " changed (by " + message + ")";
-			if (selected.equals(SELECTED_TOPIC)) {
-				System.out.println(">>> properties of topic " + getTopic() + text);
-			} else if (selected.equals(SELECTED_ASSOCIATION)) {
-				System.out.println(">>> properties of association " + getAssociation() + text);
-			} else if (selected.equals(SELECTED_TOPICMAP)) {
-				System.out.println(">>> properties of topicmap " +
-					getTopicmap().getEditor().getTopicmap() + text);
-			} else {
-				throw new DeepaMehtaException("\"" + selected + "\"");
-			}
-			// --- set properties dirty ---
 			propertiesAreDirty = true;
+			logger.info("properties of " + getSelectedObject() + " changed (by " + message + ")");
 		}
 	}
 
@@ -1070,8 +1083,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	/**
 	 * Selects the specified characteristics panel from the card layout.
 	 *
-	 * @param	cardID	{@link #SELECTED_NONE}, {@link #SELECTED_TOPIC} or
-	 *					{@link #SELECTED_ASSOCIATION}
+	 * @param	cardID	{@link #SELECTED_NONE}, {@link #SELECTED_TOPIC} or {@link #SELECTED_ASSOCIATION}
 	 *
 	 * @see		#topicSelected
 	 * @see		#assocSelected
@@ -1092,8 +1104,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	// ---
 
 	/**
-	 * Selects the item from the topic type combo box that corresponds to the specified
-	 * topic type ID.
+	 * Selects the item from the topic type combo box that corresponds to the specified topic type ID.
 	 *
 	 * @see		#topicTypeChanged
 	 * @see		#updateTopic
@@ -1102,8 +1113,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 		String typeName = topicTypeName(typeID);
 		// error check ### ever happens?
 		if (typeName == null) {
-			System.out.println("*** PropertyPanel.updateTopicTypeChoice(): type \"" +
-				typeID + "\" is unknown -- topic type choice not updated");
+			logger.warning("type \"" + typeID + "\" is unknown -- topic type choice can't be updated");
 			return;
 		}
 		//
@@ -1115,15 +1125,16 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	}
 
 	/**
+	 * Selects the item from the association type combo box that corresponds to the specified association type ID.
+	 *
 	 * @see		#assocTypeChanged
 	 * @see		#updateAssoc
 	 */
-	private void updateAssocTypeChoice(String type, boolean retypeIsAllowed) {
-		String typeName = assocTypeName(type);
+	private void updateAssocTypeChoice(String typeID, boolean retypeIsAllowed) {
+		String typeName = assocTypeName(typeID);
 		// error check ### ever happens?
 		if (typeName == null) {
-			System.out.println("*** PropertyPanel.updateAssocTypeChoice(): type \"" +
-				type + "\" is unknown -- association type choice not updated");
+			logger.warning("type \"" + typeID + "\" is unknown -- association type choice can't be updated");
 			return;
 		}
 		//
@@ -1133,6 +1144,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 		assocTypeChoice.setSelectedItem(typeName);
 		assocTypeChoice.addItemListener(this);
 	}
+
+	// ---
 
 	/**
 	 * @param	propName	### used for reporting only
@@ -1149,10 +1162,10 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			}
 		}
 		if (text.equals("")) {
-			System.out.println("*** property \"" + propName + "\" not set -- displayed value is not accurate");
+			logger.warning("property \"" + propName + "\" has no value -- displayed value might not be accurate");
 		} else {
-			System.out.println("*** property \"" + propName + "\" has unexpected value \"" + text +
-				"\" -- displayed value is not accurate");
+			logger.warning("property \"" + propName + "\" has unexpected value \"" + text +
+				"\" -- displayed value might not be accurate");
 		}
 	}
 
@@ -1255,7 +1268,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	 */
 	private void checkPropertyFields(String typeID) {
 		if (getPropertyFields(typeID) == null) {
-			System.out.println("> build property panel for type \"" + typeID + "\"");
+			logger.info("building property panel for type \"" + typeID + "\"");
 			//
 			if (selected == SELECTED_TOPIC || selected == SELECTED_TOPICMAP) {
 				buildPropertyForm(topicType(typeID));
@@ -1304,6 +1317,72 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	private boolean isSelectedTopicmap(String topicmapID) {
 		return selected == SELECTED_TOPICMAP && getTopicmap().getID().equals(topicmapID);
+	}
+
+	// ---
+
+	private void saveScrollbarValues() {
+		Hashtable scrollbarValues = getScrollbarValues();
+		Hashtable caretPositions = getCaretPositions();
+		if (scrollbarValues != null) {	// Note: is null if there is no selection
+			String logText = null;
+			//
+			Enumeration e = getPropertyFields().elements();
+			while (e.hasMoreElements()) {
+				PropertyField propField = (PropertyField) e.nextElement();
+				JScrollBar scrollBar = propField.getScrollBar();
+				JTextComponent textComponent = propField.getTextComponent();
+				if (scrollBar != null) {
+					String propName = propField.getName();
+					int scrollbarValue = scrollBar.getValue();
+					int caretPosition = textComponent.getCaretPosition();
+					// save scrollbar value
+					scrollbarValues.put(propName, new Integer(scrollbarValue));
+					caretPositions.put(propName, new Integer(caretPosition));
+					// logging
+					if (logText == null) {
+						logText = "saving scrollbar values of " + getSelectedObject();
+					}
+					logText += "\n    \"" + propName + "\": scrollbarValue=" + scrollbarValue + " caretPosition=" + caretPosition;
+				}
+			}
+			// logging
+			if (logText != null) {
+				logger.info(logText);
+			}
+		}
+	}
+
+	/**
+	 * Returns the scrollbar values of the selected topic / association / topicmap resp. <code>null</code>
+	 * if there is no selection.
+	 */
+	private Hashtable getScrollbarValues() {
+		if (selected == SELECTED_TOPIC) {
+			return ((PresentationTopic) getTopic()).getScrollbarValues();
+		} else if (selected == SELECTED_ASSOCIATION) {
+			return ((PresentationAssociation) getAssociation()).getScrollbarValues();
+		} else if (selected == SELECTED_TOPICMAP) {
+			return ((PresentationTopicMap) getTopicmap()).getScrollbarValues();
+		} else if (selected == SELECTED_NONE) {
+			return null;
+		} else {
+			throw new DeepaMehtaException("unexpected selection mode: " + selected);
+		}
+	}
+
+	private Hashtable getCaretPositions() {
+		if (selected == SELECTED_TOPIC) {
+			return ((PresentationTopic) getTopic()).getCaretPositions();
+		} else if (selected == SELECTED_ASSOCIATION) {
+			return ((PresentationAssociation) getAssociation()).getCaretPositions();
+		} else if (selected == SELECTED_TOPICMAP) {
+			return ((PresentationTopicMap) getTopicmap()).getCaretPositions();
+		} else if (selected == SELECTED_NONE) {
+			return null;
+		} else {
+			throw new DeepaMehtaException("unexpected selection mode: " + selected);
+		}
 	}
 
 	// ---
@@ -1458,8 +1537,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 				ComboBoxItem item = (ComboBoxItem) ((JComboBox) view).getSelectedItem();
 				if (item == null) {
 					// ### error check
-					System.out.println("*** PropertyPanel.PropertyField.getText(): can't get selected item " +
-						"(ComboBoxItem) of menu " + propertyDef + " -- empty string returned");
+					logger.warning("can't get selected item (ComboBoxItem) of menu " + propertyDef + " -- empty string returned");
 					return "";
 				}
 				return item.text;
@@ -1467,8 +1545,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 				JRadioButton button = getButton();
 				// ### error check
 				if (button == null) {
-					System.out.println("*** PropertyPanel.PropertyField.getText(): can't get selected button of " +
-						propertyDef + " -- empty string returned");
+					logger.warning("can't get selected button of " + propertyDef + " -- empty string returned");
 					return "";
 				}
 				//
@@ -1507,32 +1584,34 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 		 */
 		void setText(String text, String baseURL, ActionListener actionListener, DocumentListener documentListener) throws DeepaMehtaException {
 			String visualization = propertyDef.getVisualization();
-			if (visualization.equals(VISUAL_FIELD) ||
-				visualization.equals(VISUAL_FILE_CHOOSER) ||
-				visualization.equals(VISUAL_COLOR_CHOOSER) ||
-				visualization.equals(VISUAL_PASSWORD_FIELD) ||
-				visualization.equals(VISUAL_AREA) || visualization.equals("")) {
+			if (visualization.equals(VISUAL_FIELD) || visualization.equals(VISUAL_FILE_CHOOSER) ||
+					visualization.equals(VISUAL_COLOR_CHOOSER) || visualization.equals(VISUAL_PASSWORD_FIELD) ||
+					visualization.equals(VISUAL_AREA) || visualization.equals("")) {
 				JTextComponent comp = (JTextComponent) model;
 				comp.getDocument().removeDocumentListener(documentListener);
 				comp.setText(text);
 				comp.getDocument().addDocumentListener(documentListener);
+				// restore scrollbar value
+				restoreScrollbarValue();
 			} else if (visualization.equals(VISUAL_TEXT_EDITOR)) {
 				TextEditorPanel textEditor = (TextEditorPanel) model;
 				textEditor.setText(text, baseURL, documentListener);
+				// restore scrollbar value
+				restoreScrollbarValue();
 			} else if (visualization.equals(VISUAL_CHOICE)) {
 				JComboBox cbox = (JComboBox) view;
-				setSelectedCustomItem(cbox, text, actionListener, propertyDef.getPropertyName());
+				setSelectedCustomItem(cbox, text, actionListener, getName());
 			} else if (visualization.equals(VISUAL_RADIOBUTTONS)) {
 				// get the radio button corresponding to "text"
 				JRadioButton button = getButton(text);
 				// error check
 				if (button == null) {
 					if (text.equals("")) {
-						System.out.println("*** property \"" + propertyDef.getPropertyName() + "\" not set -- " +
-							"displayed value is not accurate");
+						logger.warning("property \"" + getName() + "\" has no value -- " +
+							"displayed value might not be accurate");
 					} else {
-						System.out.println("*** property \"" + propertyDef.getPropertyName() + "\" has unexpected " +
-							"value \"" + text + "\" -- displayed value is not accurate");
+						logger.warning("property \"" + getName() + "\" has unexpected value \"" + text + "\" -- " +
+							"displayed value might not be accurate");
 					}
 					removeAllSelections();
 					return;
@@ -1704,6 +1783,58 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 				}
 			}
 			return null;
+		}
+
+		// ---
+
+		/**
+		 * Returns the vertical scrollbar of this field, resp. <code>null</code> if this field has no scrollbar.
+		 */
+		JScrollBar getScrollBar() {
+			String visualization = propertyDef.getVisualization();
+			if (visualization.equals(VISUAL_AREA) || visualization.equals(VISUAL_TEXT_EDITOR)) {
+				JScrollPane scrollPane = visualization.equals(VISUAL_AREA) ? (JScrollPane) view :
+					((TextEditorPanel) model).getScrollPane();
+				if (scrollPane != null) {	// Note: text editors of type EDITOR_TYPE_SINGLE_LINE have no scrollpane
+					return scrollPane.getVerticalScrollBar();
+				}
+			}
+			return null;
+		}
+
+		JTextComponent getTextComponent() {
+			String visualization = propertyDef.getVisualization();
+			if (visualization.equals(VISUAL_AREA) || visualization.equals(VISUAL_TEXT_EDITOR)) {
+				JTextComponent textComponent = visualization.equals(VISUAL_AREA) ? (JTextComponent) model :
+					((TextEditorPanel) model).getTextComponent();
+				return textComponent;
+			}
+			return null;
+		}
+
+		void restoreScrollbarValue() {
+			JScrollBar scrollbar = getScrollBar();
+			if (scrollbar != null) {
+				Hashtable scrollbarValues = getScrollbarValues();
+				Hashtable caretPositions = getCaretPositions();
+				// error check
+				if (scrollbarValues == null) {
+					logger.warning("no scrollbar values for field \"" + this + "\" available");
+					return;
+				}
+				//
+				JTextComponent textComponent = getTextComponent();
+				Integer scrollbarValue = (Integer) scrollbarValues.get(getName());
+				Integer caretPosition = (Integer) caretPositions.get(getName());
+				if (scrollbarValue != null) {
+					logger.info("restoring scrollbar value of " + getSelectedObject() +
+						"\n    \"" + getName() + "\": scrollbarValue=" + scrollbarValue + " caretPosition=" + caretPosition);
+					scrollbar.setValue(scrollbarValue.intValue());
+					textComponent.setCaretPosition(caretPosition.intValue());
+				} else {
+					textComponent.setCaretPosition(0);
+				}
+			}
 		}
 
 		// ---

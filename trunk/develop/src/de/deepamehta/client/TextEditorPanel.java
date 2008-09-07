@@ -46,12 +46,11 @@ import javax.swing.text.html.HTMLEditorKit;
  * A view component for displaying and editing text.
  * There are 3 tyes of text editor panels: EDITOR_TYPE_DEFAULT, EDITOR_TYPE_STYLED and EDITOR_TYPE_SINGLE_LINE.
  * The content can also set to be view-only.
- * <P>
- * <HR>
- * Last functional change: 13.9.2007 (2.0b8)<BR>
- * Last documentation update: 29.9.2001 (2.0a12-pre7)<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * <p>
+ * <hr>
+ * Last change: 7.9.2008 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
+ * jri@deepamehta.de
  */
 class TextEditorPanel extends JPanel implements ActionListener, DocumentListener, DeepaMehtaConstants {
 
@@ -76,15 +75,16 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 
 	/**
 	 * The text editor type, one of this constants
-	 * <UL>
-	 * <LI>{@link #EDITOR_TYPE_DEFAULT}
-	 * <LI>{@link #EDITOR_TYPE_STYLED}
-	 * <LI>{@link #EDITOR_TYPE_SINGLE_LINE}
-	 * </UL>
+	 * <ul>
+	 * <li>{@link #EDITOR_TYPE_DEFAULT}
+	 * <li>{@link #EDITOR_TYPE_STYLED}
+	 * <li>{@link #EDITOR_TYPE_SINGLE_LINE}
+	 * </ul>
 	 */
 	private int editorType;
 
-	private JTextComponent textComponent;	// a JTextArea, JTextPane or JTextField respectively
+	private JTextComponent textComponent;	// a JTextArea, JTextPane, or JTextField respectively
+	private JScrollPane scrollPane;			// is null in case of EDITOR_TYPE_SINGLE_LINE
 	private PresentationDetail detail;
 
 	boolean showToolbar;	// indicates weather a toolbar is created
@@ -117,11 +117,11 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 	 * References checked: 10.9.2007 (2.0b8)
 	 *
 	 * @param	editorType	editor type, one of this constants
-	 *						<UL>
-	 *						<LI>EDITOR_TYPE_DEFAULT
-	 *						<LI>EDITOR_TYPE_STYLED
-	 *						<LI>EDITOR_TYPE_SINGLE_LINE
-	 *						</UL>
+	 *						<ul>
+	 *						<li>EDITOR_TYPE_DEFAULT
+	 *						<li>EDITOR_TYPE_STYLED
+	 *						<li>EDITOR_TYPE_SINGLE_LINE
+	 *						</ul>
 	 * @param	controler	for editors of type <code>EDITOR_TYPE_STYLED</code>: just needed to get the icons for the
 	 *						toolbar buttons ### bad approach
 	 *
@@ -137,7 +137,8 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 		switch (editorType) {
 		case EDITOR_TYPE_DEFAULT:
 			textComponent = new JTextArea();
-			add(new JScrollPane(textComponent));
+			scrollPane = new JScrollPane(textComponent);
+			add(scrollPane);
 			break;
 		case EDITOR_TYPE_STYLED:
 			textComponent = new JTextPane();
@@ -155,7 +156,8 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 				// ### addButton(toolbar, "H2", CMD_SET_HEADLINE2);
 				add(toolbar, BorderLayout.SOUTH);
 			}
-			add(new JScrollPane(textComponent));
+			scrollPane = new JScrollPane(textComponent);
+			add(scrollPane);
 			break;
 		case EDITOR_TYPE_SINGLE_LINE:
 			textComponent = new JTextField();
@@ -226,7 +228,15 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 
 
 	String getText() {
-		return textComponent.getText();
+		return getTextComponent().getText();
+	}
+
+	JTextComponent getTextComponent() {
+		return textComponent;
+	}
+
+	JScrollPane getScrollPane() {
+		return scrollPane;
 	}
 
 	/**
@@ -276,7 +286,6 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 		if (editorType == EDITOR_TYPE_STYLED) {
 			//
 			// --- set content type ---
-			// ### System.out.println(">>> TextEditorPanel.setText(): before setContentType(): " + ((JEditorPane) textComponent).getHyperlinkListeners().length + " hyperlink listeners registered");
 			((JEditorPane) textComponent).setContentType("text/html");
 			//
 			// --- set base URL ---
@@ -292,21 +301,13 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 			//
 			// --- set text ---
 			try {
-				// ### required for what?
-				// ### serious oddity: contents of less then 14 characters are not displayed!
-				/* ### if (text.length() <= 59) {	// ### 59 <html><head></head><body></body></html> + whitespace
-					text = "<html><body><p></p></body></html>";
-				} */
 				textComponent.setText(text);
-				textComponent.setCaretPosition(0);
 			} catch (Throwable e) {
 				textComponent.setText("<html><body><font color=#FF0000>Page can't be displayed</font></body></html>");
 				System.out.println("*** TextEditorPanel.setText(): error while HTML rendering: " + e);
 			}
-			// ### System.out.println(">>> TextEditorPanel.setText(): after setContentType():  " + ((JEditorPane) textComponent).getHyperlinkListeners().length + " hyperlink listeners registered");
 		} else {
 			textComponent.setText(text);
-			textComponent.setCaretPosition(0);
 		}
 		//
 		textComponent.getDocument().addDocumentListener(documentListener);

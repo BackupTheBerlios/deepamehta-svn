@@ -708,7 +708,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		return exists("SELECT ID FROM Topic WHERE ID='" + topicID + "'");
 	}
 
-	// --- associationExists (3 forms) ---
+	// --- associationExists (2 forms) ---
 
 	/* ### not yet needed
 	public boolean associationExists(String topicID1, String topicID2, String assocTypeID) {
