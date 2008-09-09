@@ -777,8 +777,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			showProperties(properties, baseURLs, topicmap.getEditor().getTopicmap().getType(), false);
 			setSelectionProperties(properties, false);
 		} else {
-			logger.info("topicmap " + topicmap.getEditor().getTopicmap() + " isn't currently selected -- no need to show " +
-				"properties now");
+			logger.info("topicmap " + topicmap + " isn't currently selected -- no need to show properties now");
 		}
 	}
 
@@ -1047,16 +1046,12 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 
 	// ---
 
-	private String getProperty(String name) {
-		return (String) getPanelProperties().get(name);
-	}
-
 	/**
 	 * Returns the property values currently entered in the property panel.
 	 * <p>
 	 * Values of hidden properties are not returned.
 	 * <p>
-	 * References checked: 4.8.2001 (2.0a11)
+	 * References checked: 9.9.2008 (2.0b8)
 	 *
 	 * @return	the property values as a hashtable.<br>
 	 *			Key: property name (<code>String</code>)<br>
@@ -1169,8 +1164,6 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 		}
 	}
 
-	// --- setSelectedItem (2 forms) ---
-
 	/**
 	 * @see		PropertyField#setDate
 	 * @see		PropertyField#setTime
@@ -1180,12 +1173,6 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 		cbox.setSelectedItem(text);
 		cbox.addActionListener(actionListener);
 	}
-
-	/* ### private void setSelectedIndex(JComboBox cbox, int index, ActionListener actionListener) {
-		cbox.removeActionListener(actionListener);
-		cbox.setSelectedIndex(index);
-		cbox.addActionListener(actionListener);
-	} */
 
 	// ---
 
@@ -1348,7 +1335,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			}
 			// logging
 			if (logText != null) {
-				logger.info(logText);
+				logger.fine(logText);
 			}
 		}
 	}
@@ -1827,7 +1814,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 				Integer scrollbarValue = (Integer) scrollbarValues.get(getName());
 				Integer caretPosition = (Integer) caretPositions.get(getName());
 				if (scrollbarValue != null) {
-					logger.info("restoring scrollbar value of " + getSelectedObject() +
+					logger.fine("restoring scrollbar value of " + getSelectedObject() +
 						"\n    \"" + getName() + "\": scrollbarValue=" + scrollbarValue + " caretPosition=" + caretPosition);
 					scrollbar.setValue(scrollbarValue.intValue());
 					textComponent.setCaretPosition(caretPosition.intValue());

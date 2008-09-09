@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -94,6 +96,8 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 	 * Indicates weather this text editor is dirty (means: contains unsaved changes).
 	 */
 	private boolean isDirty;
+
+	private static Logger logger = Logger.getLogger("de.deepamehta");
 
 
 
@@ -275,7 +279,11 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 	}
 
 	/**
-	 * @param	baseURL		may be <code>null</code>
+	 * Note: if called by PropertyPanel the PropertyPanel is the document listener, and if called
+	 * by PresentationDetail this TextEditorPanel itself is the document listener.
+	 *
+	 * @param	baseURL				may be <code>null</code>
+	 * @param	documentListener	the document listener notified about text changes.
 	 *
 	 * @see		PropertyPanel.PropertyField#setText
 	 */
@@ -296,15 +304,16 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 					((HTMLDocument) textComponent.getDocument()).setBase(new URL(baseURL));
 				}
 			} catch (MalformedURLException mue) {
-				System.out.println("*** TextEditorPanel.setText(): invalid base URL: " + mue);
+				logger.warning("invalid base URL: " + mue);
 			}
 			//
 			// --- set text ---
 			try {
+				text = fixMissingParagraphTag(text);	// ###
 				textComponent.setText(text);
 			} catch (Throwable e) {
 				textComponent.setText("<html><body><font color=#FF0000>Page can't be displayed</font></body></html>");
-				System.out.println("*** TextEditorPanel.setText(): error while HTML rendering: " + e);
+				logger.warning("error while HTML rendering: " + e);
 			}
 		} else {
 			textComponent.setText(text);
@@ -321,8 +330,6 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 
 
 
-	// --- addButton (2 forms) ---
-
 	private void addButton(JPanel container, Action action, Hashtable actions, Icon icon) {
 		String actionName = (String) action.getValue(Action.NAME);
 		String actionCommand = (String) action.getValue(Action.ACTION_COMMAND_KEY);
@@ -332,7 +339,37 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 		container.add(button);
 	}
 
-	// ---
+	private String fixMissingParagraphTag(String text) {
+		// check for <body> tag
+		int bs = text.indexOf("<body>");
+		if (bs == -1) {
+			if (text.length() > 0) {
+				logger.warning("no <body> tag found in\n" + text);
+			}
+			return text;
+		}
+		// skip whitespace
+		int ws = bs + 6;
+		char c = text.charAt(ws);
+		while (Character.isWhitespace(c)) {
+			c = text.charAt(++ws);
+		}
+		// check for <p> tag
+		int p = ws;
+		if (text.substring(p, p + 3).equals("<p>")) {
+			// no need to fix
+			logger.fine("no need to fix\n" + text);
+			return text;
+		}
+		// check for </body> tag
+		int be = text.indexOf("</body>", p);
+		// fix missing <p> tag
+		StringBuffer fixedText = new StringBuffer(text);
+		fixedText.insert(be, "</p>");
+		fixedText.insert(p, "<p>");
+		logger.fine(text + "\n                fixed to\n" + fixedText);
+		return fixedText.toString();
+	}
 
 	/**
 	 * @see		#changedUpdate
@@ -341,7 +378,7 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 	 */
 	private void setDirty(String message) {
 		if (!isDirty) {
-			System.out.println("> text editor content changed (by " + message + ")");
+			logger.info("text editor content changed (by " + message + ")");
 			isDirty = true;
 		}
 	}
@@ -372,7 +409,7 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 
 		public boolean importData(JComponent c, Transferable t) {
 			if (c != textComponent) {	// ### never happens, we dont share transfer handlers
-				System.out.println("*** importData(): c=" + c);
+				logger.warning("c=" + c);
 			}
 			try {
 				DataFlavor[] flavors = t.getTransferDataFlavors();
@@ -380,19 +417,19 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 				boolean hasImageFlavor = t.isDataFlavorSupported(DataFlavor.imageFlavor);
 				boolean hasFilelistFlavor = t.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
 				//
-				System.out.println(">>> import data to text panel (" + flavors.length + " flavors)");
+				logger.info("importing data to text panel (" + flavors.length + " flavors)" +
+					"    string flavor supported: " + hasStringFlavor +
+					"    image flavor supported: " + hasImageFlavor +
+					"    filelist flavor supported: " + hasFilelistFlavor);
 				// ### for (int i = 0; i < flavors.length; i++) {
 				// ###	System.out.println(flavors[i]);
 				// ###}
-				System.out.println("  >   string flavor supported: " + hasStringFlavor);
-				System.out.println("  >    image flavor supported: " + hasImageFlavor);
-				System.out.println("  > filelist flavor supported: " + hasFilelistFlavor);
 				//
 				// We do not allow dropping on top of the selected text
 		        if ((source == textComponent) && (textComponent.getCaretPosition() >= p0.getOffset()) &&
                                                 (textComponent.getCaretPosition() <= p1.getOffset())) {
 					shouldRemove = false;
-					System.out.println(">>> dropping on top of the selected text is not allowed -- import canceled");
+					logger.info("dropping on top of the selected text is not allowed -- import canceled");
 					return true;
 				}
 				//
@@ -405,25 +442,25 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 						String html = "<img src=\"" + data + "\"></img>";
 						kit.insertHTML(doc, pos, html, 0, 0, HTML.Tag.IMG);	// ### <img> not XML conform
 						// ### doc.insertBeforeStart(doc.getParagraphElement(pos), html); 
-						System.out.println(">>> IMG tag inserted: \"" + html + "\"");
+						logger.info("inserting <img> tag \"" + html + "\"");
 					} else {
 						textComponent.getDocument().insertString(pos, data, null);
-						System.out.println(">>> regular text inserted: \"" + data + "\"");
+						logger.info("inserting regular text \"" + data + "\"");
 					}
 				} else if (hasFilelistFlavor) {
 	                java.util.List files = (java.util.List) t.getTransferData(DataFlavor.javaFileListFlavor);
-					System.out.println("    " + files.size() + " files:");
+					logger.info("    " + files.size() + " files:");
 	                for (int i = 0; i < files.size(); i++) {
 						File file = (File) files.get(i);
 						String filename = file.getName();
-						System.out.println("    " + file);
+						logger.info("    " + file);
 						if (DeepaMehtaUtils.isHTML(filename)) {
 							String html = DeepaMehtaUtils.readFile(file);
 							textComponent.setText(html);	// ### replace instead insert
 							textComponent.setCaretPosition(0);
 							// ### ((JEditorPane) textComponent).setPage("file://" + file);	// ### replace instead insert
 							// ### setDirty("dropping HTML file");
-							System.out.println(">>> HTML inserted (read from file)");
+							logger.info("inserting HTML (read from file)");
 							break;	// ### max one file is inserted
 						} else if (DeepaMehtaUtils.isImage(filename)) {
 							HTMLEditorKit kit = (HTMLEditorKit) ((JEditorPane) textComponent).getEditorKit();
@@ -433,21 +470,21 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 							String html = "<img src=\"" + imagefile + "\"></img>";
 							kit.insertHTML(doc, pos, html, 0, 0, HTML.Tag.IMG);	// ### <img> not XML conform
 							// ### doc.insertBeforeStart(doc.getParagraphElement(pos), html); 
-							System.out.println(">>> IMG tag inserted: \"" + html + "\"");
+							logger.info("inserting <img> tag \"" + html + "\"");
 						} else {
-							System.out.println("### importData(): only implemented for HTML files -- import canceled");
+							logger.warning("only implemented for HTML files -- import canceled");
 						}
 					}
 				} else {
-					System.out.println("*** importData(): no supported flavor " + c);
+					logger.warning("no supported flavor " + c);
 				}
 				return true;
             } catch (UnsupportedFlavorException ufe) {
-                System.out.println("*** while dropping to text panel: " + ufe);
+                logger.warning("while dropping to text panel: " + ufe);
 			} catch (BadLocationException ble) {
-                System.out.println("*** while dropping to text panel: " + ble);
+                logger.warning("while dropping to text panel: " + ble);
             } catch (IOException ioe) {
-                System.out.println("*** while dropping to text panel: " + ioe);
+                logger.warning("while dropping to text panel: " + ioe);
 			}
 			//
 			return super.importData(c, t);
@@ -462,7 +499,7 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 		// Create a Transferable implementation that contains the selected text.
 		protected Transferable createTransferable(JComponent c) {
 			if (c != textComponent) {	// ###
-				System.out.println("*** createTransferable(): c=" + c);
+				logger.warning("c=" + c);
 			}
 			source = (JTextComponent) c;
 			int start = source.getSelectionStart();
@@ -474,10 +511,9 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 			try {
 				p0 = doc.createPosition(start);
 				p1 = doc.createPosition(end);
-				System.out.println(">>> createTransferable(): p0=" + p0 + ", p1=" + p1);
+				logger.info("p0=" + p0 + ", p1=" + p1);
 			} catch (BadLocationException e) {
-				System.out.println("*** createTransferable(): " +
-					"Can't create position - unable to remove text from source.");
+				logger.warning("can't create position -- unable to remove text from source");
 			}
 			shouldRemove = true;
 			String data = source.getSelectedText();
@@ -488,15 +524,15 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 		// However, we do not allow dropping on top of the selected text, so in that case do nothing.
 		protected void exportDone(JComponent c, Transferable data, int action) {
 			if (c != textComponent) {	// ###
-				System.out.println("*** exportDone(): c=" + c);
+				logger.warning("c=" + c);
 			}
-			System.out.println(">>> exportDone(): action=" + action + ", MOVE=" + MOVE + ", shouldRemove=" + shouldRemove);
+			logger.info("action=" + action + ", MOVE=" + MOVE + ", shouldRemove=" + shouldRemove);
 			if (shouldRemove && (action == MOVE)) {
 				if ((p0 != null) && (p1 != null) && (p0.getOffset() != p1.getOffset())) {
 					try {
 						textComponent.getDocument().remove(p0.getOffset(), p1.getOffset() - p0.getOffset());
 					} catch (BadLocationException e) {
-						System.out.println("*** exportDone(): Can't remove text from source.");
+						logger.warning("can't remove text from source");
 					}
 				}
 			}

@@ -113,7 +113,9 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 		} else if (visualization.equals(VISUAL_AREA)) {
 			// ### VISUAL_AREA doesn't yet support action buttons
 			JComponent area = createTextArea();
-			result[0] = new JScrollPane(area);
+			JScrollPane scrollPane = new JScrollPane(area);
+			scrollPane.setPreferredSize(new Dimension(0, 1200));
+			result[0] = scrollPane;
 			result[1] = area;
 			return result;
 		} else if (visualization.equals(VISUAL_TEXT_EDITOR)) {
@@ -194,7 +196,7 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 	 * Called for <code>VISUAL_AREA</code>.
 	 */
 	private JComponent createTextArea() {
-		JTextArea area = new JTextArea(50, 0);	// ### 50 rows
+		JTextArea area = new JTextArea();
 		area.setLineWrap(true);
 		area.setWrapStyleWord(true);
 		return area;
