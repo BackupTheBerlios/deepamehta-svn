@@ -206,7 +206,7 @@
 
 				<property file="${config}/build-${return.instance}.properties" prefix="temporary" />
 				<input message="Please enter the description:" addproperty="new.config.name" defaultvalue="${temporary.config.name}" />
-				<propertyfile file="${config}/build-${returnn.instance}.properties">
+				<propertyfile file="${config}/build-${return.instance}.properties">
 					<entry key="config.name" value="${new.config.name}" />
 				</propertyfile>
 				<antcall target="-config-setup-default-instance">

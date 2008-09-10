@@ -85,10 +85,9 @@ import javax.swing.ImageIcon;
  *     ({@link #importFromFile})</li>
  * </ol>
  * <hr>
- * Last functional change: 20.5.2008 (2.0b8)<br>
- * Last documentation update: 11.12.2001 (2.0a14-pre4)<br>
+ * Last change: 10.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class TopicMapTopic extends LiveTopic {
 
@@ -401,7 +400,7 @@ public class TopicMapTopic extends LiveTopic {
 				x = 100;
 				y = 100;
 			}
-			doExport(directives, topicmapID, viewmode, x, y);
+			doExport(topicmapID, viewmode, x, y, session, directives);
 		// --- set export format ---
 		} else if (cmd.equals(CMD_SET_EXPORT_FORMAT)) {
 			String userID = session.getUserID();
@@ -860,11 +859,13 @@ public class TopicMapTopic extends LiveTopic {
 	}
 
 	/**
-	 * @see		#executeCommandChained	(export)
+	 * References checked: 10.9.2008 (2.0b8)
+	 *
 	 * @see		#publish
+	 * @see		#doExport
 	 */
-	private void addPublishDirectives(CorporateDirectives directives) {
-		new CorporateTopicMap(as, getID(), 1).addPublishDirectives(directives);
+	private void addPublishDirectives(Session session, CorporateDirectives directives) {
+		new CorporateTopicMap(as, getID(), 1).addPublishDirectives(session, directives);
 	}
 
 	/**
@@ -1020,7 +1021,7 @@ public class TopicMapTopic extends LiveTopic {
 		// The die-flag should set to TRUE. But the associations are not removed this way.
 		// Think again about the die() hook.
 		// --- upload documents ---
-		addPublishDirectives(directives);
+		addPublishDirectives(session, directives);
 		// --- publish this map ---
 		CorporateDirectives notify = new CorporateDirectives();		// this directives are broadcasted to every workspace member
 		publishTo(workspaceID, isFirstPublishing, notify);
@@ -1147,8 +1148,8 @@ public class TopicMapTopic extends LiveTopic {
 	/**
 	 * @see		#executeCommand
 	 */
-	private void doExport(CorporateDirectives directives, String topicmapID, String viewmode, int x, int y) {
-		addPublishDirectives(directives);
+	private void doExport(String topicmapID, String viewmode, int x, int y, Session session, CorporateDirectives directives) {
+		addPublishDirectives(session, directives);
 		directives.add(DIRECTIVE_QUEUE_MESSAGE, "export:" + getID() + ":" + topicmapID + ":" + viewmode + ":" + x + ":" + y);
 	}
 

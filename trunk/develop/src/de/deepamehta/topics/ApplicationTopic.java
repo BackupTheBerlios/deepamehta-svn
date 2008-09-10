@@ -12,15 +12,14 @@ import java.util.StringTokenizer;
 
 
 /**
- * An <CODE>ApplicationTopic</CODE> represents an application that is installed at client side.
- * <P>
- * The default behavoir of an <CODE>ApplicationTopic</CODE> causes the client to launch it.
- * <P>
- * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
- * Last documentation update: 7.11.2000 (2.0a7-pre2)<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * An <code>ApplicationTopic</code> represents an application that is installed at client side.
+ * <p>
+ * The default behavoir of an <code>ApplicationTopic</code> causes the client to launch it.
+ * <p>
+ * <hr>
+ * Last change: 11.9.2007 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
+ * jri@deepamehta.de
  */
 public class ApplicationTopic extends FileTopic {
 
@@ -51,7 +50,7 @@ public class ApplicationTopic extends FileTopic {
 
 
 	/**
-	 * The default behavoir of a <CODE>ApplicationTopic</CODE> causes the client to
+	 * The default behavoir of a <code>ApplicationTopic</code> causes the client to
 	 * launch it locally.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#performTopicAction
@@ -76,25 +75,20 @@ public class ApplicationTopic extends FileTopic {
 		}
 	}
 
-	public CorporateDirectives executeChainedCommand(String command,
-								String result, String topicmapID, String viewmode,
-								Session session) {
+	public CorporateDirectives executeChainedCommand(String command, String result, String topicmapID, String viewmode,
+																										Session session) {
 		// ### compare to DocumentTopic
-		CorporateDirectives directives = new CorporateDirectives();
-		//
+		// ### compare to ImageTopic
 		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		if (cmd.equals(CMD_ASSIGN_FILE)) {
-			// the chained directive is only performed if the filechoosing has
-			// performed at client side
+			CorporateDirectives directives = new CorporateDirectives();
+			// the chained directive is only performed if the filechoosing has performed at client side
 			if (!result.equals("")) {
-				// --- build changed topic properties ---
-				// Note: the result of a CMD_ASSIGN_FILE contains the
-				// absolute path of the (client side) selected file
+				// --- show new property value ---
+				// Note: the result of a DIRECTIVE_CHOOSE_FILE contains the absolute path of the (client side) selected file
 				Hashtable props = new Hashtable();
 				props.put(PROPERTY_FILE, result);
-				// ---
-				// cause the client to display the changed topic property
 				directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, getID(), props, new Integer(1));
 			}
 			return directives;

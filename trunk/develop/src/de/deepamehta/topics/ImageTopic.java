@@ -47,16 +47,16 @@ public class ImageTopic extends FileTopic {
 
 
 
-	public CorporateDirectives executeChainedCommand(String command, String result,
-								String topicmapID, String viewmode, Session session)
-								throws DeepaMehtaException {
+	public CorporateDirectives executeChainedCommand(String command, String result, String topicmapID, String viewmode,
+																										Session session) {
+		// ### compare to DocumentTopic
+		// ### compare to ApplicationTopic
 		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		//
 		if (cmd.equals(CMD_ASSIGN_FILE)) {
 			CorporateDirectives directives = new CorporateDirectives();
-			// Note: the result of a DIRECTIVE_CHOOSE_FILE contains the absolute
-			// path of the (client side) selected file
+			// Note: the result of a DIRECTIVE_CHOOSE_FILE contains the absolute path of the (client side) selected file
 			copyAndUpload(result, FILE_IMAGE, PROPERTY_FILE, session, directives);
 			return directives;
 		} else {

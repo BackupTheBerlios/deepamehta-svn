@@ -12,20 +12,19 @@ import java.util.StringTokenizer;
 
 /**
  * A file.
- * <P>
- * The data definition of a <CODE>FileTopic</CODE> comprises one <CODE>File</CODE> field
+ * <p>
+ * The data definition of a <code>FileTopic</code> comprises one <code>File</code> field
  * to hold the filename resp. path of the file. As GUI extension to this field a
- * <CODE>FileTopic</CODE> adds a button (labeled "Choose...") to bring up the filechooser
+ * <code>FileTopic</code> adds a button (labeled "Choose...") to bring up the filechooser
  * dialog (see {@link #buttonCommand}). The command fired by that button (<code>CMD_ASSIGN_FILE</code>)
  * is handled by this class (see {@link #executeCommand}). The chained command is handled by the
- * <CODE>FileTopic</CODE>'s subclasses -- a generic <CODE>FileTopic</CODE> doesn't know
+ * <code>FileTopic</code>'s subclasses -- a generic <code>FileTopic</code> doesn't know
  * what to to with the selected file.
- * <P>
- * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
- * Last documentation update: 24.4.2001 (2.0a7-pre6)<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * <p>
+ * <hr>
+ * Last change: 11.9.2007 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
+ * jri@deepamehta.de
  */
 public abstract class FileTopic extends LiveTopic {
 

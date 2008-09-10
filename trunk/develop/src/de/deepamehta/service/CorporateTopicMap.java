@@ -21,10 +21,9 @@ import java.io.IOException;
  * from corporate memory.
  * <p>
  * <hr>
- * Last functional change: 29.10.2004 (2.0b3)<br>
- * Last documentation update: 5.4.2007 (2.0b8)<br>
+ * Last change: 10.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class CorporateTopicMap implements DeepaMehtaConstants {
 
@@ -190,10 +189,12 @@ public class CorporateTopicMap implements DeepaMehtaConstants {
 	}
 
 	/**
-	 * @see		de.deepamehta.topics.TopicMapTopic#publish
+	 * References checked: 10.9.2008 (2.0b8)
+	 *
+	 * @see		de.deepamehta.topics.TopicMapTopic#addPublishDirectives
 	 */
-	public void addPublishDirectives(CorporateDirectives directives) {
-		as.addPublishDirectives(topicmap, directives);
+	public void addPublishDirectives(Session session, CorporateDirectives directives) {
+		as.addPublishDirectives(topicmap, session, directives);
 	}
 
 

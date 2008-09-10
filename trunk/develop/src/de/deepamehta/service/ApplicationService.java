@@ -66,7 +66,7 @@ import java.util.Vector;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last change: 5.9.2008 (2.0b8)<br>
+ * Last change: 10.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -2315,10 +2315,17 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
+	 * References checked: 10.9.2008 (2.0b8)
+	 *
 	 * @see		CorporateTopicMap#addPublishDirectives
 	 */
-	void addPublishDirectives(BaseTopicMap topicmap, CorporateDirectives directives) {
-		addPublishDirectives(topicmap.getTopics().elements(), directives);
+	void addPublishDirectives(BaseTopicMap topicmap, Session session, CorporateDirectives directives) {
+		Enumeration e = topicmap.getTopics().elements();
+		while (e.hasMoreElements()) {
+			BaseTopic topic = (BaseTopic) e.nextElement();
+			// --- trigger published() hook ---
+			getLiveTopic(topic).published(session, directives);
+		}
 	}
 
 
@@ -5423,25 +5430,6 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	// ---
-
-	/**
-	 * @see		#addPublishDirectives(PresentableTopicMap topicmap, CorporateDirectives directives)
-	 */
-	private void addPublishDirectives(Enumeration topics, CorporateDirectives directives) {
-		PresentableTopic topic;
-		while (topics.hasMoreElements()) {
-			topic = (PresentableTopic) topics.nextElement();
-			addPublishAction(topic, directives);
-		}
-	}
-
-	/**
-	 * @see		#addPublishDirectives
-	 */
-	private void addPublishAction(BaseTopic topic, CorporateDirectives directives) {
-		// --- trigger published() hook ---
-		directives.add(getLiveTopic(topic).published());
-	}
 
 	public String getConfigurationProperty(String property) {
 		return applicationServiceInstance.getConfigurationProperty(property);

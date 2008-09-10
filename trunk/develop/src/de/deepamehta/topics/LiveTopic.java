@@ -23,10 +23,13 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 import java.io.File;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 
 
@@ -47,7 +50,7 @@ import java.util.Vector;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last change: 6.9.2008 (2.0b8)<br>
+ * Last change: 10.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -62,6 +65,8 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 
 	public static final int kernelTopicsVersion = 17;
+
+	private static Logger logger = Logger.getLogger("de.deepamehta");
 
 	public ApplicationService as;	// ### should be protected (WebBuilderLogin accesses it)
 	protected CorporateMemory cm;	// as.cm
@@ -239,13 +244,12 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	/**
 	 * Subclasses can override this method to react upon publishing this topic.
 	 * <p>
-	 * The default implementation returns empty <code>CorporateDirectives</code>.
+	 * The default implementation returns performs nothing.
 	 *
 	 * @see		de.deepamehta.service.ApplicationService#addPublishAction
 	 * @see		DocumentTopic#published
 	 */
-	public CorporateDirectives published() {
-		return new CorporateDirectives();
+	public void published(Session session, CorporateDirectives directives) {
 	}
 
 	/**
@@ -541,8 +545,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 			String urlPrefix = "http://";
 			// error check
 			if (!url.startsWith(urlPrefix)) {
-				System.out.println("*** CalendarTopic.executeCommand(): URL \"" + url + "\" not recognized by " +
-					"CMD_FOLLOW_HYPERLINK");
+				logger.warning("URL \"" + url + "\" not recognized by CMD_FOLLOW_HYPERLINK");
 				return directives;
 			}
 			//
@@ -641,8 +644,8 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		// --- "Icon" ---
 		String prop = (String) newProps.get(PROPERTY_ICON);
 		if (prop != null) {
-			System.out.println(">>> \"" + PROPERTY_ICON + "\" property has changed " +
-			"-- send DIRECTIVE_SET_TOPIC_ICON (queued), topicmapID=\"" + topicmapID + "\"");
+			logger.info("\"" + PROPERTY_ICON + "\" property has changed -- sending DIRECTIVE_SET_TOPIC_ICON (queued), " +
+				"topicmapID=\"" + topicmapID + "\"");
 			// reset appearance
 			as.initTopic(getID(), 1);
 			// Note: the DIRECTIVE_SET_TOPIC_ICON must be queued, because
@@ -654,8 +657,8 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		// --- "Locked Geometry" ---
 		String locked = (String) newProps.get(PROPERTY_LOCKED_GEOMETRY);
 		if (locked != null) {
-			System.out.println(">>> \"" + PROPERTY_LOCKED_GEOMETRY + "\" property has changed to \"" + locked +
-				"\" -- send DIRECTIVE_SET_TOPIC_LOCK");
+			logger.info("\"" + PROPERTY_LOCKED_GEOMETRY + "\" property has changed to \"" + locked +
+				"\" -- sending DIRECTIVE_SET_TOPIC_LOCK");
 			directives.add(DIRECTIVE_SET_TOPIC_LOCK, getID(), new Boolean(locked.equals(SWITCH_ON)), topicmapID);
 		}
 		return directives;
@@ -1488,47 +1491,60 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		// ### compare to TopicMapTopic.doImport()
 		// ### compare to CMImportExportTopic.executeChainedCommand()
 		if (path.equals("")) {
-			System.out.println(">>> file operation has been canceled by user");
+			logger.info("file operation has been canceled by user");
 			return null;
 		}
 		//
 		String filename = new File(path).getName();
-		Integer ft = new Integer(filetype);
 		//
-		// Note 1: the first directive (copy) is ignored at client side if the
-		// selected file originates from the clients document repository.
+		// Note 1: the first directive (copy) is ignored at client side if the selected file originates from the clients
+		// document repository.
 		//
-		// ### Note 2: the second directive (upload) is ignored at client side if
-		// the same file is already in corporate document repository (check is
-		// based on the files last modification date).
+		// ### Note 2: the second directive (upload) is ignored at client side if the same file is already in corporate
+		// document repository (check is based on the files last modification date).
 		//
-		// --- copy the selected file ---
-		directives.add(DIRECTIVE_COPY_FILE, path, ft);
-		// --- upload the file ---
-		if (!as.runsAtServerHost(session)) {
-			// ### for queued upload requests the time stamp might be not correct.
-			// it is 0 in the following situation: client and server are running
-			// at the same machine, sharing the document repository, the file to import
-			// was choosen from outside document repository and no version of the file is
-			// in document repository -- thus the client will performs the upload request
-			// and corrupts the archive file (0 bytes).
-			//
-			// ### compare to PresentationService.uploadFile()
-			//
-			File file = new File(FileServer.repositoryPath(filetype) + filename);
-			long lastModified = file.lastModified();
-			//
-			// ### Queueing is not necessary because COPY and UPLOAD directives are queued at client side anyway.
-			// Queueing is even not working when importing a topic map from a remote host (UPLOAD is queued double and the actual
-			// upload is performed _after_ sending the import message)
-			/* ### CorporateDirectives uploadDirective = new CorporateDirectives();
-			uploadDirective.add(DIRECTIVE_UPLOAD_FILE, filename, new Long(lastModified), ft);
-			directives.add(DIRECTIVE_QUEUE_DIRECTIVES, uploadDirective); */
-			//
-			directives.add(DIRECTIVE_UPLOAD_FILE, filename, new Long(lastModified), ft);
-		}
+		directives.add(DIRECTIVE_COPY_FILE, path, new Integer(filetype));
+		upload(filename, filetype, session, directives);
 		//
 		return filename;
+	}
+
+	/**
+	 * Builds the directives to upload a file to the server.
+	 */
+	protected final void upload(String filename, int filetype, Session session, CorporateDirectives directives) {
+		if (filename.equals("") || as.runsAtServerHost(session)) {
+			return;
+		}
+		// --- upload the file ---
+		// ### for queued upload requests the time stamp might be not correct. it is 0 in the following situation:
+		// client and server are running at the same machine, sharing the document repository, the file to import
+		// was choosen from outside document repository and no version of the file is in document repository -- thus
+		// the client will performs the upload request and corrupts the archive file (0 bytes).
+		//
+		// ### compare to PresentationService.uploadFile()
+		//
+		File file = new File(FileServer.repositoryPath(filetype) + filename);
+		long lastModified = file.lastModified();
+		// reporting
+		if (LOG_FILESERVER) {
+			// check if document already exists in corporate document repository
+			if (lastModified != 0) {
+				logger.info("file \"" + filename + "\" already in corporate document repository -- upload required " +
+					"only if client-side version is newer than " + new Date(lastModified) + " (" + lastModified + ")");
+			} else {
+				logger.info("file \"" + filename + "\" not yet in corporate document repository -- upload required");
+			}
+		}
+		//
+		// ### Queueing is not necessary because COPY and UPLOAD directives are queued at client side anyway.
+		// Queueing is even not working when importing a topic map from a remote host (UPLOAD is queued double and the actual
+		// upload is performed _after_ sending the import message)
+		/* ### CorporateDirectives uploadDirective = new CorporateDirectives();
+		uploadDirective.add(DIRECTIVE_UPLOAD_FILE, filename, new Long(lastModified), new Integer(filetype));
+		directives.add(DIRECTIVE_QUEUE_DIRECTIVES, uploadDirective); */
+		//
+		directives.add(DIRECTIVE_UPLOAD_FILE, filename, new Long(lastModified), new Integer(filetype));
 	}
 
 	// ---
@@ -1548,8 +1564,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	protected String topicName(Hashtable elementData, String fieldname) {
 		String name = (String) elementData.get(fieldname);
 		if (name == null) {
-			System.out.println("*** LiveTopic.topicName(): no name property (\"" +
-				   fieldname + "\") in " + elementData + " -- new topic has no name");
+			logger.warning("no name property (\"" + fieldname + "\") in " + elementData + " -- new topic has no name");
 			return "";
 		}
 		int pos = name.indexOf('\n');
@@ -1713,7 +1728,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		}
 		// error check 2
 		if (!new File(FILESERVER_ICONS_PATH + iconfile).exists()) {
-			System.out.println("*** LiveTopic.setIconfile(): " + this + ": " + iconfile + " doesn't exist");
+			logger.warning(this + ": " + iconfile + " doesn't exist");
 		}
 	}
 
@@ -1731,22 +1746,14 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	/**
 	 * @see		#executeCommand
 	 */
-	private void handleWorkspaceCommand(String command, String topicmapID,
-					String viewmode, Session session, CorporateDirectives directives) {
+	private void handleWorkspaceCommand(String command, String topicmapID, String viewmode, Session session,
+																						CorporateDirectives directives) {
 		String userID = session.getUserID();
-		// ### Note: not required to handle commands of default workspace first
-		/* ### BaseTopic corpGroup = as.getDefaultWorkspace(directives);
-		// --- handle corporate types ---
-		Vector types = as.getTopicTypes(corpGroup.getID(), PERMISSION_CREATE_IN_WORKSPACE);
-		directives.add(handleWorkspaceCommand(command, types, session, topicmapID, viewmode)); */
-		// --- handle workgroup types ---
+		// --- handle workspace types ---
 		Enumeration e = as.getWorkspaces(userID).elements();
 		while (e.hasMoreElements()) {
-			String workgroupID = ((BaseTopic) e.nextElement()).getID();
-			/* ### if (workgroupID.equals(corpGroup.getID())) {
-				continue;
-			} */
-			Vector types = as.getTopicTypes(workgroupID, PERMISSION_CREATE_IN_WORKSPACE);
+			String workspaceID = ((BaseTopic) e.nextElement()).getID();
+			Vector types = as.getTopicTypes(workspaceID, PERMISSION_CREATE_IN_WORKSPACE);
 			directives.add(handleWorkspaceCommand(command, types, session, topicmapID, viewmode));
 		}
 		// --- handle user types ---
@@ -1754,20 +1761,16 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		directives.add(handleWorkspaceCommand(command, types, session, topicmapID, viewmode));
 	}
 
-	private CorporateDirectives handleWorkspaceCommand(String command, Vector types,
-							Session session, String topicmapID, String viewmode) {
+	private CorporateDirectives handleWorkspaceCommand(String command, Vector types, Session session, String topicmapID,
+																										String viewmode) {
 		CorporateDirectives directives = new CorporateDirectives();
 		//
 		Enumeration e = types.elements();
-		String typeID;
-		TypeTopic type;
 		while (e.hasMoreElements()) {
-			typeID = ((BaseTopic) e.nextElement()).getID();
-			type = as.type(typeID, 1);	// ### typeVersion=1
-			// ### System.out.println(">>> handle workspace command for type \"" + typeID + "\"");
+			String typeID = ((BaseTopic) e.nextElement()).getID();
+			TypeTopic type = as.type(typeID, 1);	// ### typeVersion=1
 			// --- trigger executeWorkspaceCommand() hook ---
-			Class[] paramTypes = {String.class, Session.class, ApplicationService.class,
-				String.class, String.class};
+			Class[] paramTypes = {String.class, Session.class, ApplicationService.class, String.class, String.class};
 			Object[] paramValues = {command, session, as, topicmapID, viewmode};
 			CorporateDirectives directives2 = (CorporateDirectives) as.triggerStaticHook(
 				type.getImplementingClass(), "executeWorkspaceCommand", paramTypes, paramValues, false);
