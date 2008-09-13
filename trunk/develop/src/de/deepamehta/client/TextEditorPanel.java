@@ -272,6 +272,8 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 	// --- setText (2 forms) ---
 
 	/**
+	 * References checked: 12.9.2008 (2.0b8)
+	 *
 	 * @see		PresentationDetail#PresentationDetail
 	 */
 	void setText(String text) {
@@ -281,6 +283,8 @@ class TextEditorPanel extends JPanel implements ActionListener, DocumentListener
 	/**
 	 * Note: if called by PropertyPanel the PropertyPanel is the document listener, and if called
 	 * by PresentationDetail this TextEditorPanel itself is the document listener.
+	 *
+	 * References checked: 12.9.2008 (2.0b8)
 	 *
 	 * @param	baseURL				may be <code>null</code>
 	 * @param	documentListener	the document listener notified about text changes.

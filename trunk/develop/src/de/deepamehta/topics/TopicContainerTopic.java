@@ -10,16 +10,17 @@ import de.deepamehta.service.Session;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 
 
 /**
  * A container representing a set topics existing in
  * {@link de.deepamehta.service.CorporateMemory corporate memory}.
- * <P>
- * <HR>
- * Last change: 7.8.2008 (2.0b8)<BR>
- * J&ouml;rg Richter<BR>
+ * <p>
+ * <hr>
+ * Last change: 13.9.2008 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
 public class TopicContainerTopic extends ContainerTopic {
@@ -32,9 +33,11 @@ public class TopicContainerTopic extends ContainerTopic {
 
 
 
+	private static Logger logger = Logger.getLogger("de.deepamehta");
+
 	/**
 	 * The type of the contained topics in form of a type topic (type
-	 * <CODE>tt-topictype</CODE>).
+	 * <code>tt-topictype</code>).
 	 */
 	private BaseTopic contentType;
 
@@ -64,14 +67,12 @@ public class TopicContainerTopic extends ContainerTopic {
 
 
 
-	public CorporateDirectives init(int initLevel, Session session)
-															throws TopicInitException {
+	public CorporateDirectives init(int initLevel, Session session) throws TopicInitException {
 		// Note: the content type is set at level 2 (after evocation) because ###
 		if (initLevel == INITLEVEL_2) {
 			setContainerType();
 			if (LOG_TOPIC_INIT) {
-				System.out.println("> TopicContainerTopic.init(" + initLevel + "): " +
-					this + " -- content type is " + contentType);
+				logger.info("init level " + initLevel + ": " + this + " -- content type is " + contentType);
 			}
 		}
 		//
@@ -115,8 +116,8 @@ public class TopicContainerTopic extends ContainerTopic {
 	/**
 	 * Retriggers the search and returns the result topics.
 	 * 
-	 * @return	result topics as vector of 2-element <CODE>String</CODE> arrays:<BR>
-	 *			element 1: topic ID<BR>
+	 * @return	result topics as vector of 2-element <code>String</code> arrays:<br>
+	 *			element 1: topic ID<br>
 	 *			element 2: topic name
 	 *
 	 * @see		ContainerTopic#contextCommands
@@ -129,7 +130,7 @@ public class TopicContainerTopic extends ContainerTopic {
 			relatedTopicSemantic);
 		int topicCount = topics.size();
 		//
-		System.out.println("> TopicContainerTopic.getContent(): " + containerPropertyFilter + " -- " + topicCount + " topics found");
+		logger.info(containerPropertyFilter + " -- " + topicCount + " topics found");
 		//
 		// --- build list of topics ---
 		Vector topicEntries = new Vector();
@@ -175,8 +176,7 @@ public class TopicContainerTopic extends ContainerTopic {
 		Vector topics = cm.getTopics(getContentTypeID(), nameFilter, propertyFilter, relatedTopicID, relatedTopicSemantic);
 		int topicCount = topics.size();
 		//
-		System.out.println("> TopicContainerTopic.performQuery(): \"" + propertyFilter +
-			"\" -- " + topicCount + " topics found");
+		logger.info("\"" + propertyFilter + "\" -- " + topicCount + " topics found");
 		//
 		Vector presentableTopics = as.createPresentableTopics(topicmapID, topics, getID());
 		directives.add(as.createNewContainer(this, getType(), nameFilter, propertyFilter,
@@ -185,7 +185,7 @@ public class TopicContainerTopic extends ContainerTopic {
 	}
 
 	protected CorporateDirectives autoSearch(String groupingProperty) {
-		System.out.println("### TopicContainerTopic.autoSearch(): not yet implemented");
+		logger.warning("not yet implemented");
 		return new CorporateDirectives();
 	}
 
@@ -217,8 +217,7 @@ public class TopicContainerTopic extends ContainerTopic {
 		// error check
 		if (topics.size() == 0) {
 			// ### should throw TopicInitException
-			System.out.println("*** TopicContainerTopic.setContainerType(): there is " +
-				"no SEMANTIC_CONTAINER_TYPE -- " + this + " has no content type");
+			logger.warning("there is no SEMANTIC_CONTAINER_TYPE -- " + this + " has no content type");
 			return;
 		}
 		//
@@ -226,8 +225,7 @@ public class TopicContainerTopic extends ContainerTopic {
 		// error check
 		if (!topic.getType().equals(TOPICTYPE_TOPICTYPE)) {
 			// ### should throw TopicInitException
-			System.out.println("*** TopicContainerTopic.setContainerType(): " +
-				"invalid SEMANTIC_CONTAINER_TYPE: \"" + topic.getType() + "\" " +
+			logger.warning("invalid SEMANTIC_CONTAINER_TYPE: \"" + topic.getType() + "\" " +
 				"(\"tt-topictype\" is expected) -- " + this + " has no content type");
 			return;
 		}

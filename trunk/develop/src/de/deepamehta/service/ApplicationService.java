@@ -66,7 +66,7 @@ import java.util.Vector;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last change: 10.9.2008 (2.0b8)<br>
+ * Last change: 13.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -476,28 +476,31 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		return directives;
 	}
 
-	// 4 Utility wrappers for createLiveTopic() above
+	// 5 Utility wrappers for createLiveTopic() above
 
 	public LiveTopic createLiveTopic(String topicID, String typeID, String name, Session session) {
 		// ### directives are ignored ### must not null
-		return createLiveTopic(topicID, typeID, name, null, null, session, new CorporateDirectives());
+		return createLiveTopic(topicID, typeID, name, null, null, session, new CorporateDirectives());	// topicmapID=null, viewmode=null
+	}
+
+	public LiveTopic createLiveTopic(BaseTopic topic, Session session, CorporateDirectives directives) {
+		return createLiveTopic(topic, null, null, session, directives);		// topicmapID=null, viewmode=null
 	}
 
 	/**
 	 * @see		de.deepamehta.topics.TopicMapTopic#searchByTopicType
 	 */
 	public LiveTopic createLiveTopic(BaseTopic topic, String topicmapID, String viewmode,
-											Session session, CorporateDirectives directives) {
-		return createLiveTopic(topic.getID(), topic.getType(), topic.getName(),
-			topicmapID, viewmode, session, directives);
+																			Session session, CorporateDirectives directives) {
+		return createLiveTopic(topic.getID(), topic.getType(), topic.getName(), topicmapID, viewmode, session, directives);
 	}
 
 	/**
 	 * @see		#changeTopicType
 	 * @see		de.deepamehta.topics.TopicTypeTopic#createContainerType
 	 */
-	public LiveTopic createLiveTopic(String topicID, String typeID, String name, String topicmapID,
-											String viewmode, Session session, CorporateDirectives directives) {
+	public LiveTopic createLiveTopic(String topicID, String typeID, String name, String topicmapID, String viewmode,
+																			Session session, CorporateDirectives directives) {
 		return createLiveTopic(topicID, typeID, name, true, true, topicmapID, viewmode, session, directives);
 		// override=true, evoke=true
 	}
@@ -555,9 +558,12 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// ---
 
 	/**
-	 * Returns the directives to create and show a new topic.
-	 *
-	 * References checked: 23.4.2004 (2.0b3-pre2)
+	 * Builds the directives to create and show a topic at a given coordinate.
+	 * <p>
+	 * Called to handle the <code>CMD_CREATE_TOPIC</code> command.<br>
+	 * Can also be called by custom applications.
+	 * <p>
+	 * References checked: 13.9.2008 (2.0b8)
 	 *
 	 * @see		de.deepamehta.topics.TopicMapTopic#createTopic
 	 */
@@ -566,17 +572,17 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		CorporateDirectives directives = new CorporateDirectives();
 		PresentableTopic topic = new PresentableTopic(topicID, 1, typeID, 1, "", new Point(x, y));	// name=""
 		directives.add(DIRECTIVE_SHOW_TOPIC, topic, Boolean.TRUE);									// evoke=TRUE
-		// ### tiggerAddedToTopicmap(topicmapID, topic, directives);	// ### not used
 		//
 		return directives;
 	}
 
 	/**
-	 * Handles the command <code>CMD_CREATE_ASSOC</code>.
+	 * Builds the directives to create and show an association.
 	 * <p>
-	 * Returns the directives to create and show a new association.
-	 *
-	 * References checked: 28.5.2006 (2.0b6-post3)
+	 * Called to handle the <code>CMD_CREATE_ASSOC</code> command.<br>
+	 * Can also be called by custom applications.
+	 * <p>
+	 * References checked: 13.9.2008 (2.0b8)
 	 *
 	 * @see		de.deepamehta.topics.TopicMapTopic#executeCommand
 	 */
@@ -1033,12 +1039,17 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			}
 		}
 		// result
-		containerProps.put(PROPERTY_RESULT, buildResultView(topicCount, topics));
+		containerProps.put(PROPERTY_RESULT, renderResultList(topicCount, topics));
 		//
 		return containerProps;
 	}
 
-	private String buildResultView(int topicCount, Vector topics) {
+	/**
+	 * References checked: 12.9.2008 (2.0b8)
+	 *
+	 * @see		#buildContainerProperties
+	 */
+	private String renderResultList(int topicCount, Vector topics) {
 		StringBuffer html = new StringBuffer("<html><body>");
 		if (topicCount <= MAX_LISTING) {
 			Enumeration e = topics.elements();

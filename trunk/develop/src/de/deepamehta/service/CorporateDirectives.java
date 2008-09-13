@@ -718,7 +718,7 @@ public class CorporateDirectives extends Directives {
 		}
 		//
 		as.createLiveTopic(topicID, topic.getType(), topic.getName(), false, evoke,
-			topicmapID, VIEWMODE_USE, session, this);		// override=false
+			topicmapID, VIEWMODE_USE, session, this);		// override=false	### call only if evoke=true?
 		//
 		as.initTopicLock(topic);
 		// --- set topic appearance ---

@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
@@ -65,6 +66,10 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	// *****************
 
 
+
+	// preferences
+	// private static final String REVEAL_ALL_BUTTON_LABEL = "Reveal all";		// ### not yet functional
+	// private static final String REVEAL_ALL_BUTTON_COMMAND = "revealAll";		// ### not yet functional
 
 	// Accessed by
 	//		- PresentationPropertyDefinition.createTextField()
@@ -262,6 +267,8 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	 * <ul>
 	 * <li>The value of a "Options Menu" / "Option Button" / "Switch" property has been changed
 	 * <li>Return has been pressed in an (single line) input field of the property panel
+	 * <li>A property bound action button has been pressed
+	 * <li>The "Reveal all" button has been pressed
 	 * </ul>
 	 */
 	public void actionPerformed(ActionEvent e) {
@@ -1583,6 +1590,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			} else if (visualization.equals(VISUAL_TEXT_EDITOR)) {
 				TextEditorPanel textEditor = (TextEditorPanel) model;
 				textEditor.setText(text, baseURL, documentListener);
+				// addRevealAllButton(actionListener);	// ### doesn't work
 				// restore scrollbar value
 				restoreScrollbarValue();
 			} else if (visualization.equals(VISUAL_CHOICE)) {
@@ -1713,6 +1721,23 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 				// ###
 			}
 		}
+
+		/* ### doesn't work
+		void addRevealAllButton(ActionListener actionListener) {
+			if (getName().equals(PROPERTY_RESULT)) {
+				// create "Reveal all" btton
+				JButton button = new JButton(REVEAL_ALL_BUTTON_LABEL);
+				button.setActionCommand(REVEAL_ALL_BUTTON_COMMAND);
+				button.addActionListener(actionListener);
+				// add to text component
+				JTextPane comp = (JTextPane) getTextComponent();
+				boolean editable = comp.isEditable();
+				// comp.setCaretPosition(0);	// ### required?
+				comp.setEditable(true);			// in order to insert a component, the text must be editable
+				comp.insertComponent(button);	// ### doesn't work
+				comp.setEditable(editable);
+			}
+		} */
 
 		boolean isHidden() {
 			return propertyDef.getHidden();

@@ -16,80 +16,81 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 
 
 /**
- * ### A <CODE>ContainerTopic</CODE> is an active topic that acts as a container for other
+ * ### A <code>ContainerTopic</code> is an active topic that acts as a container for other
  * topics. All topics contained in a container have the same topic type. The topics
  * contained in a container are represented by means of a query that
- * is associated with that container. The property editor of a <CODE>ContainerTopic</CODE>
+ * is associated with that container. The property editor of a <code>ContainerTopic</code>
  * serves as input form by which the user can filter the topics contained in the
  * container. The empty query represents the "null" filter and retrieves all contained
  * topics.
- * <P>
+ * <p>
  * The query associated with a container is immutable, that is, once the
- * <CODE>ContainerTopic</CODE> is initialized, its associated query will never change.
- * <P>
+ * <code>ContainerTopic</code> is initialized, its associated query will never change.
+ * <p>
  * The user can narrow the query by filling in additional properties. If the resulting
  * set of topics is still too big to be viualized, the container will create (and
  * aggregate) another (sub)container.
  *
- * <H4>Active behavoir</H4>
+ * <h4>Active behavoir</h4>
  *
- * The active <I>initialization</I> behavoir of a <CODE>ContainerTopic</CODE> is
+ * The active <I>initialization</I> behavoir of a <code>ContainerTopic</code> is
  * setting the associated query.
- * <P>
- * The active <I>labeling</I> behavoir of a <CODE>ContainerTopic</CODE> is
+ * <p>
+ * The active <I>labeling</I> behavoir of a <code>ContainerTopic</code> is
  * showing the number of elements contained in the container.
- * <P>
- * The active <I>property disabling</I> behavoir of a <CODE>ContainerTopic</CODE> is
+ * <p>
+ * The active <I>property disabling</I> behavoir of a <code>ContainerTopic</code> is
  * disabling all properties that are involved in the associated query -- this way the
  * user is prevented to change the associated query, only narrowing is possible.
  *
- * <H4>Note to application programmers</H4>
+ * <h4>Note to application programmers</h4>
  *
- * <CODE>ContainerTopic</CODE> is an abstract class -- it provides the behavoir described
+ * <code>ContainerTopic</code> is an abstract class -- it provides the behavoir described
  * above without "knowing" the origin of the contained topics. Actually there are two
- * subclasses of <CODE>ContainerTopic</CODE>:
+ * subclasses of <code>ContainerTopic</code>:
  *
- * <OL>
- * <LI><CODE>TopicContainerTopic</CODE>
- * <P>
+ * <ol>
+ * <li><code>TopicContainerTopic</code>
+ * <p>
  * A {@link TopicContainerTopic} represents a set of topics of a specific topic type
  * existing in corporate memory.
- * <P>
+ * <p>
  * For every topic type the user creates interactively, the corresponding type that
  * represents the container for the new topic type, is created automatically as a subclass
- * of <CODE>TopicContainerTopic</CODE> (this is active behavoir of a
+ * of <code>TopicContainerTopic</code> (this is active behavoir of a
  * {@link TopicTypeTopic}).
- * <P>
+ * <p>
  * An application programmer usually will not derive an active topic from
- * <CODE>TopicContainerTopic</CODE>.
- * <P>
- * <LI><CODE>ElementContainerTopic</CODE>
- * <P>
+ * <code>TopicContainerTopic</code>.
+ * <p>
+ * <li><code>ElementContainerTopic</code>
+ * <p>
  * An {@link ElementContainerTopic} represents a set of elements of a specific type
  * existing in a {@link de.deepamehta.service.CorporateDatasource}.
- * An <CODE>ElementContainerTopic</CODE> provides the behavoir of creating topics in
+ * An <code>ElementContainerTopic</code> provides the behavoir of creating topics in
  * corporate memory based upon elements of a corporate datasource. The elements attributes
  * are replicated in form of topic properties.
- * <P>
- * For the time being to use an <CODE>ElementContainerTopic</CODE> the application
- * programmer is required to subclass <CODE>ElementContainerTopic</CODE> in order to
+ * <p>
+ * For the time being to use an <code>ElementContainerTopic</code> the application
+ * programmer is required to subclass <code>ElementContainerTopic</code> in order to
  * specify the element access, topic creation and attribute replication.
- * <P>
+ * <p>
  * E.g. the {@link de.deepamehta.movies.topics.MovieContainerTopic} specifies the topic types used for created
  * topics and containers as well as the attribute used for the name of created topics.
- * <P>
+ * <p>
  * In the future the user resp. administrator will be able to provide these essential
  * information directly in "Design"-mode without needing deploying an application
  * programmer.
- * </OL>
- * <P>
- * <HR>
- * Last change: 7.8.2008 (2.0b8)<BR>
- * J&ouml;rg Richter<BR>
+ * </ol>
+ * <p>
+ * <hr>
+ * Last change: 13.9.2008 (2.0b8)<br>
+ * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
 public abstract class ContainerTopic extends LiveTopic {
@@ -102,33 +103,35 @@ public abstract class ContainerTopic extends LiveTopic {
 
 
 
+	private static Logger logger = Logger.getLogger("de.deepamehta");
+
 	/**
 	 * Part of the query represented by this container: the property filter.
 	 * <p>
 	 * The containers query is immutable -- once set it will not change over the lifetime
 	 * of the container.
-	 * <P>
+	 * <p>
 	 * ### The containers query is determined by both, the (visible) containers properties
 	 * and the (hidden) "QueryElements" property. The visible properties stores the last
 	 * query that was submitted to this container. The hidden "QueryElements" property
 	 * containes a space or comma separated list of the property names involved in the
 	 * containers query.
-	 * <P>
-	 * <TABLE>
-	 * <TR><TD><B>Set once by</B></TD></TR>
-	 * <TR><TD>{@link #initContainer}</TD></TR>
-	 * <TR><TD><B>Accessed by</B></TD></TR>
-	 * <TR><TD>{@link #equalsQuery}</TD></TR>
-	 * <TR><TD>{@link #executeCommand}</TD></TR>
-	 * <TR><TD>{@link ElementContainerTopic#getContent}</TD></TR>
-	 * <TR><TD>{@link ElementContainerTopic#autoSearch}</TD></TR>
-	 * </TABLE>
+	 * <p>
+	 * <table>
+	 * <tr><td><b>Set once by</b></td></tr>
+	 * <tr><td>{@link #initContainer}</td></tr>
+	 * <tr><td><b>Accessed by</b></td></tr>
+	 * <tr><td>{@link #equalsQuery}</td></tr>
+	 * <tr><td>{@link #executeCommand}</td></tr>
+	 * <tr><td>{@link ElementContainerTopic#getContent}</td></tr>
+	 * <tr><td>{@link ElementContainerTopic#autoSearch}</td></tr>
+	 * </table>
 	 */
 	protected Hashtable containerPropertyFilter = new Hashtable();
 
 	/**
 	 * Part of the query represented by this container: the name filter.
-	 * <P>
+	 * <p>
 	 * Note: Remains uninitialized if no name filter is set for this container
 	 */
 	protected String containerNameFilter;
@@ -137,8 +140,8 @@ public abstract class ContainerTopic extends LiveTopic {
 	 * Part of the query represented by this container: the relation filter.
 	 * <p>
 	 * The topic to which an association must exists to the the topics of this container.
-	 * <P>
-	 * Initialized by {@link #initContainer}.<BR>
+	 * <p>
+	 * Initialized by {@link #initContainer}.<br>
 	 * Note: Remains uninitialized if no relation filter is set for this container
 	 */
 	protected BaseTopic containerRelatedTopic;
@@ -152,10 +155,10 @@ public abstract class ContainerTopic extends LiveTopic {
 
 	/**
 	 * The names of the properties involved in the query represented by this container.
-	 * <P>
+	 * <p>
 	 * The property names are determined by the value of this containers "QueryElements" property.
-	 * <P>
-	 * Initialized by {@link #initContainer}.<BR>
+	 * <p>
+	 * Initialized by {@link #initContainer}.<br>
 	 * Accessed by {@link #disabledProperties}
 	 */
 	protected Vector disabledProperties;
@@ -192,30 +195,14 @@ public abstract class ContainerTopic extends LiveTopic {
 		if (initLevel == INITLEVEL_1) {
 			initContainer(session, directives);
 			if (LOG_TOPIC_INIT) {
-				System.out.println(">>> ContainerTopic.init(" + initLevel + "): " + this +
-					" -- name filter: \"" + containerNameFilter + "\" property filer: " +
-					containerPropertyFilter + " disabled properties: " +
-					disabledProperties + " related topic: " + containerRelatedTopic);
+				logger.info("init level " + initLevel + ": " + this + " -- name filter: \"" + containerNameFilter +
+					"\" property filer: " + containerPropertyFilter + " disabled properties: " + disabledProperties +
+					" related topic: " + containerRelatedTopic);
 			}
 		}
 		//
 		return directives;
 	}
-
-	/* ### public CorporateDirectives evoke(Session session, String topicmapID,
-																String viewmode) {
-		return super.evoke(session, topicmapID, viewmode);
-		// ### the plural typename of a topic type is not known in evoke().
-		// ### the plural typename of a topic type is initialized at level 3 but
-		// ### only level 1 has been performed _before_ evoke() is called.
-		//
-		// ### the version number is set to 1
-		TopicTypeTopic type = (TopicTypeTopic) as.getLiveTopic(getContentTypeID(), 1);
-		CorporateDirectives directives = new CorporateDirectives();
-		directives.add(DIRECTIVE_SET_TOPIC_NAME, getID(), type.getPluralName(),
-			new Integer(1));
-		return directives;
-	} */
 
 
 
@@ -288,8 +275,7 @@ public abstract class ContainerTopic extends LiveTopic {
 			String url = st.nextToken();
 			String urlPrefix = "http://";
 			if (!url.startsWith(urlPrefix)) {
-				System.out.println("*** ContainerTopic.executeCommand(): URL \"" + url + "\" not recognized by " +
-					"CMD_FOLLOW_HYPERLINK");
+				logger.warning("url \"" + url + "\" not recognized by CMD_FOLLOW_HYPERLINK");
 				return directives;
 			}
 			String action = url.substring(urlPrefix.length());
@@ -392,7 +378,7 @@ public abstract class ContainerTopic extends LiveTopic {
 
 
 	/**
-	 * Triggers this search.
+	 * Triggers this search and builds the directives to show the result.
 	 * <p>
 	 * References checked: 6.8.2008 (2.0b8)
 	 *
@@ -404,13 +390,12 @@ public abstract class ContainerTopic extends LiveTopic {
 	}
 
 	/**
-	 * @return	<CODE>true</CODE> if the specified query is the same as represented by
-	 *			this container, <CODE>false</CODE> otherwise.
+	 * @return	<code>true</code> if the specified query is the same as represented by
+	 *			this container, <code>false</code> otherwise.
 	 *
 	 * @see		ApplicationService#createNewContainer
 	 */
-	public boolean equalsQuery(String nameFilter, Hashtable propertyFilter, String relatedTopicID,
-																			String relTopicSemantic) {
+	public boolean equalsQuery(String nameFilter, Hashtable propertyFilter, String relatedTopicID, String relTopicSemantic) {
 		return (nameFilter == null || nameFilter.equals(containerNameFilter)) &&
 			(containerRelatedTopic == null || containerRelatedTopic.getID().equals(relatedTopicID)) &&
 			(relatedTopicSemantic == null || relatedTopicSemantic.equals(relTopicSemantic)) &&
@@ -439,11 +424,10 @@ public abstract class ContainerTopic extends LiveTopic {
 	protected abstract String getContentTypeID();
 
 	/**
-	 * Returns a list of all topics contained in this container. ### to be dropped
+	 * Triggers this search and returns the result.
 	 * 
-	 * @return	all topics of this container as vector of 2-element <CODE>String</CODE>
-	 *			arrays:<BR>
-	 *			element 1: ID<BR>
+	 * @return	the result set as vector of 2-element <code>String</code> arrays:<br>
+	 *			element 1: ID<br>
 	 *			element 2: topic name
 	 *
 	 * @see		#contextCommands
@@ -493,15 +477,15 @@ public abstract class ContainerTopic extends LiveTopic {
 
 	/**
 	 * ### Transforms container properties into a raw query.
-	 * <P>
+	 * <p>
 	 * ### A raw query contains all properties involved in the actual query.
-	 * <P>
+	 * <p>
 	 * ### Active topics have the opportunity to modify the properties before
 	 * the topics are retrieved from the source.
-	 * <P>
+	 * <p>
 	 * ### This is done by removing the properties for internal use
-	 * (<CODE>QueryElements</CODE>, <CODE>ElementCount</CODE>,
-	 * <CODE>RelatedTopicID</CODE>, <CODE>Topic Name</CODE>)
+	 * (<code>QueryElements</code>, <code>ElementCount</code>,
+	 * <code>RelatedTopicID</code>, <code>Topic Name</code>)
 	 * as well as empty properties.
 	 *
 	 * @see		#executeCommand
@@ -560,7 +544,6 @@ public abstract class ContainerTopic extends LiveTopic {
 		try {
 			String relTopicID = getProperty(PROPERTY_RELATED_TOPIC_ID);
 			if (!relTopicID.equals("")) {
-				// ### topic must be loaded
 				this.containerRelatedTopic = as.getLiveTopic(relTopicID, 1, session, directives);
 				String relTopicSemantic = getProperty(PROPERTY_RELATED_TOPIC_SEMANTIC);
 				if (!relTopicSemantic.equals("")) {
@@ -570,8 +553,6 @@ public abstract class ContainerTopic extends LiveTopic {
 		} catch (DeepaMehtaException e) {
 			String msg = "Container " + this + " is obsolete";
 			throw new TopicInitException(msg);
-			// ### directives.add(DIRECTIVE_SHOW_MESSAGE, msg, new Integer(NOTIFICATION_WARNING));
-			// ### System.out.println("*** ContainerTopic.initContainer(): " + msg);
 		}
 		// --- containerPropertyFilter, containerNameFilter ---
 		Enumeration propNames = disabledProperties.elements();
@@ -587,11 +568,10 @@ public abstract class ContainerTopic extends LiveTopic {
 				if (propValue != null) {
 					this.containerPropertyFilter.put(propName, propValue);
 				} else {
-					System.out.println("*** ContainerTopic.initContainer(): " + this + ": search property \"" +
-						propName + "\" has no value -- the property filter will not work properly");
+					logger.warning(this + ": search property \"" + propName +
+						"\" has no value -- the property filter will not work properly");
 					directives.add(DIRECTIVE_SHOW_MESSAGE, "Search property \"" + propName + "\" of " + this +
-						" has no value -- the property filter will not work properly",
-						new Integer(NOTIFICATION_WARNING));
+						" has no value -- the property filter will not work properly", new Integer(NOTIFICATION_WARNING));
 				}
 			}
 		}

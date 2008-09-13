@@ -2,6 +2,7 @@ package de.deepamehta.topics;
 
 import de.deepamehta.BaseTopic;
 import de.deepamehta.service.ApplicationService;
+import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
 
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
  * A list of email recipients.
  * <p>
  * <hr>
- * Last change: 6.9.2008 (2.0b8)<br>
+ * Last change: 13.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -37,6 +38,11 @@ public class RecipientListTopic extends LiveTopic {
 	private static final String IMAGE_CHECKBOX = "checkbox.png";
 	private static final String IMAGE_CHECKBOX_SELECTED = "checkbox-selected.png";
 	private static final String IMAGE_CHECKBOX_DISABLED = "checkbox-disabled.png";
+
+	// commands ### copy in PersonTopic
+	private static final String ITEM_COMPOSE_EMAIL = "Compose Email";
+	private static final String ICON_COMPOSE_EMAIL = "composeEmail.gif";
+	private static final String CMD_COMPOSE_EMAIL = "composeEmail";
 
 	// actions
 	private static final String ACTION_SELECT_RECIPIENT = "selectRecipient";
@@ -78,6 +84,30 @@ public class RecipientListTopic extends LiveTopic {
 
 
 	// --------------------------
+	// --- Providing Commands ---
+	// --------------------------
+
+
+
+	public CorporateCommands contextCommands(String topicmapID, String viewmode, Session session, CorporateDirectives directives) {
+		CorporateCommands commands = new CorporateCommands(as);
+		// navigation commands
+		int editorContext = as.editorContext(topicmapID);
+		commands.addNavigationCommands(this, editorContext, session);
+		//
+		// custom commands
+		commands.addSeparator();
+		commands.addCommand(ITEM_COMPOSE_EMAIL, CMD_COMPOSE_EMAIL, FILESERVER_IMAGES_PATH, ICON_COMPOSE_EMAIL);
+		//
+		// standard commands
+		commands.addStandardCommands(this, editorContext, viewmode, session, directives);
+		//
+		return commands;
+	}
+
+
+
+	// --------------------------
 	// --- Executing Commands ---
 	// --------------------------
 
@@ -89,7 +119,9 @@ public class RecipientListTopic extends LiveTopic {
 		StringTokenizer st = new StringTokenizer(command, COMMAND_SEPARATOR);
 		String cmd = st.nextToken();
 		//
-		if (cmd.equals(CMD_FOLLOW_HYPERLINK)) {
+		if (cmd.equals(CMD_COMPOSE_EMAIL)) {
+			createChildTopic(TOPICTYPE_EMAIL, SEMANTIC_EMAIL_RECIPIENT, true, session, directives);	// reverseAssocDir=true
+		} else if (cmd.equals(CMD_FOLLOW_HYPERLINK)) {
 			String url = st.nextToken();
 			String urlPrefix = "http://";
 			if (!url.startsWith(urlPrefix)) {
@@ -99,7 +131,7 @@ public class RecipientListTopic extends LiveTopic {
 			String action = url.substring(urlPrefix.length());
 			if (action.startsWith(ACTION_SELECT_RECIPIENT)) {
 				String topicID = action.substring(ACTION_SELECT_RECIPIENT.length() + 1);	// +1 to skip /
-				selectRecipient(topicID, directives);
+				selectRecipient(topicID, directives, true);		// updateView=true
 			} else {
 				// delegate to super class to handle ACTION_REVEAL_TOPIC
 				return super.executeCommand(command, session, topicmapID, viewmode);
@@ -127,7 +159,6 @@ public class RecipientListTopic extends LiveTopic {
 
 	public static Vector hiddenProperties(TypeTopic type) {
 		Vector props = new Vector();
-		props.addElement(PROPERTY_NAME);
 		props.addElement(PROPERTY_ICON);
 		return props;
 	}
@@ -146,12 +177,27 @@ public class RecipientListTopic extends LiveTopic {
 
 	// ---
 
-	private void selectRecipient(String recipientID, CorporateDirectives directives) {
+	/**
+	 * References checked: 13.9.2008 (2.0b8)
+	 *
+	 * @see		#executeCommand
+	 * @see		PersonSearchTopic#createRecipientList
+	 */
+	void selectRecipient(String recipientID, CorporateDirectives directives, boolean updateView) {
 		as.toggleAssociation(getID(), recipientID, SEMANTIC_SELECTED_RECIPIENT);
-		updateView(directives);
+		if (updateView) {
+			updateView(directives);
+		}
 	}
 
-	private void updateView(CorporateDirectives directives) {
+	/**
+	 * References checked: 13.9.2008 (2.0b8)
+	 *
+	 * @see		#evoke
+	 * @see		#selectRecipient
+	 * @see		PersonSearchTopic#createRecipientList
+	 */
+	void updateView(CorporateDirectives directives) {
 		String html = renderRecipientList();
 		//
 		Hashtable props = new Hashtable();

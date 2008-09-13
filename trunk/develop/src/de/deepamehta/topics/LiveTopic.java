@@ -50,7 +50,7 @@ import java.util.logging.Level;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last change: 10.9.2008 (2.0b8)<br>
+ * Last change: 13.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -1299,19 +1299,20 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	/**
 	 * Creates a child topic directly in corporate memory ### must create live topic instead (evoke())
 	 */
-	public final void createChildTopic(String typeID, String semantic) {
+	public final String createChildTopic(String typeID, String semantic) {
 		String childID = as.getNewTopicID();
 		String assocID = as.getNewAssociationID();
 		cm.createTopic(childID, 1, typeID, 1, "");
 		cm.createAssociation(assocID, 1, semantic, 1, getID(), 1, childID, 1);
+		return childID;
 	}
 
-	public final void createChildTopic(String typeID, String semantic, Session session, CorporateDirectives directives) {
-		createChildTopic(typeID, semantic, false, session, directives);
+	public final LiveTopic createChildTopic(String typeID, String semantic, Session session, CorporateDirectives directives) {
+		return createChildTopic(typeID, semantic, false, session, directives);
 	}
 
 	/**
-	 * Extends the specified directives to create a new child topic to this topic. Creating a child
+	 * Builds the directives to create a new child topic to this topic. Creating a child
 	 * topic consists of 4 steps:
 	 * <ol>
 	 * <li>Create a new topic of the specified type and reveal it in the near of this topic
@@ -1325,7 +1326,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * @see		TypeTopic#executeCommand
 	 * @see		PropertyTopic#executeCommand
 	 */
-	public final void createChildTopic(String typeID, String semantic, boolean reverseAssocDir,
+	public final LiveTopic createChildTopic(String typeID, String semantic, boolean reverseAssocDir,
 																	Session session, CorporateDirectives directives) {
 		String childID = as.getNewTopicID();
 		//
@@ -1340,18 +1341,23 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		//
 		PresentableTopic child = new PresentableTopic(childID, 1, typeID, 1, "", getID(), "");
 		PresentableAssociation assoc = as.createPresentableAssociation(semantic, topicID1, getVersion(), topicID2, 1, false);
-		// Note: the association must be created directly in corporate memory, to let childs evoke() logic rely on the association
+		// Note: the association must be created directly in corporate memory, to let childs evoke() logic operate on it
 		cm.createAssociation(assoc.getID(), 1, semantic, 1, topicID1, 1, topicID2, 1);
 		cm.setAssociationData(assoc.getID(), 1, PROPERTY_OWNER_ID, session.getUserID());
+		// Note: the child topic must be created now, to let the caller operate on it
+		LiveTopic topic = as.createLiveTopic(child, session, directives);
+		as.setTopicProperty(child, PROPERTY_OWNER_ID, session.getUserID());
 		//
-		directives.add(DIRECTIVE_SHOW_TOPIC, child, Boolean.TRUE);
+		directives.add(DIRECTIVE_SHOW_TOPIC, child       /* ###, Boolean.TRUE */);
 		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc /* ###, Boolean.TRUE */);
 		directives.add(DIRECTIVE_SELECT_TOPIC, childID);
 		//
 		rename(childID, typeID, "", session, directives);	// ### default action is hardcoded
+		//
+		return topic;
 	}
 
-	// --- revelTopic (2 forms) ---
+	// --- revealTopic (2 forms) ---
 
 	/**
 	 * Extends the specified directives to perform this task: Create an association to the specified existing

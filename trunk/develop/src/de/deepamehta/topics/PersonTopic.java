@@ -15,18 +15,24 @@ import java.util.Vector;
 
 
 /**
- * Last functional change: 20.4.2008 (2.0b8)<br>
- * Last documentation update: 7.3.2004 (2.0b3-pre1)<br>
+ * Last change: 13.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class PersonTopic extends LiveTopic {
 
 
 
-	private static final String ITEM_SEND_TO_PERSON = "Compose Email";
-	private static final String ICON_SEND_TO_PERSON = "composeEmail.gif";
-	private static final String CMD_SEND_TO_PERSON = "createNewMail";
+	// *****************
+	// *** Constants ***
+	// *****************
+
+
+
+	// commands ### copy in RecipientListTopic
+	private static final String ITEM_COMPOSE_EMAIL = "Compose Email";
+	private static final String ICON_COMPOSE_EMAIL = "composeEmail.gif";
+	private static final String CMD_COMPOSE_EMAIL = "composeEmail";
 
 	private static final String ITEM_MAKE_APPOINTMENT = "Make Appointment";
 	private static final String ICON_MAKE_APPOINTMENT = "make-appointment.gif";
@@ -66,7 +72,7 @@ public class PersonTopic extends LiveTopic {
 		//
 		// custom commands
 		commands.addSeparator();
-		commands.addCommand(ITEM_SEND_TO_PERSON, CMD_SEND_TO_PERSON, FILESERVER_IMAGES_PATH, ICON_SEND_TO_PERSON);
+		commands.addCommand(ITEM_COMPOSE_EMAIL, CMD_COMPOSE_EMAIL, FILESERVER_IMAGES_PATH, ICON_COMPOSE_EMAIL);
 		commands.addCommand(ITEM_MAKE_APPOINTMENT, CMD_MAKE_APPOINTMENT, FILESERVER_IMAGES_PATH, ICON_MAKE_APPOINTMENT);
 		//
 		// standard commands
@@ -84,27 +90,16 @@ public class PersonTopic extends LiveTopic {
 
 
 	public CorporateDirectives executeCommand(String command, Session session, String topicmapID, String viewmode) {
-		if (command.equals(CMD_SEND_TO_PERSON)) {
+		if (command.equals(CMD_COMPOSE_EMAIL)) {
 			CorporateDirectives directives = new CorporateDirectives();
-			//
-			String emailID = as.getNewTopicID();
-			String personID = getID();
-			PresentableTopic email = new PresentableTopic(emailID, 1, TOPICTYPE_EMAIL, 1, "", personID);
+			LiveTopic email = createChildTopic(TOPICTYPE_EMAIL, SEMANTIC_EMAIL_RECIPIENT, true, session, directives);	// reverseAssocDir=true
 			// set recipient address
-			String emailAdress = as.getEmailAddress(personID);
-			if (emailAdress != null) {
+			String emailAddress = as.getEmailAddress(getID());
+			if (emailAddress != null) {
 				Hashtable props = new Hashtable();
-				props.put(PROPERTY_TO, emailAdress);
-				email.setProperties(props);
+				props.put(PROPERTY_TO, emailAddress);
+				directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, email.getID(), props, new Integer(1));
 			}
-			//
-			String assocID = as.getNewAssociationID();
-			PresentableAssociation assoc = new PresentableAssociation(assocID, 1, ASSOCTYPE_RECIPIENT, 1, "",
-																	  emailID, 1, personID, 1 );
-			directives.add(DIRECTIVE_SHOW_TOPIC, email, Boolean.TRUE);
-			directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, Boolean.TRUE);
-			directives.add(DIRECTIVE_SELECT_TOPIC, emailID);
-			//
 			return directives;
 		} else if (command.equals(CMD_MAKE_APPOINTMENT)) {
 			CorporateDirectives directives = new CorporateDirectives();
