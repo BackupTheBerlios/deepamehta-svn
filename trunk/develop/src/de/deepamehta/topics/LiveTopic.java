@@ -791,21 +791,22 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 
 	/**
-	 * Before an association is retyped, the associationAllowed() is triggered for both involved topics.
-	 * By returning <code>null</code> a topic can prohibit the retyping.
-	 * Additionally any involved topic is able to change the proposed association type.
-	 * ### since 2.0b6-post3 also triggered for create operation
+	 * Before an association is created or retyped, the associationAllowed() hook is triggered for both involved topics.
+	 * By returning <code>null</code> a topic can prohibit the creation resp. retyping.
+	 * Additionally, any involved topic is able to change the proposed association type.
 	 * <p>
 	 * The default implementation returns the proposed association type directly.
+	 * <p>
+	 * References checked: 13.9.2008 (2.0b8)
 	 *
 	 * @param	assocTypeID		the proposed association type
 	 * @param	relTopicID		the other involved topic
 	 *
 	 * @return	ID of the association type, actually used for retyping, resp. <code>null</code> if retyping is prohibited.
 	 *
-	 * @see		de.deepamehta.service.ApplicationService#changeAssociationType
+	 * @see		de.deepamehta.service.ApplicationService#triggerAssociationAllowed
 	 */
-	public String associationAllowed(String assocTypeID, String relTopicID, CorporateDirectives directives) {
+	public String associationAllowed(String assocTypeID, String relTopicID, int relTopicPos, CorporateDirectives directives) {
 		return assocTypeID;
 	}
 

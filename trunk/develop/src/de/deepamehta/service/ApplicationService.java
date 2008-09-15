@@ -2056,8 +2056,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		LiveTopic topic1 = getLiveTopic(topicID1, 1);
 		LiveTopic topic2 = getLiveTopic(topicID2, 1);
 		// --- trigger associationAllowed() hook ---
-		String assocType1 = topic1.associationAllowed(assocTypeID, topicID2, directives);
-		String assocType2 = topic2.associationAllowed(assocTypeID, topicID1, directives);
+		String assocType1 = topic1.associationAllowed(assocTypeID, topicID2, 2, directives);
+		String assocType2 = topic2.associationAllowed(assocTypeID, topicID1, 1, directives);
 		//
 		if (assocType1 == null || assocType2 == null) {
 			directives.add(DIRECTIVE_SHOW_MESSAGE, "Association retyping not possible (prohibited by involved topic)",

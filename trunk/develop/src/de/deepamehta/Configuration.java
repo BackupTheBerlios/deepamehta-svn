@@ -78,7 +78,7 @@ public class Configuration extends Properties {
 	}
 
 	private void loadProperties(String configFile) throws IOException, FileNotFoundException {
-		logger.info("Loading configuration file \"" + configFile + "\"");
+		logger.info("loading configuration file \"" + configFile + "\"");
 		Properties p = new Properties();
 		p.load(new FileInputStream(configFile));
 		putAll(p);

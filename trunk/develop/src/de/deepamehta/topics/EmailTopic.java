@@ -1,5 +1,6 @@
 package de.deepamehta.topics;
 
+import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.PresentableAssociation;
@@ -9,17 +10,17 @@ import de.deepamehta.service.CorporateCommands;
 import de.deepamehta.service.CorporateDirectives;
 import de.deepamehta.service.Session;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -35,11 +36,13 @@ import javax.mail.internet.MimeMultipart;
  * An email.
  * <p>
  * <hr>
- * Last change: 6.9.2008 (2.0b8)<br>
+ * Last change: 15.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
 public class EmailTopic extends LiveTopic {
+
+	private static Logger logger = Logger.getLogger("de.deepamehta");
 
 	private static final String TEXT_NO_SUBJECT = "<No Subject>";
 
@@ -172,6 +175,23 @@ public class EmailTopic extends LiveTopic {
 
 
 
+	// -----------------------------
+	// --- Handling Associations ---
+	// -----------------------------
+
+
+
+	public String associationAllowed(String assocTypeID, String relTopicID, int relTopicPos, CorporateDirectives directives) {
+		String relTypeID = as.getLiveTopic(relTopicID, 1).getType();
+		if ((relTypeID.equals(TOPICTYPE_PERSON) || relTypeID.equals(TOPICTYPE_INSTITUTION) ||
+												   relTypeID.equals(TOPICTYPE_RECIPIENT_LIST)) && relTopicPos == 2) {
+			return SEMANTIC_EMAIL_RECIPIENT;
+		}
+		return super.associationAllowed(assocTypeID, relTopicID, relTopicPos, directives);
+	}
+
+
+
 	// **********************
 	// *** Custom Methods ***
 	// **********************
@@ -179,38 +199,35 @@ public class EmailTopic extends LiveTopic {
 
 
 	private void sendMail(CorporateDirectives directives) throws DeepaMehtaException {
-		Hashtable props = getProperties();
-		if (!props.get(PROPERTY_STATUS).equals(EMAIL_STATE_DRAFT)) {
-			return;
-		}
-		Vector recipientAddresses = collectRecipientAddresses();
-		if (recipientAddresses.size() == 0) {
-			return;
-		}
-		String author = (String) props.get(PROPERTY_FROM);
-		System.out.println(">>> EmailTopic.sendMail(): " + this + ", author=\"" + author + "\"");
-		Properties mprops = new Properties();
-		mprops.put("mail.smtp.host", as.getSMTPServer());	// throws DME
-		javax.mail.Session session = javax.mail.Session.getDefaultInstance(mprops, null);
-		session.setDebug(true);
 		try {
-			MimeMessage msg = new MimeMessage(session);
-			msg.setFrom(new InternetAddress(author));
-			// set "to"
-			InternetAddress[] address = new InternetAddress[recipientAddresses.size()];
-			for (int i = 0; i < recipientAddresses.size(); i++) {
-				address[i] = new InternetAddress((String) recipientAddresses.elementAt(i));
+			Hashtable props = getProperties();
+			if (!props.get(PROPERTY_STATUS).equals(EMAIL_STATE_DRAFT)) {
+				return;
 			}
-			msg.setRecipients(Message.RecipientType.TO, address);
-			// set "subject"
+			// error check
+			Vector recipients = collectRecipients();
+			if (recipients.size() == 0) {
+				// ### TODO: error notification (or disable "Send" command in advance?)
+				return;
+			}
+			// create message
+			MimeMessage msg = new MimeMessage(getMailSession(as.getSMTPServer()));
+			// set sender
+			String author = (String) props.get(PROPERTY_FROM);
+			logger.info(this + ", author=\"" + author + "\"");
+			msg.setFrom(new InternetAddress(author));
+			// set recipients
+			setRecipients(msg, recipients);
+			// set subject
 			String subject = (String) props.get(PROPERTY_SUBJECT);
 			if (subject == null || subject.equals("")) {
 				subject = TEXT_NO_SUBJECT;
 			}
 			msg.setSubject(subject);
-			//
+			// set date
 			Date d = new Date();
-			msg.setSentDate(d);			
+			msg.setSentDate(d);
+			// set text and attachments
 			String msgText = (String) props.get(PROPERTY_TEXT);
 			addAttachs(msgText, msg);
 			//
@@ -218,18 +235,14 @@ public class EmailTopic extends LiveTopic {
 			//
 			setProperty(PROPERTY_STATUS, EMAIL_STATE_SENT);
 			setProperty(PROPERTY_DATE, d.toString());
-		} catch (MessagingException me) {
-			throw new DeepaMehtaException(me.toString());
+		} catch (Throwable e) {
+			throw new DeepaMehtaException(e.toString(), e);
 		}
 	}
 
 	public static void sendMail(String smtpServer, String from, String to, String subject, String body) {
-		Properties props = new Properties();
-		props.put("mail.smtp.host", smtpServer);
-		javax.mail.Session session = javax.mail.Session.getDefaultInstance(props);	// ### authenticator=null
-		session.setDebug(true);	// ###
 		try {
-			MimeMessage msg = new MimeMessage(session);
+			MimeMessage msg = new MimeMessage(getMailSession(smtpServer));
 			msg.setFrom(new InternetAddress(from));
 			msg.setRecipients(Message.RecipientType.TO, to);
 			if (subject == null || subject.equals("")) {
@@ -240,47 +253,93 @@ public class EmailTopic extends LiveTopic {
 			msg.setSentDate(new Date());
 			//
 			Transport.send(msg);
-		} catch (MessagingException me) {
-			throw new DeepaMehtaException(me.toString());
+		} catch (Throwable e) {
+			throw new DeepaMehtaException(e.toString(), e);
 		}
 	}
 
 	// ---
 
-	public Vector getRecipients() {
+	private static javax.mail.Session getMailSession(String smtpServer) {
+		Properties props = new Properties();
+		props.put("mail.smtp.host", smtpServer);
+		javax.mail.Session session = javax.mail.Session.getDefaultInstance(props);	// ### authenticator=null
+		session.setDebug(true);		// ###
+		return session;
+	}
+
+	// ---
+
+	/**
+	 * Returns the email addresses of all recipients.
+	 *
+	 * @return	the email addresses as vector of {@link Recipient}s.
+	 */
+	public Vector collectRecipients() {
+		Vector recipients = new Vector();
+		//
+		Enumeration e = getRecipientTopics().elements();
+		while (e.hasMoreElements()) {
+			BaseTopic recipientTopic = (BaseTopic) e.nextElement();
+			String recipientType = getRecipientType(recipientTopic.getID());
+			if (recipientTopic.getType().equals(TOPICTYPE_RECIPIENT_LIST)) {
+				RecipientListTopic recipientList = (RecipientListTopic) as.getLiveTopic(recipientTopic);
+				Vector recipientTopics = recipientList.getSelectedRecipients();
+				//
+				addRecipientsToVector(recipientTopics, recipientType, recipients);
+			} else {
+				addRecipientToVector(recipientTopic, recipientType, recipients);
+			}
+		}
+		//
+		return recipients;
+	}
+
+	/**
+	 * Returns the recipient topics related to this email.
+	 * Recipient topics are "Person", "Institution", or "Recipient List" topics.
+	 *
+	 * @return	the recipient topics as vector of {@link de.deepamehta.BaseTopic}s.
+	 */
+	public Vector getRecipientTopics() {
 		return as.getRelatedTopics(getID(), SEMANTIC_EMAIL_RECIPIENT, 2);
 	}
 
-	public Vector getRecipientLists() {
-		return as.getRelatedTopics(getID(), SEMANTIC_EMAIL_RECIPIENT, TOPICTYPE_RECIPIENT_LIST, 2);
+	private String getRecipientType(String recipientID) {
+		BaseAssociation assoc = cm.getAssociation(SEMANTIC_EMAIL_RECIPIENT, getID(), recipientID);
+		return cm.getAssociationData(assoc.getID(), 1, PROPERTY_RECIPIENT_TYPE);
 	}
 
-	public Vector collectRecipientAddresses() {
-		Vector recipientAddresses = new Vector();
-		// persons and institutions
-		addRecipientAddresses(getRecipients(), recipientAddresses);
-		// recipient lists
-		Enumeration e = getRecipientLists().elements();
+	private void addRecipientsToVector(Vector recipientTopics, String recipientType, Vector recipients) {
+		Enumeration e = recipientTopics.elements();
 		while (e.hasMoreElements()) {
-			RecipientListTopic recipientList = (RecipientListTopic) as.getLiveTopic((BaseTopic) e.nextElement());
-			addRecipientAddresses(recipientList.getSelectedRecipients(), recipientAddresses);
+			BaseTopic recipientTopic = (BaseTopic) e.nextElement();
+			addRecipientToVector(recipientTopic, recipientType, recipients);
 		}
-		//
-		return recipientAddresses;
 	}
 
-	private void addRecipientAddresses(Vector recipients, Vector recipientAddresses) {
-		Enumeration e = recipients.elements();
-		while (e.hasMoreElements()) {
-			BaseTopic recipient = (BaseTopic) e.nextElement();
-			String emailAddress = as.getEmailAddress(recipient.getID());
-			if (emailAddress != null && emailAddress.length() > 0 && !recipientAddresses.contains(emailAddress)) {
-				recipientAddresses.addElement(emailAddress);
+	private void addRecipientToVector(BaseTopic recipientTopic, String recipientType, Vector recipients) {
+		String emailAddress = as.getEmailAddress(recipientTopic.getID());
+		if (emailAddress != null && emailAddress.length() > 0) { 
+			Recipient recipient = new Recipient(recipientType, emailAddress);
+			if (!recipients.contains(recipient)) {
+				recipients.addElement(recipient);
 			}
 		}
 	}
 
 	// ---
+
+	/**
+	 * @param	recipients	vector of {@link Recipient}s.
+	 */
+	private void setRecipients(MimeMessage msg, Vector recipients) throws MessagingException {
+		Enumeration e = recipients.elements();
+		while (e.hasMoreElements()) {
+			Recipient recipient = (Recipient) e.nextElement();
+			msg.addRecipient(recipient.type, new InternetAddress(recipient.emailAddress));
+		}
+	}
 
 	public void addAttachs(String msgText, MimeMessage msg) throws MessagingException {
 		Enumeration docs = as.getRelatedTopics(getID(), SEMANTIC_EMAIL_ATTACHMENT, 2).elements();
@@ -309,6 +368,7 @@ public class EmailTopic extends LiveTopic {
 				mp.addBodyPart(mbp);
 			}
 		}
+		// multi part or not
 		if (mp != null) {
 			msg.setContent(mp);
 		} else {
@@ -433,5 +493,38 @@ public class EmailTopic extends LiveTopic {
 			sTextOut += s;
 		}
 		return sTextOut;
+	}
+
+
+
+	// *********************
+	// *** Inner Classes ***
+	// *********************
+
+
+
+	private class Recipient {
+
+		Message.RecipientType type;
+		String emailAddress;
+
+		Recipient(String recipientType, String emailAddress) {
+			if (recipientType.equals(RECIPIENT_TYPE_TO) || recipientType.equals("")) {
+				this.type = Message.RecipientType.TO;
+			} else if (recipientType.equals(RECIPIENT_TYPE_CC)) {
+				this.type = Message.RecipientType.CC;
+			} else if (recipientType.equals(RECIPIENT_TYPE_BCC)) {
+				this.type = Message.RecipientType.BCC;
+			} else {
+				throw new DeepaMehtaException("unexpected recipient type: \"" + recipientType + "\"");
+			}
+			//
+			this.emailAddress = emailAddress;
+		}
+
+		public boolean equals(Object o) {
+			Recipient r = (Recipient) o;
+			return r.type == type && r.emailAddress.equals(emailAddress);
+		}
 	}
 }

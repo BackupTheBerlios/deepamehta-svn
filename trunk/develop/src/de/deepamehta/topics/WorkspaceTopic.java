@@ -28,10 +28,9 @@ import java.util.Vector;
  * this <code>WorkspaceTopic</code> is renamed.
  * <p>
  * <hr>
- * Last functional change: 20.5.2008 (2.0b8)<br>
- * Last documentation update: 29.4.2001 (2.0a10-pre7)<br>
+ * Last change: 14.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public class WorkspaceTopic extends LiveTopic {
 
@@ -273,12 +272,11 @@ public class WorkspaceTopic extends LiveTopic {
 	/**
 	 * Workspaces are reacting if a membership association is connected.
 	 */
-	public String associationAllowed(String assocTypeID, String relTopicID, CorporateDirectives directives) {
-		if (!assocTypeID.equals(SEMANTIC_MEMBERSHIP)) {
-			return super.associationAllowed(assocTypeID, relTopicID, directives);
+	public String associationAllowed(String assocTypeID, String relTopicID, int relTopicPos, CorporateDirectives directives) {
+		if (assocTypeID.equals(SEMANTIC_MEMBERSHIP)) {
+			return as.getMembershipType(getID(), directives);
 		}
-		//
-		return as.getMembershipType(getID(), directives);
+		return super.associationAllowed(assocTypeID, relTopicID, relTopicPos, directives);
 	}
 
 	public void associated(String assocTypeID, String relTopicID, Session session, CorporateDirectives directives) {

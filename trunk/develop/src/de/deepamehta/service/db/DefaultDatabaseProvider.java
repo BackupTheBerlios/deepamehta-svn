@@ -78,7 +78,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		String libs = c2.getProperty(ConfigurationConstants.Database.DB_LIBS);
 		String driverClazz = c2.getProperty(ConfigurationConstants.Database.DB_DRIVER);
 		//
-		logger.info("Using Database\n" + 
+		logger.info("using Database\n" + 
 			"    Type: " + dbType + "\n" +
 			"    URL: " + jdbcURL + "\n" +
 			"    Driver: " + driverClazz);
@@ -119,7 +119,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 		Connection con = driver.connect(jdbcURL, conProps);
 		con.setAutoCommit(true);
 		allCons.add(con);
-		logger.info("Number of database connections: " + allCons.size() + " total, " + freeCons.size() + " free");
+		logger.info("number of database connections: " + allCons.size() + " total, " + freeCons.size() + " free");
 		return con;
 	}
 
@@ -148,7 +148,7 @@ public class DefaultDatabaseProvider implements DatabaseProvider {
 
 	public void release() {
 		try {
-			logger.info("Number of database connections: " + allCons.size() + " total, " + freeCons.size() + " free");
+			logger.info("number of database connections: " + allCons.size() + " total, " + freeCons.size() + " free");
 			closeAllCons();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Error releasing database provider ...", e);

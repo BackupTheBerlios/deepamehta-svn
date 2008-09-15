@@ -26,7 +26,7 @@ import java.util.Vector;
  * </ol>
  * <p>
  * <hr>
- * Last change: 5.9.2008 (2.0b8)<br>
+ * Last change: 15.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -71,7 +71,8 @@ public interface DeepaMehtaConstants {
 	static final String ACTIVE_TOPIC_PACKAGE = "de.deepamehta.topics";
 	static final String ACTIVE_ASSOC_PACKAGE = "de.deepamehta.assocs";
 	static final String CONTAINER_SUFFIX_NAME = "Search";
-	// properties
+
+	// --- properties ---
 	static final String PROPERTY_LANGUAGE = "Language";
 	static final String PROPERTY_SERVER_NAME = "Server Name";
 	static final String PROPERTY_CLIENT_NAME = "Client Name";
@@ -92,6 +93,7 @@ public interface DeepaMehtaConstants {
 	static final String PROPERTY_FROM = "From";
 	static final String PROPERTY_TO = "To";
 	static final String PROPERTY_STATUS = "Status";
+	static final String PROPERTY_RECIPIENT_TYPE = "Recipient Type";
 	static final String PROPERTY_DATE = "Date";
 	static final String PROPERTY_BEGIN_DATE = "Begin Date";
 	static final String PROPERTY_BEGIN_TIME = "Begin Time";
@@ -113,14 +115,10 @@ public interface DeepaMehtaConstants {
 	static final String PROPERTY_URL = "URL";
 	static final String PROPERTY_PLURAL_NAME = "Plural Name";
 	static final String PROPERTY_FIRST_NAME = "First Name";
-	// ### static final String PROPERTY_SURNAME = "Surname";
 	static final String PROPERTY_GENDER = "Gender";
 	static final String PROPERTY_BIRTHDAY = "Birthday";
 	static final String PROPERTY_STREET = "Street";
 	static final String PROPERTY_POSTAL_CODE = "Postal Code";
-	// ### static final String PROPERTY_PHONE_NUMBER = "Phone Number";
-	// ### static final String PROPERTY_FAX_NUMBER = "Fax Number";
-	// ### static final String PROPERTY_MOBILE_NUMBER = "Mobile Number";
 	static final String PROPERTY_IMPLEMENTATION = "Custom Implementation";
 	static final String PROPERTY_DISABLED = "Disabled";
 	static final String PROPERTY_HIDDEN_TOPIC_NAMES = "Hidden Topic Names";
@@ -136,10 +134,8 @@ public interface DeepaMehtaConstants {
 	static final String PROPERTY_ASSOCIATION_TYPE_ID = "Association Type ID";	// "Relation"
 	static final String PROPERTY_WEB_INFO = "Web Info";							// "Relation"
 	static final String PROPERTY_WEB_FORM = "Web Form";							// "Relation"
-	// ### static final String PROPERTY_STRONG = "Strong";
 	static final String PROPERTY_PUBLIC = "Public";
 	static final String PROPERTY_DEFAULT_WORKSPACE = "Default";
-	// ### static final String PROPERTY_CW_ROOT_DIR = "Root Directory";			// "CorporateWeb Settings"
 	static final String PROPERTY_CW_BASE_URL = "Base URL";						// "CorporateWeb Settings"
 	static final String PROPERTY_SMTP_SERVER = "SMTP Server";					// "CorporateWeb Settings"
 	static final String PROPERTY_GOOGLE_KEY = "Google Key";						// "CorporateWeb Settings"
@@ -151,7 +147,8 @@ public interface DeepaMehtaConstants {
 	static final String PROPERTY_RESULT = "Result";								// "Search"
 	static final String PROPERTY_ROLE_EDITOR = "Editor";						// "Membership"
 	static final String PROPERTY_ROLE_PUBLISHER = "Publisher";					// "Membership"
-	// property values
+
+	// --- property values ---
 	static final String PERMISSION_VIEW = "view";
 	static final String PERMISSION_CREATE = "create";
 	static final String PERMISSION_CREATE_IN_WORKSPACE = "create in workspace";
@@ -165,11 +162,11 @@ public interface DeepaMehtaConstants {
 	static final String WEB_FORM_DEEP = "Deeply Related Form";
 	static final String GENDER_MALE = "Male";
 	static final String GENDER_FEMALE = "Female";
-	// ### static final String WEB_FORM_EDIT_TOPIC = "Edit Topic Name";
-	// ### static final String PROPERTY_LAYOUT_SUPER_FIRST = "Supertypes first";
-	// ### static final String PROPERTY_LAYOUT_SUB_FIRST = "Subtypes first";
+	static final String RECIPIENT_TYPE_TO = "To";
+	static final String RECIPIENT_TYPE_CC = "Cc";
+	static final String RECIPIENT_TYPE_BCC = "Bcc";
 	//
-	static final String COMMAND_SEPARATOR = "|";	// ### was ":", but appears in URLs and Windows-Paths
+	static final String COMMAND_SEPARATOR = "|";	// Note: was ":", but appears in URLs and Windows-Paths
 	static final String VALUE_NOT_SET = "-";
 	static final String DATE_SEPARATOR = "/";
 	static final String TIME_SEPARATOR = ":";
