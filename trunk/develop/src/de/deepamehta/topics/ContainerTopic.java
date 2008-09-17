@@ -89,7 +89,7 @@ import java.util.logging.Logger;
  * </ol>
  * <p>
  * <hr>
- * Last change: 13.9.2008 (2.0b8)<br>
+ * Last change: 17.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -281,7 +281,9 @@ public abstract class ContainerTopic extends LiveTopic {
 			String action = url.substring(urlPrefix.length());
 			if (action.startsWith(ACTION_REVEAL_TOPIC)) {
 				String id = action.substring(ACTION_REVEAL_TOPIC.length() + 1);	// +1 to skip /
-				revealResultTopic(id, topicmapID, directives);
+				revealResultTopic(id, topicmapID, true, directives);	// doSelectTopic=true
+			} else if (action.startsWith(ACTION_REVEAL_ALL)) {
+				revealAll(topicmapID, directives);
 			} else {
 				throw new DeepaMehtaException("hyperlink action \"" + action + "\" not recognized");
 			}
@@ -290,7 +292,7 @@ public abstract class ContainerTopic extends LiveTopic {
 			// reveal one topic
 			CorporateDirectives directives = new CorporateDirectives();
 			String id = st.nextToken();
-			revealResultTopic(id, topicmapID, directives);
+			revealResultTopic(id, topicmapID, true, directives);	// doSelectTopic=true
 			return directives;
 		} else if (cmd.equals(CMD_GROUP_BY)) {
 			// grouping
@@ -414,13 +416,13 @@ public abstract class ContainerTopic extends LiveTopic {
 	// - A topic container returns the name of the topic type
 	// - A element container returns the name of the element type
 	//
-	// ### Since CM 2.25 this is not needed to abstract anymore, see TopicContainerTopic.setContainerType()
+	// ### Since CM 2.25 this is not needed to be abstract anymore, see TopicContainerTopic.setContainerType()
 	// ### think again about element container (see above)
 	protected abstract String getContentType();
 
 	// Topic type ID of the content topics
 	//
-	// ### Since CM 2.25 this is not needed to abstract anymore, see TopicContainerTopic.setContainerType()
+	// ### Since CM 2.25 this is not needed to be abstract anymore, see TopicContainerTopic.setContainerType()
 	protected abstract String getContentTypeID();
 
 	/**
@@ -459,7 +461,7 @@ public abstract class ContainerTopic extends LiveTopic {
 
 	// ### in case of a topic container "id" is a topic ID
 	// ### in case of an element container "id" is an element ID
-	protected abstract String revealTopic(String id, String topicmapID, CorporateDirectives directives);
+	protected abstract String revealTopic(String id, String topicmapID, boolean doSelectTopic, CorporateDirectives directives);
 
 
 
@@ -577,8 +579,8 @@ public abstract class ContainerTopic extends LiveTopic {
 		}
 	}
 
-	private void revealResultTopic(String id, String topicmapID, CorporateDirectives directives) {
-		String topicID = revealTopic(id, topicmapID, directives);	// call abstract method
+	private void revealResultTopic(String id, String topicmapID, boolean doSelectTopic, CorporateDirectives directives) {
+		String topicID = revealTopic(id, topicmapID, doSelectTopic, directives);	// call abstract method
 		// --- reveal association(s) if relation filter is set ---
 		if (containerRelatedTopic != null) {
 			Vector assocs = cm.getAssociations(topicID, containerRelatedTopic.getID(), true);	// ignoreDirection=true
@@ -587,6 +589,14 @@ public abstract class ContainerTopic extends LiveTopic {
 				BaseAssociation assoc = (BaseAssociation) e.nextElement();
 				directives.add(DIRECTIVE_SHOW_ASSOCIATION, new PresentableAssociation(assoc));
 			}
+		}
+	}
+
+	private void revealAll(String topicmapID, CorporateDirectives directives) {
+		Enumeration e = getContent().elements();
+		while (e.hasMoreElements()) {
+			String[] topic = (String[]) e.nextElement();
+			revealResultTopic(topic[0], topicmapID, false, directives);		// doSelectTopic=false
 		}
 	}
 

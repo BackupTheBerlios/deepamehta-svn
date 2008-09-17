@@ -15,6 +15,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.logging.Logger;
 
 
 
@@ -25,7 +26,7 @@ import java.util.Hashtable;
  * {@link PresentationTopic}'s, {@link PresentationAssociation}'s and {@link PresentationType}'s.
  * <p>
  * <hr>
- * Last change: 8.9.2008 (2.0b8)<br>
+ * Last change: 17.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -38,6 +39,8 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 	// **************
 
 
+
+	private static Logger logger = Logger.getLogger("de.deepamehta");
 
 	/**
 	 * ### The client who deploys this <code>PresentationTopicMap</code>
@@ -368,14 +371,13 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 				x = (int) (distMax * Math.random()) + FREE_MIN;
 				y = (int) (distMax * Math.random()) + FREE_MIN;
 				if (positionIsFree(x, y)) {
-					// ### System.out.println(">>> found free position after " + (i + 1) + " tries");
 					free = true;
 					break;
 				}
 			}
 			// increase the radius while no free position is found
 			if (!free) {
-				System.out.println(">>> no free position found in " + distMax / 4 +
+				logger.fine("no free position found in " + distMax / 4 +
 					" tries -- increase square to " + (distMax + FREE_MAX));
 				distMax += FREE_MAX;				
 			}
@@ -399,13 +401,12 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 				dx = (int) (distMax * Math.random()) - distMax / 2;
 				dy = (int) (distMax * Math.random()) - distMax / 2;
 				if (positionIsFree(p.x + dx, p.y + dy)) {
-					// ### System.out.println(">>> found free position after " + (i + 1) + " tries");
 					free = true;
 					break;
 				}
 			}
 			if (!free) {
-				System.out.println(">>> no free position found in " + distMax / 4 +
+				logger.fine("no free position found in " + distMax / 4 +
 					" tries -- increase radius to " + (distMax + NEAR_MAX));
 				distMax += NEAR_MAX;				
 			}
@@ -420,16 +421,13 @@ public class PresentationTopicMap extends PresentableTopicMap implements DeepaMe
 	 */
 	private boolean positionIsFree(int x, int y) {
 		Enumeration e = getTopics().elements();  // getTopics() is from BaseTopicMap
-		PresentationTopic topic;
-		boolean free = true;
 		while (e.hasMoreElements()) {
-			topic = (PresentationTopic) e.nextElement();
+			PresentationTopic topic = (PresentationTopic) e.nextElement();
 			if (isTooNear(topic.getGeometry(), x, y)) {
-				free = false;
-				break;
+				return false;
 			}
 		}
-		return free;
+		return true;
 	}
 
 	/**

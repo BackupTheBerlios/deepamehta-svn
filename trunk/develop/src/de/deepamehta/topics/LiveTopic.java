@@ -50,7 +50,7 @@ import java.util.logging.Level;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last change: 13.9.2008 (2.0b8)<br>
+ * Last change: 17.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -1358,7 +1358,11 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		return topic;
 	}
 
-	// --- revealTopic (2 forms) ---
+	// --- revealTopic (3 forms) ---
+
+	public final void revealTopic(String topicID, String semantic, String topicmapID, CorporateDirectives directives) {
+		revealTopic(topicID, semantic, topicmapID, true, directives);	// doSelectTopic=true
+	}
 
 	/**
 	 * Extends the specified directives to perform this task: Create an association to the specified existing
@@ -1368,14 +1372,17 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	 *
 	 * @see		TopicContainerTopic#revealTopic
 	 */
-	public final void revealTopic(String topicID, String semantic, String topicmapID, CorporateDirectives directives) {
+	public final void revealTopic(String topicID, String semantic, String topicmapID, boolean doSelectTopic,
+																						CorporateDirectives directives) {
 		// ### compare to ElementContainerTopic.revealTopic()
 		PresentableTopic topic = as.createPresentableTopic(cm.getTopic(topicID, 1), getID(), topicmapID);
 		PresentableAssociation assoc = as.createPresentableAssociation(semantic,
 			getID(), getVersion(), topicID, 1, true);		// performExistenceCheck=true
 		directives.add(DIRECTIVE_SHOW_TOPIC, topic);
 		directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, Boolean.TRUE);			// ### should evoke conditionally?
-		directives.add(DIRECTIVE_SELECT_TOPIC, topicID);
+		if (doSelectTopic) {
+			directives.add(DIRECTIVE_SELECT_TOPIC, topicID);
+		}
 	}
 
 	/**

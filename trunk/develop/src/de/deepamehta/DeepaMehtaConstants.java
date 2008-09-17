@@ -251,6 +251,8 @@ public interface DeepaMehtaConstants {
 	static final int AUTO_SCROLL_DISTANCE = 20;					// ### not yet used
 	// text editor controls
 	static final String[] TEXT_EDITOR_IMAGES = {"bold.gif", "italic.gif", "underline.gif"};
+	// search topics
+	static final String BUTTON_REVEAL_ALL = "button-revealall.png";
 
 	static final String[][] strings = {
 		// --- Commands ---
@@ -440,6 +442,7 @@ public interface DeepaMehtaConstants {
 
 	// hyperlink actions
 	static final String ACTION_REVEAL_TOPIC = "revealTopic";
+	static final String ACTION_REVEAL_ALL = "revealAll";
 
 
 

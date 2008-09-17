@@ -66,7 +66,7 @@ import java.util.Vector;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last change: 13.9.2008 (2.0b8)<br>
+ * Last change: 14.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -1017,6 +1017,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		return directives;
 	}
 
+	/**
+	 * References checked: 15.9.2008 (2.0b8)
+	 *
+	 * @see		#createNewContainer
+	 */
 	private Hashtable buildContainerProperties(String nameFilter, Hashtable propertyFilter, String relatedTopicID,
 											String relatedTopicSemantic, int topicCount, Vector topics, String containerLabel) {
 		Hashtable containerProps = (Hashtable) propertyFilter.clone();
@@ -1061,9 +1066,12 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 				}
 				String iconfile = topic.getAppearanceParam();
 				String id = topic.fromDatasource() ? topic.getOriginalID() : topic.getID();
-				html.append("<img src=\"" + FILESERVER_ICONS_PATH + iconfile + "\"> ");
-				html.append("<a href=\"http://" + ACTION_REVEAL_TOPIC + "/" + id + "\">" + topic.getName() + "</a><br>");
+				html.append("<a href=\"http://" + ACTION_REVEAL_TOPIC + "/" + id + "\">" +
+					"<img src=\"" + FILESERVER_ICONS_PATH + iconfile + "\" border=\"0\"> " + topic.getName() + "</a><br>");
+				// Note: style="border-style: none" instead of border="0" doesn't work
 			}
+			html.append("<br><a href=\"http://" + ACTION_REVEAL_ALL + "\">" +
+				"<img src=\"" + FILESERVER_IMAGES_PATH + BUTTON_REVEAL_ALL + "\" border=\"0\"></a>");
 		} else {
 			html.append("<p><i>Search result too large to be shown (" + topicCount + " entries).</i></p>");
 			html.append("<p><i>Refine your search and press return inside an input field.</i></p>");

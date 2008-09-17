@@ -324,18 +324,21 @@ public abstract class ElementContainerTopic extends ContainerTopic {
 	/**
 	 * @see		ContainerTopic#executeCommand
 	 */
-	protected String revealTopic(String id, String topicmapID, CorporateDirectives directives) throws DeepaMehtaException {
+	protected String revealTopic(String id, String topicmapID, boolean doSelectTopic, CorporateDirectives directives) throws DeepaMehtaException {
 		try {
 			// query the data source
 			Hashtable elementData = dataSource.queryElement(getContentType(), id);
 			//
 			PresentableTopic topic = createTopicFromElement(id, elementData);
 			String topicID = topic.getID();
+			// ### could probably call LiveTopic.revealTopic() instead (slight modification required there)
 			PresentableAssociation assoc = as.createPresentableAssociation(SEMANTIC_CONTAINER_HIERARCHY,
 				getID(), getVersion(), topicID, 1, true);
 			directives.add(DIRECTIVE_SHOW_TOPIC, topic, Boolean.TRUE);
 			directives.add(DIRECTIVE_SHOW_ASSOCIATION, assoc, Boolean.TRUE);
-			directives.add(DIRECTIVE_SELECT_TOPIC, topicID);
+			if (doSelectTopic) {
+				directives.add(DIRECTIVE_SELECT_TOPIC, topicID);
+			}
 			//
 			return topicID;
 		} catch (Exception e) {

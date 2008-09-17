@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * {@link de.deepamehta.service.CorporateMemory corporate memory}.
  * <p>
  * <hr>
- * Last change: 13.9.2008 (2.0b8)<br>
+ * Last change: 17.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -189,9 +189,9 @@ public class TopicContainerTopic extends ContainerTopic {
 		return new CorporateDirectives();
 	}
 
-	protected String revealTopic(String topicID, String topicmapID, CorporateDirectives directives) {
+	protected String revealTopic(String topicID, String topicmapID, boolean doSelectTopic, CorporateDirectives directives) {
 		try {
-			revealTopic(topicID, SEMANTIC_CONTAINER_HIERARCHY, topicmapID, directives);
+			revealTopic(topicID, SEMANTIC_CONTAINER_HIERARCHY, topicmapID, doSelectTopic, directives);	// from LiveTopic
 			//
 			return topicID;
 		} catch (Exception e) {
