@@ -25,7 +25,7 @@ import java.util.Vector;
 /**
  * <p>
  * <hr>
- * Last change: 7.8.2008 (2.0b8)<br>
+ * Last change: 19.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -308,7 +308,7 @@ public class CorporateDirectives extends Directives {
 					break;
 				case DIRECTIVE_SHOW_TOPIC_PROPERTIES:
 					topicID = (String) param1;
-					setTopicProperties(topicID, ((Integer) param3).intValue(), (Hashtable) param2, as, session, topicMapID, viewMode);
+					setTopicProperties(topicID, ((Integer) param3).intValue(), (Hashtable) param2, as, session, topicMapID);
 					// Note: param4 is set programatically
 					directive.param4 = as.getTopicPropertyBaseURLs(topicID, 1);
                     // ### was null, null but "topicMapID", "viewMode" is required
@@ -333,8 +333,7 @@ public class CorporateDirectives extends Directives {
 					addToSyncList(syncList, topicID);
 					break;
 				case DIRECTIVE_SET_TOPIC_LABEL:
-					setTopicProperties((String) param1, ((Integer) param3).intValue(),
-						(Hashtable) param4, as, session, topicMapID, viewMode);
+					setTopicProperties((String) param1, ((Integer) param3).intValue(), (Hashtable) param4, as, session, topicMapID);
 					break;
 				case DIRECTIVE_SET_TOPIC_ICON:
 					topicID = (String) param1;
@@ -837,8 +836,8 @@ public class CorporateDirectives extends Directives {
 	 *
 	 * @see		#updateCorporateMemory
 	 */
-	private void setTopicProperties(String topicID, int version, Hashtable props, ApplicationService as,
-                                        			Session session, String topicmapID, String viewmode) {
+	private void setTopicProperties(String topicID, int version, Hashtable props, ApplicationService as, Session session,
+																										String topicmapID) {
 		if (props != null) {
 			// ### triggerPropertiesChangedHook? is obsolete. Implicitely set to true.
 			// ### true required while changing e.g. "Icon" property

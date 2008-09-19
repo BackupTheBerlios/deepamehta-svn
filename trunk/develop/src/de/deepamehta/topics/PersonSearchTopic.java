@@ -107,9 +107,9 @@ public class PersonSearchTopic extends TopicContainerTopic {
 		Enumeration e = getContent().elements();
 		while (e.hasMoreElements()) {
 			String personID = ((String[]) e.nextElement())[0];
-			recipientList.selectRecipient(personID, directives, false);		// updateView=false
+			recipientList.selectRecipient(personID, directives, false);		// doUpdateView=false
 		}
 		//
-		recipientList.updateView(directives);
+		recipientList.updateRendering(directives, true);	// doUpdateView=true
 	}
 }

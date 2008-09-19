@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * A list of email recipients.
  * <p>
  * <hr>
- * Last change: 13.9.2008 (2.0b8)<br>
+ * Last change: 19.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -76,9 +76,22 @@ public class RecipientListTopic extends LiveTopic {
 	public CorporateDirectives evoke(Session session, String topicmapID, String viewmode) {
 		CorporateDirectives directives = super.evoke(session, topicmapID, viewmode);
 		// initial rendering
-		updateView(directives);
+		updateRendering(directives, true);	// doUpdateView=true
 		//
 		return directives;
+	}
+
+
+
+	// ------------------------------------------
+	// --- Reacting upon dedicated situations ---
+	// ------------------------------------------
+
+
+
+	public void clicked(String topicmapID, Session session, CorporateDirectives directives) {
+		updateRendering(directives, false);	// doUpdateView=false
+		super.clicked(topicmapID, session, directives);
 	}
 
 
@@ -131,7 +144,7 @@ public class RecipientListTopic extends LiveTopic {
 			String action = url.substring(urlPrefix.length());
 			if (action.startsWith(ACTION_SELECT_RECIPIENT)) {
 				String topicID = action.substring(ACTION_SELECT_RECIPIENT.length() + 1);	// +1 to skip /
-				selectRecipient(topicID, directives, true);		// updateView=true
+				selectRecipient(topicID, directives, true);		// doUpdateView=true
 			} else {
 				// delegate to super class to handle ACTION_REVEAL_TOPIC
 				return super.executeCommand(command, session, topicmapID, viewmode);
@@ -183,26 +196,36 @@ public class RecipientListTopic extends LiveTopic {
 	 * @see		#executeCommand
 	 * @see		PersonSearchTopic#createRecipientList
 	 */
-	void selectRecipient(String recipientID, CorporateDirectives directives, boolean updateView) {
+	void selectRecipient(String recipientID, CorporateDirectives directives, boolean doUpdateView) {
 		as.toggleAssociation(getID(), recipientID, SEMANTIC_SELECTED_RECIPIENT);
-		if (updateView) {
-			updateView(directives);
+		if (doUpdateView) {
+			updateRendering(directives, true);	// doUpdateView=true
 		}
 	}
 
 	/**
-	 * References checked: 13.9.2008 (2.0b8)
+	 * Renders the result list into the "Description" property.
+	 * <p>
+	 * References checked: 19.9.2008 (2.0b8)
+	 *
+	 * @param	doUpdateView	if <code>true</code>, a <code>DIRECTIVE_SHOW_TOPIC_PROPERTIES</code> is build.
+	 *							if <code>false</code>, the property is written directly to corporate memory.
 	 *
 	 * @see		#evoke
+	 * @see		#clicked
 	 * @see		#selectRecipient
 	 * @see		PersonSearchTopic#createRecipientList
 	 */
-	void updateView(CorporateDirectives directives) {
+	void updateRendering(CorporateDirectives directives, boolean doUpdateView) {
 		String html = renderRecipientList();
 		//
-		Hashtable props = new Hashtable();
-		props.put(PROPERTY_DESCRIPTION, html);
-		directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, getID(), props, new Integer(1));
+		if (doUpdateView) {
+			Hashtable props = new Hashtable();
+			props.put(PROPERTY_DESCRIPTION, html);
+			directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, getID(), props, new Integer(1));
+		} else {
+			cm.setTopicData(getID(), 1, PROPERTY_DESCRIPTION, html);
+		}
 	}
 
 	// ---
@@ -216,14 +239,14 @@ public class RecipientListTopic extends LiveTopic {
 		// persons
 		Enumeration e = persons.elements();
 		while (e.hasMoreElements()) {
-			BaseTopic recipient = (BaseTopic) e.nextElement();
-			renderRecipient(recipient, selectedRecipients, html);
+			BaseTopic person = (BaseTopic) e.nextElement();
+			renderRecipient(person, selectedRecipients, html);
 		}
 		// institutions
 		e = institutions.elements();
 		while (e.hasMoreElements()) {
-			BaseTopic recipient = (BaseTopic) e.nextElement();
-			renderRecipient(recipient, selectedRecipients, html);
+			BaseTopic institution = (BaseTopic) e.nextElement();
+			renderRecipient(institution, selectedRecipients, html);
 		}
 		//
 		html.append("</body></html>");

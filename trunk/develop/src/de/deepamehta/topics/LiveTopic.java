@@ -50,7 +50,7 @@ import java.util.logging.Level;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last change: 17.9.2008 (2.0b8)<br>
+ * Last change: 19.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -289,6 +289,10 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		return directives;
 	}
 
+	public void clicked(String topicmapID, Session session, CorporateDirectives directives) {
+		directives.add(DIRECTIVE_SELECT_TOPIC, getID());
+	}
+
 	/**
 	 * @see		de.deepamehta.service.ApplicationService#moveTopic
 	 */
@@ -490,7 +494,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 			int y = Integer.parseInt(st.nextToken());
 			directives.add(as.showViewMenu(topicmapID, viewmode, x, y, session));
 		} else if (cmd.equals(CMD_SELECT_TOPIC)) {
-			directives.add(DIRECTIVE_SELECT_TOPIC, getID());
+			clicked(topicmapID, session, directives);
 		} else if (cmd.equals(CMD_SELECT_TOPICMAP)) {
 			directives.add(DIRECTIVE_SELECT_TOPICMAP);
 		} else if (cmd.equals(CMD_ASSIGN_ICON)) {
