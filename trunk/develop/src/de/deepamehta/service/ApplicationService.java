@@ -66,7 +66,7 @@ import java.util.Vector;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last change: 14.9.2008 (2.0b8)<br>
+ * Last change: 21.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -1060,14 +1060,16 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			Enumeration e = topics.elements();
 			while (e.hasMoreElements()) {
 				PresentableTopic topic = (PresentableTopic) e.nextElement();
-				int appMode = topic.getAppearanceMode();
+				/* ### int appMode = topic.getAppearanceMode();
 				if (appMode != APPEARANCE_CUSTOM_ICON) {
 					System.out.println("*** appMode=" + appMode + " -- " + topic);
 				}
-				String iconfile = topic.getAppearanceParam();
+				String iconfile = topic.getAppearanceParam(); */
+				String iconfile = getIconfile(topic);
 				String id = topic.fromDatasource() ? topic.getOriginalID() : topic.getID();
-				html.append("<a href=\"http://" + ACTION_REVEAL_TOPIC + "/" + id + "\">" +
-					"<img src=\"" + FILESERVER_ICONS_PATH + iconfile + "\" border=\"0\"> " + topic.getName() + "</a><br>");
+				String link = "<a href=\"http://" + ACTION_REVEAL_TOPIC + "/" + id + "\">";
+				html.append(link + "<img src=\"" + FILESERVER_ICONS_PATH + iconfile + "\" border=\"0\"></a> ");
+				html.append(link + topic.getName() + "</a><br>");
 				// Note: style="border-style: none" instead of border="0" doesn't work
 			}
 			html.append("<br><a href=\"http://" + ACTION_REVEAL_ALL + "\">" +
@@ -4529,10 +4531,14 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 
 	/**
-	 * Creates a vector of {@link de.deepamehta.PresentableTopic}s corresponding to
-	 * the {@link de.deepamehta.BaseTopic}s in the specified vector.
+	 * Creates {@link de.deepamehta.PresentableTopic}s from a set of {@link de.deepamehta.BaseTopic}s.
+	 * The geometry is set to be "near" (<code>GEOM_MODE_NEAR</code>) to a reference topic.
+	 * The appearance is set to "individual" (<code>APPEARANCE_CUSTOM_ICON</code>).
+	 * ### The appearance must not be set this way. If a PresentableTopic with APPEARANCE_DEFAULT is about to
+	 * ### be displayed inside a topicmap it would loose its icon-change behavoir if the type-icon changes.
+	 * ### APPEARANCE_DEFAULT must not be overridden with APPEARANCE_CUSTOM_ICON.
 	 * <p>
-	 * References checked: 7.8.2008 (2.0b8)
+	 * References checked: 21.9.2008 (2.0b8)
 	 *
 	 * @return	Vector of {@link de.deepamehta.PresentableTopic}
 	 *
@@ -4545,7 +4551,9 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		while (e.hasMoreElements()) {
 			BaseTopic t = (BaseTopic) e.nextElement();
 			PresentableTopic topic = createPresentableTopic(t, nearTopicID, topicmapID);
-			topic.setIcon(getIconfile(t));
+			// ### init appearance ###
+			// ### topic.setIcon(getIconfile(t));
+			//
 			topics.addElement(topic);
 		}
 		return topics;

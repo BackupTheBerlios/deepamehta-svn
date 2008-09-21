@@ -38,7 +38,7 @@ import java.util.Hashtable;
  * </UL>
  * <P>
  * <HR>
- * Last change: 7.8.2008 (2.0b8)<BR>
+ * Last change: 21.9.2008 (2.0b8)<BR>
  * J&ouml;rg Richter<BR>
  * jri@deepamehta.de
  */
@@ -193,26 +193,18 @@ public class PresentableTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * @see		de.deepamehta.topics.ElementContainerTopic#createNewContainer
 	 * @see		de.deepamehta.topics.ElementContainerTopic#createTopicFromElement
 	 */
-	public PresentableTopic(String id, int version, String type, int typeVersion,
-													String name, Point geometry) {
-		super(id, version, type, typeVersion, name);
-		this.geomMode = GEOM_MODE_ABSOLUTE;
-		this.geometry = geometry;
-		this.appMode = APPEARANCE_DEFAULT;
-		this.topicLabel = "";
+	public PresentableTopic(String id, int version, String type, int typeVersion, String name,
+																		Point geometry) {
+		this(id, version, type, typeVersion, name, geometry, "");		// topicLabel=""
 	}
 
-	public PresentableTopic(String id, int version, String type, int typeVersion,
-													String name, String nearTopicID) {
-		super(id, version, type, typeVersion, name);
-		this.geomMode = GEOM_MODE_NEAR;
-		this.nearTopicID = nearTopicID;
-		this.appMode = APPEARANCE_DEFAULT;
-		this.topicLabel = "";
+	public PresentableTopic(String id, int version, String type, int typeVersion, String name,
+																		String nearTopicID) {
+		this(id, version, type, typeVersion, name, nearTopicID, "");	// topicLabel=""
 	}
 
-	public PresentableTopic(String id, int version, String type, int typeVersion,
-													String name, String nearTopicID, Point offset) {
+	public PresentableTopic(String id, int version, String type, int typeVersion, String name,
+																		String nearTopicID, Point offset) {
 		super(id, version, type, typeVersion, name);
 		this.geomMode = GEOM_MODE_RELATIVE;
 		this.nearTopicID = nearTopicID;
@@ -224,8 +216,8 @@ public class PresentableTopic extends BaseTopic implements DeepaMehtaConstants {
 	/**
 	 * @see		de.deepamehta.service.ApplicationService#createNewContainer
 	 */
-	public PresentableTopic(String id, int version, String type, int typeVersion,
-							String name, Point geometry, String topicLabel) {
+	public PresentableTopic(String id, int version, String type, int typeVersion, String name,
+																		Point geometry, String topicLabel) {
 		super(id, version, type, typeVersion, name);
 		this.geomMode = GEOM_MODE_ABSOLUTE;
 		this.geometry = geometry;
@@ -237,8 +229,8 @@ public class PresentableTopic extends BaseTopic implements DeepaMehtaConstants {
 	 * @see		de.deepamehta.service.ApplicationService#getRelatedTopics
 	 * @see		de.deepamehta.topics.ContainerTopic#createPresentableTopic
 	 */
-	public PresentableTopic(String id, int version, String type, int typeVersion,
-							String name, String nearTopicID, String topicLabel) {
+	public PresentableTopic(String id, int version, String type, int typeVersion, String name,
+																		String nearTopicID, String topicLabel) {
 		super(id, version, type, typeVersion, name);
 		this.geomMode = GEOM_MODE_NEAR;
 		this.nearTopicID = nearTopicID;
