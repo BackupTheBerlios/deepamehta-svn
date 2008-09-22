@@ -1228,8 +1228,12 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 	}
 
 	/**
+	 * Application utility method. Called e.g. by the "Kompetenzstern" application.
+	 *
 	 * @param	relTopicPos		association position of the related topic (1 or 2), 0 if the postion doesn't natter
 	 * @param	semantic		association type, <code>null</code> if the association type doesn't natter
+	 *
+	 * @see		#navigateByTopictype(String topicTypeID)
 	 */
 	public final CorporateDirectives navigateByTopictype(String topicTypeID, int relTopicPos, String semantic) {
 		// subclasses have the opportunity to create topics and associations on the fly -- that means

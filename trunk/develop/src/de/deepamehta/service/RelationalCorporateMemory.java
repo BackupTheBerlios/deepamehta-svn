@@ -32,7 +32,7 @@ import java.util.Vector;
  * A RDBMS implementation of {@link CorporateMemory}.
  * <p>
  * <hr>
- * Last change: 5.9.2008 (2.0b8)<br>
+ * Last change: 22.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -132,7 +132,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		return topic;
 	}
 
-	// --- getTopics (11 forms) ---
+	// --- getTopics (13 forms) ---
 
 	public Vector getTopics() {
 		String query = "SELECT * FROM Topic";
@@ -155,15 +155,15 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	}
 
 	public Vector getTopics(String typeID, Hashtable propertyFilter, boolean caseSensitiv) {
-		return getTopics(typeID, null, null, propertyFilter, null, null, null, caseSensitiv);
+		return getTopics(typeID, null, null, propertyFilter, null, null, null, caseSensitiv, false);
 	}
 
 	public Vector getTopics(String typeID, Hashtable propertyFilter, String topicmapID) {
-		return getTopics(typeID, null, null, propertyFilter, null, null, topicmapID, false);	// caseSensitiv=false
+		return getTopics(typeID, null, null, propertyFilter, null, null, topicmapID, false, false);	// caseSensitiv=false
 	}
 
 	public Vector getTopics(String typeID, Hashtable propertyFilter, String topicmapID, boolean caseSensitiv) {
-		return getTopics(typeID, null, null, propertyFilter, null, null, topicmapID, caseSensitiv);
+		return getTopics(typeID, null, null, propertyFilter, null, null, topicmapID, caseSensitiv, false);
 	}
 
 	/**
@@ -179,8 +179,13 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	}
 
 	public Vector getTopics(String typeID, String nameFilter, Hashtable propertyFilter,
-																String relatedTopicID, String assocTypeID) {
-		return getTopics(typeID, null, nameFilter, propertyFilter, relatedTopicID, assocTypeID, null, false);	// caseSensitiv=false
+															String relatedTopicID, String assocTypeID) {
+		return getTopics(typeID, null, nameFilter, propertyFilter, relatedTopicID, assocTypeID, null, false, false);	// caseSensitiv=false
+	}
+
+	public Vector getTopics(String typeID, String nameFilter, Hashtable propertyFilter,
+															String relatedTopicID, String assocTypeID, boolean sortByTopicName) {
+		return getTopics(typeID, null, nameFilter, propertyFilter, relatedTopicID, assocTypeID, null, false, sortByTopicName);	// caseSensitiv=false
 	}
 
 	public Vector getTopics(Vector typeIDs) {
@@ -189,7 +194,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	}
 
 	public Vector getTopics(Vector typeIDs, Hashtable propertyFilter, boolean caseSensitiv) {
-		return getTopics(null, typeIDs, null, propertyFilter, null, null, null, caseSensitiv);
+		return getTopics(null, typeIDs, null, propertyFilter, null, null, null, caseSensitiv, false);
 	}
 
 	// ---
@@ -205,9 +210,9 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 *							<code>typeID</code> parameter is ignored
 	 */
 	private Vector getTopics(String typeID, Vector typeIDs, String nameFilter, Hashtable propertyFilter, String relatedTopicID,
-																	String assocTypeID, String topicmapID, boolean caseSensitiv) {
+											String assocTypeID, String topicmapID, boolean caseSensitiv, boolean sortByTopicName) {
 		PreparedStatement query = topicQuery(typeID, typeIDs, nameFilter, propertyFilter, relatedTopicID, assocTypeID,
-																									topicmapID, caseSensitiv);
+																				topicmapID, caseSensitiv, sortByTopicName);
 		if (LOG_CM_QUERIES) {
 			System.out.println("> RelationalCorporateMemory.getTopics(): typeID=\"" + typeID + "\" name filter=\"" +
 				nameFilter + "\" property filter=" + propertyFilter + "\n\"" + query + "\"");
@@ -836,20 +841,20 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	// --- getRelatedViewTopicsByTopictype (2 forms) ---
 
 	/**
-	 * References checked: 8.11.2001 (2.0a13-pre5)
+	 * ### Never called.
+	 * <p>
+	 * References checked: 22.9.2008 (2.0b8)
 	 *
 	 * @return	2-element array:<br>
 	 *				element 1: vector of {@link de.deepamehta.PresentableTopic}<br>
 	 *				element 2: vector of {@link de.deepamehta.PresentableAssociation}
-	 *
-	 * @see		LiveTopic#navigateByTopictype
 	 */
 	public Vector[] getRelatedViewTopicsByTopictype(String topicID, String relTopicType) {
 		return getRelatedViewTopicsByTopictype(topicID, relTopicType, 0, null);
 	}
 
 	/**
-	 * References checked: 10.8.2001 (2.0a11)
+	 * References checked: 22.9.2008 (2.0b8)
 	 *
 	 * @return	2-element array:<br>
 	 *				element 1: vector of {@link de.deepamehta.PresentableTopic}<br>
@@ -857,8 +862,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 *
 	 * @see		LiveTopic#navigateByTopictype
 	 */
-	public Vector[] getRelatedViewTopicsByTopictype(String topicID, String relTopicType,
-													int relTopicPos, String assocType) {
+	public Vector[] getRelatedViewTopicsByTopictype(String topicID, String relTopicType, int relTopicPos, String assocType) {
 		// Note: there is no "topicVersion"/"assocTypeVersion" involved here
 		String query = "SELECT " +
 			"Topic.ID AS TopicID, " +
@@ -873,7 +877,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		"Association.TopicID" + (3 - relTopicPos) + "='" + topicID + "' AND " +
 		"Association.TopicID" + relTopicPos + "=Topic.ID AND " +
 		"Association.TypeID='" + assocType + "' AND ") +
-		"Topic.TypeID='" + relTopicType + "'";
+		"Topic.TypeID='" + relTopicType + "' ORDER BY Topic.Name";
 		//
 		return queryPresentableTopics(query, topicID);
 	}
@@ -881,7 +885,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	// ---
 
 	/**
-	 * References checked: 10.8.2001 (2.0a11)
+	 * References checked: 22.9.2008 (2.0b8)
 	 *
 	 * @return	2-element array:<br>
 	 *				element 1: vector of {@link de.deepamehta.PresentableTopic}<br>
@@ -899,11 +903,10 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 			"Topic.Name AS TopicName, " +
 			"Association.* " +
 			"FROM Topic, Association WHERE " +
-	 "(Association.TopicID1='" + topicID + "' AND Association.TopicID2 = Topic.ID OR " +
-	  "Association.TopicID2='" + topicID + "' AND Association.TopicID1 = Topic.ID) AND " +
-	  "Association.TypeID='" + assocType + "'";
-		// the view always originates from personal workspace and therefore
-		// has version number 1 (constant)
+	   "(Association.TopicID1='" + topicID + "' AND Association.TopicID2 = Topic.ID OR " +
+		"Association.TopicID2='" + topicID + "' AND Association.TopicID1 = Topic.ID) AND " +
+		"Association.TypeID='" + assocType + "' ORDER BY Topic.Name";
+	  	//
 		return queryPresentableTopics(query, topicID);
 	}
 
@@ -2063,7 +2066,7 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 	 *					   String relatedTopicID, String assocTypeID, String topicmapID)
 	 */
 	private PreparedStatement topicQuery(String typeID, Vector typeIDs, String nameFilter, Hashtable propertyFilter,
-						String relatedTopicID, String assocTypeID, String topicmapID, boolean caseSensitiv) {
+					String relatedTopicID, String assocTypeID, String topicmapID, boolean caseSensitiv, boolean sortByTopicName) {
         StringBuffer query = new StringBuffer("SELECT Topic.*");
 		StringBuffer fromClause = new StringBuffer(" FROM Topic");
 		StringBuffer whereClause = new StringBuffer(" WHERE ");
@@ -2104,6 +2107,10 @@ class RelationalCorporateMemory implements CorporateMemory, DeepaMehtaConstants 
 		if (topicmapID != null) {
 			whereClause.append(" AND ViewTopic.ViewTopicID = ? AND ViewTopic.TopicID=Topic.ID");
 			whereParams.add(topicmapID);
+		}
+		// --- sorting ---
+		if (sortByTopicName) {
+			whereClause.append(" ORDER BY Name");
 		}
 		//
 		query.append(fromClause);

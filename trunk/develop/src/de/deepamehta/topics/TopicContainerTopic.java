@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * {@link de.deepamehta.service.CorporateMemory corporate memory}.
  * <p>
  * <hr>
- * Last change: 17.9.2008 (2.0b8)<br>
+ * Last change: 22.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -126,8 +126,9 @@ public class TopicContainerTopic extends ContainerTopic {
 	protected Vector getContent() {
 		String relatedTopicID = containerRelatedTopic != null ? containerRelatedTopic.getID() : null;
 		// --- query corporate memory ---
+		// ### there is a logical copy in performQuery()
 		Vector topics = cm.getTopics(getContentTypeID(), containerNameFilter, containerPropertyFilter, relatedTopicID,
-			relatedTopicSemantic);
+			relatedTopicSemantic, true);	// sortByTopicName=true
 		int topicCount = topics.size();
 		//
 		logger.info(containerPropertyFilter + " -- " + topicCount + " topics found");
@@ -173,7 +174,8 @@ public class TopicContainerTopic extends ContainerTopic {
 		CorporateDirectives directives = new CorporateDirectives();
 		String relatedTopicID = relatedTopic != null ? relatedTopic.getID() : null;
 		// --- query corporate memory ---
-		Vector topics = cm.getTopics(getContentTypeID(), nameFilter, propertyFilter, relatedTopicID, relatedTopicSemantic);
+		// ### there is a logical copy in getContent()
+		Vector topics = cm.getTopics(getContentTypeID(), nameFilter, propertyFilter, relatedTopicID, relatedTopicSemantic, true);
 		int topicCount = topics.size();
 		//
 		logger.info("\"" + propertyFilter + "\" -- " + topicCount + " topics found");

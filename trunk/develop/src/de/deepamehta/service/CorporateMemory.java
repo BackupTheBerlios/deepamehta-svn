@@ -14,7 +14,7 @@ import java.util.Vector;
  * <IMG SRC="../../../../../images/3-tier-cm.gif">
  * <p>
  * <hr>
- * Last change: 24.5.2006 (2.0b6-post3)<br>
+ * Last change: 22.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -41,6 +41,7 @@ public interface CorporateMemory {
 	Vector getTopics(String typeID, String nameFilter, Hashtable propertyFilter);
 	Vector getTopics(String typeID, String nameFilter, Hashtable propertyFilter, String relatedTopicID);
 	Vector getTopics(String typeID, String nameFilter, Hashtable propertyFilter, String relatedTopicID, String assocTypeID);
+	Vector getTopics(String typeID, String nameFilter, Hashtable propertyFilter, String relatedTopicID, String assocTypeID, boolean sortByTopicName);
 	Vector getTopics(Vector typeIDs);	// ### not yet used
 	Vector getTopics(Vector typeIDs, Hashtable propertyFilter, boolean caseSensitiv);
 	//
