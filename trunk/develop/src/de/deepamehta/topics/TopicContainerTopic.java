@@ -131,7 +131,8 @@ public class TopicContainerTopic extends ContainerTopic {
 			relatedTopicSemantic, true);	// sortByTopicName=true
 		int topicCount = topics.size();
 		//
-		logger.info(containerPropertyFilter + " -- " + topicCount + " topics found");
+		logger.info("name filter=\"" + containerNameFilter + "\" property filter=" + containerPropertyFilter +
+			" -- " + topicCount + " topics found");
 		//
 		// --- build list of topics ---
 		Vector topicEntries = new Vector();
@@ -178,7 +179,7 @@ public class TopicContainerTopic extends ContainerTopic {
 		Vector topics = cm.getTopics(getContentTypeID(), nameFilter, propertyFilter, relatedTopicID, relatedTopicSemantic, true);
 		int topicCount = topics.size();
 		//
-		logger.info("\"" + propertyFilter + "\" -- " + topicCount + " topics found");
+		logger.info("name filter=\"" + nameFilter + "\" property filter=" + propertyFilter + " -- " + topicCount + " topics found");
 		//
 		Vector presentableTopics = as.createPresentableTopics(topicmapID, topics, getID());
 		directives.add(as.createNewContainer(this, getType(), nameFilter, propertyFilter,

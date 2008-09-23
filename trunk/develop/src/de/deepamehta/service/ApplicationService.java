@@ -57,6 +57,8 @@ import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 
 
@@ -66,7 +68,7 @@ import java.util.Vector;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last change: 21.9.2008 (2.0b8)<br>
+ * Last change: 23.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -79,6 +81,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	// **************
 
 
+
+	private static Logger logger = Logger.getLogger("de.deepamehta");
 
 	private ApplicationServiceHost host;
 
@@ -156,7 +160,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		try {
 			this.hostAddress = InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
-			System.out.println("*** ApplicationService(): " + e);
+			logger.log(Level.SEVERE, "Error creating application service ...", e);
 		}
 		//
 		this.host = host;
@@ -165,7 +169,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		this.installationProps = getTopicProperties(installation);
 		installationProps.put(PROPERTY_CW_BASE_URL, getCorporateWebBaseURL());	// ### not really an installation property
 		//
-		System.out.println(">    active installation: \"" + installation.getName() + "\"");
+		logger.info("active installation: \"" + installation.getName() + "\"");
 	}
 
 	
@@ -191,13 +195,13 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		ApplicationService.applicationServiceInstance = instance;
 		// ### compare to client.DeepaMehta.createApplicationService()
 		// ### compare to service.DeepaMehtaServer.main()
-		System.out.println("> DeepaMehta Application Service");
-		System.out.println(">    version: " + SERVER_VERSION);
-		System.out.println(">    standard topics version: " + LiveTopic.kernelTopicsVersion);
-		System.out.println(">    communication: " + host.getCommInfo());
-		System.out.println(">    selected instance: \"" + instance.name + "\"");
-		System.out.println("> Corporate Memory");
-		System.out.println(">    implementation: \"" + instance.cmClass + "\"");
+		logger.info("DeepaMehta Application Service\n" +
+			"    version: " + SERVER_VERSION + "\n" +
+			"    standard topics version: " + LiveTopic.kernelTopicsVersion + "\n" +
+			"    communication: " + host.getCommInfo() + "\n" +
+			"    selected instance: \"" + instance.name + "\"\n" +
+			"Corporate Memory\n" +
+			"    implementation: \"" + instance.cmClass + "\"");
 		// establish access to corporate memory
 		CorporateMemory cm = instance.createCorporateMemory();	// throws DME
 		// create application service
@@ -218,10 +222,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @see		DeepaMehta#createApplicationService
 	 */
 	public void setAuthentificationSourceTopic() throws TopicInitException {
-		System.out.print("> Set authentification source ... ");
+		logger.info("setting authentification source ... ");
 		BaseTopic auth = cm.getTopic("t-useraccounts", 1);	// ### hardcoded
-		// ### createLiveTopic(auth, false, null);	// ### consider checkLiveTopic() ### throws TopicInitException
-		// ### process returned directives
 		this.authSourceTopic = (AuthentificationSourceTopic) getLiveTopic(auth);
 		// Note: just called to report the current authentification method
 		// ### do non-CM authentification methods proper reporting?
@@ -345,12 +347,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 				initTopic(topic, INITLEVEL_2, session);
 				initTopic(topic, INITLEVEL_3, session);
 			} catch (TopicInitException e) {
-				System.out.println("*** ApplicationService.checkLiveTopic(): " + e.getMessage());
-				e.printStackTrace();
-				/* ### if (directives != null) {
-					directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(),
-						new Integer(NOTIFICATION_WARNING));
-				} */
+				logger.log(Level.SEVERE, "Error loading topic ...", e);
 			}
 		}
 		//
@@ -459,14 +456,12 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		// --- check weather live topic already exists ---
 		if (!override && liveTopicExists(topicID, version)) {
 			// topic exists and is not supposed to be overridden
-			if (LOG_LCM) {System.out.println("> (.) " + topic);}
 			return null;
 		}
 		//
 		CorporateDirectives directives = new CorporateDirectives();
 		// --- instantiate live topic ---
 		String implementingClass = getImplementingClass(topic);
-		if (LOG_LCM) {System.out.println("> (*) " + topic);}
 		LiveTopic newTopic = createCustomLiveTopic(topic, implementingClass, directives);
 		// --- store in live corporate memory ---
 		addTopic(newTopic);
@@ -538,10 +533,10 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 				try {
 					directives.add(newTopic.evoke(session, topicmapID, viewmode));	// DME, ASE
 				} catch (DeepaMehtaException e) {
-					System.out.println("*** ApplicationService.createLiveTopic(): " + e);
+					logger.log(Level.SEVERE, "Error evoking topic ...", e);
 					directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(), new Integer(NOTIFICATION_ERROR));
 				} catch (AmbiguousSemanticException e) {
-					System.out.println("*** ApplicationService.createLiveTopic(): " + e);
+					logger.log(Level.SEVERE, "Error evoking topic ...", e);
 					directives.add(DIRECTIVE_SHOW_MESSAGE, e.getMessage(), new Integer(NOTIFICATION_ERROR));
 				}
 			}
@@ -723,13 +718,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		// ### compare to createLiveTopic(), topicmapID, viewmode, session, directives parameters?
 		if (!override && liveAssociationExists(assoc.getID(), assoc.getVersion())) {
 			// association exists and is not supposed to be overridden
-			if (LOG_LCM) {System.out.println("> (.) " + assoc);}
 			return;
 		}
 		// --- instantiate live association ---
 		String implementingClass = type(assoc).getImplementingClass();
 		LiveAssociation newAssoc = createCustomLiveAssociation(assoc, implementingClass, directives);
-		// ### if (LOG_LCM) {System.out.println("> (*) " + assoc + " (" + newAssoc.getClass()  + ")");}
 		// --- store in live corporate memory ---
 		addAssociation(newAssoc);
 		//
@@ -989,11 +982,13 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		if (relatedTopic instanceof ContainerTopic &&
 				((ContainerTopic) relatedTopic).equalsQuery(nameFilter, propertyFilter, relatedTopicID, relatedTopicSemantic)) {
 			// nothing added to the query -- don't create new container
-			System.out.println("> ContainerTopic.createNewContainer(): query not narrowed -- don't create new container");
+			logger.info("re-triggering query -- don't create new container");
 			containerID = relatedTopic.getID();
+			// Note: both directives stores the properties. The properties are stored twice, but is not a problem.
+			directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, containerID, containerProps, new Integer(1));			// ### version=1
 			directives.add(DIRECTIVE_SET_TOPIC_LABEL, containerID, containerLabel, new Integer(1), containerProps);	// ### version=1
 		} else {
-			System.out.println("> ContainerTopic.createNewContainer(): query narrowed (now " + propertyFilter +
+			logger.info("refining query (name filter=\"" + nameFilter + "\" property filter=" + propertyFilter +
 				") -- create new container");
 			// --- create new container ---
 			containerID = cm.getNewTopicID();
@@ -1018,7 +1013,15 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
-	 * References checked: 15.9.2008 (2.0b8)
+	 * Builds the (mostly hidden) properties to represent a container's query and the result rendering. These comprise of:
+	 * PROPERTY_SEARCH ("Search")<br>
+	 * PROPERTY_QUERY_ELEMENTS ("QueryElements"), hidden<br>
+	 * PROPERTY_ELEMENT_COUNT ("ElementCount"), hidden<br>
+	 * PROPERTY_RELATED_TOPIC_ID ("RelatedTopicID"), hidden<br>
+	 * PROPERTY_RELATED_TOPIC_SEMANTIC ("AssociationTypeID"), hidden<br>
+	 * PROPERTY_RESULT ("Result")<br>
+	 * <p>
+	 * References checked: 23.9.2008 (2.0b8)
 	 *
 	 * @see		#createNewContainer
 	 */
@@ -1060,11 +1063,6 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			Enumeration e = topics.elements();
 			while (e.hasMoreElements()) {
 				PresentableTopic topic = (PresentableTopic) e.nextElement();
-				/* ### int appMode = topic.getAppearanceMode();
-				if (appMode != APPEARANCE_CUSTOM_ICON) {
-					System.out.println("*** appMode=" + appMode + " -- " + topic);
-				}
-				String iconfile = topic.getAppearanceParam(); */
 				String iconfile = getIconfile(topic);
 				String id = topic.fromDatasource() ? topic.getOriginalID() : topic.getID();
 				String link = "<a href=\"http://" + ACTION_REVEAL_TOPIC + "/" + id + "\">";
@@ -1749,7 +1747,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @see		de.deepamehta.topics.ChatTopic#evoke
 	 * @see		de.deepamehta.service.web.DeepaMehtaServlet#processForm
 	 */
-	public CorporateDirectives setTopicProperties(String topicID, int version, Hashtable props, String topicmapID, Session session) {
+	public CorporateDirectives setTopicProperties(String topicID, int version, Hashtable props, String topicmapID,
+																									Session session) {
 		CorporateDirectives directives = new CorporateDirectives();
 		//
 		try {

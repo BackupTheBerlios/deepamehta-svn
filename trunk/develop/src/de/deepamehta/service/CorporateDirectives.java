@@ -317,7 +317,8 @@ public class CorporateDirectives extends Directives {
 					break;
 				case DIRECTIVE_SHOW_ASSOC_PROPERTIES:
 					assocID = (String) param1;
-					setAssociationProperties(assocID, ((Integer) param3).intValue(), (Hashtable) param2, as, session, topicMapID, viewMode);
+					setAssociationProperties(assocID, ((Integer) param3).intValue(), (Hashtable) param2, as, session, topicMapID,
+																														viewMode);
 					// Note: param4 is set programatically
 					directive.param4 = as.getAssocPropertyBaseURLs(assocID, 1);
                     // ### was null, null but "topicMapID", "viewMode" is required
@@ -325,8 +326,8 @@ public class CorporateDirectives extends Directives {
                     // ### which requires. These 2 params could be dropped from DIRECTIVE_SET_TOPIC_ICON definition
 					break;
 				case DIRECTIVE_SET_TOPIC_TYPE:
-					changeTopicType((String) param1, ((Integer) param3).intValue(), (String) param2, as, session,
-																										topicMapID, viewMode);
+					changeTopicType((String) param1, ((Integer) param3).intValue(), (String) param2, as, session, topicMapID,
+																														viewMode);
 					break;
 				case DIRECTIVE_SET_TOPIC_NAME:
 					topicID = (String) param1;
