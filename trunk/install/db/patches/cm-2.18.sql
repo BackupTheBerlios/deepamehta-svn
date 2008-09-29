@@ -76,3 +76,18 @@ DELETE FROM Topic WHERE ID='at-emailaddressee';
 DELETE FROM TopicProp WHERE TopicID='at-emailaddressee';
 DELETE FROM ViewTopic WHERE TopicID='at-emailaddressee';
 DELETE FROM Association WHERE TypeID='at-emailaddressee';
+
+
+
+-----------------------
+--- Version Control ---
+-----------------------
+
+
+
+-- change version labels
+UPDATE TopicProp SET PropValue='DeepaMehta 2.0b8'         WHERE TopicID='t-deepamehtainstallation' AND PropName='Client Name';
+UPDATE TopicProp SET PropValue='DeepaMehtaServer 2.0b8'   WHERE TopicID='t-deepamehtainstallation' AND PropName='Server Name';
+
+-- update DB content version
+UPDATE KeyGenerator SET NextKey=18 WHERE Relation='DB-Content Version';

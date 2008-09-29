@@ -13,17 +13,17 @@ import java.util.Vector;
 
 
 
-// ### copy of InstitutionSearchTopic
+// ### copy of PersonSearchTopic
 
 /**
- * A person search.
+ * An institution search.
  * <p>
  * <hr>
- * Last change: 13.9.2008 (2.0b8)<br>
+ * Last change: 29.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
-public class PersonSearchTopic extends TopicContainerTopic {
+public class InstitutionSearchTopic extends TopicContainerTopic {
 
 
 
@@ -46,7 +46,7 @@ public class PersonSearchTopic extends TopicContainerTopic {
 
 
 
-	public PersonSearchTopic(BaseTopic topic, ApplicationService as) {
+	public InstitutionSearchTopic(BaseTopic topic, ApplicationService as) {
 		super(topic, as);
 	}
 
@@ -108,8 +108,8 @@ public class PersonSearchTopic extends TopicContainerTopic {
 		//
 		Enumeration e = getContent().elements();
 		while (e.hasMoreElements()) {
-			String personID = ((String[]) e.nextElement())[0];
-			recipientList.selectRecipient(personID, directives, false);		// doUpdateView=false
+			String institutionID = ((String[]) e.nextElement())[0];
+			recipientList.selectRecipient(institutionID, directives, false);		// doUpdateView=false
 		}
 		//
 		recipientList.updateRendering(directives, true);	// doUpdateView=true

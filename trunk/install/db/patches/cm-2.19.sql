@@ -43,5 +43,23 @@ INSERT INTO AssociationProp VALUES ('a-344', 1, 'Ordinal Number', '1');
 INSERT INTO AssociationProp VALUES ('a-345', 1, 'Ordinal Number', '2');
 INSERT INTO AssociationProp VALUES ('a-346', 1, 'Ordinal Number', '3');
 
---- set custom implementation for "Person Search" ---
+
+--- set custom implementation for "Person Search", "Institution", and "Institution Search" ---
 INSERT INTO TopicProp VALUES ('tt-personcontainer', 1, 'Custom Implementation', 'de.deepamehta.topics.PersonSearchTopic');
+INSERT INTO TopicProp VALUES ('tt-institution', 1, 'Custom Implementation', 'de.deepamehta.topics.InstitutionTopic');
+INSERT INTO TopicProp VALUES ('tt-institutioncontainer', 1, 'Custom Implementation', 'de.deepamehta.topics.InstitutionSearchTopic');
+
+
+
+-----------------------
+--- Version Control ---
+-----------------------
+
+
+
+-- change version labels
+UPDATE TopicProp SET PropValue='DeepaMehta 2.0b8'         WHERE TopicID='t-deepamehtainstallation' AND PropName='Client Name';
+UPDATE TopicProp SET PropValue='DeepaMehtaServer 2.0b8'   WHERE TopicID='t-deepamehtainstallation' AND PropName='Server Name';
+
+-- update DB content version
+UPDATE KeyGenerator SET NextKey=19 WHERE Relation='DB-Content Version';

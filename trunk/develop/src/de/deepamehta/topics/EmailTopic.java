@@ -36,7 +36,7 @@ import javax.mail.internet.MimeMultipart;
  * An email.
  * <p>
  * <hr>
- * Last change: 15.9.2008 (2.0b8)<br>
+ * Last change: 29.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -186,6 +186,8 @@ public class EmailTopic extends LiveTopic {
 		if ((relTypeID.equals(TOPICTYPE_PERSON) || relTypeID.equals(TOPICTYPE_INSTITUTION) ||
 												   relTypeID.equals(TOPICTYPE_RECIPIENT_LIST)) && relTopicPos == 2) {
 			return SEMANTIC_EMAIL_RECIPIENT;
+		} else if (relTypeID.equals(TOPICTYPE_DOCUMENT) && relTopicPos == 2) {
+			return SEMANTIC_EMAIL_ATTACHMENT;
 		}
 		return super.associationAllowed(assocTypeID, relTopicID, relTopicPos, directives);
 	}

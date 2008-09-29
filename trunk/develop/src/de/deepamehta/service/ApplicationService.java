@@ -68,7 +68,7 @@ import java.util.logging.Level;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last change: 23.9.2008 (2.0b8)<br>
+ * Last change: 29.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -359,32 +359,17 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		}
 	}
 
-	// --- checkLiveAssociation (2 forms) ---
+	// ---
 
 	/**
-	 * ### should be private
-	 *
-	 * @see		#deleteAssociation(BaseAssociation assoc)
-	 */
-	public LiveAssociation checkLiveAssociation(BaseAssociation assoc, Session session, CorporateDirectives directives) {
-		if (!liveAssociationExists(assoc)) {
-			createLiveAssociation(assoc, false, false, session, directives);
-		}
-		return getLiveAssociation(assoc);
-	}
-
-	/**
-	 * ### should be private
-	 *
 	 * @see		#deleteAssociation(String assocID, int version)
 	 */
-	public LiveAssociation checkLiveAssociation(String assocID, int version, Session session, CorporateDirectives directives) {
+	private LiveAssociation checkLiveAssociation(String assocID, int version, Session session, CorporateDirectives directives) {
 		if (!liveAssociationExists(assocID, version)) {
 			BaseAssociation assoc = cm.getAssociation(assocID, version);
 			// error check
 			if (assoc == null) {
-				throw new DeepaMehtaException("association \"" + assocID + ":" +
-					version + "\" not in corporate memory");
+				throw new DeepaMehtaException("association \"" + assocID + ":" + version + "\" not in corporate memory");
 			}
 			//
 			createLiveAssociation(assoc, false, false, session, directives);
@@ -696,7 +681,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		}
 	}
 
-	// --- createLiveAssociation (3 forms) ---
+	// --- createLiveAssociation (4 forms) ---
 
 	/**
 	 * Instantiates a {@link de.deepamehta.assocs.LiveAssociation} based on the specified {@link de.deepamehta.BaseAssociation},
@@ -713,12 +698,12 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @see 	CorporateDirectives#showAssociation																									false	variable
 	 * @see 	CorporateDirectives#changeAssociationType																							true	true
 	 */
-	void createLiveAssociation(BaseAssociation assoc, boolean override, boolean evoke, Session session,
+	LiveAssociation createLiveAssociation(BaseAssociation assoc, boolean override, boolean evoke, Session session,
 																								CorporateDirectives directives) {
 		// ### compare to createLiveTopic(), topicmapID, viewmode, session, directives parameters?
 		if (!override && liveAssociationExists(assoc.getID(), assoc.getVersion())) {
 			// association exists and is not supposed to be overridden
-			return;
+			return null;
 		}
 		// --- instantiate live association ---
 		String implementingClass = type(assoc).getImplementingClass();
@@ -735,9 +720,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			getLiveTopic(topicID1, 1).associated(assoc.getType(), topicID2, session, directives);
 			getLiveTopic(topicID2, 1).associated(assoc.getType(), topicID1, session, directives);
 		}
+		//
+		return newAssoc;
 	}
 
-	// 2 utility wrapper for createLiveAssociation() above.
+	// 3 utility wrapper for createLiveAssociation() above.
 
 	/**
 	 * Creates a new association. All hooks are triggered.
@@ -758,9 +745,11 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	public LiveAssociation createLiveAssociation(String assocID, String typeID, String name, String topicID1, String topicID2,
 																				Session session, CorporateDirectives directives) {
 		BaseAssociation assoc = new BaseAssociation(assocID, 1, typeID, 1, name, topicID1, 1, topicID2, 1);
-		createLiveAssociation(assoc, false, true, session, directives);		// override=false, evoke=true
-		LiveAssociation newAssoc = getLiveAssociation(assoc);
-		return newAssoc;
+		return createLiveAssociation(assoc, session, directives);
+	}
+
+	public LiveAssociation createLiveAssociation(BaseAssociation assoc, Session session, CorporateDirectives directives) {
+		return createLiveAssociation(assoc, false, true, session, directives);		// override=false, evoke=true
 	}
 
 
@@ -1343,6 +1332,18 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	// Note: there is another method who set properties at application service level
 	// - setAssocProperties()
+
+	// --- setAssocProperty (2 forms) ---
+
+	public void setAssocProperty(BaseAssociation assoc, String propName, String propValue) {
+		setAssocProperty(assoc.getID(), assoc.getVersion(), propName, propValue);
+	}
+
+	public void setAssocProperty(String assocID, int version, String propName, String propValue) {
+		cm.setAssociationData(assocID, version, propName, propValue);
+	}
+
+	// ---
 
 	/**
 	 * Sets multiple association property values directly in corporate memory.

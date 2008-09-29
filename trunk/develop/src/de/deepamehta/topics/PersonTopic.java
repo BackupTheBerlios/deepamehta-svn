@@ -1,8 +1,6 @@
 package de.deepamehta.topics;
 
 import de.deepamehta.BaseTopic;
-import de.deepamehta.PresentableAssociation;
-import de.deepamehta.PresentableTopic;
 import de.deepamehta.PropertyDefinition;
 import de.deepamehta.service.ApplicationService;
 import de.deepamehta.service.CorporateCommands;
@@ -15,7 +13,7 @@ import java.util.Vector;
 
 
 /**
- * Last change: 13.9.2008 (2.0b8)<br>
+ * Last change: 29.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -28,11 +26,6 @@ public class PersonTopic extends LiveTopic {
 	// *****************
 
 
-
-	// commands ### copy in RecipientListTopic
-	private static final String ITEM_COMPOSE_EMAIL = "Compose Email";
-	private static final String ICON_COMPOSE_EMAIL = "composeEmail.gif";
-	private static final String CMD_COMPOSE_EMAIL = "composeEmail";
 
 	private static final String ITEM_MAKE_APPOINTMENT = "Make Appointment";
 	private static final String ICON_MAKE_APPOINTMENT = "make-appointment.gif";
@@ -66,16 +59,21 @@ public class PersonTopic extends LiveTopic {
 
 	public CorporateCommands contextCommands(String topicmapID, String viewmode, Session session, CorporateDirectives directives) {
 		CorporateCommands commands = new CorporateCommands(as);
-		// navigation commands
+		//
+		// --- navigation commands ---
 		int editorContext = as.editorContext(topicmapID);
 		commands.addNavigationCommands(this, editorContext, session);
 		//
-		// custom commands
+		// --- custom commands ---
 		commands.addSeparator();
-		commands.addCommand(ITEM_COMPOSE_EMAIL, CMD_COMPOSE_EMAIL, FILESERVER_IMAGES_PATH, ICON_COMPOSE_EMAIL);
+		// "Compose Email" ### copy in InstitutionTopic
+		String emailAddress = as.getEmailAddress(getID());
+		int cmdState = emailAddress != null && emailAddress.length() > 0 ? COMMAND_STATE_DEFAULT : COMMAND_STATE_DISABLED;
+		commands.addCommand(as.string(ITEM_COMPOSE_EMAIL), CMD_COMPOSE_EMAIL, FILESERVER_IMAGES_PATH, ICON_COMPOSE_EMAIL, cmdState);
+		// "Make Appointment"
 		commands.addCommand(ITEM_MAKE_APPOINTMENT, CMD_MAKE_APPOINTMENT, FILESERVER_IMAGES_PATH, ICON_MAKE_APPOINTMENT);
 		//
-		// standard commands
+		// --- standard commands ---
 		commands.addStandardCommands(this, editorContext, viewmode, session, directives);
 		//
 		return commands;
@@ -91,11 +89,12 @@ public class PersonTopic extends LiveTopic {
 
 	public CorporateDirectives executeCommand(String command, Session session, String topicmapID, String viewmode) {
 		if (command.equals(CMD_COMPOSE_EMAIL)) {
+			// ### copy in InstitutionTopic
 			CorporateDirectives directives = new CorporateDirectives();
 			LiveTopic email = createChildTopic(TOPICTYPE_EMAIL, SEMANTIC_EMAIL_RECIPIENT, true, session, directives);	// reverseAssocDir=true
 			// set recipient address
 			String emailAddress = as.getEmailAddress(getID());
-			if (emailAddress != null) {
+			if (emailAddress != null && emailAddress.length() > 0) {
 				Hashtable props = new Hashtable();
 				props.put(PROPERTY_TO, emailAddress);
 				directives.add(DIRECTIVE_SHOW_TOPIC_PROPERTIES, email.getID(), props, new Integer(1));

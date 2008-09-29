@@ -50,7 +50,7 @@ import java.util.logging.Level;
  * their topics from <code>LiveTopic</code>.
  * <p>
  * <hr>
- * Last change: 19.9.2008 (2.0b8)<br>
+ * Last change: 29.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -64,7 +64,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 
 
 
-	public static final int kernelTopicsVersion = 17;
+	public static final int kernelTopicsVersion = 19;
 
 	private static Logger logger = Logger.getLogger("de.deepamehta");
 
@@ -1351,8 +1351,16 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		PresentableTopic child = new PresentableTopic(childID, 1, typeID, 1, "", getID(), "");
 		PresentableAssociation assoc = as.createPresentableAssociation(semantic, topicID1, getVersion(), topicID2, 1, false);
 		// Note: the association must be created directly in corporate memory, to let childs evoke() logic operate on it
+		// ### this way the association's evoke() hook is not triggered and thus the association's default property values are
+		// not set. This is an OPEN PROBLEM which affects e.g. the "Email" application: when a "Recipient" association is
+		// created programatically via the "Compose Email" command, its "Recipient Type" property is not initialized ("To").
 		cm.createAssociation(assoc.getID(), 1, semantic, 1, topicID1, 1, topicID2, 1);
 		cm.setAssociationData(assoc.getID(), 1, PROPERTY_OWNER_ID, session.getUserID());
+		// ### Note: creating a LiveAssociation doesn't work here because the topic's associated() hooks will be triggered
+		// but the topics are not yet created
+		// ### as.createLiveAssociation(assoc, session, directives);
+		// ### as.setAssocProperty(assoc, PROPERTY_OWNER_ID, session.getUserID());
+		//
 		// Note: the child topic must be created now, to let the caller operate on it
 		LiveTopic topic = as.createLiveTopic(child, session, directives);
 		as.setTopicProperty(child, PROPERTY_OWNER_ID, session.getUserID());

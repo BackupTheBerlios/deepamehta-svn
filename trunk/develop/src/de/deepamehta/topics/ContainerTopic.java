@@ -89,7 +89,7 @@ import java.util.logging.Logger;
  * </ol>
  * <p>
  * <hr>
- * Last change: 17.9.2008 (2.0b8)<br>
+ * Last change: 29.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -219,27 +219,16 @@ public abstract class ContainerTopic extends LiveTopic {
 														Session session, CorporateDirectives directives) {
 		// Note: super.contextCommands() isn't called here because a container has no standard commands
 		CorporateCommands commands = new CorporateCommands(as);
-		// "Show Result" ### to be dropped
-		Commands cmdGroup = commands.addCommandGroup(as.string(ITEM_SHOW_CONTENT), FILESERVER_IMAGES_PATH, ICON_SHOW_RESULT);
-		if (getContentSize() <= MAX_LISTING) {
-			Enumeration e = getContent().elements();
-			while (e.hasMoreElements()) {
-				String[] topic = (String[]) e.nextElement();
-				cmdGroup.addCommand(topic[1], CMD_SHOW_CONTENT + COMMAND_SEPARATOR + topic[0],
-					FILESERVER_ICONS_PATH, getAppearance(topic[0], topic[1], session, directives));
-			}
-		}
 		// "Group by"
 		String[] groupingProps = getGroupingProperties();
 		if (groupingProps != null) {
-			cmdGroup = commands.addCommandGroup(as.string(ITEM_GROUP_BY), FILESERVER_IMAGES_PATH, ICON_GROUP_BY);
+			Commands cmdGroup = commands.addCommandGroup(as.string(ITEM_GROUP_BY), FILESERVER_IMAGES_PATH, ICON_GROUP_BY);
 			for (int i = 0; i < groupingProps.length; i++) {
 				cmdGroup.addCommand(groupingProps[i], CMD_GROUP_BY + COMMAND_SEPARATOR + groupingProps[i]);
 			}
 		}
 		// "Remove"
 		String cmd = as.isContainedInPublishedTopicmap(getID()) ? CMD_HIDE_TOPIC : CMD_DELETE_TOPIC;
-		commands.addSeparator();
 		commands.addCommand(as.string(ITEM_REMOVE_TOPIC), cmd, FILESERVER_IMAGES_PATH, ICON_HIDE_TOPIC);
 		//
 		return commands;
@@ -287,12 +276,6 @@ public abstract class ContainerTopic extends LiveTopic {
 			} else {
 				throw new DeepaMehtaException("hyperlink action \"" + action + "\" not recognized");
 			}
-			return directives;
-		} else if (cmd.equals(CMD_SHOW_CONTENT)) {	// ### to be dropped
-			// reveal one topic
-			CorporateDirectives directives = new CorporateDirectives();
-			String id = st.nextToken();
-			revealResultTopic(id, topicmapID, true, directives);	// doSelectTopic=true
 			return directives;
 		} else if (cmd.equals(CMD_GROUP_BY)) {
 			// grouping

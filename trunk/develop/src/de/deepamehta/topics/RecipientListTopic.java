@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * A list of email recipients.
  * <p>
  * <hr>
- * Last change: 19.9.2008 (2.0b8)<br>
+ * Last change: 29.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -38,11 +38,7 @@ public class RecipientListTopic extends LiveTopic {
 	private static final String IMAGE_CHECKBOX = "checkbox.png";
 	private static final String IMAGE_CHECKBOX_SELECTED = "checkbox-selected.png";
 	private static final String IMAGE_CHECKBOX_DISABLED = "checkbox-disabled.png";
-
-	// commands ### copy in PersonTopic
-	private static final String ITEM_COMPOSE_EMAIL = "Compose Email";
-	private static final String ICON_COMPOSE_EMAIL = "composeEmail.gif";
-	private static final String CMD_COMPOSE_EMAIL = "composeEmail";
+	private static final String IMAGE_CHECKBOX_DISABLED_SELECTED = "checkbox-disabled-selected.png";
 
 	// actions
 	private static final String ACTION_SELECT_RECIPIENT = "selectRecipient";
@@ -104,15 +100,17 @@ public class RecipientListTopic extends LiveTopic {
 
 	public CorporateCommands contextCommands(String topicmapID, String viewmode, Session session, CorporateDirectives directives) {
 		CorporateCommands commands = new CorporateCommands(as);
-		// navigation commands
+		//
+		// --- navigation commands ---
 		int editorContext = as.editorContext(topicmapID);
 		commands.addNavigationCommands(this, editorContext, session);
 		//
-		// custom commands
+		// --- custom commands ---
 		commands.addSeparator();
-		commands.addCommand(ITEM_COMPOSE_EMAIL, CMD_COMPOSE_EMAIL, FILESERVER_IMAGES_PATH, ICON_COMPOSE_EMAIL);
+		// "Compose Email"
+		commands.addCommand(as.string(ITEM_COMPOSE_EMAIL), CMD_COMPOSE_EMAIL, FILESERVER_IMAGES_PATH, ICON_COMPOSE_EMAIL);
 		//
-		// standard commands
+		// --- standard commands ---
 		commands.addStandardCommands(this, editorContext, viewmode, session, directives);
 		//
 		return commands;
@@ -258,8 +256,8 @@ public class RecipientListTopic extends LiveTopic {
 		String emailAddress = as.getEmailAddress(recipient.getID());
 		boolean isEnabled = emailAddress != null && emailAddress.length() > 0;
 		boolean isSelected = selectedRecipients.contains(recipient);
-		String checkboxImage = FILESERVER_IMAGES_PATH + (isEnabled ? isSelected ?
-			IMAGE_CHECKBOX_SELECTED : IMAGE_CHECKBOX : IMAGE_CHECKBOX_DISABLED);
+		String checkboxImage = FILESERVER_IMAGES_PATH + (isEnabled ? isSelected ? IMAGE_CHECKBOX_SELECTED : IMAGE_CHECKBOX :
+			isSelected ? IMAGE_CHECKBOX_DISABLED_SELECTED : IMAGE_CHECKBOX_DISABLED);
 		// render checkbox
 		html.append(isEnabled ? "<a href=\"http://" + ACTION_SELECT_RECIPIENT + "/" + recipient.getID() + "\">" : "");
 		html.append("<img src=\"" + checkboxImage + "\" border=\"0\">");

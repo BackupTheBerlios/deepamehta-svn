@@ -26,7 +26,7 @@ import java.util.Vector;
  * </ol>
  * <p>
  * <hr>
- * Last change: 15.9.2008 (2.0b8)<br>
+ * Last change: 29.9.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -62,9 +62,9 @@ public interface DeepaMehtaConstants {
 	static final String CLIENT_VERSION = "2.0b8";
 	static final String SERVER_VERSION = "2.0b8";
 	static final String REQUIRED_SERVER_VERSION = "2.0b8";
-	static final int REQUIRED_STANDARD_TOPICS = 17;
+	static final int REQUIRED_STANDARD_TOPICS = 19;
 	static final int REQUIRED_DB_MODEL = 2;
-	static final int REQUIRED_DB_CONTENT = 17;
+	static final int REQUIRED_DB_CONTENT = 19;
 	// --- application server ---
 	static final int DEFAULT_PORT = 7557;			// used by DeepaMehtaClient
 	static final int MAX_CLIENTS = 150;
@@ -302,6 +302,7 @@ public interface DeepaMehtaConstants {
 		{"Build", "Struktur"},
 		{"Messages", "Mitteilungen"},
 		{"Choose ...", "Auswählen ..."},
+		{"Choose ...", "Auswählen ..."},
 		// --- "Workspace" commands ---
 		{"Join", "Beitreten"},
 		{"Leave", "Austreten"},
@@ -309,7 +310,8 @@ public interface DeepaMehtaConstants {
 		{"Assign Association Type", "Assoziationstyp zuordnen"},
 		// --- "User" commands ---
 		{"Set Standard Workspace", "Standard Workspace setzen"},
-		{"Choose ...", "Auswählen ..."},
+		// --- "Email" commands ---
+		{"Compose Email", "Email verfassen"}
 	};
 
 	static final int ITEM_NEW_TOPIC    = 0;
@@ -344,7 +346,7 @@ public interface DeepaMehtaConstants {
 	static final int ITEM_ASSIGN_TOPIC = 29;
 	static final int ITEM_ASSIGN_NEW_TOPIC = 30;
 	static final int ITEM_SHOW_HELP = 31;
-	static final int ITEM_SHOW_CONTENT = 32;
+	// ### static final int ITEM_SHOW_CONTENT = 32;		// ### not used anymore
 	static final int ITEM_GROUP_BY = 33;
 	static final int ITEM_IMPORT_CM = 34;
 	static final int ITEM_EXPORT_CM = 35;
@@ -358,14 +360,16 @@ public interface DeepaMehtaConstants {
 	static final int VIEWMODE_BUILD_LABEL = 42;
 	static final int MESSAGE_LABEL = 43;
 	static final int BUTTON_ASSIGN_FILE = 44;
-	static final int BUTTON_CHOOSE_COLOR = 50;
+	static final int BUTTON_CHOOSE_COLOR = 45;
 	// --- "Workspace" commands ---
-	static final int ITEM_JOIN_WORKSPACE = 45;
-	static final int ITEM_LEAVE_WORKSPACE = 46;
-	static final int ITEM_ASSIGN_TOPIC_TYPE = 47;
-	static final int ITEM_ASSIGN_ASSOC_TYPE = 48;
+	static final int ITEM_JOIN_WORKSPACE = 46;
+	static final int ITEM_LEAVE_WORKSPACE = 47;
+	static final int ITEM_ASSIGN_TOPIC_TYPE = 48;
+	static final int ITEM_ASSIGN_ASSOC_TYPE = 49;
 	// --- "User" commands ---
-	static final int ITEM_SET_WORKSPACE = 49;
+	static final int ITEM_SET_WORKSPACE = 50;
+	// --- "Email" commands ---
+	static final int ITEM_COMPOSE_EMAIL = 51;
 	//
 	static final String ICON_CHANGE_ASSOC_TYPE = "changing.gif";
 	static final String ICON_NEW_ASSOC_TYPE = "create.gif";
@@ -388,8 +392,8 @@ public interface DeepaMehtaConstants {
 	static final String ICON_DELETE_TOPIC = "trash.gif";
 	static final String ICON_SHOW_HELP = "viewhilfe.gif";
 	static final String ICON_SEARCH_INTERNET = "google.gif";
-	static final String ICON_SHOW_RESULT = "eye-grey.gif";
 	static final String ICON_GROUP_BY = "eye-grey.gif";
+	static final String ICON_COMPOSE_EMAIL = "composeEmail.gif";
 
 	// --- commands ---
 	static final String CMD_NAVIGATION_BY_TOPIC = "navByTopic";
@@ -409,7 +413,6 @@ public interface DeepaMehtaConstants {
 	static final String CMD_ASSIGN_TOPIC = "assignTopic";
 	static final String CMD_ASSIGN_NEW_TOPIC = "assignNewTopic";
 	static final String CMD_SHOW_HELP = "showHelp";						// changes model
-	static final String CMD_SHOW_CONTENT = "showResult";
 	static final String CMD_GROUP_BY = "groupByProperty";
 	static final String CMD_IMPORT_CM = "importCM";
 	static final String CMD_EXPORT_CM = "exportCM";
@@ -439,6 +442,7 @@ public interface DeepaMehtaConstants {
 	static final String CMD_PROCESS_STRING = "processDroppedString";
 	static final String CMD_CHOOSE_COLOR = "chooseColor";
 	static final String CMD_FOLLOW_HYPERLINK = "followHyperlink";
+	static final String CMD_COMPOSE_EMAIL = "composeEmail";
 
 	// hyperlink actions
 	static final String ACTION_REVEAL_TOPIC = "revealTopic";
