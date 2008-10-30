@@ -32,7 +32,7 @@ import java.util.Vector;
 /**
  * <p>
  * <hr>
- * Last change: 9.8.2008 (2.0b8)<br>
+ * Last change: 29.10.2008 (2.0b8)<br>
  * J&ouml;rg Richter / Malte Rei&szlig;ig<br>
  * jri@deepamehta.de / mre@deepamehta.de
  */
@@ -239,16 +239,46 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		//
 		return html.toString();
 	}
-	
-	public String listTopicBeans(Vector topicBeans) {
-		//
+	/**
+	 * Renders a list of topics as a table, one row per topic, one column per property. 
+	 * * sortable if TopicBeanField.TYPE_SINGLE
+	 * * sortable per default
+	 * sortBy Action uses the given TopicBeanField Identifier as sortField, see listBeanHeadings()
+	 * renders editAction into Name of Topic (1 Column) (can be passed within the action)
+	 * propSel and hideSel is the same like in former list methods,
+	 * 
+	 * @param topicBeans
+	 * @param selectedID
+	 * @param propSel
+	 * @param hideSel
+	 * @param action
+	 * @param doZebraStriping
+	 * @return HTML List of all TopicBeans
+	 */
+	public String listTopicBeans(Vector topicBeans, String selectedID, String[] propSel, String[] propContaining, boolean hideSel,
+									String nameAction, String sortAction, boolean doZebraStriping, String highlightColumnHeader) {
+		if (topicBeans.size() == 0) {
+			return "";
+		}
+		hideBeanFields(topicBeans, propSel, propContaining, hideSel);
 		StringBuffer html = new StringBuffer();
-		html.append("</br>");
+		html.append("<table>\r");
+		html.append("<tr valign=\"top\">");
+		TopicBean firstBean = (TopicBean) topicBeans.get(0);
+		// ### Note: The firstBean entered into listBeanHeadings provides the name and number of the rendered columnHeaders
+		listBeanHeadings(html, firstBean, highlightColumnHeader, sortAction);
+		html.append("</tr>");
+		//
 		for (int i = 0; i < topicBeans.size(); i++) {
 			TopicBean topic = (TopicBean) topicBeans.elementAt(i);
-			html.append(topic.getValue("Name"));
-			html.append("</br>");
+			String classAttr = topic.id.equals(selectedID) ? " class=\"list-highlight\"" : doZebraStriping ?
+				i % 2 == 0 ? " class=\"list-evenrow\"" : " class=\"list-oddrow\"" : "";
+   			html.append("<tr valign=\"top\"" + classAttr + ">");
+			listBeanFields(html, topic, nameAction);
+			html.append("</tr>\r");
 		}
+		html.append("</table>");
+  		//
 		return html.toString();
 	}
 
@@ -339,67 +369,6 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		} else {
 			throw new DeepaMehtaException("unxepected Bean Layout: " + layoutStyle);
 		}
-	}
-
-	// ---
-	
-	/**
-	 * Renders a TopicBean Field according to "2-column" layout style ({@link LAYOUT_STYLE_2COLUMN}).
-	 */
-	private void infoField2ColumnLayout(TopicBeanField field, StringBuffer html) {
-		html.append("<tr valign=\"top\">" +
-			"<td width=150><span class=\"info-label\">" + field.name + "</span></td>" +
-			"<td>");
-		switch (field.type) {
-		case TopicBeanField.TYPE_SINGLE:
-			if (field.value != null) {
-				String text = DeepaMehtaUtils.transformToHTML(field.value);
-				html.append("<span class=\"info-content\">" + text + "<br></span>");
-			}
-			break;
-		case TopicBeanField.TYPE_MULTI:
-			Enumeration e = field.values.elements();
-			html.append("<span class=\"info-content\">");
-			while (e.hasMoreElements()) {
-				BaseTopic topic = (BaseTopic) e.nextElement();
-				String text = DeepaMehtaUtils.transformToHTML(topic.getName());
-				html.append(imageTag(topic) + " " + text + "<br>");
-			}
-			html.append("</span>");
-			break;
-		default:
-			throw new DeepaMehtaException("unexpected topic bean field type: " + field.type);
-		}
-		html.append("</td></tr>\r");
-	}
-
-	/**
-	 * Renders a TopicBean Field according to "flow" layout style ({@link LAYOUT_STYLE_FLOW}).
-	 */
-	private void infoFieldFlowLayout(TopicBeanField field, StringBuffer html) {
-		html.append("<p class=\"info\">");
-		html.append("<span class=\"info-label\">" + field.name + ": </span>");
-		switch (field.type) {
-		case TopicBeanField.TYPE_SINGLE:
-			if (field.value != null) {
-				String text = DeepaMehtaUtils.transformToHTML(field.value);
-				html.append("<span class=\"info-content\">" + text + "</span>");
-			}
-			break;
-		case TopicBeanField.TYPE_MULTI:
-			Enumeration e = field.values.elements();
-			html.append("<span class=\"info-content\">");
-			while (e.hasMoreElements()) {
-				BaseTopic topic = (BaseTopic) e.nextElement();
-				String text = DeepaMehtaUtils.transformToHTML(topic.getName());
-				html.append("<br>" + imageTag(topic) + " " + text);
-			}
-			html.append("</span>");
-			break;
-		default:
-			throw new DeepaMehtaException("unexpected topic bean field type: " + field.type);
-		}
-		html.append("</p>\r");
 	}
 
 	// --- form (8 forms) ---
@@ -871,7 +840,105 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		//
 		return containsFileField;
 	}
+	
+	// ---
+	
+	/**
+	 * Renders a TopicBean Field according to "2-column" layout style ({@link LAYOUT_STYLE_2COLUMN}).
+	 * If some fields of TopcBeanField.TYPE_SINGLE has the Visualization Mode "FileChoose", there is a link rendered 
+	 * pointing into the documents/resp. images/ repository.
+	 */
+	private void infoField2ColumnLayout(TopicBeanField field, StringBuffer html) {
+		html.append("<tr valign=\"top\">" +
+			"<td width=150><span class=\"info-label\">" + field.label + "</span></td>" +
+			"<td>");
+		switch (field.type) {
+		case TopicBeanField.TYPE_SINGLE:
+			if (field.value != null) {
+				String text = DeepaMehtaUtils.transformToHTML(field.value);
+				html.append("<span class=\"info-content\">"); 
+				if (field.visualMode.equals(VISUAL_FILE_CHOOSER)) {
+					String repositoryPath = as.getCorporateWebBaseURL();
+					repositoryPath += isPngGifJpg(field.value) ? FILESERVER_IMAGES_PATH : FILESERVER_DOCUMENTS_PATH;
+					html.append("<a href=\"" + repositoryPath + text + "\">" + text + "</a>");
+				} else {
+					html.append(text);
+				}
+				html.append("<br></span>");
+			}
+			break;
+		case TopicBeanField.TYPE_MULTI:
+			Enumeration e = field.values.elements();
+			html.append("<span class=\"info-content\">");
+			while (e.hasMoreElements()) {
+				BaseTopic topic = (BaseTopic) e.nextElement();
+				String text = DeepaMehtaUtils.transformToHTML(topic.getName());
+				html.append(imageTag(topic) + " " + text + "<br>");
+			}
+			html.append("</span>");
+			break;
+		default:
+			throw new DeepaMehtaException("unexpected topic bean field type: " + field.type);
+		}
+		html.append("</td></tr>\r");
+	}
 
+	/**
+	 * Renders a TopicBean Field according to "flow" layout style ({@link LAYOUT_STYLE_FLOW}).
+	 */
+	private void infoFieldFlowLayout(TopicBeanField field, StringBuffer html) {
+		html.append("<p class=\"info\">");
+		html.append("<span class=\"info-label\">" + field.label + ": </span>");
+		switch (field.type) {
+		case TopicBeanField.TYPE_SINGLE:
+			if (field.value != null) {
+				String text = DeepaMehtaUtils.transformToHTML(field.value);
+				html.append("<span class=\"info-content\">"); 
+				if (field.visualMode.equals(VISUAL_FILE_CHOOSER)) {
+					String repositoryPath = as.getCorporateWebBaseURL();
+					repositoryPath += isPngGifJpg(field.value) ? FILESERVER_IMAGES_PATH : FILESERVER_DOCUMENTS_PATH;
+					html.append("<a href=\"" + repositoryPath + text + "\">" + text + "</a>");
+				} else {
+					html.append(text);
+				}
+				html.append("<br></span>");
+			}
+			break;
+		case TopicBeanField.TYPE_MULTI:
+			Enumeration e = field.values.elements();
+			html.append("<span class=\"info-content\">");
+			while (e.hasMoreElements()) {
+				BaseTopic topic = (BaseTopic) e.nextElement();
+				String text = DeepaMehtaUtils.transformToHTML(topic.getName());
+				html.append("<br>" + imageTag(topic) + " " + text);
+			}
+			html.append("</span>");
+			break;
+		default:
+			throw new DeepaMehtaException("unexpected topic bean field type: " + field.type);
+		}
+		html.append("</p>\r");
+	}
+	
+	/**
+	 * Checks CaseInsensitive if filename contains png, gif, or jpg
+	 * Used for either linking in the documents/ or images/ repos
+	 * 
+	 * #infoFieldFlowLayout for TopicBeanFields
+	 * #infoField2ColumnLayout for TopicBeanFields
+	 * 
+	 * @param filename
+	 * @return 
+	 */
+	private boolean isPngGifJpg(String filename) {
+		filename = filename.toLowerCase();
+		if ( filename.indexOf("png") != -1 || filename.indexOf("gif") != -1 || filename.indexOf("jpg") != -1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	/**
 	 * Renders the fields of a single topic.
 	 *
@@ -1098,6 +1165,75 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		html.append("<td" + width(propName, colWidths) + "><small>" + propLabel + "</small></td>");
 	}
 
+	// --- remove all fields by full name in all given beans
+	
+	private void hideBeanFields(Vector beans, String[] propSel, String[] propContaining, boolean hideSel) {
+		for (int i = 0; i < beans.size(); i++) {
+			TopicBean topic = (TopicBean) beans.get(i);
+			for (int j = 0; j < propSel.length; j++) {
+				topic.removeField(propSel[j]);
+			}
+			for (int k = 0; k < propContaining.length; k++) {
+				topic.removeFieldsContaining(propContaining[k]);
+			}
+		}
+	}
+	
+	/**
+	 * Render columns in a TableData HTML Tag. Bootstrap columns by given bean and it's fields. 
+	 * One Column can be highlighted if the given column name matches the TopicBeanField name attribute
+	 * The given sortAction is passed to your controller and has it's value stored in the sortField parameter
+	 * 
+	 * @param html
+	 * @param topic
+	 * @param highlightColumnHeader
+	 * @param sortAction
+	 */
+	private void listBeanHeadings(StringBuffer html, TopicBean topic, String highlightColumnHeader, String sortAction) {
+		Vector allFields = topic.fields;
+		for (int j = 0; j < allFields.size(); j++) {
+			TopicBeanField propField = (TopicBeanField) allFields.get(j); 
+			// Single Type
+			if (propField.type == TopicBeanField.TYPE_SINGLE)  {
+				// sortable, make active column visible
+				if (highlightColumnHeader != null && highlightColumnHeader.equals(propField.name)){
+					html.append("<td class=\"list-highlightcolumnheader\">");
+				} else {
+					html.append("<td class=\"small\">");
+				}
+				html.append("<a href=\"controller?action="+sortAction+"&sortField="+propField.name+"\">"+ propField.label + "</a>");
+			// Multi  Type
+			} else {
+				html.append("<td class=\"small\">");
+				html.append(propField.label);
+			}
+			html.append("</td>");
+		}
+	}
+	
+	// --- list all fields of a given bean
+	
+	private void listBeanFields(StringBuffer html, TopicBean topic, String action) {
+		for (int i = 0; i < topic.fields.size(); i++) {
+			TopicBeanField field = (TopicBeanField) topic.fields.get(i);
+			html.append("<td>");
+				if (field.type == TopicBeanField.TYPE_MULTI ) {
+					Vector values = topic.getValues(field.name);
+					for (int j = 0; j < values.size(); j ++) {
+						BaseTopic value = (BaseTopic) values.get(j);
+						html.append(imageTag(value) + " " +value.getName() + "<br/>");
+					}
+				} else if(field.type == TopicBeanField.TYPE_SINGLE) {
+					if (field.name.equals("Name")) {
+						html.append("<a href=\"controller?action="+action+"&id="+topic.id +"\">" + field.value + "</a>");
+					} else {
+						html.append(field.value);
+					}
+				}
+			html.append("</td>");
+		}
+	}
+	
 	// ---
 
 	/**

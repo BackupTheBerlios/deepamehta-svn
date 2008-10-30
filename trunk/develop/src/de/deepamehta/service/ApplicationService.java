@@ -68,9 +68,9 @@ import java.util.logging.Level;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last change: 29.9.2008 (2.0b8)<br>
- * J&ouml;rg Richter<br>
- * jri@deepamehta.de
+ * Last change: 29.10.2008 (2.0b8)<br>
+ * J&ouml;rg Richter / Malte Rei&szlig;ig<br>
+ * jri@deepamehta.de / mre@deepamehta.de
  */
 public final class ApplicationService extends BaseTopicMap implements LoginCheck, DeepaMehtaConstants {
 
@@ -3833,7 +3833,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		bean.typeName = type.getName();
 		bean.icon = topic.getIconfile();
 		//
-		addFieldsToTopicBean(type, topicID, version, "", true, bean);
+		addFieldsToTopicBean(type, topicID, version, "", "", true, bean);
 		return bean;
 	}
 
@@ -3842,8 +3842,10 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 *
 	 * @param	type		the type of the topic. Acts as "template": all fields of this type definition are added.
 	 * @param	topicID		the ID of the topic. If null, the added fields are empty.
+	 * @param   fieldPrefix contains the type hierarchy as name of a TopicBeanField 
+	 * @param   labelPrefix contains the naming hierarchy as labelof a TopicBeanField 
 	 */
-	private void addFieldsToTopicBean(TypeTopic type, String topicID, int version, String fieldPrefix, boolean deep, TopicBean bean) {
+	private void addFieldsToTopicBean(TypeTopic type, String topicID, int version, String fieldPrefix, String labelPrefix, boolean deep, TopicBean bean) {
 		// ### compare to HTMLGenerator.infoFields()
 		// ### compare to HTMLGenerator.formFields()
 		Enumeration items = type.getDefinition().elements();
@@ -3852,9 +3854,10 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			if (item instanceof PropertyDefinition) {
 				PropertyDefinition propDef = (PropertyDefinition) item;
 				String propName = propDef.getPropertyName();
+				String visualMode = propDef.getVisualization();
 				String propValue = topicID != null ? getTopicProperty(topicID, 1, propName) : "";
 				// add TYPE_SINGLE bean field
-				bean.fields.addElement(new TopicBeanField(fieldPrefix + propName, propValue));
+				bean.fields.addElement(new TopicBeanField(fieldPrefix + propName, labelPrefix + propName, visualMode, propValue));
 			} else if (item instanceof Relation) {
 				if (deep) {
 					Relation rel = (Relation) item;
@@ -3863,7 +3866,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 						false, true) : new Vector();	// ordered=false, emptyAllowed=true ### relTopicPos=2 hardcoded
 					// add fields
 					if (rel.webInfo.equals(WEB_INFO_TOPIC_NAME)) {
-						addRelationFieldToTopicBean(rel, relTopics, fieldPrefix, bean);
+						addRelationFieldToTopicBean(rel, relTopics, fieldPrefix, labelPrefix, bean);
 					} else if (rel.webInfo.equals(WEB_INFO) || rel.webInfo.equals(WEB_INFO_DEEP)) {
 						addRelationFieldsToTopicBean(rel, relTopics, fieldPrefix, bean);
 					} else {
@@ -3877,21 +3880,25 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	}
 
 	/**
-	 * Adds only the name of related topics to a bean.
+	 * Adds the name and the label of related topics as TopicBeanFields to a TopicBean.
+	 * Hint: called when the Relation setting is WEB_INFO_TOPIC_NAME
 	 */
-	private void addRelationFieldToTopicBean(Relation rel, Vector topics, String fieldPrefix, TopicBean bean) {
+	private void addRelationFieldToTopicBean(Relation rel, Vector topics, String fieldPrefix, String labelPrefix, TopicBean bean) {
 		// ### compare to HTMLGenerator.relationInfoField()
 		// ### compare to HTMLGenerator.relationFormField()
 		//
 		TypeTopic relTopicType = type(rel.relTopicTypeID, 1);
 		boolean many = rel.cardinality.equals(CARDINALITY_MANY);
 		String fieldLabel = !rel.name.equals("") ? rel.name : many ? relTopicType.getPluralNaming() : relTopicType.getName();
+		String fieldName = relTopicType.getName();
+		// ### System.out.println(">>> addRelationFieldToTopicBean() label is: " + labelPrefix + fieldLabel + ", name is: " + fieldPrefix + fieldName);
 		// add TYPE_MULTI bean field
-		bean.fields.addElement(new TopicBeanField(fieldPrefix + fieldLabel, topics));
+		bean.fields.addElement(new TopicBeanField(fieldPrefix + fieldName, labelPrefix + fieldLabel, topics));
 	}
 
 	/**
 	 * Adds all fields of related topics to a bean.
+	 * Hint: called when the Relation setting is WEB_INFO || WEB_INFO_DEEP
 	 */
 	private void addRelationFieldsToTopicBean(Relation rel, Vector topics, String fieldPrefix, TopicBean bean) {
 		// ### compare to HTMLGenerator.relationInfoFields()
@@ -3903,10 +3910,13 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			relTopicID = ((BaseTopic) topics.firstElement()).getID();
 		}
 		TypeTopic relTopicType = type(rel.relTopicTypeID, 1);
+		boolean many = rel.cardinality.equals(CARDINALITY_MANY);
+		String labelPrefix = !rel.name.equals("") ? rel.name + TopicBean.FIELD_SEPARATOR : many ? relTopicType.getPluralNaming() + 
+			TopicBean.FIELD_SEPARATOR : relTopicType.getName() + TopicBean.FIELD_SEPARATOR;
 		fieldPrefix = fieldPrefix + relTopicType.getName() + TopicBean.FIELD_SEPARATOR;
 		boolean deep = rel.webInfo.equals(WEB_INFO_DEEP);
 		// recursive call
-		addFieldsToTopicBean(relTopicType, relTopicID, 1, fieldPrefix, deep, bean);		// ### version=1
+		addFieldsToTopicBean(relTopicType, relTopicID, 1, fieldPrefix, labelPrefix, deep, bean);		// ### version=1
 	}
 
 
