@@ -295,6 +295,7 @@ INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-137', '', 'tt-generic'
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-personcontainer', 'Person Search');
 INSERT INTO TopicProp VALUES ('tt-personcontainer', 1, 'Name', 'Person Search');
 INSERT INTO TopicProp VALUES ('tt-personcontainer', 1, 'Icon', 'personcontainer.gif');
+INSERT INTO TopicProp VALUES ('tt-personcontainer', 1, 'Custom Implementation', 'de.deepamehta.topics.PersonSearchTopic');
 -- derive container type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-38', '', 'tt-topiccontainer', 1, 'tt-personcontainer', 1);
 -- assign type to container type
@@ -349,12 +350,14 @@ INSERT INTO TopicProp VALUES ('tt-institution', 1, 'Name', 'Institution');
 INSERT INTO TopicProp VALUES ('tt-institution', 1, 'Plural Name', 'Institutions');
 INSERT INTO TopicProp VALUES ('tt-institution', 1, 'Icon', 'institution.gif');
 INSERT INTO TopicProp VALUES ('tt-institution', 1, 'Unique Topic Names', 'on');
+INSERT INTO TopicProp VALUES ('tt-institution', 1, 'Custom Implementation', 'de.deepamehta.topics.InstitutionTopic');
 -- super type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-316', '', 'tt-generic', 1, 'tt-institution', 1);
 -- container type
 INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-institutioncontainer', 'Institution Search');
 INSERT INTO TopicProp VALUES ('tt-institutioncontainer', 1, 'Name', 'Institution Search');
 INSERT INTO TopicProp VALUES ('tt-institutioncontainer', 1, 'Icon', 'institution-search.gif');
+INSERT INTO TopicProp VALUES ('tt-institutioncontainer', 1, 'Custom Implementation', 'de.deepamehta.topics.InstitutionSearchTopic');
 -- derive container type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-317', '', 'tt-topiccontainer', 1, 'tt-institutioncontainer', 1);
 -- assign topic type to its container type
@@ -999,6 +1002,36 @@ INSERT INTO AssociationProp VALUES ('a-337', 1, 'Web Info', 'Related Topic Name'
 INSERT INTO AssociationProp VALUES ('a-337', 1, 'Web Form', 'Related Topic Selector');
 INSERT INTO AssociationProp VALUES ('a-337', 1, 'Ordinal Number', '150');
 
+--- "Recipient List" ---
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-recipientlist', 'Recipient List');
+INSERT INTO TopicProp VALUES ('tt-recipientlist', 1, 'Name', 'Recipient List');
+INSERT INTO TopicProp VALUES ('tt-recipientlist', 1, 'Plural Name', 'Recipient Lists');
+INSERT INTO TopicProp VALUES ('tt-recipientlist', 1, 'Description', '<html><head></head><body><p>A <i>Recipient List</i> is ...</p></body></html>');
+INSERT INTO TopicProp VALUES ('tt-recipientlist', 1, 'Description Query', 'What is a "Recipient List"?');
+INSERT INTO TopicProp VALUES ('tt-recipientlist', 1, 'Icon', 'authentificationsource.gif');
+-- INSERT INTO TopicProp VALUES ('tt-recipientlist', 1, 'Creation Icon', 'createKompetenzstern.gif');
+-- INSERT INTO TopicProp VALUES ('tt-recipientlist', 1, 'Unique Topic Names', 'on');
+INSERT INTO TopicProp VALUES ('tt-recipientlist', 1, 'Custom Implementation', 'de.deepamehta.topics.RecipientListTopic');
+-- super type
+INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-340', '', 'tt-generic', 1, 'tt-recipientlist', 1);
+-- search type
+INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-recipientlist-search', 'Recipient List Search');
+INSERT INTO TopicProp VALUES ('tt-recipientlist-search', 1, 'Name', 'Recipient List Search');
+-- INSERT INTO TopicProp VALUES ('tt-recipientlist-search', 1, 'Icon', 'event-search.gif');
+-- derive search type
+INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-341', '', 'tt-topiccontainer', 1, 'tt-recipientlist-search', 1);
+-- assign search type to type
+INSERT INTO Association VALUES ('at-aggregation', 1, 1, 'a-342', '', 'tt-recipientlist-search', 1, 'tt-recipientlist', 1);
+
+-- create relation from "Email" to "Recipient List"
+
+INSERT INTO Association VALUES ('at-relation', 1, 1, 'a-343', '', 'tt-email', 1, 'tt-recipientlist', 1);
+INSERT INTO AssociationProp VALUES ('a-343', 1, 'Cardinality', 'many');
+INSERT INTO AssociationProp VALUES ('a-343', 1, 'Association Type ID', 'at-recipient');
+INSERT INTO AssociationProp VALUES ('a-343', 1, 'Web Info', 'Related Topic Name');
+INSERT INTO AssociationProp VALUES ('a-343', 1, 'Web Form', 'Related Topic Selector');
+INSERT INTO AssociationProp VALUES ('a-343', 1, 'Ordinal Number', '35');
+
 
 
 -------------------------
@@ -1134,14 +1167,18 @@ INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-recipient', 'Recipient');
 INSERT INTO TopicProp VALUES ('at-recipient', 1, 'Name', 'Recipient');
 INSERT INTO TopicProp VALUES ('at-recipient', 1, 'Plural Name', 'Recipients');
 INSERT INTO TopicProp VALUES ('at-recipient', 1, 'Color', '#E14589');
-INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-327', '', 'at-generic', 1, 'at-recipient', 1);
 
 --- "Sender" ---
 INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-sender', 'Sender');
 INSERT INTO TopicProp VALUES ('at-sender', 1, 'Name', 'Sender');
 INSERT INTO TopicProp VALUES ('at-sender', 1, 'Plural Name', 'Senders');
 INSERT INTO TopicProp VALUES ('at-sender', 1, 'Color', '#4589E1');
-INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-329', '', 'at-generic', 1, 'at-sender', 1);
+
+--- "Attachment" ---
+INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-attachment', 'Attachment');
+INSERT INTO TopicProp VALUES ('at-attachment', 1, 'Name', 'Attachment');
+INSERT INTO TopicProp VALUES ('at-attachment', 1, 'Plural Name', 'Attachments');
+INSERT INTO TopicProp VALUES ('at-attachment', 1, 'Color', '#408000');
 
 
 
@@ -1584,6 +1621,15 @@ INSERT INTO AssociationProp VALUES ('a-338', 1, 'Web Info', 'Related Topic Name'
 INSERT INTO AssociationProp VALUES ('a-338', 1, 'Web Form', 'Related Topic Selector');
 INSERT INTO AssociationProp VALUES ('a-338', 1, 'Ordinal Number', '150');
 
+--- Search
+-- create property "Result"
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-result', 'Result');
+INSERT INTO TopicProp VALUES ('pp-result', 1, 'Name', 'Result');
+INSERT INTO TopicProp VALUES ('pp-result', 1, 'Visualization', 'Text Editor');
+-- assign to topic type "Search"
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-339', '', 'tt-container', 1, 'pp-result', 1);
+INSERT INTO AssociationProp VALUES ('a-339', 1, 'Ordinal Number', '200');
+
 --- "Web Form" ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-webform', 'Web Form');
 INSERT INTO TopicProp VALUES ('pp-webform', 1, 'Name', 'Web Form');
@@ -1603,6 +1649,29 @@ INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-415', '', 'pp-webform
 INSERT INTO AssociationProp VALUES ('a-410', 1, 'Ordinal Number', '1');
 INSERT INTO AssociationProp VALUES ('a-412', 1, 'Ordinal Number', '2');
 INSERT INTO AssociationProp VALUES ('a-415', 1, 'Ordinal Number', '3');
+
+--- create property "Recipient Type" ---
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-recipienttype', 'Recipient Type');
+INSERT INTO TopicProp VALUES ('pp-recipienttype', 1, 'Name', 'Recipient Type');
+INSERT INTO TopicProp VALUES ('pp-recipienttype', 1, 'Visualization', 'Options Menu');
+INSERT INTO TopicProp VALUES ('pp-recipienttype', 1, 'Default Value', 'To');
+-- assign property to "Recipient"
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-347', '', 'at-recipient', 1, 'pp-recipienttype', 1);
+INSERT INTO AssociationProp VALUES ('a-347', 1, 'Ordinal Number', '50');
+-- create property values "To", "Cc", "Bcc"
+INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-recipienttype-to', 'To');
+INSERT INTO TopicProp VALUES ('t-recipienttype-to', 1, 'Name', 'To');
+INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-recipienttype-cc', 'Cc');
+INSERT INTO TopicProp VALUES ('t-recipienttype-cc', 1, 'Name', 'Cc');
+INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-recipienttype-bcc', 'Bcc');
+INSERT INTO TopicProp VALUES ('t-recipienttype-bcc', 1, 'Name', 'Bcc');
+-- assign property values to "Recipient Type"
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-344', '', 'pp-recipienttype', 1, 't-recipienttype-to', 1);
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-345', '', 'pp-recipienttype', 1, 't-recipienttype-cc', 1);
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-346', '', 'pp-recipienttype', 1, 't-recipienttype-bcc', 1);
+INSERT INTO AssociationProp VALUES ('a-344', 1, 'Ordinal Number', '1');
+INSERT INTO AssociationProp VALUES ('a-345', 1, 'Ordinal Number', '2');
+INSERT INTO AssociationProp VALUES ('a-346', 1, 'Ordinal Number', '3');
 
 
 
@@ -2155,4 +2224,4 @@ INSERT INTO KeyGenerator VALUES ('Association', 1001);
 -- Not a Key Generator but the (constant) version of the database model
 INSERT INTO KeyGenerator VALUES ('DB-Model Version', 2);
 -- Not a Key Generator but the (constant) version of the database content
-INSERT INTO KeyGenerator VALUES ('DB-Content Version', 17);
+INSERT INTO KeyGenerator VALUES ('DB-Content Version', 19);

@@ -143,7 +143,7 @@ Inbetriebnahme unter Mac OS X
 
 2) Starten:
 
-	Öffne den "deepamehta" Ordner und doppelklicke die Datei "run.command".
+    Öffne den "deepamehta" Ordner und doppelklicke die Datei "run.command".
 
     Es wird eine automatische Standardinstallation durchgeführt und DeepaMehta dann gestartet.
     Sobald der Login-Dialog erscheint, gebe "root" ein und drücke 2x Return.
@@ -377,8 +377,10 @@ Jetzt müssen Patches in die alte Datenbank eingespielt werden, um sie auf den S
     2.0b5                 cm-2.15.sql
     2.0b6                 cm-2.16.sql
     2.0b7                 cm-2.17.sql
+    2.0b8-rc4             cm-2.18.sql
+    rev346-20080910       cm-2.19.sql
 
-Wenn Du z.B. derzeit DeepaMehta 2.0b7 installiert hast, spiele nur den Patch "cm-2.17.sql" ein. Wenn Du z.B. derzeit DeepaMehta 2.0b5 installiert hast, spiele den 15er, 16er und 17er Patch ein (in dieser Reihenfolge).
+Wenn Du z.B. derzeit DeepaMehta 2.0b7 installiert hast, spiele die Patches 2.17, 2.18 und 2.19 ein (in dieser Reihenfolge).
 
 Zum Einspielen eines einzelnen Patches gebe folgendes Kommando ein (hier wird der Patch "cm-2.17.sql" eingespielt):
 
@@ -625,11 +627,11 @@ DeepaMehta Deinstallieren
 Wie geht's weiter?
 ==================
 
-Bedienhinweise für die ersten Schritte stehen im Wiki:
-https://www.mindworxs.de/zwiki/ErsteSchritte
+Bedienhinweise für die ersten Schritte (in Englisch):
+http://www.deepamehta.de/wiki/en/Quickstart
 
-Den Beginn eines Users Guides gibt es hier:
-http://www.deepamehta.de/docs/usersguide.html
+DeepaMehta User Guide (in Englisch):
+http://www.deepamehta.de/wiki/en/User_Guide
 
 Für Deine Fragen benutze möglichst das Forum auf der DeepaMehta Website oder abboniere die deepamehta-users Mailingliste. Im Forum befinden sich bereits wichtige Hinweise zur Bedienung. Forum und Mailinglisten sind auf www.deepamehta.de unter "Community" zu erreichen.
 
@@ -637,4 +639,4 @@ Für Deine Fragen benutze möglichst das Forum auf der DeepaMehta Website oder a
 
 ------------------------------------------------------------------------------------------------------
 Jörg Richter                                                                         www.deepamehta.de
-17.3.2008
+1.11.2008

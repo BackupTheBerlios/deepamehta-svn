@@ -26,7 +26,7 @@ import java.util.Vector;
  * </ol>
  * <p>
  * <hr>
- * Last change: 29.9.2008 (2.0b8)<br>
+ * Last change: 31.10.2008 (2.0b8)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -209,7 +209,7 @@ public interface DeepaMehtaConstants {
 	static final int INPUT_LINE_WIDTH = 220;
 	static final int INPUT_LINE_HEIGHT = 64;
 	static final int MAX_REVEALING = 7;	// cognitive limit 1
-	static final int MAX_LISTING = 500;	// cognitive limit 2 ### was 150
+	static final int MAX_LISTING = 300;	// cognitive limit 2 ### was 150
 	static final int NEW_TOPIC_X = 20;	// ### to be dropped
 	static final int NEW_TOPIC_Y = 20;	// ### to be dropped
 	static final int NEAR_MIN = 40;

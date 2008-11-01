@@ -1,6 +1,6 @@
 ---
 --- This patch updates CM 2.17 to 2.18
---- Apply this patch if you want to update DeepaMehta 2.0b8-rc4 to 2.0b8 while keeping your content
+--- Apply this patch if you want to update DeepaMehta 2.0b8-rc4 to DeepaMehta rev346-20080910 while keeping your content
 ---
 
 
