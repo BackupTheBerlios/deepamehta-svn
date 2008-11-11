@@ -860,7 +860,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 				if (field.visualMode.equals(VISUAL_FILE_CHOOSER)) {
 					String repositoryPath = as.getCorporateWebBaseURL();
 					repositoryPath += isPngGifJpg(field.value) ? FILESERVER_IMAGES_PATH : FILESERVER_DOCUMENTS_PATH;
-					html.append("<a href=\"" + repositoryPath + text + "\">" + text + "</a>");
+					html.append("<a href=\"" + repositoryPath + text + "\" target=\"_blank\">" + text + "</a>");
 				} else {
 					html.append(text);
 				}
@@ -897,7 +897,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 				if (field.visualMode.equals(VISUAL_FILE_CHOOSER)) {
 					String repositoryPath = as.getCorporateWebBaseURL();
 					repositoryPath += isPngGifJpg(field.value) ? FILESERVER_IMAGES_PATH : FILESERVER_DOCUMENTS_PATH;
-					html.append("<a href=\"" + repositoryPath + text + "\">" + text + "</a>");
+					html.append("<a href=\"" + repositoryPath + text + "\" target=\"_blank\">" + text + "</a>");
 				} else {
 					html.append(text);
 				}
