@@ -32,14 +32,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -3507,43 +3510,100 @@ public final class PresentationService implements DeepaMehtaConstants, GraphPane
 				boolean hasStringFlavor = t.isDataFlavorSupported(DataFlavor.stringFlavor);
 				boolean hasImageFlavor = t.isDataFlavorSupported(DataFlavor.imageFlavor);
 				boolean hasFilelistFlavor = t.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
+				String os = java.lang.System.getProperties().getProperty("os.name");
 				//
-				System.out.println(">>> data dropped to graph panel (" + flavors.length + " flavors)");
+				System.out.println(">>> data dropped to graph panel (" + flavors.length + " flavors) from " + os);
 				System.out.println("  >   string flavor supported: " + hasStringFlavor);
 				System.out.println("  >    image flavor supported: " + hasImageFlavor);
 				System.out.println("  > filelist flavor supported: " + hasFilelistFlavor);
-				//
-				if (hasImageFlavor) {
-					// ### not yet implemented
-				}
-				if (hasStringFlavor) {
-	                String str = (String) t.getTransferData(DataFlavor.stringFlavor);
-					System.out.println("    string=\"" + str + "\"");
-					processGraphCommand(getTopicmap(), CMD_PROCESS_STRING + COMMAND_SEPARATOR + str);
-				} else if (hasFilelistFlavor) {
-	                java.util.List files = (java.util.List) t.getTransferData(DataFlavor.javaFileListFlavor);
-					System.out.println("    " + files.size() + " files:");
-					StringBuffer cmdBuf = new StringBuffer(CMD_PROCESS_FILELIST);
-	                for (int i = 0; i < files.size(); i++) {
-						File file = (File) files.get(i);
-						System.out.println("    " + file);
-						cmdBuf.append(COMMAND_SEPARATOR);
-						cmdBuf.append(file);
+				// 
+				if(os.equals("Linux")) {
+					// linux
+					reader:
+					for (int zz = 0; zz < flavors.length; zz++) {
+						// checks if DataFlavor is a subclass of java.io.Reader
+						if (flavors[zz].isRepresentationClassReader()) {
+							DataFlavor bestFlavor = DataFlavor.selectBestTextFlavor(flavors);
+							// System.out.println("	flavor check, says the best result comes with: " +
+							//	"" + bestFlavor.getMimeType() + " instead of: " + flavors[zz].getMimeType());
+							Reader reader = bestFlavor.getReaderForText(t);
+							BufferedReader br = new BufferedReader(reader);
+							File[] files = createFileArray(br);
+							StringBuffer cmdBuf = new StringBuffer(CMD_PROCESS_FILELIST);
+							System.out.println("    " + files.length + " files:");
+							for (int i = 0; i < files.length; i++) {
+								File file = (File) files[i];
+								System.out.println("    " + file);
+								cmdBuf.append(COMMAND_SEPARATOR);
+								cmdBuf.append(file);
+							}
+							processGraphCommand(getTopicmap(), cmdBuf.toString());
+							break reader;
+						}
 					}
-					processGraphCommand(getTopicmap(), cmdBuf.toString());
+					return true;
+				} else {
+					// just not linux
+					if (hasImageFlavor) {
+						// ### not yet implemented
+					}
+					if (hasStringFlavor) {
+						String str = (String) t.getTransferData(DataFlavor.stringFlavor);
+						System.out.println("    string=\"" + str + "\"");
+						processGraphCommand(getTopicmap(), CMD_PROCESS_STRING + COMMAND_SEPARATOR + str);
+					} else if (hasFilelistFlavor) {
+						java.util.List files = (java.util.List) t.getTransferData(DataFlavor.javaFileListFlavor);
+						System.out.println("    " + files.size() + " files:");
+						StringBuffer cmdBuf = new StringBuffer(CMD_PROCESS_FILELIST);
+						for (int i = 0; i < files.size(); i++) {
+							File file = (File) files.get(i);
+							System.out.println("    " + file);
+							cmdBuf.append(COMMAND_SEPARATOR);
+							cmdBuf.append(file);
+						}
+						processGraphCommand(getTopicmap(), cmdBuf.toString());
+					}
+					return true;
 				}
-				return true;
             } catch (UnsupportedFlavorException ufe) {
                 System.out.println("*** while dropping to graph panel: " + ufe);
             } catch (IOException ioe) {
                 System.out.println("*** while dropping to graph panel: " + ioe);
             }
-			// ### for (int i = 0; i < flavors.length; i++) {
-			// ### 	System.out.println(flavors[i]);
-			// ### }
 			//
 			return super.importData(c, t);
 		}
+		
+		/** 
+		 *  Adopted from http://iharder.sourceforge.net/current/java/filedrop/ licensed under GPL
+		 *  BEGIN 2007-09-12 Nathan Blomquist -- Linux (KDE/Gnome) support added.
+		 *  KDE seems to append a 0 char to the end of the reader
+		 */
+		private String ZERO_CHAR_STRING = "" + (char)0;
+		private File[] createFileArray(BufferedReader bReader)
+		{
+			try { 
+				java.util.List list = new java.util.ArrayList();
+				java.lang.String line = null;
+				while ((line = bReader.readLine()) != null) {
+					try {
+						// kde
+						if(ZERO_CHAR_STRING.equals(line)) continue; 
+						java.io.File file = new java.io.File(new java.net.URI(line));
+						list.add(file);
+					} catch (Exception ex) {
+						System.out.println("Error with " + line + ": " + ex.getMessage());
+					}
+				}
+				return (java.io.File[]) list.toArray(new File[list.size()]);
+			} catch (IOException ex) {
+				System.out.println("GraphPanelTransferHandler@createFileArray: IOException");
+			}
+			return new File[0];
+		}
+		/** 
+		 * END 2007-09-12 Nathan Blomquist -- Linux (KDE/Gnome) support added.
+		 */
 	}
 
 	private class QueuedRequest {
