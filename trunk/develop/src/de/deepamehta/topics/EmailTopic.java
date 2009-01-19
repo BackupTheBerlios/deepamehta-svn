@@ -251,7 +251,7 @@ public class EmailTopic extends LiveTopic {
 				subject = TEXT_NO_SUBJECT;
 			}
 			msg.setSubject(subject);
-			msg.setText(body);
+			msg.setText(body, "UTF-8");
 			msg.setSentDate(new Date());
 			//
 			Transport.send(msg);
@@ -364,7 +364,7 @@ public class EmailTopic extends LiveTopic {
 				if (mp == null) {
 					mp = new MimeMultipart();
 					MimeBodyPart mbpText = new MimeBodyPart();
-					mbpText.setContent(msgText, "text/plain");
+					mbpText.setText(msgText, "UTF-8");
 					mp.addBodyPart(mbpText);
 				}
 				mp.addBodyPart(mbp);
@@ -374,7 +374,7 @@ public class EmailTopic extends LiveTopic {
 		if (mp != null) {
 			msg.setContent(mp);
 		} else {
-			msg.setContent(msgText, "text/plain");
+			msg.setText(msgText, "UTF-8");
 		}
 	}
 
