@@ -239,6 +239,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		//
 		return html.toString();
 	}
+	
 	/**
 	 * Renders a list of topics as a table, one row per topic, one column per property. 
 	 * * sortable if TopicBeanField.TYPE_SINGLE
@@ -252,11 +253,15 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	 * @param propSel
 	 * @param hideSel
 	 * @param action
-	 * @param doZebraStriping
+	 * @param deleteAction - has to be not null! an empty String hides this 
+     * function and a given string is the action rendered on a submit button
+     * additionally this submit button calls a JavaScript function, namely
+     * confirmDelete() which wether sends the delete request or cancels it.
+     * @param doZebraStriping
 	 * @return HTML List of all TopicBeans
 	 */
 	public String listTopicBeans(Vector topicBeans, String selectedID, String[] propSel, String[] propContaining, boolean hideSel,
-									String nameAction, String sortAction, boolean doZebraStriping, String highlightColumnHeader) {
+									String nameAction, String sortAction, String deleteAction, boolean doZebraStriping, String highlightColumnHeader) {
 		if (topicBeans.size() == 0) {
 			return "";
 		}
@@ -266,7 +271,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		html.append("<tr valign=\"top\">");
 		TopicBean firstBean = (TopicBean) topicBeans.get(0);
 		// ### Note: The firstBean entered into listBeanHeadings provides the name and number of the rendered columnHeaders
-		listBeanHeadings(html, firstBean, highlightColumnHeader, sortAction);
+		listBeanHeadings(html, firstBean, highlightColumnHeader, sortAction, deleteAction);
 		html.append("</tr>");
 		//
 		for (int i = 0; i < topicBeans.size(); i++) {
@@ -274,7 +279,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 			String classAttr = topic.id.equals(selectedID) ? " class=\"list-highlight\"" : doZebraStriping ?
 				i % 2 == 0 ? " class=\"list-evenrow\"" : " class=\"list-oddrow\"" : "";
    			html.append("<tr valign=\"top\"" + classAttr + ">");
-			listBeanFields(html, topic, nameAction);
+			listBeanFields(html, topic, nameAction, deleteAction);
 			html.append("</tr>\r");
 		}
 		html.append("</table>");
@@ -1188,8 +1193,10 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	 * @param topic
 	 * @param highlightColumnHeader
 	 * @param sortAction
+	 * @param deleteAction has to be not null! controls if there is an additonal
+     * column renderd for a deletButton in a row of each topicbean
 	 */
-	private void listBeanHeadings(StringBuffer html, TopicBean topic, String highlightColumnHeader, String sortAction) {
+	private void listBeanHeadings(StringBuffer html, TopicBean topic, String highlightColumnHeader, String sortAction, String deleteAction) {
 		Vector allFields = topic.fields;
 		for (int j = 0; j < allFields.size(); j++) {
 			TopicBeanField propField = (TopicBeanField) allFields.get(j); 
@@ -1209,11 +1216,25 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 			}
 			html.append("</td>");
 		}
+		if (!deleteAction.equals("")) {
+			html.append("<td>Zus¬auml;liche Aktion</td>");
+		}
 	}
 	
-	// --- list all fields of a given bean
-	
-	private void listBeanFields(StringBuffer html, TopicBean topic, String action) {
+	/**
+     * list all fields of a given bean and can provide two actions for an entry
+     *
+     *
+     * @param html
+     * @param topic
+     * @param action
+     * the action string is rendered as an action onto the topic name
+     * as a url-form-encoded link to the controler servlet
+     * @param deleteAction - this string controls wether there is an action
+     * rendered onto the topic name as a url-form-encoded link to the controler
+     * servlet
+     */
+	private void listBeanFields(StringBuffer html, TopicBean topic, String action, String deleteAction) {
 		for (int i = 0; i < topic.fields.size(); i++) {
 			TopicBeanField field = (TopicBeanField) topic.fields.get(i);
 			html.append("<td>");
@@ -1232,6 +1253,17 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 				}
 			html.append("</td>");
 		}
+		if (!deleteAction.equals("")) {
+			html.append("<td>");
+			html.append("<form name=\"delete"+topic.id+"\" method=\"GET\" action=\"controller\" " +
+				"onsubmit=\"return confirmDelete()\">");
+			html.append("<input type=\"hidden\" name=\"action\" value=\"" + deleteAction + "\">\n");
+			html.append("<input type=\"hidden\" name=\"id\" value=\"" + topic.id + "\">\n");
+			html.append("<input type=\"submit\" value=\"Eintrag l&ouml;schen\" ></form>");
+			html.append("</td>");
+			// html.append("<a href=\"alert(\"Do you really want to delete this entry!\")controller?action="+deleteAction+"&id="+topic.id + "\">Eintrag löschen</a>") ;
+		}
+		
 	}
 	
 	// ---
