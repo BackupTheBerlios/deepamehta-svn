@@ -7,6 +7,7 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseTopicMap;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.FileServer;
 import de.deepamehta.OrderedItem;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
@@ -68,7 +69,7 @@ import java.util.logging.Level;
  * <img src="../../../../../images/3-tier-lcm.gif">
  * <p>
  * <hr>
- * Last change: 29.10.2008 (2.0b8)<br>
+ * Last change: 26.1.2009 (2.0b9)<br>
  * J&ouml;rg Richter / Malte Rei&szlig;ig<br>
  * jri@deepamehta.de / mre@deepamehta.de
  */
@@ -156,7 +157,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @see		#create
 	 */
 	private ApplicationService(ApplicationServiceHost host, CorporateMemory cm) {
-		// >>> compare to PresentationService.initialize()
+		// >>> compare to PresentationService constructor
 		try {
 			this.hostAddress = InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
@@ -3970,11 +3971,9 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	/**
 	 * ### to be dropped
 	 *
-	 * References checked: 1.9.2002 (2.0a16-pre2)
+	 * References checked: 25.1.2009 (2.0b9)
 	 *
-	 * @see		de.deepamehta.topics.LiveTopic#copyAndUpload
-	 * @see		de.deepamehta.topics.TopicMapTopic#doImport
-	 * @see		de.deepamehta.topics.CMImportExportTopic#executeChainedCommand
+	 * @see		de.deepamehta.topics.LiveTopic#upload
 	 */
 	public boolean runsAtServerHost(Session session) {
 		String clientAddress = session.getAddress();
@@ -4461,7 +4460,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @see		#processMessage
 	 */
 	private void importTopicmap(String filename, int x, int y, Session session) throws DeepaMehtaException {
-		File topicmapFile = new File(FILESERVER_DOCUMENTS_PATH + filename);
+		File topicmapFile = new File(FileServer.repositoryPath(FILE_DOCUMENT) + filename);
 		String topicmapID = session.getPersonalWorkspace().getID();
 		TopicMapImporter importer = new TopicMapImporter(this);
 		CorporateDirectives directives = importer.doImport(topicmapFile, session, x, y);
@@ -4477,7 +4476,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @see		#processMessage
 	 */
 	private void importCM(String filename, Session session) throws DeepaMehtaException {
-		File cmFile = new File(FILESERVER_DOCUMENTS_PATH + filename);
+		File cmFile = new File(FileServer.repositoryPath(FILE_DOCUMENT) + filename);
 		String topicmapID = session.getPersonalWorkspace().getID();
 		TopicMapImporter importer = new TopicMapImporter(this);
 		CorporateDirectives directives = importer.doImport(cmFile, null, 0, 0);	// may throw DME

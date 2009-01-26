@@ -1550,7 +1550,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 		// ### for queued upload requests the time stamp might be not correct. it is 0 in the following situation:
 		// client and server are running at the same machine, sharing the document repository, the file to import
 		// was choosen from outside document repository and no version of the file is in document repository -- thus
-		// the client will performs the upload request and corrupts the archive file (0 bytes).
+		// the client will perform the upload request and corrupts the archive file (0 bytes).
 		//
 		// ### compare to PresentationService.uploadFile()
 		//

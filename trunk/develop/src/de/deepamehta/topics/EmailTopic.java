@@ -3,6 +3,7 @@ package de.deepamehta.topics;
 import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
+import de.deepamehta.FileServer;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.service.ApplicationService;
@@ -36,7 +37,7 @@ import javax.mail.internet.MimeMultipart;
  * An email.
  * <p>
  * <hr>
- * Last change: 29.9.2008 (2.0b8)<br>
+ * Last change: 26.1.2009 (2.0b9)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -231,7 +232,7 @@ public class EmailTopic extends LiveTopic {
 			msg.setSentDate(d);
 			// set text and attachments
 			String msgText = (String) props.get(PROPERTY_TEXT);
-			addAttachs(msgText, msg);
+			addAttachments(msgText, msg);
 			//
 			Transport.send(msg);
 			//
@@ -343,14 +344,14 @@ public class EmailTopic extends LiveTopic {
 		}
 	}
 
-	public void addAttachs(String msgText, MimeMessage msg) throws MessagingException {
+	private void addAttachments(String msgText, MimeMessage msg) throws MessagingException {
 		Enumeration docs = as.getRelatedTopics(getID(), SEMANTIC_EMAIL_ATTACHMENT, 2).elements();
 		Multipart mp = null;
 		while (docs.hasMoreElements()) {
 			BaseTopic doc = (BaseTopic)docs.nextElement();
 			if (doc.getType().equals(TOPICTYPE_DOCUMENT)) {
-				String sFileName = as.getTopicProperty(doc.getID(), doc.getVersion(), "File");
-				String sFile = FILESERVER_DOCUMENTS_PATH + sFileName;
+				String sFileName = getProperty(doc, PROPERTY_FILE);
+				String sFile = FileServer.repositoryPath(FILE_DOCUMENT) + sFileName;
 				MimeBodyPart mbp = new MimeBodyPart();
 				FileDataSource ds = new FileDataSource(sFile);
 				DataHandler dh = new DataHandler(ds);

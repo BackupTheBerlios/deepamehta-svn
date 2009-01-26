@@ -4,6 +4,7 @@ import de.deepamehta.BaseTopic;
 import de.deepamehta.BaseTopicMap;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.Detail;
+import de.deepamehta.FileServer;
 import de.deepamehta.PresentableAssociation;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.PresentableTopicMap;
@@ -85,7 +86,7 @@ import javax.swing.ImageIcon;
  *     ({@link #importFromFile})</li>
  * </ol>
  * <hr>
- * Last change: 10.9.2008 (2.0b8)<br>
+ * Last change: 26.1.2009 (2.0b9)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -692,7 +693,7 @@ public class TopicMapTopic extends LiveTopic {
 		paintAssociations(topicmap.getAssociations().elements(), g, topicmap.getTopics());
 		paintTopics(topicmap.getTopics().elements(), g, geometryData, bounds);
 		// --- save image as PNG file ---
-		File file = new File(FILESERVER_DOCUMENTS_PATH + "topicmap-" + getID() + ".png");
+		File file = new File(FileServer.repositoryPath(FILE_DOCUMENT) + "topicmap-" + getID() + ".png");
 		DeepaMehtaServiceUtils.createImageFile(image, file);
 		//
 		return geometryData;

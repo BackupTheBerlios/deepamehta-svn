@@ -45,6 +45,7 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultBoundedRangeModel;
@@ -73,13 +74,12 @@ import javax.swing.plaf.FontUIResource;
 
 
 /**
- * Main controler of the graphical DeepaMehta client.
+ * Main controller of the graphical DeepaMehta client.
  * <p>
  * <hr>
- * Last functional change: 3.2.2008 (2.0b8)<br>
- * Last documentation update: 3.2.2008 (2.0b8)<br>
+ * Last change: 25.1.2009 (2.0b9)<br>
  * J&ouml;rg Richter<br>
- * jri@freenet.de
+ * jri@deepamehta.de
  */
 public final class PresentationService implements DeepaMehtaConstants, GraphPanelControler, PropertyPanelControler,
 																							ActionListener, Runnable {
@@ -91,6 +91,8 @@ public final class PresentationService implements DeepaMehtaConstants, GraphPane
 	// **************
 
 
+
+	private static Logger logger = Logger.getLogger("de.deepamehta");
 
 	/**
 	 * The application service.
@@ -116,7 +118,7 @@ public final class PresentationService implements DeepaMehtaConstants, GraphPane
 	private Vector requestQueue = new Vector();
 
 	private DefaultBoundedRangeModel progressModel = new DefaultBoundedRangeModel();
-	private FileServer fileServer = new FileServer(progressModel);
+	private FileServer fileServer;
 
 	// ---
 
@@ -251,9 +253,18 @@ public final class PresentationService implements DeepaMehtaConstants, GraphPane
 		try {
 			this.hostAddress = InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
-			System.out.println("*** PresentationService(): " + e);
+			logger.warning("can't get localhost's address (" + e + ")");
 		}
 		this.platform = System.getProperty("os.name");
+		// --- File Service ---
+		String baseDir = null;
+		try {
+			baseDir = System.getProperty("user.home") + "/" + FILE_REPOSITORY_PATH;
+			logger.info("file repository path: " + baseDir);
+		} catch (Throwable e) {
+			logger.warning("can't get user's home directory (" + e + ") -- disable client-side file repository");
+		}
+		fileServer = new FileServer(baseDir, progressModel);
 		//
 		// create the thread responsible for processing the fileservice request queue
 		new Thread(this).start();
@@ -498,7 +509,7 @@ public final class PresentationService implements DeepaMehtaConstants, GraphPane
 			filetype);
 		//
 		File file = new File(FileServer.repositoryPath(filetype) + filename);
-		file.setLastModified(lastModified);	// Note: this is a JDK 1.2 method
+		file.setLastModified(lastModified);
 	}
 
 
@@ -535,17 +546,17 @@ public final class PresentationService implements DeepaMehtaConstants, GraphPane
 	// ---
 
 	/**
-	 * Checks if the specified topic type is known in the topicmap this controler
+	 * Checks if the specified topic type is known in the topicmap this controller
 	 * controls.
 	 * <p>
 	 * ### If the topic type is not known it is retrieved from the list of corporate wide
-	 * topic types and is added to the editor who deploys this controler and the server
+	 * topic types and is added to the editor who deploys this controller and the server
 	 * is notified by means of a (<code>addTypeToView</code>) message.
 	 * <p>
 	 * References checked: 2.12.2001 (2.0a14-pre1)
 	 *
 	 * @return	### <code>true</code> if the specified topic type is known in the topicmap
-	 *			this controler controls, <code>false</code> if the type was unknown (and
+	 *			this controller controls, <code>false</code> if the type was unknown (and
 	 *			thus is retrieved now)
 	 *
 	 * @see		#showTopic
@@ -566,17 +577,17 @@ public final class PresentationService implements DeepaMehtaConstants, GraphPane
 	}
 
 	/**
-	 * Checks if the specified association type is known in the topicmap this controler
+	 * Checks if the specified association type is known in the topicmap this controller
 	 * controls.
 	 * <p>
 	 * ### If the association type is not known it is retrieved from the list of corporate
-	 * wide association types and is added to the editor who deploys this controler and
+	 * wide association types and is added to the editor who deploys this controller and
 	 * the server is notified by means of a (<code>addTypeToView</code>) message.
 	 * <p>
 	 * References checked: 2.12.2001 (2.0a14-pre1)
 	 *
 	 * @return	### <code>true</code> if the specified association type is known in the
-	 *			topicmap this controler controls, <code>false</code> if the type was
+	 *			topicmap this controller controls, <code>false</code> if the type was
 	 *			unknown (and thus is retrieved now)
 	 *
 	 * @see		PresentationService#showTopic
@@ -1549,7 +1560,7 @@ public final class PresentationService implements DeepaMehtaConstants, GraphPane
 				case DIRECTIVE_OPEN_FILE:
 					String command = (String) param1;
 					filename = (String) param2;
-					executeCommand(command, filename);
+					executeSystemCommand(command, filename);
 					break;
 				case DIRECTIVE_QUEUE_MESSAGE:
 					queueMessage((String) param1);
@@ -1558,7 +1569,7 @@ public final class PresentationService implements DeepaMehtaConstants, GraphPane
 					queueDirectives((PresentationDirectives) param1);
 					break;
 				case DIRECTIVE_LAUNCH_APPLICATION:
-					executeCommand((String) param1);
+					executeSystemCommand((String) param1);
 					break;
 				case DIRECTIVE_OPEN_URL:
 					showWebpage((String) param1);
@@ -2426,46 +2437,38 @@ public final class PresentationService implements DeepaMehtaConstants, GraphPane
 		try {
 			if (runsAsApplet) {
 				URL url = new URL(urlStr);
-				System.out.println("> PresentationService.showWebpage(): \"" + url + "\"");
+				logger.info("\"" + url + "\"");
 				applet.getAppletContext().showDocument(url, "extern");	// ###
 			} else {
 				// ###
-				showMessage("Showing webpages not yet supported if running as " +
-					"application (" + urlStr + " not shown) >>> Use the applet " +
-					"instead", NOTIFICATION_WARNING);
-				System.out.println("*** PresentationService.showWebpage(): not yet" +
-					"supported if running as application -- \"" + urlStr + "\" " +
-					"not shown");
+				showMessage("Showing webpages not yet supported if running as application (" + urlStr + " not shown) " +
+					">>> Use the applet instead", NOTIFICATION_WARNING);
+				logger.warning("not yet supported if running as application -- \"" + urlStr + "\" not shown");
 			}
 		} catch (Exception e) {
-			System.out.println("*** PresentationService.showWebpage(): " + e + " -- " +
-				"webpage \"" + urlStr + "\" not shown");
+			logger.warning("webpage \"" + urlStr + "\" can't be shown (" + e + ")");
 		}
 	}
 
-	// --- executeCommand (2 forms) ---
+	// --- executeSystemCommand (2 forms) ---
 
 	/**
 	 * Processes <code>DIRECTIVE_LAUNCH_APPLICATION</code>.
 	 *
 	 * @see		#processDirectives
 	 */
-	private void executeCommand(String command) {
+	private void executeSystemCommand(String command) {
 		String cmdStr = "\"" + command + "\"";	// just for reporting
 		try {
-			System.out.println("> execute " + cmdStr);
+			logger.info("executing " + cmdStr);
 			Runtime.getRuntime().exec(command);
 		} catch (IOException e) {
-			showMessage("Application \"" + command + "\" not launched because it " +
-				"is not found", NOTIFICATION_WARNING);
-			System.out.println("*** PresentationService.executeCommand(): application \"" +
-				command + "\" not found -- application not opened");
+			showMessage("Application \"" + command + "\" not launched because it is not found", NOTIFICATION_WARNING);
+			logger.warning("application \"" + command + "\" not found -- application not opened");
 		} catch (Exception e) {
-			showMessage("Application \"" + command + "\" not launched because of " +
-				"security restrictions >>> Use the signed applet or the application",
-				NOTIFICATION_WARNING);
-			System.out.println("*** PresentationService.executeCommand(): " + e + " -- " +
-				cmdStr + " not executed");
+			showMessage("Application \"" + command + "\" not launched because of security restrictions " +
+				">>> Use the signed applet or the application", NOTIFICATION_WARNING);
+			logger.warning(cmdStr + " can't be executed (" + e + ")");
 		}
 	}
 
@@ -2474,29 +2477,26 @@ public final class PresentationService implements DeepaMehtaConstants, GraphPane
 	 *
 	 * @see		#processDirectives
 	 */
-	private void executeCommand(String command, String param) {
+	private void executeSystemCommand(String command, String param) {
 		// ### hack for Mac OS X: the application is ignored, the file is opened with "open" instead.
 		// ### I don't know how to start Mac OS X applications with Runtime.exec().
 		if (platform.equals(PLATFORM_MACOSX)) {
 			command = "open";
 		}
 		//
-		String[] cmd = {command, FILESERVER_DOCUMENTS_PATH + param};
+		String[] cmd = {command, FileServer.repositoryPath(FILE_DOCUMENT) + param};
 		String cmdStr = "\"" + cmd[0] + " " + cmd[1] + "\"";	// just for reporting
 		try {
-			System.out.println("> execute " + cmdStr);
+			logger.info("executing " + cmdStr);
 			Runtime.getRuntime().exec(cmd);
 		} catch (IOException e) {
 			showMessage("File \"" + param + "\" can not be opened because application \"" +
 				command + "\" not found", NOTIFICATION_WARNING);
-			System.out.println("*** PresentationService.executeCommand(): application \"" +
-				command + "\" not found -- \"" + param + "\" not opened");
+			logger.warning("application \"" + command + "\" not found -- \"" + param + "\" not opened");
 		} catch (Exception e) {
-			showMessage("File \"" + param + "\" not opened because of security " +
-				"restrictions >>> Use the signed applet or the application",
-				NOTIFICATION_WARNING);
-			System.out.println("*** PresentationService.executeCommand(): " + e + " -- " +
-				cmdStr + " not executed");
+			showMessage("File \"" + param + "\" not opened because of security restrictions " +
+				">>> Use the signed applet or the application", NOTIFICATION_WARNING);
+			logger.warning(cmdStr + " can't be executed (" + e + ")");
 		}
 	}
 

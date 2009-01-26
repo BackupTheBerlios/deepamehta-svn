@@ -1,6 +1,7 @@
 package de.deepamehta.topics.helper;
 
 import de.deepamehta.DeepaMehtaConstants;
+import de.deepamehta.FileServer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +16,7 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * ### to be dropped, functionality will move to TopicMapExporter
- * <P>
+ * <p>
  * Helper class for XML export of topicmaps. This class collects all Icons and Documents
  * which belong to the exported topicmap. During export, one instance of this class
  * is created and passed to all relevant export routines which call methods
@@ -87,7 +88,7 @@ public class ArchiveFileCollector implements DeepaMehtaConstants {
 	public void putDocument(String docName) {
 		if (docName != null && ! docName.equals("")) {
 			// ### System.out.println(">>> ArchiveFileCollector.putDocument(\"" + docName + "\")");
-			documents.put(docName, new File(FILESERVER_DOCUMENTS_PATH + docName));
+			documents.put(docName, new File(FileServer.repositoryPath(FILE_DOCUMENT) + docName));
 		}
 	}
 

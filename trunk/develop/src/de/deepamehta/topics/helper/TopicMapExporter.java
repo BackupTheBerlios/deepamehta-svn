@@ -51,7 +51,7 @@ import javax.xml.transform.stream.StreamSource;
  * <li>
  * </ul>
  * <hr>
- * Last change: 1.5.2004 (2.0b3-pre2)<br>
+ * Last change: 26.1.2009 (2.0b9)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -113,7 +113,7 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 	 */
 	public File createTopicmapArchive(String fileBasename) throws IOException {
 		// ### compare to CMImportExportTopic.exportCM()
-		File archiveFile = new File(FILESERVER_DOCUMENTS_PATH + fileBasename + ".zip");
+		File archiveFile = new File(FileServer.repositoryPath(FILE_DOCUMENT) + fileBasename + ".zip");
 		// possibly create corporate document repository
 		FileServer.createDirectory(archiveFile);
 		// create topicmap archive file
@@ -141,7 +141,7 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 		// --- trigger getSVGStylesheetName() hook ---
 		String stylesheetName = topicmap.getSVGStylesheetName();
 		//
-		File outFile = new File(FILESERVER_DOCUMENTS_PATH + fileBasename + ".svg");
+		File outFile = new File(FileServer.repositoryPath(FILE_DOCUMENT) + fileBasename + ".svg");
 		FileServer.createDirectory(outFile);
 		OutputStream out = new FileOutputStream(outFile);
 		transformTopicmap(topicmap, stylesheetName, new StreamResult(out));	// ### outFile
@@ -166,8 +166,8 @@ public class TopicMapExporter implements DeepaMehtaConstants {
 		String foStylesheetName = topicmap.getFOStylesheetName();
 		String svgStylesheetName = topicmap.getSVGStylesheetName();
 		//
-		File outFile = // ### new File(FILESERVER_DOCUMENTS_PATH + fileBasename + ".fo");	// ### debugging: write fo file
-			new File(FILESERVER_DOCUMENTS_PATH + fileBasename + ".pdf");
+		File outFile = // ### new File(FileServer.repositoryPath(FILE_DOCUMENT) + fileBasename + ".fo");	// ### debugging: write fo file
+			new File(FileServer.repositoryPath(FILE_DOCUMENT) + fileBasename + ".pdf");
 		FileServer.createDirectory(outFile);
 		OutputStream out = new FileOutputStream(outFile);
 		// --- SAX transformation ---

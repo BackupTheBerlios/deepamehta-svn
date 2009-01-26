@@ -27,31 +27,30 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * This active topic class provides Corporate Memory Import/Export functionality. 
- * <P>
- * The <I>context-commands</I> (about to appear in the topic context menu) provided by a
- * <CODE>CMImportExportTopic</CODE> are <I>exporting</I> resp. <I>importing</I>
+ * <p>
+ * The <i>context-commands</i> (about to appear in the topic context menu) provided by a
+ * <code>CMImportExportTopic</code> are <i>exporting</i> resp. <i>importing</i>
  * of whole corporate memory to resp. from an archive file. 
- * <P>
+ * <p>
  * The exporting of corporate memory on the server side is provided in the method
  * {@link #executeCommand executeCommand()}. 
  * The archive file is created in method {@link #exportCM exportCM()} and downloaded 
  * by the client. After that the user is informed by message.
- * <P>
+ * <p>
  * The importing of corporate memory on the server side is divided into three steps:
- * <P><OL>
- * <LI>sending of directive for choosing archive file name 
- * ({@link #executeCommand executeCommand()})</LI>
- * <LI>sending of directives for copying of archive file to client's document repository 
+ * <p><ol>
+ * <li>sending of directive for choosing archive file name 
+ * ({@link #executeCommand executeCommand()})</li>
+ * <li>sending of directives for copying of archive file to client's document repository 
  *     and upload to the server 
- * ({@link #executeChainedCommand executeChainedCommand()})</LI>
- * <LI>importing from archive file stored in server's document repository 
- *     ({@link #importFromFile importFromFile()})</LI>
- * </OL>
- * <HR>
- * Last functional change: 11.9.2007 (2.0b8)<BR>
- * Last documentation update: 13.4.2002 (2.0a14-post1)<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * ({@link #executeChainedCommand executeChainedCommand()})</li>
+ * <li>importing from archive file stored in server's document repository 
+ *     ({@link #importFromFile importFromFile()})</li>
+ * </ol>
+ * <hr>
+ * Last change: 26.1.2009 (2.0b9)<br>
+ * J&ouml;rg Richter<br>
+ * jri@deepamehta.de
  */
 public class CMImportExportTopic extends LiveTopic {
 
@@ -176,25 +175,25 @@ public class CMImportExportTopic extends LiveTopic {
 
 	/**
 	 * Imports corporate memory from archive file stored in server's document repository.
-	 * <P>
+	 * <p>
 	 * This method consists of these parts: 
-	 * <UL>
-	 * <LI>declassifying of archive entry</LI>
-	 * <LI>parsing XML 
-	 * <LI>importing of topics</LI>
-	 * <LI>importing of associations</LI>
-	 * </UL><P>
+	 * <ul>
+	 * <li>declassifying of archive entry</li>
+	 * <li>parsing XML 
+	 * <li>importing of topics</li>
+	 * <li>importing of associations</li>
+	 * </ul><p>
 	 * Importing of single topic is done in following steps:
-	 * <OL>
-	 * <LI>getting topic attributes from XML file</LI>
-	 * <LI>founding topic with the same name and type in corporate memory</LI>
-	 *   <UL>
-	 *   <LI>if found, existing topic id is retrieved</LI>
-	 *   <LI>if not found, the new topic id is created according to type of the topic</LI>
-	 *   </UL>
-	 * <LI>Both ids, old stored in archive and existing or new from corporate memory are 
-	 *     stored in <CODE>topicImportMap</CODE></LI>
-	 * </OL>
+	 * <ol>
+	 * <li>getting topic attributes from XML file</li>
+	 * <li>founding topic with the same name and type in corporate memory</li>
+	 *   <ul>
+	 *   <li>if found, existing topic id is retrieved</li>
+	 *   <li>if not found, the new topic id is created according to type of the topic</li>
+	 *   </ul>
+	 * <li>Both ids, old stored in archive and existing or new from corporate memory are 
+	 *     stored in <code>topicImportMap</code></li>
+	 * </ol>
 	 *
 	 * @param   file  	input archive file
 	 * @param   as  	
@@ -270,8 +269,8 @@ public class CMImportExportTopic extends LiveTopic {
 
 	/**
 	 * Exports corporate memory to a ZIP archive file. The archive file name is  
-	 * <CODE>corporate-memory.zip</CODE>.
-	 * <P> 
+	 * <code>corporate-memory.zip</code>.
+	 * <p> 
 	 * For constructing of XML code for topics and association are used static methods
 	 * {@link TopicMapTopic#makeTopicsXML(Enumeration e, StringBuffer out, 
 	 * ApplicationService as) TopicMapTopic.makeTopicsXML()}
@@ -280,7 +279,7 @@ public class CMImportExportTopic extends LiveTopic {
 	 * The XML file is written to ZIP stream throw OutputStreamWriter with UTF-8 encoding
 	 * for correct saving of regional characters. 
 	 *
-	 * @return  reference to the <CODE>File</CODE> object stored in the file system 
+	 * @return  reference to the <code>File</code> object stored in the file system 
 	 * 			of the server
 	 * @throws  IOException  if the archive file cannot be written
 	 *
@@ -290,7 +289,7 @@ public class CMImportExportTopic extends LiveTopic {
 		// ### compare to TopicMapExporter.createTopicmapArchive()
 		// create file reference for topicmap archive file
 		String filename = "corporate-memory.zip";	// ###
-		File archiveFile = new File(FILESERVER_DOCUMENTS_PATH + filename);
+		File archiveFile = new File(FileServer.repositoryPath(FILE_DOCUMENT) + filename);
 		// possibly create corporate document repository
 		FileServer.createDirectory(archiveFile);
 		// create corporate memory archive file

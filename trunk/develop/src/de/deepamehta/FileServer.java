@@ -1,6 +1,5 @@
 package de.deepamehta;
 
-//
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -17,13 +16,14 @@ import javax.swing.BoundedRangeModel;
 
 
 /**
- * Utility class for sending a file through a stream.
- * <P>
- * <HR>
- * Last functional change: 12.3.2003 (2.0a18-pre6)<BR>
- * Last documentation update: 17.4.2001 (2.0a10-pre5)<BR>
- * J&ouml;rg Richter<BR>
- * jri@freenet.de
+ * Utility class for the DeepaMehta file service. There are methods for reading/writing a file from/to a stream.
+ * <p>
+ * 2 FileServer objects are created: one at client side and one at server side.
+ * <p>
+ * <hr>
+ * Last change: 26.1.2009 (2.0ab9)<br>
+ * J&ouml;rg Richter<br>
+ * jri@deepamehta.de
  */
 public class FileServer implements DeepaMehtaConstants {
 
@@ -35,7 +35,8 @@ public class FileServer implements DeepaMehtaConstants {
 
 
 
-	BoundedRangeModel model;
+	private static String baseDir;	// base directory of the DeepaMehta file repository. May be <code>null</code>.
+	BoundedRangeModel model;		// the progress model that is updated while lengthy file operations
 
 
 
@@ -46,15 +47,27 @@ public class FileServer implements DeepaMehtaConstants {
 
 
 	/**
+	 * This constructor is used by the DeepaMehta server application.
+	 * <p>
+	 * References checked: 25.1.2009 (2.0b9)
+	 *
 	 * @see		de.deepamehta.service.FileserverConnection#FileserverConnection
 	 */
 	public FileServer() {
 	}
 
 	/**
-	 * @see		de.deepamehta.client.FileserverConnection#FileserverConnection
+	 * This constructor is used by the DeepaMehta client applet/application and by the monolithic application.
+	 * <p>
+	 * References checked: 25.1.2009 (2.0b9)
+	 *
+	 * @param	baseDir		base directory of the DeepaMehta file repository.
+	 *						If <code>null</code> the file repository is created relative to the working directory.
+	 *
+	 * @see		de.deepamehta.client.PresentationService#PresentationService
 	 */
-	public FileServer(BoundedRangeModel model) {
+	public FileServer(String baseDir, BoundedRangeModel model) {
+		this.baseDir = baseDir;
 		this.model = model;
 	}
 
@@ -67,8 +80,14 @@ public class FileServer implements DeepaMehtaConstants {
 
 
 	/**
+	 * Reads bytes from the stream and writes them to the file.
+	 * <p>
+	 * References checked: 25.1.2009 (2.0b9)
+	 *
+	 * @param	dstFile		the path of the file to write
+	 *
 	 * @see		de.deepamehta.service.FileserverConnection#performUpload
-	 * @see		de.deepamehta.client.FileserverConnection#performDownloadRequest
+	 * @see		de.deepamehta.client.FileserverConnection#downloadFile
 	 */
 	public void readFile(File dstFile, DataInputStream in) throws IOException {
 		long size = in.readLong();
@@ -107,13 +126,16 @@ public class FileServer implements DeepaMehtaConstants {
 	}
 
 	/**
+	 * Reads bytes from the file and writes them to the stream.
+	 * <p>
+	 * References checked: 25.1.2009 (2.0b9)
+	 *
 	 * @see		de.deepamehta.service.FileserverConnection#performDownload
-	 * @see		de.deepamehta.client.FileserverConnection#performUploadRequest
+	 * @see		de.deepamehta.client.FileserverConnection#uploadFile
 	 */
 	public void writeFile(File file, DataOutputStream out) throws IOException {
 		long size = file.length();
-		System.out.println(">>> Fileserver.writeFile(): \"" + file + "\" (" + size +
-			" bytes)");
+		System.out.println(">>> Fileserver.writeFile(): \"" + file + "\" (" + size + " bytes)");
 		InputStream fileIn = new BufferedInputStream(new FileInputStream(file),
 			FILE_BUFFER_SIZE);
 		byte[] buffer = new byte[FILE_BUFFER_SIZE];
@@ -141,10 +163,11 @@ public class FileServer implements DeepaMehtaConstants {
 	}
 
 	/**
-	 * Copies the specified file into the clients document repository resp.
-	 * icon repository.
+	 * Copies the specified file into the client-side file repository.
+	 * <p>
+	 * References checked: 25.1.2009 (2.0b9)
 	 *
-	 * @see		de.deepamehta.client.FileserverConnection#performCopyRequest
+	 * @see		de.deepamehta.client.PresentationService#performCopyRequest
 	 */
 	public void copyFile(File srcFile, int filetype) throws IOException {
 		File dstFile = new File(repositoryPath(filetype) + srcFile.getName());
@@ -190,22 +213,31 @@ public class FileServer implements DeepaMehtaConstants {
 	// ---
 
 	/**
+	 * References checked: 20.1.2009 (2.0b9)
+	 *
 	 * @see		#copyFile
-	 * @see		de.deepamehta.client.DeepaMehtaClient#uploadFile
-	 * @see		de.deepamehta.client.FileserverConnection#setLastModifiedLocally
-	 * @see		de.deepamehta.client.FileserverConnection#performUploadRequest
+	 * @see		de.deepamehta.client.FileserverConnection#downloadFile
+	 * @see		de.deepamehta.client.FileserverConnection#uploadFile
+	 * @see		de.deepamehta.client.PresentationService#setLastModifiedLocally
+	 * @see		de.deepamehta.client.PresentationService#downloadFile
+	 * @see		de.deepamehta.client.PresentationService#performUploadRequest
+	 * @see		de.deepamehta.client.PresentationService#QueuedRequest
 	 * @see		de.deepamehta.service.FileserverConnection#performUpload
+	 * @see		de.deepamehta.service.FileserverConnection#performDownload
+	 * @see		de.deepamehta.topics.LiveTopic#upload
 	 */
 	public static String repositoryPath(int filetype) {
+		String bd = baseDir != null ? baseDir : "";
+		//
 		switch (filetype) {
 		case FILE_DOCUMENT:
-			return FILESERVER_DOCUMENTS_PATH;
+			return bd + FILESERVER_DOCUMENTS_PATH;
 		case FILE_ICON:
-			return FILESERVER_ICONS_PATH;
+			return bd + FILESERVER_ICONS_PATH;
 		case FILE_IMAGE:
-			return FILESERVER_IMAGES_PATH;
+			return bd + FILESERVER_IMAGES_PATH;
 		case FILE_BACKGROUND:
-			return FILESERVER_BACKGROUNDS_PATH;
+			return bd + FILESERVER_BACKGROUNDS_PATH;
 		default:
 			throw new DeepaMehtaException("unexpected filetype: " + filetype);
 		}

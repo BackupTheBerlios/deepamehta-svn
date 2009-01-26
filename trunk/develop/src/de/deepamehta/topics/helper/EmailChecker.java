@@ -2,6 +2,7 @@ package de.deepamehta.topics.helper;
 
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
+import de.deepamehta.FileServer;
 import de.deepamehta.service.ApplicationService;
 
 import com.sun.mail.pop3.POP3Folder;
@@ -302,7 +303,7 @@ public class EmailChecker implements DeepaMehtaConstants, Runnable {
 	}
 	
 	public boolean addAttach(String mailID, String mimeType, String fileName, Object inData) {
-		String path = FILESERVER_DOCUMENTS_PATH;
+		String path = FileServer.repositoryPath(FILE_DOCUMENT);
 		File dstDir = new File(path);
 		// ### create target directory
 		if (dstDir.mkdirs()) {

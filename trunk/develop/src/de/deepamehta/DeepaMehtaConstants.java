@@ -26,7 +26,7 @@ import java.util.Vector;
  * </ol>
  * <p>
  * <hr>
- * Last change: 31.10.2008 (2.0b8)<br>
+ * Last change: 25.1.2009 (2.0b9)<br>
  * J&ouml;rg Richter<br>
  * jri@deepamehta.de
  */
@@ -180,13 +180,14 @@ public interface DeepaMehtaConstants {
 	static final String LEVEL_SEPARATOR = ":";
 	static final String PARAM_RELATION = "Rel";
 
-	// --- fileserver ---
-	static final String FILESERVER_DOCUMENTS_PATH = "documents/";		// ### + File.separator;
-	static final String FILESERVER_ICONS_PATH = "icons/";				// ### + File.separator;
-	static final String FILESERVER_IMAGES_PATH = "images/";				// ### + File.separator;
-	static final String FILESERVER_BACKGROUNDS_PATH = "backgrounds/";	// ### + File.separator;
-	static final String FILESERVER_SOUNDS_PATH = "sounds/";				// ### + File.separator;
-	static final String FILESERVER_WEBPAGES_PATH = "webpages/";			// ### + File.separator;
+	// --- file service ---
+	static final String FILE_REPOSITORY_PATH = "deepamehta-files/";
+	static final String FILESERVER_DOCUMENTS_PATH = "documents/";
+	static final String FILESERVER_ICONS_PATH = "icons/";
+	static final String FILESERVER_IMAGES_PATH = "images/";
+	static final String FILESERVER_BACKGROUNDS_PATH = "backgrounds/";
+	static final String FILESERVER_SOUNDS_PATH = "sounds/";
+	static final String FILESERVER_WEBPAGES_PATH = "webpages/";
 	//
 	static final int FILE_BUFFER_SIZE = 32768;
 	// --- webcrawler ---
