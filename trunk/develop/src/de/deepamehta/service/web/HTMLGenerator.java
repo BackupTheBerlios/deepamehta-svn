@@ -1217,7 +1217,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 			html.append("</td>");
 		}
 		if (!deleteAction.equals("")) {
-			html.append("<td>Zus¬auml;liche Aktion</td>");
+			html.append("<td>Zusatzfunktion</td>");
 		}
 	}
 	
@@ -1245,7 +1245,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 						html.append(imageTag(value) + " " +value.getName() + "<br/>");
 					}
 				} else if(field.type == TopicBeanField.TYPE_SINGLE) {
-					if (field.name.equals("Name")) {
+					if (field.name.equals("Name") && (!action.equals(""))) {
 						html.append("<a href=\"controller?action="+action+"&id="+topic.id +"\">" + field.value + "</a>");
 					} else {
 						html.append(field.value);
