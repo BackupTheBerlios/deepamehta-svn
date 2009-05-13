@@ -15,7 +15,6 @@ import java.io.BufferedReader;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Locale;
@@ -209,12 +208,8 @@ public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHos
 
 	/**
      * If the request is a HTTP POST Request, it is considered as a JSON-RPC-Call
-     * usage is simply a string "method: remoteMethodName, params: one:two:three"
-     * If the request is a HTTP GET Request, it is considered as HTML-Request where
-     * the topicId is appended to the URL e.g. /rpc/t-1234
      *
-     * Consideration is not to make every RPC Call a POST Request -
-     * This is referred as bad practice
+     * good practice is, not to make every RPC Call a POST Request
      *
 	 * @see		#doGet
 	 * @see		#doPost
@@ -225,49 +220,52 @@ public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHos
 		Session session = getSession(request);
 		CorporateDirectives directives = new CorporateDirectives();
 		String method = request.getMethod();
-        // if GET Print the resource if POST print send content/type
-        System.out.println(">>> JSONRPCServlet: " + method + (!method.equals("GET") ? " (content type=\"" +
-        request.getContentType() + "\")" : " on resource =\"" + request.getPathInfo() + "\""));
 		//
         String remoteMethodCall = "";
         String remoteParams = "";
-        if (method.equals("POST")) {
-            // analyze body
-            BufferedReader in = new BufferedReader(
-                                new InputStreamReader(
-                                request.getInputStream()));
-            String requestBody;
-            while ((requestBody = in.readLine()) != null) {
-                String[] body = requestBody.split(",");
-                // System.out.println("params (" + body.length+")");
-                remoteMethodCall= body[0].substring(9);
-                remoteParams = body[1].substring(9, body[1].length()-1);
-                System.out.println(">>> POST BODY: \n" +
-                        "       method: " + remoteMethodCall + ",\n" +
-                        "       params: " + remoteParams);
+        // analyze body
+        BufferedReader in = new BufferedReader(
+                            new InputStreamReader(
+                            request.getInputStream()));
+        String requestBody;
+        while ((requestBody = in.readLine()) != null) {
+            int methodStart = requestBody.indexOf("\"method\": ");
+            int paramStart = requestBody.indexOf("\"params\": ");
+            // single method name
+            remoteMethodCall = requestBody.substring(methodStart + 11, paramStart - 3);
+            // rest is json parameter array
+            remoteParams = requestBody.substring(paramStart + 10, requestBody.length() - 1);
+            System.out.println(">>> JSONRPCServlet: " + method + " / " +requestBody);
+            //System.out.println(">>> REQUEST BODY: \n" +
+              //      "       method: " + remoteMethodCall + ",\n" +
+                //    "       params: " + remoteParams);
+        }
+        in.close();
+        // --- trigger performPostrequest() hook
+        String result = performPostRequest(remoteMethodCall, remoteParams, session, directives);
+        if(result.equals("")) {
+            response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
+            response.sendError(response.SC_INTERNAL_SERVER_ERROR);
+            if (result.indexOf("\"error\": null") != -1){
+                System.out.println("*** ERROR: " + result.substring(result.indexOf("\"error\": null") + 13, result.length() - 3));
             }
-            in.close();
-            // --- trigger performPostrequest() hook
-            String result = performPostRequest(remoteMethodCall, remoteParams, session, directives);
-            System.out.println(">>> POST RESULT: \n");
-            System.out.println("    "+result + "\n");
-            response.setContentType("applicaton/json");
+        } else {
             response.setStatus(response.SC_OK);
+            response.setContentType("applicaton/json");
+            System.out.println(">>> RESPONSE BODY: "+response.getCharacterEncoding()+" written "+result.length() +" character\n");
+            // LOG System.out.println("INFO: "+result + "\n");
             // write back
             PrintWriter writer = response.getWriter();
             writer.print(result);
             writer.checkError();
             writer.close();
-            //response.setHeader("Mime-Type", "");
-        } else if (method.equals("GET")) {
-            // topicId in der URL ?, trim first backslash
-            String topicPath = request.getPathInfo().substring(1);
-            // --- trigger performAction() hook ---
-            String result = performAction(topicPath, remoteParams, session, directives);
-            // --- trigger preparePage() hook ---
-            preparePage(topicPath, params, session, directives);
-            redirectToPage(result, request, response);
         }
+        
+//        String actionResult = performAction(remoteParams, remoteParams, session, directives);
+//        // --- trigger preparePage() hook ---
+//        preparePage(actionResult, params, session, directives);
+//        //
+//        redirectToPage(result, request, response);
 		//
 		// process directives
 		directives.updateCorporateMemory(as, session, null, null);
