@@ -198,9 +198,11 @@ public class WebpageTopic extends LiveTopic {
 				String domain = DeepaMehtaServiceUtils.domain(host, as);
 				String domainID = as.createTopic(TOPICTYPE_INTERNET_DOMAIN, domain);
 				as.createAssociation(ASSOCTYPE_ASSOCIATION, websiteID, domainID);	// ### use semantic
-				//
+                // copy the URL so the browser knows which website is next to load
+                // as.setTopicProperty(this, VISUAL_BROWSER, url.toString());
+                //
 				// download this webpage
-				download(topicmapID, viewmode, session, directives);
+				// download(topicmapID, viewmode, session, directives);
 			} catch (MalformedURLException e) {
 				// ### should never happen because prohibited by propertyChangeAllowed()
 				System.out.println("*** WebpageTopic.propertiesChanged(): " + e);
@@ -229,6 +231,8 @@ public class WebpageTopic extends LiveTopic {
 	public static Vector hiddenProperties(TypeTopic type) {
 		Vector props = new Vector();
 		props.addElement(PROPERTY_ICON);
+        // props.addElement(PROPERTY_DESCRIPTION);
+        // props.addElement(PROPERTY_URL);
 		return props;
 	}
 
