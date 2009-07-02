@@ -12,6 +12,12 @@
 	<!-- create build directory -->
 	<target name="init">
 		<mkdir dir="${build}" />
+		<echo>Copying version specific java sources (java ${ant.java.version})</echo>
+		<copy todir="${sources}" overwrite="true">
+			<fileset dir="${sources}/../src-java-${ant.java.version}">
+				<exclude name="**/.svn/**"/>
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="compile" depends="init" description="compile sources">
