@@ -143,7 +143,7 @@ public class WebpageTopic extends LiveTopic {
 			// ###	throw new DeepaMehtaException("URL is invalid: \"" + urlProperty + "\"");
 			// ### }
 		} else if (command.equals(CMD_DOWNLOAD_WEBPAGE)) {
-			download(topicmapID, viewmode, session, directives);
+			// download(topicmapID, viewmode, session, directives);
 		} else {
 			return super.executeCommand(command, session, topicmapID, viewmode);
 		}
@@ -198,9 +198,6 @@ public class WebpageTopic extends LiveTopic {
 				String domain = DeepaMehtaServiceUtils.domain(host, as);
 				String domainID = as.createTopic(TOPICTYPE_INTERNET_DOMAIN, domain);
 				as.createAssociation(ASSOCTYPE_ASSOCIATION, websiteID, domainID);	// ### use semantic
-                // copy the URL so the browser knows which website is next to load
-                // as.setTopicProperty(this, VISUAL_BROWSER, url.toString());
-                //
 				// download this webpage
 				// download(topicmapID, viewmode, session, directives);
 			} catch (MalformedURLException e) {

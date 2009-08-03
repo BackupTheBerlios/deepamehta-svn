@@ -579,6 +579,44 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		return html.toString();
 	}
 
+     /**
+	 * Copy of the linkList function which renders an extra button with row styles in a table
+     * the former method call should be ### delegated to this implementations instead of doubled code
+	 *
+     * The extraButton triggers a javaScript function with the specific name confirmDelete()
+     * make sure that this method is available and
+     *
+     * @param topics
+     * @param action
+     * @param extraButton
+     * @return
+     */
+    public String linkList(Vector topics, String action, String buttonAction) {
+		StringBuffer html = new StringBuffer();
+		Enumeration e = topics.elements();
+		html.append("<table width=\"100%\" border=\"0\" cellspacing=\"0\">");
+		int i = 0;
+		while (e.hasMoreElements()) {
+			BaseTopic topic = (BaseTopic) e.nextElement();
+			String classAttr = i % 2 == 0 ? " class=\"list-evenrow\"" : " class=\"list-oddrow\"";
+   			html.append("<tr valign=\"top\"" + classAttr + ">");
+				html.append("<td>");
+			link(action, null, topic.getID(), topic.getName(), false, false, html);	// params=null, quoteHTML=false, bold=true
+				html.append("</td><td>");
+            html.append("<form name=\"delete"+topic.getID()+"\" method=\"GET\" action=\"controller\" " +
+				"onsubmit=\"return confirmDelete()\">");
+			html.append("<input type=\"hidden\" name=\"action\" value=\"" + buttonAction + "\">\n");
+			html.append("<input type=\"hidden\" name=\"id\" value=\"" + topic.getID() + "\">\n");
+			html.append("<input type=\"submit\" value=\"Eintrag l&ouml;schen\" ></form>");
+			html.append("</tr>");
+			i++;
+		}
+		html.append("</table>");
+		//
+		return html.toString();
+	}
+
+
 	// ---
 
 	public String staticLink(String text, String link) {
