@@ -1,0 +1,18 @@
+<project name="DeepaMehta-db-createdb-sql92" >
+	<import file="createdb-ask.xml"/>
+	<import file="asksyspass.xml"/>
+	<target name="-createdb" depends="-askcreatedb,-asksyspass" unless="do.db.abort">
+		<path id="dblibs">
+			<fileset dir="${dm.base-dir}">
+				<include name="${db.libs}" />
+			</fileset>
+		</path>
+		<var name="db.syspass" value="${return.syspass}"/>
+		<echo>Creating Database ${db.name} for user ${db.user} with password ${db.password} ...</echo>
+		<sql driver="${db.driver}" url="${db.sysurl}" userid="${db.sysuser}" password="${db.syspass}" classpathref="dblibs">
+			CREATE DATABASE ${db.name};
+			GRANT ALL PRIVILEGES ON ${db.name}.* TO ${db.user}@localhost IDENTIFIED BY '${db.password}' WITH GRANT OPTION;
+			GRANT ALL PRIVILEGES ON ${db.name}.* TO ${db.user}@"%"       IDENTIFIED BY '${db.password}' WITH GRANT OPTION;
+		</sql>
+	</target>
+</project>

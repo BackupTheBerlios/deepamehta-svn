@@ -1,0 +1,11 @@
+<project name="DeepaMehta-db-dropdb-hsqldb">
+	<import file="dropdb-ask.xml" />
+	<target name="-dropdb-do" depends="-askdropdb" unless="do.db.abort">
+		<echo message="Deleting now the ${db.type} database '${db.name}'!" />
+		<delete failonerror="false">
+			<fileset dir="${db.hsqldb.base-path}">
+				<include name="${db.name}.*" />
+			</fileset>
+		</delete>
+	</target>
+</project>

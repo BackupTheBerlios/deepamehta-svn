@@ -1,0 +1,7 @@
+<project name="DeepaMehta-db-dropdb-derby">
+	<import file="dropdb-ask.xml" />
+	<target name="-dropdb-do" depends="-askdropdb" unless="do.db.abort">
+		<echo message="Deleting now the ${db.type} database '${db.name}'!" />
+		<delete dir="${db.derby.path}" />
+	</target>
+</project>

@@ -1,0 +1,48 @@
+<project name="Artfacts" default="jar" basedir=".">
+
+	<description>
+		Artfacts
+	</description>
+
+	<property name="jar" value="ArtfactsTopics.jar"/>
+	<property name="build" location="build"/>
+
+	<property name="dm.base-dir" location="../../.." />
+
+	<import file="${dm.base-dir}/config.xml" />
+
+	<target name="init" description="create build directory">
+		<mkdir dir="${build}"/>
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
+			<classpath>
+				<pathelement location="${server}/DeepaMehtaService.jar"/>
+				<pathelement location="${server}/DeepaMehtaTopics.jar"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+   	    <jar jarfile="${jar}" basedir="${build}">
+			<include name="de/deepamehta/artfacts/*.class" />
+			<include name="de/deepamehta/artfacts/topics/*.class" />
+		</jar>
+	</target>
+
+	<target name="build" depends="jar"/>
+
+	<target name="cleanup" description="remove build directory">
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${build}"/>
+		</delete>
+	</target>
+	
+	<target name="-strip">
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="src"/>
+		</delete>
+	</target>
+
+</project>

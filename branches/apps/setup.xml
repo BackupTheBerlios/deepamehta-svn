@@ -1,0 +1,427 @@
+<project name="DeepaMehta-Setup">
+
+	<description>
+		DeepaMehta setup build file
+	</description>
+
+	<import file="build.xml" optional="true" />
+	<condition property="do.config.db.host" value="true">
+		<istrue value="${config.db.host}" />
+	</condition>
+	<condition property="do.config.db.name" value="true">
+		<istrue value="${config.db.name}" />
+	</condition>
+	<condition property="do.config.db.user" value="true">
+		<istrue value="${config.db.user}" />
+	</condition>
+	<condition property="do.config.dm.port" value="true">
+		<or>
+			<istrue value="${config.dm.port}" />
+			<not>
+				<isset property="config.dm.port" />
+			</not>
+		</or>
+	</condition>
+
+	<property name="NOT-SET" value="*** NOT SET ***" />
+
+	<!-- = = = = = = = = = = = = = = = = =
+          macrodef: input2          
+         = = = = = = = = = = = = = = = = = -->
+	<macrodef name="input2">
+		<attribute name="message" />
+		<attribute name="addproperty" />
+		<attribute name="validargs" default="${NOT-SET}" />
+		<attribute name="defaultvalue" default="${NOT-SET}" />
+		<sequential>
+			<if>
+				<and>
+					<istrue value="${dont-ask-set-default}" />
+					<not>
+						<equals arg1="@{defaultvalue}" arg2="${NOT-SET}" />
+					</not>
+				</and>
+				<then>
+					<if>
+						<equals arg1="@{validargs}" arg2="${NOT-SET}" />
+						<then>
+							<echo>@{message} [@{defaultvalue}]</echo>
+						</then>
+						<else>
+							<echo>@{message} (@{validargs}) [@{defaultvalue}]</echo>
+						</else>
+					</if>
+					<echo>using default value "@{defaultvalue}"</echo>
+					<var name="@{addproperty}" value="@{defaultvalue}" />
+				</then>
+				<else>
+					<if>
+						<equals arg1="@{defaultvalue}" arg2="${NOT-SET}" />
+						<then>
+							<if>
+								<equals arg1="@{validargs}" arg2="${NOT-SET}" />
+								<then>
+									<input message="@{message}" addproperty="@{addproperty}" />
+								</then>
+								<else>
+									<input message="@{message}" addproperty="@{addproperty}" validargs="@{validargs}" />
+								</else>
+							</if>
+						</then>
+						<else>
+							<if>
+								<equals arg1="@{validargs}" arg2="${NOT-SET}" />
+								<then>
+									<input message="@{message}" addproperty="@{addproperty}" defaultvalue="@{defaultvalue}" />
+								</then>
+								<else>
+									<input message="@{message}" addproperty="@{addproperty}" defaultvalue="@{defaultvalue}" validargs="@{validargs}" />
+								</else>
+							</if>
+						</else>
+					</if>
+				</else>
+			</if>
+		</sequential>
+	</macrodef>
+
+	<!-- Configuration -->
+	<target name="-config-init">
+		<property name="configuration.isactive" value="true" />
+	</target>
+	<target name="config" depends="-config-init,-config-web-root,-config-dm-instance,-config-examples" description="Configures the application DeepaMehta">
+		<propertyfile file="${config.properties}">
+			<entry key="main-targets" default="dm" />
+		</propertyfile>
+		<propertyfile file="${dm.instance.config-property-file}">
+			<entry key="config.finished" value="true" />
+		</propertyfile>
+		<var name="config.finished" value="true" />
+		<echo>
+Your choices are stored in the files
+
+${config.properties}
+${config}/config.properties
+${dm.instance.config-property-file}
+
+If you want to change the settings you have made please edit
+these files or execute 'run config' again.
+		</echo>
+	</target>
+
+	<target name="-config-web" depends="-config-init">
+		<condition property="old.do.installweb" value="n">
+			<isfalse value="${web.deploy.do}" />
+		</condition>
+		<condition property="old.do.installweb" value="y">
+			<istrue value="${web.deploy.do}" />
+		</condition>
+		<input2 message="Do you want to install the web frontends (Tomcat must already be installed)?" validargs="y,n" addproperty="new.do.installweb" defaultvalue="${old.do.installweb}" />
+		<if>
+			<equals arg1="${new.do.installweb}" arg2="n" />
+			<then>
+				<var name="web.deploy.do" value="false" />
+				<var name="do.web.deploy" unset="true" />
+				<!--unset-->
+			</then>
+			<else>
+				<var name="web.deploy.do" value="true" />
+				<var name="do.web.deploy" value="true" />
+			</else>
+		</if>
+		<propertyfile file="${config.properties}">
+			<entry key="web.deploy.do" value="${web.deploy.do}" />
+		</propertyfile>
+	</target>
+
+	<target name="-config-web-root" if="do.web.deploy" depends="-config-web">
+		<input2 message="Please enter the home directory of your Tomcat installation." addproperty="new.tomcat.root" defaultvalue="${tomcat.root}" />
+		<propertyfile file="${config.properties}">
+			<entry key="tomcat.root" value="${new.tomcat.root}" />
+		</propertyfile>
+	</target>
+
+	<target name="-config-which-dm-instance" depends="-config-init">
+		<var name="path" value="${config}" />
+		<var name="prefix" value="dm" />
+		<var name="default" value="${dm.instance}" />
+		<antcallback target="-config-which-generic-instance" return="return.instance">
+			<property name="message" value="Please select the DeepaMehta instance to be configured:" />
+		</antcallback>
+		<antcall target="-config-setup-default-instance" />
+		<var name="dm.instance" value="${return.instance}" />
+
+		<!-- ugly hack for <var name="..." value="..." /> -->
+		<var name="dm.instance.property-file" unset="true" />
+		<var name="dm.instance.build-property-file" unset="true" />
+		<var name="dm.instance.config-property-file" unset="true" />
+		<property name="dm.instance.property-file" value="${config}/dm-${dm.instance}.properties" />
+		<property name="dm.instance.build-property-file" value="${config}/build-${dm.instance}.properties" />
+		<property name="dm.instance.config-property-file" value="${config}/config-${dm.instance}.properties" />
+	</target>
+
+	<target name="-config-setup-default-instance">
+		<if>
+			<or>
+				<not>
+					<or>
+						<equals arg1="${return.instance}" arg2="${dm.instance}" />
+						<isset property="example.execute" />
+					</or>
+				</not>
+				<not>
+					<available file="${config}/config.properties" />
+				</not>
+			</or>
+			<then>
+				<if>
+					<and>
+						<available file="${config}/config.properties" />
+						<not>
+							<isset property="dont.ask" />
+						</not>
+					</and>
+					<then>
+						<input2 message="Should '${return.instance}' be your default instance?" addproperty="setup.default-instance" defaultvalue="y" validargs="y,n" />
+					</then>
+					<else>
+						<var name="setup.default-instance" value="y" />
+					</else>
+				</if>
+				<if>
+					<equals arg1="${setup.default-instance}" arg2="y" />
+					<then>
+						<propertyfile file="${config}/config.properties">
+							<entry key="dm.instance" value="${return.instance}" />
+						</propertyfile>
+					</then>
+				</if>
+			</then>
+		</if>
+	</target>
+	<target name="-config-dm-instance" depends="-config-which-dm-instance">
+		<echo>configuring now the DeepaMehta instance "${dm.instance}" ...</echo>
+		<antcallback target="-config-dm-instance2" inheritall="false" return="db.syspass">
+			<property name="dm.instance" value="${dm.instance}" />
+		</antcallback>
+	</target>
+
+	<target name="-config-dm-instance2" depends="-config-instance-db.host,-config-instance-db.name,-config-instance-db.user,-config-instance-dm.port">
+		<echo>completed configuring instance "${dm.instance}"</echo>
+		<echo>Instance-related settings are stored in "${dm.instance.config-property-file}.</echo>
+	</target>
+
+	<target name="-config-instance-db.host" if="do.config.db.host">
+		<input2 message="Please enter the host of your database:" addproperty="new.db.host" defaultvalue="${db.host}" />
+		<propertyfile file="${dm.instance.config-property-file}">
+			<entry key="db.host" value="${new.db.host}" />
+		</propertyfile>
+	</target>
+
+	<import file="${db-specific}/${db.list-names}" />
+	<target name="-config-instance-db.name" if="do.config.db.name" depends="-listdb">
+		<input2 message="Please enter the name of the database to be created:" addproperty="new.db.name" defaultvalue="${db.name}" />
+		<propertyfile file="${dm.instance.config-property-file}">
+			<entry key="db.name" value="${new.db.name}" />
+		</propertyfile>
+	</target>
+
+	<target name="-config-instance-db.user" if="do.config.db.user">
+		<echo>It is strongly advised to change the database user and password before creation!</echo>
+		<input2 message="Please enter the user to use:" addproperty="new.db.user" defaultvalue="${db.user}" />
+		<input2 message="Please enter the password to use:" addproperty="new.db.password" defaultvalue="${db.password}" />
+		<propertyfile file="${dm.instance.config-property-file}">
+			<entry key="db.user" value="${new.db.user}" />
+			<entry key="db.password" value="${new.db.password}" />
+		</propertyfile>
+	</target>
+
+	<target name="-config-instance-dm.port" if="do.config.dm.port">
+		<input2 message="Network port for this instance (when served by the DeepaMehta server):" addproperty="new.dm.port" defaultvalue="${dm.port}" />
+		<propertyfile file="${dm.instance.config-property-file}">
+			<entry key="dm.port" value="${new.dm.port}" />
+		</propertyfile>
+	</target>
+
+	<target name="-config-examples" depends="-config-init">
+		<ant target="-call-examples">
+			<property name="target" value="config" />
+			<property name="example.ask.verb" value="install" />
+		</ant>
+	</target>
+
+	<target name="-config-ask-example">
+		<var name="example.execute" unset="true" />
+		<property file="${examples}/${example}/config.properties" />
+		<if>
+			<or>
+				<istrue value="${configuration.isactive}" />
+				<not>
+					<or>
+						<isset property="example.execute" />
+						<isset property="example.executeall" />
+					</or>
+				</not>
+			</or>
+			<then>
+				<if>
+					<istrue value="${example.execute}" />
+					<then>
+						<var name="default" value="y" />
+					</then>
+					<else>
+						<var name="default" value="n" />
+					</else>
+				</if>
+				<if>
+					<not>
+						<isset property="example.ask.verb" />
+					</not>
+					<then>
+						<var name="example.ask.verb" value="go into" />
+					</then>
+				</if>
+				<if>
+					<isset property="example.name" />
+					<then>
+						<var name="example.complete-name" value="'${example}' (${example.name})" />
+					</then>
+					<else>
+						<var name="example.complete-name" value="'${example}'" />
+					</else>
+				</if>
+				<var name="input2" unset="true" />
+				<input2 message="Do you want to ${example.ask.verb} the example application ${example.complete-name}?" validargs="y,n" defaultvalue="${default}" addproperty="input" />
+				<var name="default" unset="true" />
+				<if>
+					<equals arg1="${input}" arg2="y" />
+					<then>
+						<var name="do.example.execute" value="true" />
+						<propertyfile file="${examples}/${example}/config.properties">
+							<entry key="example.execute" value="true" />
+						</propertyfile>
+					</then>
+					<else>
+						<var name="do.example.execute" unset="true" />
+						<propertyfile file="${examples}/${example}/config.properties">
+							<entry key="example.execute" value="false" />
+						</propertyfile>
+					</else>
+				</if>
+			</then>
+			<else>
+				<if>
+					<or>
+						<istrue value="${example.execute}" />
+						<istrue value="${example.executeall}" />
+					</or>
+					<then>
+						<var name="do.example.execute" value="true" />
+					</then>
+					<else>
+						<var name="do.example.execute" unset="true" />
+					</else>
+				</if>
+			</else>
+		</if>
+	</target>
+
+	<target name="-config-which-generic-instance">
+		<antcall target="-unset-temporary-properties" />
+		<if>
+			<not>
+				<isset property="message" />
+			</not>
+			<then>
+				<var name="message" value="Please select one of the following instance configurations:" />
+			</then>
+		</if>
+		<echo>${message}</echo>
+		<echo />
+		<for param="list.instance.config.file">
+			<path>
+				<fileset dir="${path}" includes="${prefix}-*.properties" />
+			</path>
+			<sequential>
+				<var name="list.instance" unset="true" />
+				<var name="list.dm-instance" unset="true" />
+				<basename file="@{list.instance.config.file}" property="list.dm-instance" suffix=".properties" />
+				<propertyregex property="list.instance" input="${list.dm-instance}" regexp="${prefix}-(.*)" select="\1" />
+				<var name="temporary.config.web.compatible" unset="true" />
+				<var name="temporary.config.name" unset="true" />
+				<property file="${path}/config-${list.instance}.properties" prefix="temporary" />
+				<property file="${path}/build-${list.instance}.properties" prefix="temporary" />
+				<if>
+					<and>
+						<or>
+							<not>
+								<isset property="do.web.deploy" />
+							</not>
+							<not>
+								<isfalse value="${temporary.config.web.compatible}" />
+							</not>
+							<not>
+								<isset property="temporary.config.web.compatible" />
+							</not>
+						</or>
+						<or>
+							<not>
+								<istrue value="${installed}"/>
+							</not>
+							<istrue value="${temporary.dm.instance.installed}"/>
+						</or>
+					</and>
+					<then>
+						<if>
+							<not>
+								<isset property="temporary.config.name" />
+							</not>
+							<then>
+								<property name="temporary.config.name" value="" />
+							</then>
+						</if>
+						<echo>* ${list.instance} ${temporary.config.name}</echo>
+						<var name="temporary.${list.instance}.config" value="ok" />
+					</then>
+				</if>
+			</sequential>
+		</for>
+		<echo />
+
+		<if>
+			<not>
+				<isset property="temporary.${default}.config" />
+			</not>
+			<then>
+				<echo>The former selected configration '${default}' is currently not available.</echo>
+				<if>
+					<isset property="temporary.hsqldb-intern.config" />
+					<then>
+						<var name="default" value="hsqldb-intern" />
+					</then>
+					<else>
+						<var name="default" value="mysql5" />
+					</else>
+				</if>
+			</then>
+		</if>
+		<var name="return.instance" unset="true" />
+		<input2 message="Currently set" addproperty="return.instance" defaultvalue="${default}" />
+
+		<var name="correct" unset="true" />
+		<condition property="correct">
+			<isset property="temporary.${return.instance}.config" />
+		</condition>
+		<fail unless="correct" message="${return.instance} does not refer to an instance configuration" />
+	</target>
+
+	<target name="-unset-temporary-properties">
+		<propertyselector property="temporary.list" delimiter="|" match="temporary\..*" />
+		<for list="${temporary.list}" delimiter="|" param="property.id">
+			<sequential>
+				<var name="${property.id}" unset="true" />
+			</sequential>
+		</for>
+	</target>
+
+</project>

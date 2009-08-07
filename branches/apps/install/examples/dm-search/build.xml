@@ -1,0 +1,61 @@
+<project name="DeepaMehta Search" default="build" basedir=".">
+
+	<description>
+		DeepaMehta Search
+	</description>
+
+	<property name="project.name" value="dm-search"/>
+	<property name="war" value="${project.name}.war"/>
+	<property name="build" location="build"/>
+
+	<property name="dm.base-dir" location="../../.." />
+
+	<import file="${dm.base-dir}/config.xml" />
+
+	<target name="init" description="create build directory">
+		<mkdir dir="${build}"/>
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes">
+			<classpath>
+				<pathelement location="${server}/DeepaMehtaService.jar"/>
+				<pathelement location="${server}/DeepaMehtaTopics.jar"/>
+				<pathelement location="${dm.base-dir}/${libpath}/servlet.jar" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="war" depends="compile">
+   	    <war warfile="${war}" webxml="config/web.xml">
+		    <classes dir="${build}">
+				<include name="de/deepamehta/webfront/*.class" />
+            </classes>
+         	<fileset dir=".">
+            	<include name="pages/*"/>
+            	<include name="icons/*"/>
+         	</fileset>
+		</war>
+	</target>
+
+	<target name="build" depends="war"/>
+
+	<target name="deploy" if="do.web.deploy">
+        <copy file="${war}" todir="${web.deploy.dir}"/>
+        <copy file="bundles/SearchBundle_de_DE.properties" todir="${web.classes.dir}"/>
+        <copy file="bundles/SearchBundle_en_US.properties" todir="${web.classes.dir}"/>
+        <copy file="bundles/SearchBundle.properties" todir="${web.classes.dir}"/>
+	</target>
+
+	<target name="cleanup" description="remove build directory">
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${build}"/>
+		</delete>
+	</target>
+
+	<target name="-strip">
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="src"/>
+		</delete>
+	</target>
+</project>

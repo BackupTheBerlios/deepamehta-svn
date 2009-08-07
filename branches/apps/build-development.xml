@@ -1,0 +1,314 @@
+<project name="DeepaMehta development" default="build" basedir=".">
+
+	<description>
+		DeepaMehta development build file
+	</description>
+
+	<property name="exceptions.log" value="true" />
+
+	<import file="build.xml" />
+
+	<!-- Build -->
+	<!-- create build directory -->
+	<target name="init">
+		<mkdir dir="${build}" />
+		<echo>Copying version specific java sources (java ${ant.java.version})</echo>
+		<copy todir="${sources}" overwrite="true">
+			<fileset dir="${sources}/../src-java-${ant.java.version}">
+				<exclude name="**/.svn/**"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="compile" depends="init" description="compile sources">
+		<javac srcdir="${sources}" destdir="${build}" debug="on" listfiles="yes" encoding="UTF8">
+			<classpath refid="javalibs" />
+		</javac>
+	</target>
+
+	<target name="-build-self" depends="compile">
+		<!-- monolith -->
+		<mkdir dir="${client}" />
+		<jar jarfile="${client}/DeepaMehta.jar" basedir="${build}">
+			<include name="de/deepamehta/*.class" />
+			<include name="de/deepamehta/client/*.class" />
+			<include name="de/deepamehta/service/*.class" />
+			<include name="de/deepamehta/service/db/*.class" />
+			<include name="de/deepamehta/topics/**/*.class" />
+			<include name="de/deepamehta/assocs/**/*.class" />
+			<include name="de/deepamehta/util/*.class" />
+			<exclude name="de/deepamehta/client/DeepaMehtaClient.class" />
+			<exclude name="de/deepamehta/client/SocketService.class" />
+			<exclude name="de/deepamehta/client/InteractionConnection.class" />
+			<exclude name="de/deepamehta/client/MessagingConnection.class" />
+			<exclude name="de/deepamehta/client/TypeConnection.class" />
+			<exclude name="de/deepamehta/client/FileserverConnection.class" />
+			<exclude name="de/deepamehta/service/InteractionConnection.class" />
+			<exclude name="de/deepamehta/service/MessagingConnection.class" />
+			<exclude name="de/deepamehta/service/TypeConnection.class" />
+			<exclude name="de/deepamehta/service/FileserverConnection.class" />
+			<exclude name="de/deepamehta/service/ExternalConnection.class" />
+			<exclude name="de/deepamehta/service/DeepaMehtaServer.class" />
+			<exclude name="de/deepamehta/service/DeepaMehtaServer$Connection.class" />
+			<manifest>
+				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehta" />
+				<attribute name="Class-Path" value="${jarclasspath}" />
+			</manifest>
+		</jar>
+		<!-- client -->
+		<jar jarfile="${client}/DeepaMehtaClient.jar" basedir="${build}">
+			<include name="de/deepamehta/*.class" />
+			<include name="de/deepamehta/client/*.class" />
+			<include name="de/deepamehta/util/DeepaMehtaUtils.class" />
+			<manifest>
+				<attribute name="Main-Class" value="de.deepamehta.client.DeepaMehtaClient" />
+			</manifest>
+		</jar>
+		<!-- server -->
+		<mkdir dir="${server}" />
+		<jar jarfile="${server}/DeepaMehtaService.jar" basedir="${build}">
+			<include name="de/deepamehta/*.class" />
+			<include name="de/deepamehta/service/**/*.class" />
+			<include name="de/deepamehta/util/**/*.class" />
+			<manifest>
+				<attribute name="Main-Class" value="de.deepamehta.service.DeepaMehtaServer" />
+				<attribute name="Class-Path" value="${jarclasspath}" />
+			</manifest>
+		</jar>
+		<!-- topics -->
+		<jar jarfile="${server}/DeepaMehtaTopics.jar" basedir="${build}">
+			<include name="de/deepamehta/topics/**/*.class" />
+			<include name="de/deepamehta/assocs/**/*.class" />
+		</jar>
+	</target>
+
+	<target name="jdepend" depends="build" description="generates jdepend report">
+		<jdepend outputfile="jdepend-report.xml" format="xml">
+			<exclude name="java.*" />
+			<exclude name="javax.*" />
+			<exclude name="com.*" />
+			<exclude name="org.*" />
+			<classespath location="${build}" />
+			<classpath location="${build}" />
+		</jdepend>
+		<xslt in="jdepend-report.xml" out="jdepend-report.dot" style="ant/contrib/jdepend2dot.xsl" />
+		<exec executable="dot">
+			<arg value="-Tpng" />
+			<arg value="-odependencies.png" />
+			<arg value="jdepend-report.dot" />
+		</exec>
+		<echo>Image file is dependencies.png.</echo>
+	</target>
+
+	<taskdef resource="checkstyletask.properties" />
+	<target name="checkstyle">
+		<checkstyle config="checkstyle_config.xml">
+			<fileset dir="${sources}" includes="**/*.java" />
+			<formatter type="plain" />
+			<formatter type="xml" toFile="checkstyle_errors.xml" />
+		</checkstyle>
+	</target>
+
+	<target name="build" depends="-build-self" description="build jar files">
+		<ant target="-call-examples">
+			<property name="target" value="build" />
+		</ant>
+	</target>
+
+	<target name="build-all" depends="-build-self" description="build jar files">
+		<ant target="-call-examples">
+			<property name="target" value="build" />
+			<property name="example.executeall" value="true" />
+		</ant>
+	</target>
+
+	<target name="sign" description="sign client">
+		<signjar jar="${client}/DeepaMehtaClient.jar" alias="tomcat" storepass="kspw01" keypass="kspw01" signedjar="${client}/sDeepaMehtaClient.jar" />
+	</target>
+
+	<target name="release" depends="sign">
+		<echo message="You are about to build the release file '${build.name}'." />
+		<echo message="If you want use another name, type 'n' and edit config.xml (section 'Build Support')" />
+		<echo message="or use a command line option -Dbuild.name=..." />
+		<input message="Continue? " validargs="y,n" addproperty="do.release" />
+		<condition property="do.abort">
+			<equals arg1="${do.release}" arg2="n" />
+		</condition>
+		<fail if="do.abort" message="==> Release building aborted by user -- revisit with 'ant release [option]'" />
+		<zip destfile="${build.archive.dir}/${build.name}" basedir=".">
+			<exclude name="**/build/" />
+			<exclude name="contrib/" />
+			<exclude name="docs/" />
+			<exclude name="install/client/*.pid" />
+			<exclude name="install/client/documents/*" />
+			<exclude name="install/client/webpages/**" />
+			<exclude name="install/client/icons/at-*" />
+			<exclude name="install/client/icons/tt-*" />
+			<exclude name="install/client/icons/ka-*" />
+			<exclude name="install/client/icons/jah-*" />
+			<exclude name="install/client/icons/108_*" />
+			<exclude name="install/client/icons/rote-kapelle.png" />
+			<exclude name="install/client/icons/3539-*" />
+			<exclude name="install/client/icons/16212*" />
+			<exclude name="install/client/icons/25984*" />
+			<exclude name="install/client/icons/ploetze.gif" />
+			<exclude name="install/client/icons/b17-2-harnack-*" />
+			<exclude name="install/client/icons/Sacred*" />
+			<exclude name="install/client/images/javaxml/" />
+			<exclude name="install/client/images/HCI/" />
+			<exclude name="install/client/images/stats/" />
+			<exclude name="install/client/images/acro.png" />
+			<exclude name="install/client/images/anika-7.gif" />
+			<exclude name="install/client/images/axel-springer-40.png" />
+			<exclude name="install/client/images/badawi.jpg" />
+			<exclude name="install/client/images/BMFSFJ*" />
+			<exclude name="install/client/images/comparison.png" />
+			<exclude name="install/client/images/deepa_mehta-earth.jpg" />
+			<exclude name="install/client/images/deepa_mehta.jpg" />
+			<exclude name="install/client/images/DeepaMobil.png" />
+			<exclude name="install/client/images/Driton*" />
+			<exclude name="install/client/images/headregie.gif" />
+			<exclude name="install/client/images/iso-9001.jpeg" />
+			<exclude name="install/client/images/jah-*" />
+			<exclude name="install/client/images/knoppix-logo.gif" />
+			<exclude name="install/client/images/linkafn_*" />
+			<exclude name="install/client/images/marlene-dietrich-11.png" />
+			<exclude name="install/client/images/scidoc.gif" />
+			<exclude name="install/client/images/sparkasse.gif" />
+			<exclude name="install/client/images/schaukasten*" />
+			<exclude name="install/client/stylesheets/browser/" />
+			<exclude name="install/client/stylesheets/vergleich*" />
+			<exclude name="install/client/backgrounds/axel-springer-40.png" />
+			<exclude name="install/client/backgrounds/comparison.png" />
+			<exclude name="install/client/backgrounds/daily*" />
+			<exclude name="install/client/backgrounds/kartepur*" />
+			<exclude name="install/client/backgrounds/ks-*" />
+			<exclude name="install/client/backgrounds/Sacred*" />
+			<exclude name="install/client/backgrounds/Scheitern*" />
+			<exclude name="install/examples/knoppixforum/" />
+			<exclude name="libs/commons-beanutils-1.7.0.jar" />
+			<exclude name="libs/commons-beanutils-core-1.7.0.jar" />
+			<exclude name="libs/commons-cli-1.0.jar" />
+			<exclude name="libs/commons-collections-3.1.jar" />
+			<exclude name="libs/commons-digester-1.7.jar" />
+			<exclude name="libs/commons-logging-1.0.4.jar" />
+			<exclude name="libs/commons-logging-api-1.0.4.jar" />
+			<exclude name="libs/jwf-1.0.1.jar" />
+			<exclude name="libs/log4j-1.2.13.jar" />
+			<exclude name="libs/libraries.txt" />
+			<exclude name="**/.FBC*" />
+			<exclude name="**/.xvpics/" />
+		</zip>
+	</target>
+
+	<target name="apidocs" description="generates the API documentation">
+		<javadoc destdir="docs/apidocs" stylesheetfile="docs/stylesheet.css" package="true" windowtitle="DeepaMehta -- API Documentation">
+			<fileset dir="develop/src">
+			</fileset>
+		</javadoc>
+		<copy file="docs/overview-frame.html" todir="docs/apidocs" overwrite="true" />
+		<copy file="docs/overview-summary.html" todir="docs/apidocs" overwrite="true" />
+		<copy file="docs/apidocs-index.html" tofile="docs/apidocs/index.html" overwrite="true" />
+	</target>
+
+	<target name="cleanup" description="remove build directory">
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${build}" />
+		</delete>
+		<ant target="-call-examples">
+			<property name="example.executeall" value="true" />
+			<property name="target" value="cleanup" />
+		</ant>
+	</target>
+
+	<target name="strip" depends="cleanup" description="strip for deploy">
+		<echo>
+,-----------------------------------------------------.
+|                                                     |
+|   THIS WILL REMOVE ANY DEVELOPMENT RELATED STUFF!   |
+|                                                     |
+|-----------------------------------------------------|
+|     sources, build-dirs, version control, etc...    |
+`-----------------------------------------------------'
+		</echo>
+		<input message="Do you want to proceed?" addproperty="do.strip" defaultvalue="n" validargs="y,n" />
+		<if>
+			<equals arg1="${do.strip}" arg2="y" />
+			<then>
+				<echo>
+,-------------------------------------------.
+|                                           |
+|   PROCESS OF SELF DESTRUCTION INITIATED   |
+|                                           |
+`-------------------------------------------'
+				</echo>
+
+				<defaultexcludes remove="**/.svn" />
+				<defaultexcludes remove="**/.svn/**" />
+
+				<echo message="calling the examples" />
+				<ant target="-call-examples">
+					<property name="example.executeall" value="true" />
+					<property name="target" value="-strip" />
+				</ant>
+
+				<echo message="removing SVN repository-files" />
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="." includes="**/.svn/**" defaultexcludes="false" />
+				</delete>
+
+				<echo message="removing the sources and build files" />
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="develop" />
+					<fileset dir=".settings" />
+					<fileset file=".classpath" />
+					<fileset file=".project" />
+				</delete>
+
+				<echo message="removing default-overriding property-files" />
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="." includes="**/config*.properties" />
+				</delete>
+
+				<echo message="removing existing hsql/derby database" />
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="${client}/db" />
+				</delete>
+
+				<echo message="removing development libs" />
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset file=".checkstyle" />
+					<fileset file="checkstyle_config.xml" />
+					<fileset file="checkstyle_errors.xml" />
+					<fileset file="ant/lib/checkstyle-all-4.3.jar" />
+					<fileset file="ant/lib/jdepend-2.9.jar" />
+				</delete>
+
+				<echo message="derby is currently unsupported" />
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="libs/derby" />
+					<fileset dir="${config}" includes="*derby*.properties" />
+					<fileset dir="install/examples/movies/config" includes="*derby*.properties" />
+				</delete>
+
+				<echo message="who is artfacts?" />
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset dir="install/examples/artfacts" />
+				</delete>
+
+				<echo message="self destruction" />
+				<delete includeemptydirs="true" failonerror="false">
+					<fileset file="build-development.xml" />
+				</delete>
+				<echo>
+,-------------------------------------------.
+|                                           |
+|   PROCESS OF SELF DESTRUCTION COMPLETED   |
+|                                           |
+`-------------------------------------------'
+				</echo>
+			</then>
+		</if>
+	</target>
+
+</project>
