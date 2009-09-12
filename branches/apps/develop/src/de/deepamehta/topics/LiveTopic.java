@@ -540,7 +540,7 @@ public class LiveTopic extends BaseTopic implements DeepaMehtaConstants {
 			String typeID = st.nextToken();
 			showTypeHelp(typeID, session, directives);
 		} else if (cmd.equals(CMD_SEARCH_INTERNET)) {
-			as.performGoogleSearch(getName(), getID(), topicmapID, viewmode, session, directives);
+			as.performYahooSearch(getName(), getID(), topicmapID, viewmode, session, directives);
 		} else if (cmd.equals(CMD_SUBMIT_FORM)) {
 			// Note: there is no standard behavoir for "submitForm" command -- do nothing
 			// just avoid "command not implemented" exception

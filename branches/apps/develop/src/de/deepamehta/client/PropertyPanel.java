@@ -5,9 +5,9 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaConstants;
 import de.deepamehta.DeepaMehtaException;
-import de.deepamehta.PropertyDefinition;
 import de.deepamehta.Topic;
 import de.deepamehta.Type;
+import de.deepamehta.client.BrowserNavigationListener;
 import de.deepamehta.util.DeepaMehtaUtils;
 
 import java.awt.BorderLayout;
@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.net.MalformedURLException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.NoSuchElementException;
@@ -36,12 +37,13 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.JTextComponent;
+import org.lobobrowser.gui.FramePanel;
+import org.lobobrowser.ua.RequestType;
 
 
 
@@ -141,7 +143,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 	private boolean propertiesAreDirty;
 
 	// ---
-	
+
 	/**
 	 * Key: Topic Type ID (<code>String</code>)<br>
 	 * Value: PresentationType
@@ -345,7 +347,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 		setPropertiesDirty("typing");
 	}
 
-	public void removeUpdate(DocumentEvent e) {	
+	public void removeUpdate(DocumentEvent e) {
 		setPropertiesDirty("deleting");
 	}
 
@@ -954,7 +956,7 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			return;
 		}
 		// ---
-		// go through all fields of the type definition		
+		// go through all fields of the type definition
 		Enumeration e = propertyFields.elements();
 		while (e.hasMoreElements()) {
 			PropertyField propField = (PropertyField) e.nextElement();
@@ -1496,10 +1498,18 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 			if (isHidden()) {
 				actionListener = null;		// ### required?
 				hyperlinkListener = null;	// ### required?
-			}
-			Object[] component = propertyDef.createGUIComponent(actionListener, hyperlinkListener, controler);
-			this.view = (JComponent) component[0];
-			this.model = component[1];
+			}// actionListener is a reference to the PropertyPanel
+            Object deepaListener = null;
+            try {
+                // actionListener is a reference to the PropertyPanel
+                Class test = Class.forName("org.lobobrowser.ua.NavigationListener");
+                deepaListener = new BrowserNavigationListener(controler, (PropertyPanel) actionListener);
+            } catch (ClassNotFoundException ex) {
+                System.out.println("    Lobo Extension is not installed: " + ex);
+            }
+            Object[] component = propertyDef.createGUIComponent(actionListener, hyperlinkListener, controler, (BrowserNavigationListener) deepaListener);
+            this.view = (JComponent) component[0];
+            this.model = component[1];
 		}
 
 
@@ -1567,7 +1577,12 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 				}
 				String minute = (String) menus[1].getSelectedItem();
 				return hour + TIME_SEPARATOR + minute;
-			} else {
+			} else if (visualization.equals(VISUAL_BROWSER)) {
+                FramePanel panel = (FramePanel) view;
+                System.out.println("INFO: Visula Browser says: Yeah, we have a view: " + panel);//.getName());
+                //### Browser Components getText has to return URL, in this field the URL stored
+                return "";
+            } else {
 				throw new DeepaMehtaException("unexpected visualization mode: \"" +
 					visualization + "\"");
 			}
@@ -1622,6 +1637,25 @@ class PropertyPanel extends JPanel implements ActionListener, ItemListener, Docu
 				setTime(text, actionListener);
 			} else if (visualization.equals(VISUAL_HIDDEN)) {
 				// do nothing
+			} else if (visualization.equals(VISUAL_BROWSER)) {
+                try {
+                    // ### Browser That's the theory of compatibility
+                    if (view instanceof TextEditorPanel) {
+                        // just if lobo browser package is not available
+                        TextEditorPanel textEditor = (TextEditorPanel) model;
+                        textEditor.setText(text + "<br/> Sorry, but the page cannot be displayed.<br/> " +
+                                "Please use DeepaMehta with the LoboBrowser Extension", baseURL, documentListener);
+                        // restore scrollbar value
+                        System.out.println("    without lobo browsing, there is just a Text Editor");
+                    } else {
+                        // normal case
+                        System.out.println("    lobo reporting, goes to: " + text);
+                        FramePanel htmlPanel = (FramePanel) view;
+                        htmlPanel.navigate(text, RequestType.PROGRAMMATIC);
+                    }
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(PropertyPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
 			} else {
 				throw new DeepaMehtaException("unexpected visualization mode: \"" + visualization + "\"");
 			}

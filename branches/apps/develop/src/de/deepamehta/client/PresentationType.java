@@ -85,6 +85,8 @@ public final class PresentationType extends PresentableType {
 		// --- type definition ---
 		int fieldCount = in.readInt();
 		for (int i = 0; i < fieldCount; i++) {
+            // ### DeepaMehta Thin Client Applet Compatibility
+            // The next line throws a ClassNotFoundException if the Lobo Extensions are not available
 			typeDefinition.addElement(new PresentationPropertyDefinition(in));
 		}
 		// --- type icon ---

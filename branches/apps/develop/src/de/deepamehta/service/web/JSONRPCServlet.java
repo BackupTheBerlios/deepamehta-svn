@@ -36,9 +36,11 @@ import javax.xml.transform.TransformerFactory;
 /**
  * <p>
  * <hr>
- * Last change: 4.7.2008 (2.0b8)<br>
- * J&ouml;rg Richter<br>
- * jri@deepamehta.de
+ * Last change: 17.8.2009 (2.0b8-pre)<br>
+ * Malte Rei&szlig;ig<br>
+
+ * 
+ * mre@deepamehta.de
  */
 public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHost, DeepaMehtaConstants {
 
@@ -220,6 +222,7 @@ public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHos
 		Session session = getSession(request);
 		CorporateDirectives directives = new CorporateDirectives();
 		String method = request.getMethod();
+        System.out.println("    HTTP Header AuthType is : " + request.getAuthType() + " \n ");
 		//
         String remoteMethodCall = "";
         String remoteParams = "";
@@ -244,14 +247,14 @@ public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHos
         // --- trigger performPostrequest() hook
         String result = performPostRequest(remoteMethodCall, remoteParams, session, directives);
         if(result.equals("")) {
-            response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
-            response.sendError(response.SC_INTERNAL_SERVER_ERROR);
-            if (result.indexOf("\"error\": null") != -1){
-                System.out.println("*** ERROR: " + result.substring(result.indexOf("\"error\": null") + 13, result.length() - 3));
-            }
+            // response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
+            System.out.println(" === JSONRPC === *** unexpected result *** " + result + " setting response to continue...");
+            response.sendError(response.SC_INTERNAL_SERVER_ERROR); // 500
         } else {
             response.setStatus(response.SC_OK);
             response.setContentType("applicaton/json");
+            response.setContentLength(result.getBytes().length);
+            // response.setLocale("en_EN");
             System.out.println(">>> RESPONSE BODY: "+response.getCharacterEncoding()+" written "+result.length() +" character\n");
             // LOG System.out.println("INFO: "+result + "\n");
             // write back
@@ -260,13 +263,6 @@ public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHos
             writer.checkError();
             writer.close();
         }
-        
-//        String actionResult = performAction(remoteParams, remoteParams, session, directives);
-//        // --- trigger preparePage() hook ---
-//        preparePage(actionResult, params, session, directives);
-//        //
-//        redirectToPage(result, request, response);
-		//
 		// process directives
 		directives.updateCorporateMemory(as, session, null, null);
 		// Note: topicmapID=null, viewmode=null ### should be OK because in web interface there is no "default topicmap"

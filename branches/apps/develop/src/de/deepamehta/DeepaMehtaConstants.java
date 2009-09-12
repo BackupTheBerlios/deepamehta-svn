@@ -43,7 +43,7 @@ public interface DeepaMehtaConstants {
 	// --- diagnosis log switches ---
 	static final boolean LOG_REQUESTS = true;		// server
 	static final boolean LOG_CM = false;			// server
-	static final boolean LOG_CM_QUERIES = false;	// server
+	static final boolean LOG_CM_QUERIES = true;	// server
 	static final boolean LOG_LCM = false;			// server
 	static final boolean LOG_CDS = false;			// server
 	static final boolean LOG_GEOM = false;			// server
@@ -147,6 +147,7 @@ public interface DeepaMehtaConstants {
 	static final String PROPERTY_RESULT = "Result";								// "Search"
 	static final String PROPERTY_ROLE_EDITOR = "Editor";						// "Membership"
 	static final String PROPERTY_ROLE_PUBLISHER = "Publisher";					// "Membership"
+    static final String PROPERTY_BROWSER = "Lobo Browser";                      // "Lobo Browser" Property Field for storing URL" added in cm2.20.sql
 
 	// --- property values ---
 	static final String PERMISSION_VIEW = "view";
@@ -392,7 +393,7 @@ public interface DeepaMehtaConstants {
 	static final String ICON_HIDE_TOPIC = "eye-closed.gif";
 	static final String ICON_DELETE_TOPIC = "trash.gif";
 	static final String ICON_SHOW_HELP = "viewhilfe.gif";
-	static final String ICON_SEARCH_INTERNET = "google.gif";
+	static final String ICON_SEARCH_INTERNET = "yahoo.gif";
 	static final String ICON_GROUP_BY = "eye-grey.gif";
 	static final String ICON_COMPOSE_EMAIL = "composeEmail.gif";
 
@@ -461,7 +462,7 @@ public interface DeepaMehtaConstants {
 	// --- Layouts ---
     static final int LAYOUT_ROWS = 1;
     static final int LAYOUT_COLS = 2;
-    
+
     // --- Layout Styles (for bean-based info generator) ---
     static final int LAYOUT_STYLE_2COLUMN = 1;
     static final int LAYOUT_STYLE_FLOW = 2;
@@ -793,7 +794,7 @@ public interface DeepaMehtaConstants {
 	public static final int DIRECTIVE_LAUNCH_APPLICATION = 46;
 	public static final int DIRECTIVE_OPEN_URL = 47;
 	public static final int DIRECTIVE_CHOOSE_COLOR = 49;
-	
+
 
 
 	// ---------------------
@@ -1095,7 +1096,7 @@ public interface DeepaMehtaConstants {
 
 
 
-	static final int EDITOR_CONTEXT_PERSONAL = 1;	// personal workspace topicmap 
+	static final int EDITOR_CONTEXT_PERSONAL = 1;	// personal workspace topicmap
 	static final int EDITOR_CONTEXT_WORKGROUP = 2;	// shared workspace topicmap
 	static final int EDITOR_CONTEXT_VIEW = 3;		// open topicmap
 
@@ -1186,6 +1187,7 @@ public interface DeepaMehtaConstants {
 	public static final String VISUAL_FILE_CHOOSER = "File Chooser";
 	public static final String VISUAL_COLOR_CHOOSER = "Color Chooser";
 	public static final String VISUAL_HIDDEN = "hidden";	// ### not a real mode
+	public static final String VISUAL_BROWSER = "Lobo Browser";
 
 
 

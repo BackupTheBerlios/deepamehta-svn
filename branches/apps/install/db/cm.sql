@@ -194,12 +194,13 @@ INSERT INTO Topic VALUES ('tt-topictype', 1, 1, 'tt-webpage', 'Webpage');
 INSERT INTO TopicProp VALUES ('tt-webpage', 1, 'Name', 'Webpage');
 INSERT INTO TopicProp VALUES ('tt-webpage', 1, 'Plural Name', 'Webpages');
 INSERT INTO TopicProp VALUES ('tt-webpage', 1, 'Description', '<HTML><BODY>A <I>Webpage</I> is a ...</BODY></HTML>');
-INSERT INTO TopicProp VALUES ('tt-webpage', 1, 'Icon', 'webpage.gif');
+INSERT INTO TopicProp VALUES ('tt-webpage', 1, 'Icon', 'applications-internet.png');
 INSERT INTO TopicProp VALUES ('tt-webpage', 1, 'Unique Topic Names', 'on');
 INSERT INTO TopicProp VALUES ('tt-webpage', 1, 'Custom Implementation', 'de.deepamehta.topics.WebpageTopic');
 -- assign properties
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-23', '', 'tt-webpage', 1, 'pp-url', 1);
--- INSERT INTO AssociationProp VALUES ('a-23', 1, 'Ordinal Number', '1');
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-511', '', 'tt-webpage', 1, 'pp-browser', 1);
+INSERT INTO AssociationProp VALUES ('a-511', 1, 'Ordinal Number', '200');
 -- super type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-46', '', 'tt-generic', 1, 'tt-webpage', 1);
 -- container type
@@ -1154,10 +1155,10 @@ INSERT INTO TopicProp VALUES ('at-preference', 1, 'Name', 'Preference');
 INSERT INTO TopicProp VALUES ('at-preference', 1, 'Plural Name', 'Preferences');
 INSERT INTO TopicProp VALUES ('at-preference', 1, 'Color', '#A00000');
 
---- "Google Result" ---
-INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-googleresult', 'Google Result');
-INSERT INTO TopicProp VALUES ('at-googleresult', 1, 'Name', 'Google Result');
-INSERT INTO TopicProp VALUES ('at-googleresult', 1, 'Plural Name', 'Google Results');
+--- "Yahoo Result" ---
+INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-googleresult', 'Yahoo Result');
+INSERT INTO TopicProp VALUES ('at-googleresult', 1, 'Name', 'Yahoo Result');
+INSERT INTO TopicProp VALUES ('at-googleresult', 1, 'Plural Name', 'Yahoo Results');
 INSERT INTO TopicProp VALUES ('at-googleresult', 1, 'Color', '#A000A0');
 -- super type
 INSERT INTO Association VALUES ('at-derivation', 1, 1, 'a-174', '', 'at-association', 1, 'at-googleresult', 1);
@@ -1185,7 +1186,6 @@ INSERT INTO TopicProp VALUES ('at-attachment', 1, 'Color', '#408000');
 ------------------
 --- Properties ---
 ------------------
-
 
 
 --- "Name" ---
@@ -1331,6 +1331,10 @@ INSERT INTO TopicProp VALUES ('pp-mailboxurl', 1, 'Visualization', 'Input Field'
 --- "URL" ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-url', 'URL');
 INSERT INTO TopicProp VALUES ('pp-url', 1, 'Visualization', 'Input Field');
+
+--- "Browser Window" ---
+INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-browser', 'Lobo Browser');
+INSERT INTO TopicProp VALUES ('pp-browser', 1, 'Visualization', 'Lobo Browser');
 
 --- "Domain Information" ---
 INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-domaininfo', 'Domain Information');
@@ -1763,7 +1767,10 @@ INSERT INTO Topic VALUES ('tt-property', 1, 1, 'pp-height', 'Height');
 INSERT INTO TopicProp VALUES ('pp-height', 1, 'Name', 'Height');
 INSERT INTO TopicProp VALUES ('pp-height', 1, 'Visualization', 'Input Field');
 
-
+--- "Lobo Browser" ---
+INSERT INTO Topic VALUES ('tt-constant', 1, 1, 't-lobobrowser', 'Lobo Browser');
+INSERT INTO TopicProp VALUES ('t-lobobrowser', 1, 'Name', 'Lobo Browser');
+INSERT INTO TopicProp VALUES ('t-lobobrowser', 1, 'Icon', 'applications-internet.png');
 
 --------------------
 --- Associations ---
@@ -1773,6 +1780,7 @@ INSERT INTO TopicProp VALUES ('pp-height', 1, 'Visualization', 'Input Field');
 
 -- assign property values to "Visualization"
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-51', '', 'pp-visualization', 1, 't-inputfield', 1);
+INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-2301', '', 'pp-visualization', 1, 't-lobobrowser', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-52', '', 'pp-visualization', 1, 't-multilineinputfield', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-259', '', 'pp-visualization', 1, 't-texteditor', 1);
 INSERT INTO Association VALUES ('at-composition', 1, 1, 'a-53', '', 'pp-visualization', 1, 't-optionsmenu', 1);

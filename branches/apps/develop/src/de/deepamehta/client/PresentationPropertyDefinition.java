@@ -10,6 +10,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -24,6 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.HyperlinkListener;
+import org.lobobrowser.gui.FramePanel;
+import org.lobobrowser.main.PlatformInit;
 
 
 
@@ -32,7 +36,7 @@ import javax.swing.event.HyperlinkListener;
  * suitable GUI component for editing the value of the respective property.
  * <P>
  * <CODE>PresentationPropertyDefinition</CODE> objects are created while reading a
- * {@link PresentationType}. 
+ * {@link PresentationType}.
  * <P>
  * <HR>
  * Last functional change: 10.9.2007 (2.0b8)<BR>
@@ -88,7 +92,7 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 	 * @see		PropertyPanel.PropertyField#PropertyPanel.PropertyField
 	 */
 	Object[] createGUIComponent(ActionListener actionListener, HyperlinkListener hyperlinkListener,
-																	PropertyPanelControler controler) {
+																	PropertyPanelControler controler, BrowserNavigationListener deepaListener) {
 		Object result[] = new Object[2];
 		if (visualization.equals(VISUAL_FIELD) ||
 			visualization.equals(VISUAL_FILE_CHOOSER) ||
@@ -125,7 +129,7 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 			result[0] = createOptionMenu(actionListener, controler);
 			return result;
 		} else if (visualization.equals(VISUAL_RADIOBUTTONS)) {
-			ButtonGroup group = new ButtonGroup();		
+			ButtonGroup group = new ButtonGroup();
 			result[0] = createOptionButtons(actionListener, group, controler);
 			result[1] = group;
 			return result;
@@ -140,6 +144,18 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 			return result;
 		} else if (visualization.equals(VISUAL_HIDDEN)) {
 			return result;
+		} else if (visualization.equals(VISUAL_BROWSER)) {
+            if (deepaListener == null) {
+                // this exception must be caught in streamConstructor when the
+                // Property Panel ist intialized for the first time
+                // or the import must be moved out of this class
+                // throw new ClassNotFoundException("No Lobo Browser Package available.");
+                createTextEditor(actionListener, hyperlinkListener, result, controler);
+                Logger.getLogger(PropertyPanel.class.getName()).log(Level.SEVERE, null, "BrowserNavigationListener Not Found");
+            } else {
+                createBrowser(actionListener, hyperlinkListener, result, controler, deepaListener);
+            }
+            return result;
 		} else {
 			System.out.println("*** PresentationPropertyDefinition.createGUIComponent" +
 				"(): unexpected visualization mode (\"" + visualization + "\") -- default " +
@@ -220,6 +236,43 @@ class PresentationPropertyDefinition extends PropertyDefinition {
 			result[0] = textEditor;
 		}
 		result[1] = textEditor;
+	}
+
+    /**
+	 * Called for <code>VISUAL_BROWSER</code>. If BrowserNavigationListener
+	 */
+	private void createBrowser(ActionListener actionListener, HyperlinkListener hyperlinkListener,
+																	Object[] result, PropertyPanelControler controler, BrowserNavigationListener deepaListener) {
+        if( deepaListener == null) {
+            createTextEditor(actionListener, hyperlinkListener, result, controler);
+        } else {
+            try {
+                PlatformInit.getInstance().initLogging(true);
+                PlatformInit.getInstance().init(false, false);
+            } catch (Exception ex) {
+                System.out.print("Error:" + ex.toString());
+            }
+            FramePanel panel = new FramePanel() { //null, false, false, true) {
+                public Dimension getPreferredSize() {
+                    return new Dimension(800, 1000);	// ### height 800 pixels
+                }
+            };
+            panel.addNavigationListener(deepaListener);
+            result[0] = panel;
+        }
+        //
+        // ### DJProject Native SWT Browser Code ####
+        //
+        //        try {
+        //            JPanel webBrowserPanel = new JPanel(new BorderLayout());
+        //            webBrowserPanel.setBorder(BorderFactory.createTitledBorder("Native Web Browser component"));
+        //            final JWebBrowser webBrowser = new JWebBrowser(null);
+        //            webBrowserPanel.add(webBrowser, BorderLayout.CENTER);
+        //            result[1] = webBrowser;
+        //            result[0] = webBrowserPanel;
+        //        } catch (Exception ex) {
+        //            System.out.print("Error:" + ex.toString());
+        //        }
 	}
 
 	private JComponent createOptionMenu(ActionListener actionListener, PropertyPanelControler controler) {

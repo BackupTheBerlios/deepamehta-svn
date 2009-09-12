@@ -33,10 +33,7 @@ import de.deepamehta.topics.helper.TopicMapImporter;
 import de.deepamehta.util.CaseInsensitveHashtable;
 import de.deepamehta.util.DeepaMehtaUtils;
 
-import com.google.soap.search.GoogleSearch;
-import com.google.soap.search.GoogleSearchFault;
-import com.google.soap.search.GoogleSearchResult;
-import com.google.soap.search.GoogleSearchResultElement;
+import com.yahoo.search.*;
 
 import java.awt.Point;
 import java.io.CharArrayWriter;
@@ -173,8 +170,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		logger.info("active installation: \"" + installation.getName() + "\"");
 	}
 
-	
-	
+
+
 	// ***************
 	// *** Methods ***
 	// ***************
@@ -913,7 +910,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * <p>
 	 * <table>
 	 * <tr><td><b>Called by</b></td>												<td><code>evokeContent</code></td></tr>
-	 * <tr><td>{@link #performGoogleSearch}</td>									<td><code>false</code></td></tr>
+	 * <tr><td>{@link #performYahooSearch}</td>									<td><code>false</code></td></tr>
 	 * <tr><td>{@link de.deepamehta.topics.TopicContainerTopic#performQuery}</td>	<td><code>false</code></td></tr>
 	 * <tr><td>{@link de.deepamehta.topics.ElementContainerTopic#performQuery}</td>	<td><code>true</code></td></tr>
 	 * </table>
@@ -1742,7 +1739,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 * @param	session							### may be null
 	 *
 	 * @see		#setTopicProperty
-	 * @see		#performGoogleSearch
+	 * @see		#performYahooSearch
 	 * @see		CorporateDirectives#setTopicProperties
 	 * @see		InteractionConnection#setTopicData
 	 * @see		EmbeddedService#setTopicProperties
@@ -1915,7 +1912,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	public String triggerPropertyLabel(PropertyDefinition propDef, TypeTopic type, String relTopicTypeID) {
 		Class[] paramTypes = {PropertyDefinition.class, String.class, ApplicationService.class};
 		Object[] paramValues = {propDef, relTopicTypeID, this};
-		try {	
+		try {
 			String propLabel = (String) triggerStaticHook(type.getImplementingClass(), "propertyLabel",
 				paramTypes, paramValues, true);	// throwIfNoSuchHookExists=true
 			return propLabel;
@@ -3698,7 +3695,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 	/**
 	 * References checked: 15.2.2005 (2.0b5)
-	 * 
+	 *
 	 * @return	The membership association-type to use for joining a user to the specified
 	 *			workgroup as {@link de.deepamehta.BaseTopic} (type <code>tt-topictype</code>).
 	 *
@@ -3744,49 +3741,58 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 
 
-	public void performGoogleSearch(String searchText, String topicID, String topicmapID, String viewmode,
+	public void performYahooSearch(String searchText, String topicID, String topicmapID, String viewmode,
 																	Session session, CorporateDirectives directives) {
 		try {
-			GoogleSearch s = new GoogleSearch();
-			s.setKey(getGoogleKey());		// throws DME
-			s.setQueryString(searchText);
-			// ### s.setMaxResults(10);		// Note: more than 10 doesn't work
-			GoogleSearchResult r = s.doSearch();
-			GoogleSearchResultElement[] elems = r.getResultElements();
-			// --- process result ---
+			//System.out.println("Proxy set: "+de.deepamehta.DeepaMehtaUtils.setProxyConfiguration("proxy02.tfh-berlin.de", "2784"));
+			SearchClient s = new SearchClient(getGoogleKey()); //throws DME
+			WebSearchRequest webSearchRequest = new WebSearchRequest(searchText);
+			webSearchRequest.setResults(10);
+			webSearchRequest.setCountry("de");
+			webSearchRequest.setAdultOk(true);
+			webSearchRequest.setLanguage("de");
+
+			WebSearchResults r = s.webSearch(webSearchRequest);
 			Vector webpages = new Vector();
-			// ### Downloader downloader = new Downloader(this, session, topicmapID, viewmode);
-			for (int i = 0; i < elems.length; i++) {
-				GoogleSearchResultElement elem = elems[i];
-				PresentableTopic webpage = createWebpageTopic(elem.getURL(), elem.getTitle(), topicID);
-				String webpageID = webpage.getID();
-				// ### must evoke here, because createNewContainer() evokes only if < 7
-				if (webpage.getEvoke()) {
+			int resultLength = r.listResults().length;
+			System.out.println("laenge der resultliste "+resultLength);
+			for (int i = 0; i < resultLength; i++) {
+                WebSearchResult result = r.listResults()[i];
+                // Print out the document title and URL.
+                PresentableTopic webpage = createWebpageTopic(result.getUrl(), result.getTitle(), topicID);
+                String webpageID = webpage.getID();
+                if (webpage.getEvoke()) {
 					createLiveTopic(webpage, topicmapID, viewmode, session, directives);
-					setTopicProperties(webpageID, 1, webpage.getProperties(), topicmapID, session);
+					setTopicProperties(webpageID, 1, webpage.getProperties(), topicmapID, session);	// ### triggers not PropertiesChangedHook !
 				}
 				if (!cm.associationExists(topicID, webpageID, false)) {	// ignoreDirection=false
 					String assocID = getNewAssociationID();
 					cm.createAssociation(assocID, 1, SEMANTIC_WEBSEARCH_RESULT, 1, topicID, 1, webpageID, 1);
-					cm.setAssociationData(assocID, 1, PROPERTY_NAME, elem.getTitle());
-					cm.setAssociationData(assocID, 1, PROPERTY_DESCRIPTION, elem.getSnippet());
+					cm.setAssociationData(assocID, 1, PROPERTY_NAME, result.getTitle());
+					cm.setAssociationData(assocID, 1, PROPERTY_DESCRIPTION, result.getSummary());
 				}
-				webpages.addElement(webpage);	// ### complete?
-				// ### downloader.addURL(elem.getURL(), webpageID);
-			}
+				webpages.addElement(webpage);
+                System.out.println("   " + (i + 1) + ": " + result.getTitle() + " - " +
+                        result.getUrl());
+            }
+
 			// --- show result ---
 			directives.add(createNewContainer(getLiveTopic(topicID, 1), "tt-webpagecontainer", null, new Hashtable(),
 				topicID, SEMANTIC_WEBSEARCH_RESULT, webpages.size(), webpages, false));
-			// ---
-			// ### downloader.startDownload();
+
+		    
 		} catch (DeepaMehtaException dme) {
-			System.out.println("*** ApplicationService.performGoogleSearch(): call to the Google Web APIs failed: " + dme);
-			directives.add(DIRECTIVE_SHOW_MESSAGE, "To perform a Google search you need a key from www.google.com/apis/. " +
+			System.out.println("*** ApplicationService.performYahooSearch(): call to the Yahoo Web APIs failed: " + dme);
+			directives.add(DIRECTIVE_SHOW_MESSAGE, "To perform a Yahoo search you need a key from www.google.com/apis/. " +
 				"Then as a DeepaMehta administrator enter the key into \"CorporateWeb Settings\"",
 				new Integer(NOTIFICATION_WARNING));
-		} catch (GoogleSearchFault f) {
-			System.out.println("*** ApplicationService.performGoogleSearch(): call to the Google Web APIs failed: " + f);
-			directives.add(DIRECTIVE_SHOW_MESSAGE, "Error while performing Google search for \"" + searchText + "\" (" + f.getMessage() + ")",
+		} catch (IOException f) {
+			System.out.println("*** ApplicationService.performYahooSearch(): call to the Yahoo Web APIs failed: " + f);
+			directives.add(DIRECTIVE_SHOW_MESSAGE, "IOError while performing Yahoo search for \"" + searchText + "\" (" + f.getMessage() + ")",
+				new Integer(NOTIFICATION_WARNING));
+		} catch (SearchException f) {
+			System.out.println("*** ApplicationService.performYahooSearch(): call to the Yahoo Web APIs failed: " + f);
+			directives.add(DIRECTIVE_SHOW_MESSAGE, "Error while performing Yahoo search for \"" + searchText + "\" (" + f.getMessage() + ")",
 				new Integer(NOTIFICATION_WARNING));
 		}
 	}
@@ -3824,7 +3830,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 
 
 	public TopicBean createTopicBean(String topicID, int version) {
-		TopicBean bean = new TopicBean();
+        TopicBean bean = new TopicBean();
 		//
 		LiveTopic topic = getLiveTopic(topicID, version);
 		TypeTopic type = getTopicType(topicID, version);
@@ -3835,7 +3841,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		bean.icon = topic.getIconfile();
 		//
 		addFieldsToTopicBean(type, topicID, version, "", "", true, bean);
-		return bean;
+        return bean;
 	}
 
 	/**
@@ -3843,8 +3849,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 	 *
 	 * @param	type		the type of the topic. Acts as "template": all fields of this type definition are added.
 	 * @param	topicID		the ID of the topic. If null, the added fields are empty.
-	 * @param   fieldPrefix contains the type hierarchy as name of a TopicBeanField 
-	 * @param   labelPrefix contains the naming hierarchy as labelof a TopicBeanField 
+	 * @param   fieldPrefix contains the type hierarchy as name of a TopicBeanField
+	 * @param   labelPrefix contains the naming hierarchy as labelof a TopicBeanField
 	 */
 	private void addFieldsToTopicBean(TypeTopic type, String topicID, int version, String fieldPrefix, String labelPrefix, boolean deep, TopicBean bean) {
 		// ### compare to HTMLGenerator.infoFields()
@@ -3912,7 +3918,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		}
 		TypeTopic relTopicType = type(rel.relTopicTypeID, 1);
 		boolean many = rel.cardinality.equals(CARDINALITY_MANY);
-		String labelPrefix = !rel.name.equals("") ? rel.name + TopicBean.FIELD_SEPARATOR : many ? relTopicType.getPluralNaming() + 
+		String labelPrefix = !rel.name.equals("") ? rel.name + TopicBean.FIELD_SEPARATOR : many ? relTopicType.getPluralNaming() +
 			TopicBean.FIELD_SEPARATOR : relTopicType.getName() + TopicBean.FIELD_SEPARATOR;
 		fieldPrefix = fieldPrefix + relTopicType.getName() + TopicBean.FIELD_SEPARATOR;
 		boolean deep = rel.webInfo.equals(WEB_INFO_DEEP);
@@ -5144,7 +5150,7 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 		}
 	}
 
-	/* ### 
+	/* ###
 	/ **
 	 * @see		#personalizeView
 	 * /
