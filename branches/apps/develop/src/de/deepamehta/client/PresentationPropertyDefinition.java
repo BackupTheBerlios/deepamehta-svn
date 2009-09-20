@@ -247,8 +247,12 @@ class PresentationPropertyDefinition extends PropertyDefinition {
             createTextEditor(actionListener, hyperlinkListener, result, controler);
         } else {
             try {
-                PlatformInit.getInstance().initLogging(true);
-                PlatformInit.getInstance().init(false, false);
+                PlatformInit.getInstance().initConsole();
+                PlatformInit.getInstance().initSecurity();
+                PlatformInit.getInstance().initProtocols();
+                PlatformInit.getInstance().initExtensions();
+                // PlatformInit.getInstance().initLogging(true);
+                // PlatformInit.getInstance().init(false, false);
             } catch (Exception ex) {
                 System.out.print("Error:" + ex.toString());
             }

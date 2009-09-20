@@ -206,6 +206,7 @@ public class WebpageTopic extends LiveTopic {
                 } else {
                     as.setTopicProperty(this, PROPERTY_BROWSER, url.toString());
                     // props.put(PROPERTY_BROWSER, url.toString());
+                    directives.add(DIRECTIVE_SHOW_TOPIC, new PresentableTopic((BaseTopic)this));
                     directives.add(DIRECTIVE_FOCUS_PROPERTY);
                 }
 			} catch (MalformedURLException e) {
