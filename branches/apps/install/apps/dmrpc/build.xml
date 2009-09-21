@@ -1,0 +1,56 @@
+<project name="dmrpc" default="build" basedir=".">
+
+	<description>
+		JSON RPC Web Application
+	</description>
+
+	<property name="project.name" value="dmrpc"/>
+	<property name="jar" value="${project.name}.jar"/>
+	<property name="war" value="${project.name}.war"/>
+	<property name="build" location="build"/>
+
+	<property name="dm.base-dir" location="/home/monty/source/java/appdm/apps"/> <!-- for my branch co -->
+
+	<import file="${dm.base-dir}/config.xml" />
+
+	<target name="init" description="create build directory">
+		<mkdir dir="${build}"/>
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="src" destdir="${build}" debug="on" listfiles="yes" encoding="UTF8" source="1.4" target="1.4">
+			<classpath>
+				<pathelement location="${server}/DeepaMehtaService.jar"/>
+				<pathelement location="${server}/DeepaMehtaTopics.jar"/>
+				<pathelement location="libs/servlet.jar"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="build" depends="compile">
+   	    <!--
+		<jar jarfile="${jar}" basedir="${build}">
+			<include name="de/rpc/deepamehta/WebService.class" />
+			<include name="de/rpc/deepamehta/webServlet.class" />
+		</jar>
+		-->
+   	    <war warfile="${war}" webxml="config/web.xml">
+		    <classes dir="${build}">
+				<include name="de/rpc/deepamehta/*.class" />
+            </classes>
+         	<fileset dir=".">
+            	<include name="images/*"/>
+            	<include name="pages/*"/>
+         	</fileset>
+		</war>
+	</target>
+
+	<target name="deploy" depends="build">
+        <copy file="${war}" todir="${web.deploy.dir}"/>
+	</target>
+
+	<target name="cleanup" description="remove build directory">
+		<delete dir="${build}"/>
+	</target>
+
+</project>

@@ -5,9 +5,9 @@ import de.deepamehta.BaseAssociation;
 import de.deepamehta.BaseTopic;
 import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.PresentableTopic;
-import de.deepamehta.PresentableType;
 import de.deepamehta.service.*;
 import de.deepamehta.service.web.JSONRPCServlet;
+import de.deepamehta.topics.EmailTopic; 
 import de.deepamehta.topics.LiveTopic;
 import de.deepamehta.topics.TypeTopic;
 import java.util.Enumeration;
@@ -312,36 +312,76 @@ public class WebServlet extends JSONRPCServlet implements WebService {
     }
 
     /**
-     * yet untested
+     * tested except with sendmail
      *
      * @param params username, password, emailAddress, notifications
+     * additional but not mandatory should be supported to insert the users
+     * First Name, Last Name, Website and a short personal description
      * @param directives
      * @return as a JSON FXUserTopic
      */
     private String registerNewUser(String params, CorporateDirectives directives) {
         String parameters[] = params.split(",");
         String userName = parameters[0].substring(2, parameters[0].length()-1);
+        userName = userName.replaceAll("\\t", ""); // rips off the tabs in username if present
         String password = parameters[1].substring(2, parameters[1].length()-2);
         String emailAddress = parameters[2].substring(2, parameters[2].length()-2);
         String notifications = parameters[3].substring(2, parameters[3].length()-2);
-        System.out.println(">>>> registerNewUser(" + userName + ", "+ password +")");
+        String firstName = parameters[4].substring(2, parameters[4].length()-1);
+        String lastName = parameters[5].substring(2, parameters[5].length()-1);
+        String website = parameters[6].substring(2, parameters[6].length()-1);
+        String description = parameters[7].substring(2, parameters[7].length()-1);
+        System.out.println(">>>> registerNewUser(" + userName + ", "+ password +", "+emailAddress+", "+notifications+")");
         // String mapId = params;
         StringBuffer messages = new StringBuffer("\"\"");
         StringBuffer result = new StringBuffer("{\"method\": \"doRegister\", ");
         result.append("\"result\": ");
-        if (cm.getTopic(TOPICTYPE_USER, userName, 1) != null) {
+        Hashtable filter = new Hashtable();
+        filter.put(PROPERTY_USERNAME, userName);
+        Vector existing = cm.getTopics(TOPICTYPE_USER, filter);
+        if (existing.size() == 0) {
+            System.out.println(">> OK to create a new user with name: " + userName);
             BaseTopic user = as.createLiveTopic(as.getNewTopicID(), TOPICTYPE_USER, userName, null);
-            if (notifications.equals("on")) {
+            as.setTopicProperty(user, PROPERTY_USERNAME, userName);
+            as.setTopicProperty(user, PROPERTY_PASSWORD, password);
+            as.setTopicProperty(user, "Website", website);
+            as.setTopicProperty(user, "First Name", firstName);
+            as.setTopicProperty(user, "Last Name", lastName);
+             as.setTopicProperty(user, "Description", description);
+            if (notifications.equals("true")) {
                 as.setTopicProperty(user, PROPERTY_EMAIL_ADDRESS, emailAddress);
             } else {
                 BaseTopic emailTopic = as.createLiveTopic(as.getNewTopicID(), TOPICTYPE_EMAIL_ADDRESS, emailAddress, null);
+                as.setTopicProperty(emailTopic, PROPERTY_EMAIL_ADDRESS, emailAddress);
                 BaseAssociation userToEmail = as.createLiveAssociation(as.getNewAssociationID(), ASSOCTYPE_ASSOCIATION, user.getID(), emailTopic.getID(), null, directives);
             }
+            // create default demo memberships
+            BaseTopic typeBuilderWorkspace = cm.getTopic(TOPICTYPE_WORKSPACE, "t-constructionworkspace", 1);
+            BaseTopic dmWorkspace = cm.getTopic(TOPICTYPE_WORKSPACE, "t-corporategroup", 1);
+            BaseAssociation userToDeepaMehta = as.createLiveAssociation(as.getNewAssociationID(), ASSOCTYPE_MEMBERSHIP, user.getID(), typeBuilderWorkspace.getID(), null, directives);
+            as.setAssocProperty(userToDeepaMehta, PROPERTY_ROLE_PUBLISHER, "on");
+            BaseAssociation userToTypeBuild = as.createLiveAssociation(as.getNewAssociationID(), ASSOCTYPE_MEMBERSHIP, user.getID(), dmWorkspace.getID(), null, directives);
+            // as.setAssocProperty(userToTypeBuild, PROPERTY_ACCESS_PERMISSION, "create");
+            // build resulting FXUserTopic
             result.append("{ \"id\": \""+user.getID()+"\", \"name\": \""+user.getName()+"\", \"typeId\": \""+user.getType()+"\", " +
-                    "\"email\": \""+as.getTopicProperty(user, PROPERTY_EMAIL_ADDRESS)+"\", " +
+                    "\"email\": \""+emailAddress+"\", " +
                     "\"website\": \""+as.getTopicProperty(user, "Website")+"\"}");
             messages = new StringBuffer("\"Your user registration was successfull.\"");
+            // as.getM
+            String body = "Hi Admins, <br> we got no problem here :) but a new user ! <br> The user has choosen the alias "+userName+" and names him/herself "+firstName+" "+lastName+"" +
+                    "He or She is saying in a few self describing words that the purpose of use is something like: <p>" +description + "</p>" +
+                    "and he/she provided us a emailAddress : " + emailAddress + " but switched notifications to " + notifications +
+                    "but thinks we should see his or her website at: " + website +
+                    "<p>That's all, have a nice day !<br>" +
+                    "Always at your serve,<br>" +
+                    "your program</p>";
+            String smtpServer = as.getSMTPServer();
+            if (!smtpServer.equals("")) {
+                System.out.println(">>> Web Service is sending an email to account administrators to notify them that "+userName+" is in the team now.");
+                // EmailTopic.sendMail(smtpServer, "dm@deepamehta.de", "accounts@deepamehta.de", userName+" is new on DeepaMehta", body);
+            }
         } else {
+            System.out.println(">> NOT OK to create a new user with name: " + userName);
             result.append("null");
             messages = new StringBuffer("\"Sorry, that username is already taken.\"");
             result.append(", \"error\": " + messages + "}");
