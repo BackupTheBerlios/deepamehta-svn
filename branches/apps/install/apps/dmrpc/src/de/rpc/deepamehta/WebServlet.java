@@ -16,6 +16,11 @@ import java.util.Vector;
 
 
 public class WebServlet extends JSONRPCServlet implements WebService {
+
+    static final String VERSION = " 0.8b";
+	static {
+		System.out.println(">>> DeepaMehta JSON RPC " + VERSION);
+	}
     
     protected String performPostRequest(String remoteMethod, String params, Session session, CorporateDirectives directives)
     {
