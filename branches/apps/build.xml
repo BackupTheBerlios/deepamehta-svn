@@ -416,6 +416,8 @@
 				<path refid="javalibs" />
 			</classpath>
 			<arg value="${dm.host}:${dm.port}" />
+			<jvmarg value="-Xms128M"/>
+			<jvmarg value="-Xmx256M"/>
 		</java>
 	</target>
 

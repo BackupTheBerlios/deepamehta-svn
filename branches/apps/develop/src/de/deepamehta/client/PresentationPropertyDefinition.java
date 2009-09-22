@@ -248,7 +248,7 @@ class PresentationPropertyDefinition extends PropertyDefinition {
         } else {
             try {
                 // PlatformInit.getInstance().initConsole();
-                PlatformInit.getInstance().initSecurity();
+                // PlatformInit.getInstance().initSecurity();
                 PlatformInit.getInstance().initProtocols();
                 PlatformInit.getInstance().initExtensions();
                 PlatformInit.getInstance().initOtherProperties();
