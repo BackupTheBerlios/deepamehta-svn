@@ -38,6 +38,10 @@
 		    <classes dir="${build}">
 				<include name="de/rpc/deepamehta/*.class" />
             </classes>
+            <lib dir="${dm.base-dir}/install/server/">
+                <include name="DeepaMehtaService.jar" />
+                <include name="DeepaMehtaTopics.jar" />
+            </lib>
          	<fileset dir=".">
             	<include name="images/*"/>
             	<include name="pages/*"/>

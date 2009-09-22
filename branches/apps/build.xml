@@ -13,7 +13,8 @@
 	<import file="setup.xml" />
 
 	<path id="dmapps">
-		<pathelement location="${examples}/movies/MoviesTopics.jar" />
+		<!-- configure this -->
+		<pathelement location="s{examples}/movies/MoviesTopics.jar" />
 		<!-- configure this -->
 		<pathelement location="${examples}/artfacts/ArtfactsTopics.jar" />
 		<!-- configure this -->
@@ -28,11 +29,10 @@
 		<pathelement location="${appspath}/TeenKom/teenkom.jar" />
 		<!-- configure this -->
 		<pathelement location="${appspath}/OLAP/olap.jar" />
-		<!-- configure this -->
-		<pathelement location="${appspath}/Importer/importer.jar" />
-		<!-- configure this -->
-		<pathelement location="${appspath}/DeepaMehta Coordination/coordination-platform.jar" />
-		<!-- configure this -->
+		<!-- configure this for enabling CSV import -->
+		<pathelement location="${appspath}/dm-import/dm-importer-basic.jar" />
+		<!-- configure this for enabling twitter -->
+		<pathelement location="${appspath}/dm-twitter/dm-twitter-0.1.jar" />
 	</path>
 
 	<target name="-default">
@@ -312,6 +312,7 @@
 				<include name="auth.sql" />
 				<include name="webcrawler.sql" />
 				<include name="whois.sql" />
+			<!-- <include name="patches/cm-2.20.sql" />  Webpage Topic Patch -->
 			</fileset>
 			<fileset dir="${db-specific}">
 				<include name="${db.close-session}" />
@@ -412,6 +413,7 @@
 		<java classname="de.deepamehta.client.DeepaMehtaClient" dir="${client}" fork="true">
 			<classpath>
 				<pathelement location="${client}/DeepaMehtaClient.jar" />
+				<path refid="javalibs" />
 			</classpath>
 			<arg value="${dm.host}:${dm.port}" />
 		</java>

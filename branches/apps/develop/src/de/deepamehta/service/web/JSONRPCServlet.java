@@ -36,8 +36,12 @@ import javax.xml.transform.TransformerFactory;
 /**
  * <p>
  * <hr>
+* <hr>
  * Last change: 17.8.2009 (2.0b8-pre)<br>
  * Malte Rei&szlig;ig<br>
+ *
+ * With this class i wanted to overuse POST Requests for JSON RPCs.
+ * The Response is either OK or ERROR (200 or 500)
 
  * 
  * mre@deepamehta.de
@@ -254,6 +258,7 @@ public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHos
             response.setStatus(response.SC_OK);
             response.setContentType("applicaton/json");
             response.setContentLength(result.getBytes().length);
+            // response.
             // response.setLocale("en_EN");
             System.out.println(">>> RESPONSE BODY: "+response.getCharacterEncoding()+" written "+result.length() +" character\n");
             // LOG System.out.println("INFO: "+result + "\n");

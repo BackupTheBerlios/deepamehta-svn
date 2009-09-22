@@ -28,8 +28,16 @@ import java.util.Vector;
  * ### The active <i>displaing in browser</i> behavoir of a <code>WorkspaceTopic</code> is
  * loading the webpage in the clients browser once the user triggers the default action.
  * <p>
- * The active <i>downloading</i> behavoir of a <code>WorkspaceTopic</code> is
- * downloading the webpage in the servers file system (### to client in future).
+ * The former <i>downloading</i> behavoir of a <code>WebpageTopic</code> was deactivated.
+ * In the state of it'scurrent implementation the <code>WebpageTopic</code> stores a copy of the
+ * PROPERTY_URL in the PROPERTY_BROWSER field of the <i>TopicType</i> Webpage.
+ * Copying of the URL is done after two different user inputs, thus trying to serve a simple
+ * browsing experience to the user. So the PROPERTY_URL is copied
+ * <ul>
+ *  <li>when the user changes the URL independent of if the webpage is already known or not</li>
+ *  <li>when the user clicks on a simple hyperlink (form method actions are not recognized)</li>
+ * </ul>
+ * NOTE: A double click on a <code>WebpageTopic</code> still opens the URL in the parent browser.
  * <p>
  * The active <i>notification enabling</i> behavoir of a <code>WorkspaceTopic</code> is
  * creating association of type <code>notification</code> between <code>WorkspaceTopic</code>
@@ -64,7 +72,7 @@ import java.util.Vector;
  * changes on webpages).
  * <p>
  * <hr>
- * Last change: 21.04.2009 (2.0b8)<br>
+ * Last change: 21.04.2009 (2.0b8e)<br>
  * J&ouml;rg Richter<br> / Malte Rei&szlig;ig
  * jri@deepamehta.de / mre@deepamehta.de
  */
@@ -192,23 +200,23 @@ public class WebpageTopic extends LiveTopic {
                 props.put(PROPERTY_URL, propValue);	// ### ignore ref -- still an issue?
                 URL url = new URL(propValue);
                 Vector webpages = cm.getTopics(TOPICTYPE_WEBPAGE, props);
-                String title = propValue.substring(7);
                 int count = webpages.size();
                 if (count > 0) {
                     // System.out.println("    URL Cannot be changed, already known topic shares the URL");
                     directives.add(DIRECTIVE_SHOW_MESSAGE, "This URL is already known to DeepaMehta, let's see if it is this ...", new Integer(NOTIFICATION_WARNING));
                     directives.add(DIRECTIVE_SHOW_TOPIC, new PresentableTopic((BaseTopic)webpages.get(0)));
                     directives.add(DIRECTIVE_SELECT_TOPIC, ((BaseTopic)webpages.get(0)).getID());
-                    // workaround to allow retrigger URL by hitting Enter
-                    as.setTopicProperty(this, PROPERTY_BROWSER, url.toString()); // reset anyway, to be removed when getText Problem is solved
+                    // topic matched by URL make sure it's copied to the PROPERTY_BROWSER field
+                    as.setTopicProperty(((BaseTopic)webpages.get(0)), PROPERTY_BROWSER, url.toString());
                     directives.add(DIRECTIVE_FOCUS_PROPERTY);
-                    // return false;
-                } else {
-                    as.setTopicProperty(this, PROPERTY_BROWSER, url.toString());
+                    // return false; // rejecting the change means revealing the already known topic
+                } //} else {
+                    // no webpage is known with this URL so propertyChange is permitted and handled in propertiesChanged hook
+                    // as.setTopicProperty(this, PROPERTY_BROWSER, url.toString());
                     // props.put(PROPERTY_BROWSER, url.toString());
-                    directives.add(DIRECTIVE_SHOW_TOPIC, new PresentableTopic((BaseTopic)this));
-                    directives.add(DIRECTIVE_FOCUS_PROPERTY);
-                }
+                    // directives.add(DIRECTIVE_SHOW_TOPIC, new PresentableTopic((BaseTopic)this));
+                    // directives.add(DIRECTIVE_FOCUS_PROPERTY);
+                //}
 			} catch (MalformedURLException e) {
 				String errText = "\"" + propValue + "\" is not a valid URL";
 				directives.add(DIRECTIVE_SHOW_MESSAGE, errText, new Integer(NOTIFICATION_WARNING));
@@ -229,6 +237,10 @@ public class WebpageTopic extends LiveTopic {
 		String newUrl = (String) newProps.get(PROPERTY_URL);
 		if (newUrl != null) {
             try {
+                // copies the new URL into the browser window and add the focus directive
+                as.setTopicProperty(this, PROPERTY_BROWSER, newUrl);
+                directives.add(DIRECTIVE_FOCUS_PROPERTY);
+                // manage that remains persistent with the new domain and site topics
 				URL url = new URL(newUrl);
 				String host = url.getHost();
 				// remove old website assignment
@@ -318,12 +330,12 @@ public class WebpageTopic extends LiveTopic {
 	}
 
     private BaseTopic getWebpageTopic(String prop, Session session) {
-        System.out.println("    getWebpageTopic for:" + prop);
+        // System.out.println("    getWebpageTopic for:" + prop);
         BaseTopic webpage;
         Hashtable props = new Hashtable();
         props.put(PROPERTY_URL, prop);	// ### ignore ref -- still an issue?
         Vector webpages = cm.getTopics(TOPICTYPE_WEBPAGE, props);
-        String title = prop.substring(11); // strips http://www. in the normal case
+        String title = prop.substring(7); // strips http://www. in the normal case
         int count = webpages.size();
         if (count == 0) {
             // System.out.println("Properties Changed Hook performs existing check");
@@ -331,7 +343,7 @@ public class WebpageTopic extends LiveTopic {
             if (elements.length > 2) {
                 title = elements[1] + elements[2];
             }
-            System.out.println("    it's a new webpage, let's make it a topic, title: " + title);
+            System.out.println("    it's a new webpage, let's make it a topic titled: " + title);
             webpage = as.createLiveTopic(cm.getNewTopicID(), TOPICTYPE_WEBPAGE,
                     title, session);
             if (prop != null) {
@@ -343,9 +355,9 @@ public class WebpageTopic extends LiveTopic {
             //webpage.setProperties(props);
             //webpage.setEvoke(true);
         } else {
-            System.out.println("    it's known webpage, let's go with the topic to: " + prop);
+            System.out.println("    it's known webpage, let's reveal the topic and go to: " + prop);
             webpage = (BaseTopic) webpages.firstElement();
-            // set Browser Window too
+            // set Browser Window too given URL which should be exact the same as stored URL in ### untested
             as.setTopicProperty(webpage.getID(), 1, PROPERTY_BROWSER, prop.toString());
             if (count > 1) {
                 System.out.println("*** WebpageTopic.getWebpageTopic(): there're " + count +

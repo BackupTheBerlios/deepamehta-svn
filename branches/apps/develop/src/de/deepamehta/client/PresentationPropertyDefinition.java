@@ -247,18 +247,19 @@ class PresentationPropertyDefinition extends PropertyDefinition {
             createTextEditor(actionListener, hyperlinkListener, result, controler);
         } else {
             try {
-                PlatformInit.getInstance().initConsole();
+                // PlatformInit.getInstance().initConsole();
                 PlatformInit.getInstance().initSecurity();
                 PlatformInit.getInstance().initProtocols();
                 PlatformInit.getInstance().initExtensions();
-                // PlatformInit.getInstance().initLogging(true);
+                PlatformInit.getInstance().initOtherProperties();
+                PlatformInit.getInstance().initLogging(false);
                 // PlatformInit.getInstance().init(false, false);
             } catch (Exception ex) {
                 System.out.print("Error:" + ex.toString());
             }
             FramePanel panel = new FramePanel() { //null, false, false, true) {
                 public Dimension getPreferredSize() {
-                    return new Dimension(800, 1000);	// ### height 800 pixels
+                    return new Dimension(800, 1000);	// ### height 1000 pixels
                 }
             };
             panel.addNavigationListener(deepaListener);
