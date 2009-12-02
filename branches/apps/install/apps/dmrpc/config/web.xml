@@ -14,19 +14,19 @@
 		 String constants used within your application, which
 		 can be customized by the system administrator who is
 		 installing your application.
-	-->
 
+-->
 	<context-param>
 		<param-name>service</param-name>
-		<param-value>mysql-browser</param-value>
+		<param-value>mysql5</param-value>
 		<description>Selects a DeepaMehta service.
 			If this parameter is not set the "default" service will be used.
 			To configure DeepaMehta services see the file install/client/dms.rc</description>
 	</context-param>
-
-    <context-param>
+ 
+        <context-param>
 		<param-name>home</param-name>
-		<param-value>/var/lib/tomcat-6/webapps/ROOT</param-value>
+		<param-value>/home/monty/source/deepaMehta</param-value>
 		<description>path to your deepamehta installation</description>
 	</context-param>
 

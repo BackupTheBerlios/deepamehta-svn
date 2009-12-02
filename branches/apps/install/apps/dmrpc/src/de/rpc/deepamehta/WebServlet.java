@@ -7,12 +7,13 @@ import de.deepamehta.DeepaMehtaException;
 import de.deepamehta.PresentableTopic;
 import de.deepamehta.service.*;
 import de.deepamehta.service.web.JSONRPCServlet;
-import de.deepamehta.topics.EmailTopic; 
 import de.deepamehta.topics.LiveTopic;
 import de.deepamehta.topics.TypeTopic;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class WebServlet extends JSONRPCServlet implements WebService {
@@ -71,14 +72,89 @@ public class WebServlet extends JSONRPCServlet implements WebService {
         return result;
     }
 
-    protected String performAction(String topicId, String params, Session session, CorporateDirectives directives)
+    protected String performAction(String method, String topic, Session session, CorporateDirectives directives)
     {
-        return topicId;
+        session.setAttribute("siteLogo", "../images/dmjfx.png");
+        session.setAttribute("stylesheet", "../pages/default.css");
+        session.setAttribute("homepageURL", "http://www.deepamehta.de/wiki/en/Application:_Web_Service");
+        session.setAttribute("impressumURL", "http://www.deepamehta.de/wiki/en/User:_Malte");
+        // session.setAttribute("html","Hallo Welt ! Hier ist ein DeepaMehta Service");
+        if (method.equals("show") && (topic.equals("empty") || topic.equals(""))) {
+            System.out.println(">> Web Servlet is performing Action with " + method + " and " + topic + ", delivering Print.jsp with \"html\" attribute");
+            StringBuffer html = new StringBuffer();
+            html.append("<br><b>Service Interface Implementation, 03.November 2009</b><br>");
+            html.append("<blockquote><pre>");
+            html.append(""
+                +"  if (remoteMethod.equals(\"getMapTopics\")) { <br>"
+                    +"      // --- Loads all the Topics in One Map <br>"
+                    +"      result = getMapTopics(params, session, directives); <br>"
+                +"  } else if(remoteMethod.equals(\"getTopicDetails\")) { <br>"
+                +"      // --- Loads a complete TopicBean By Id <br>"
+                +"      result = getTopicDetails(params); <br>"
+                +"  } else if(remoteMethod.equals(\"getTopicmap\")) { <br>"
+                    +"      // --- Loads a complete Topicmap By Id <br>"
+                    +"      result = getTopicmapById(params, session, directives); <br>"
+                +"  } else if(remoteMethod.equals(\"getViewsInUse\")) { <br>"
+                    +"      // --- Loads a list of currently opened Topicmaps per User <br>"
+                    +"      result = getViewsInUse(params, session, directives); <br>"
+                +"  } else if(remoteMethod.equals(\"getTopicTypes\")) { <br>"
+                +"      // --- Loads all TopicTypes By Id <br>"
+                +"      result = getTopicTypes(params); <br>"
+                +"  } else if(remoteMethod.equals(\"getRelatedTopics\")) { <br>"
+                    +"      // --- Loads What's Related <br>"
+                    +"      result = getRelatedTopics(params); <br>"
+                +"  } else if(remoteMethod.equals(\"searchTopics\")) { <br>"
+                    +"      // --- Nice Search <br>"
+                    +"      result = searchTopics(params, directives); <br>"
+                +"  } else if(remoteMethod.equals(\"getUserWorkspaces\")) { <br>"
+                    +"      // --- Loads the available workspaces for a user topicId <br>"
+                    +"      result = getUserWorkspaces(params, directives); <br>"
+                +"  } else if(remoteMethod.equals(\"doAuthentication\")) { <br>"
+                    +"      // --- Authentication against a given username and it's word to pass <br>"
+                    +"      result = doAuthentication(params, directives); <br>"
+                +"  } else if(remoteMethod.equals(\"doRegister\")) { <br>"
+                    + "     // --- To Test <br>"
+                    + "     result = registerNewUser(params, directives); <br>"
+                +"  } else if(remoteMethod.equals(\"storeTopicProperty\")) { <br>"
+                    + "     // --- To Test <br>"
+                    + "     result = storeTopicProperty(params, directives); <br>"
+                +"  } else if(remoteMethod.equals(\"createAssociation\")) { <br>"
+                    + "     // --- ToDo <br>"
+                    + "     //result = createAssociation(params, directives); <br>"
+                +"  } else if(remoteMethod.equals(\"createTopic\")) { <br>"
+                    + "     // --- ToDo <br>"
+                    + "     //result = createTopic(params, directives); <br>"
+                +"  }");
+            html.append("</pre></blockquote><br>");
+            html.append("For comments and more please visit the <a href=\"http://www.deepamehta.de/wiki/en/Application:_Web_Service\"><i>Service Application Page</i></a> in the DeepaMehta Wiki.");
+            session.setAttribute("html", html.toString());
+        } else if (method.equals("show") && (!topic.equals("empty") && !topic.equals(""))) {
+            Hashtable webProps = new Hashtable();
+            webProps.put(PROPERTY_WEB_ALIAS, topic); // is a unique property
+            // webProps.put(TOPICTYPE_MESSAGE, ); // is the current restriction
+            BaseTopic webTopic = as.getTopic(TOPICTYPE_POST, webProps, null, directives);
+            try {
+                LiveTopic loadedTopic = as.getLiveTopic(topic, 1);
+                if (loadedTopic.getType().equals(WebService.TOPICTYPE_POST)) {
+                    session.setAttribute("html", "Here we go, showing info about \"" + loadedTopic.getName() + "\"");
+                } else {
+                    session.setAttribute("html", "The service could show topic " + topic + " in your webbrowser " +
+                    "but atm the service is only allowed to render \"Post\" topics and nothing else.");
+                }
+            } catch (DeepaMehtaException ex) {
+                System.out.println(">> Topic is missing in corporatememory -- hide this info --");
+            }
+        } else {
+            session.setAttribute("html", "An error has occured");
+        }
+        return PAGE_PRINT;
     }
 
     protected void preparePage(String page, String params, Session session, CorporateDirectives directives)
     {
-        session.setAttribute("forumActivition", "off");
+        // System.out.println(">> Web Servlet is performing Action with " + topicId + " and " + params);
+        // session
+        // session.setAttribute("html", "<html><header><title>DeepaMehta JSON RPC Service - Homepage</title></header><body><h3>Hello World ! You requested a service, here you GET it.</h3></body></html>");
     }
 
     // --- Methods Calls which receive their params from a JSON String
@@ -1132,11 +1208,42 @@ public class WebServlet extends JSONRPCServlet implements WebService {
     private String convertHTMLForJSON(String html)
     {
         // System.out.println("> HTML JSON INFO: Aus " + html.toString() + "mach");
-        html = html.replaceAll("\"", "\\\\\"");
-        html = html.replaceAll("<", "\\<");
-        html = html.replaceAll(">", "\\>");
-        // System.out.println("> mach \n " + html.toString());
+        html = toJSON(html);
         return html;
-        
+    }
+
+    private String toJSON(String text) {
+        // strip HTML tags
+        text = text.replaceAll("<html>", "");
+        text = text.replaceAll("</html>", "");
+        text = text.replaceAll("<head>", "");
+        text = text.replaceAll("</head>", "");
+        text = text.replaceAll("<body>", "");
+        text = text.replaceAll("</body>", "");
+        text = text.replaceAll("<p>", "");
+        text = text.replaceAll("<p style=\"margin-top: 0\">", "");
+        text = text.replaceAll("</p>", "");
+        // convert HTML entities
+        text = toUnicode(text);
+        //
+        text = text.trim();
+        // JSON conformity
+        text = text.replaceAll("\r", "\\\\n");
+        text = text.replaceAll("\n", "\\\\n");
+        text = text.replaceAll("\"", "\\\\\"");
+        //
+        return text;
+    }
+
+    private String toUnicode(String text) {
+        StringBuffer buffer = new StringBuffer();
+        Pattern p = Pattern.compile("&#(\\d+);");
+        Matcher m = p.matcher(text);
+        while (m.find()) {
+            int c = Integer.parseInt(m.group(1));
+            m.appendReplacement(buffer, Character.toString((char) c));
+        }
+        m.appendTail(buffer);
+        return buffer.toString();
     }
 }
