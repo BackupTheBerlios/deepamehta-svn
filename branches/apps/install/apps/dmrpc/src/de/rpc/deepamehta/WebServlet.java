@@ -630,7 +630,8 @@ public class WebServlet extends JSONRPCServlet implements WebService {
         for(int i = 0; i< allTopics.size(); i++) {
             PresentableTopic topic = (PresentableTopic) allTopics.get(i);
             // System.out.println("    e: " + topic.getName());
-            String topicString  = createSlimPresentable(topic, messages);
+            // String topicString  = createSlimPresentable(topic, messages);
+            String topicString  = createBean(topic, messages);
             // System.out.println("geo: " + geo);
             mapBuffer.append(topicString);
             // mapTopics.append("}");
