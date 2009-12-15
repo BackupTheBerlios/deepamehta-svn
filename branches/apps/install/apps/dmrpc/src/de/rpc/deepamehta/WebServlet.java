@@ -878,9 +878,15 @@ public class WebServlet extends JSONRPCServlet implements WebService {
         //
         TopicBean topicBean = as.createTopicBean(topic.getID(), 1);
         System.out.println(">>> created bean with "+topicBean.fields.size()+"fields");
+        int posX = topic.getGeometry().x;
+        int posY = topic.getGeometry().y;
         bean.append("{\"id\": \"" + topicBean.id + "\",");
         bean.append("\"name\": \"" + topicBean.name + "\",");
-        bean.append("\"iconFile\": \"" + topicBean.icon + "\",");
+        bean.append("\"label\": \"" + topic.getLabel() + "\", ");
+        bean.append("\"posX\": " + posX + ", ");
+        bean.append("\"posY\": " + posY + ", ");
+        bean.append("\"typeId\": \"" + topic.getType() + "\", ");
+        bean.append("\"iconFile\": \"" + topicBean.icon + "\", ");
         bean.append("\"properties\": [");
         Vector properties = topicBean.fields;
         for(int p = 0; p < properties.size(); p++)
