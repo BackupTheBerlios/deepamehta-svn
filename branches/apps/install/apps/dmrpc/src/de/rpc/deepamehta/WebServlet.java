@@ -631,7 +631,7 @@ public class WebServlet extends JSONRPCServlet implements WebService {
             PresentableTopic topic = (PresentableTopic) allTopics.get(i);
             // System.out.println("    e: " + topic.getName());
             // String topicString  = createSlimPresentable(topic, messages);
-            String topicString  = createBean(topic, messages);
+            String topicString  = createPresentableBean(topic, messages);
             // System.out.println("geo: " + geo);
             mapBuffer.append(topicString);
             // mapTopics.append("}");
@@ -878,11 +878,72 @@ public class WebServlet extends JSONRPCServlet implements WebService {
         //
         TopicBean topicBean = as.createTopicBean(topic.getID(), 1);
         System.out.println(">>> created bean with "+topicBean.fields.size()+"fields");
+        bean.append("{\"id\": \"" + topicBean.id + "\",");
+        bean.append("\"name\": \"" + topicBean.name + "\", ");
+        bean.append("\"iconFile\": \"" + topicBean.icon + "\", ");
+        bean.append("\"properties\": [");
+        Vector properties = topicBean.fields;
+        for(int p = 0; p < properties.size(); p++)
+        {
+            TopicBeanField field = (TopicBeanField)properties.get(p);
+            bean.append("{\"type\": " + field.type + ", ");
+            bean.append("\"name\": \"" + field.name + "\", ");
+            bean.append("\"label\": \"" + field.label + "\", ");
+            bean.append("\"visualization\": \"" + field.visualMode + "\", ");
+            if(field.type == TopicBeanField.TYPE_SINGLE) {
+                String value = field.value;
+                //if(hasQuotationMarks(value))
+                    // preparing java string for json
+                value = convertHTMLForJSON(value);
+                value = removeControlChars(value);
+                bean.append("\"value\":  \"" + value + "\"");
+            } else {
+                Vector relatedFields = field.values;
+                bean.append("\"values\": [");
+                for(int r = 0; r < relatedFields.size(); r++)
+                {
+
+                    BaseTopic relatedTopic = (BaseTopic)relatedFields.get(r);
+                    bean.append("{");
+                    bean.append("\"name\": \"" + relatedTopic.getName() + "\",");
+                    bean.append("\"id\": \"" + relatedTopic.getID() + "\",");
+                    // ### geoObject has it's own icon ?
+                    bean.append("\"iconFile\": \"" + as.getTopicProperty(relatedTopic.getID(), 1, PROPERTY_ICON) + "\"}");
+                    if (r == relatedFields.size()-1) {
+                        bean.append("]");
+                    } else {
+                        bean.append(",");
+                    }
+                }
+                if(relatedFields.size() == 0) bean.append("]");
+            }
+            if(properties.indexOf(field) == properties.size() - 1)
+                bean.append("}");
+            else
+                bean.append("},");
+        }
+        bean.append("]");
+        bean.append("}");
+        return bean.toString();
+    }
+
+    /**
+     * Serializes a TopicBean into JSON
+     *
+     * @param topic
+     * @param messages
+     * @return
+     */
+    private String createPresentableBean(PresentableTopic topic, StringBuffer messages) {
+        StringBuffer bean = new StringBuffer();
+        //
+        TopicBean topicBean = as.createTopicBean(topic.getID(), 1);
+        System.out.println(">>> created bean with "+topicBean.fields.size()+"fields");
         int posX = topic.getGeometry().x;
         int posY = topic.getGeometry().y;
         bean.append("{\"id\": \"" + topicBean.id + "\",");
         bean.append("\"name\": \"" + topicBean.name + "\",");
-        bean.append("\"label\": \"" + topic.getLabel() + "\", ");
+        bean.append("\"label\": \"" + topic.getLabel() + "\",  ");
         bean.append("\"posX\": " + posX + ", ");
         bean.append("\"posY\": " + posY + ", ");
         bean.append("\"typeId\": \"" + topic.getType() + "\", ");
