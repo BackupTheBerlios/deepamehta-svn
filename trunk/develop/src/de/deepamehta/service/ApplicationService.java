@@ -1569,8 +1569,8 @@ public final class ApplicationService extends BaseTopicMap implements LoginCheck
 			topic2.associationRemoved(assoc.getType(), topic1.getID(), session, directives);
 		} catch (DeepaMehtaException e) {
 			// ### add to directives
-			System.out.println("*** ApplicationService.deleteAssociation(): " +
-				e.getMessage() + " -- die() hook not triggered");
+			// System.out.println("*** ApplicationService.deleteAssociation(): " +
+				// e.getMessage() + " -- die() hook not triggered");
 		}
 		return directives;
 	}
