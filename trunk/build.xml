@@ -23,7 +23,7 @@
 		<!-- configure this -->
 		<pathelement location="${examples}/kompetenzstern/kompetenzstern.jar" />
 		<!-- configure this -->
-		<pathelement location="${appspath}/Kiezatlas/trunk/kiezatlas.jar" />
+		<pathelement location="/home/malted/source/kieztruck/kiezatlas.jar" />
 		<!-- configure this -->
 		<pathelement location="${appspath}/TeenKom/teenkom.jar" />
 		<!-- configure this -->

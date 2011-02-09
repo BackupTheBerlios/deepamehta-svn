@@ -148,7 +148,7 @@ public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHos
         throw new DeepaMehtaException(" unexpected method requested !");
 	}
 
-    protected String performPostRequest(String remoteMethod, String params, Session session, CorporateDirectives directives)
+  protected String performPostRequest(String remoteMethod, String params, Session session, CorporateDirectives directives)
 																										throws ServletException, DeepaMehtaException {
 		 // delegate to implementing subclass ?
         throw new DeepaMehtaException(" unexpected method requested !");
@@ -218,7 +218,7 @@ public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHos
 															throws IOException, ServletException {
 		RequestParameter params = new RequestParameter(request);
 		String method = request.getMethod();
-        Session session = getSession(request);
+    Session session = getSession(request);
 		CorporateDirectives directives = new CorporateDirectives();
         if (method.equals("GET")) {
             System.out.println("> JSONRPCServlet got delegates a GET request to ImplementingClass.performAction() hook");
@@ -249,45 +249,38 @@ public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHos
             preparePage(page, params, session, directives);
             redirectToPage(page, request, response);
         } else {
-            // if POST / PUT / DELETE
-            String remoteMethodCall = "";
-            String remoteParams = "";
-            // analyze body
-            BufferedReader in = new BufferedReader(
-                                new InputStreamReader(
-                                request.getInputStream()));
-            String requestBody;
-            while ((requestBody = in.readLine()) != null) {
-                int methodStart = requestBody.indexOf("\"method\": ");
-                int paramStart = requestBody.indexOf("\"params\": ");
-                // single method name
-                remoteMethodCall = requestBody.substring(methodStart + 11, paramStart - 3);
-                // rest is json parameter array
-                remoteParams = requestBody.substring(paramStart + 10, requestBody.length() - 1);
-                System.out.println(">>> JSONRPCServlet: " + method + " / " +requestBody);
-                //System.out.println(">>> REQUEST BODY: \n" +
-                  //      "       method: " + remoteMethodCall + ",\n" +
-                    //    "       params: " + remoteParams);
-            }
-            in.close();
-            // --- trigger performPostrequest() hook
-            String result = performPostRequest(remoteMethodCall, remoteParams, session, directives);
-            if(result.equals("")) {
-                // response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
-                System.out.println(" === JSONRPC === *** unexpected result *** " + result + " setting response to continue...");
-                response.sendError(response.SC_INTERNAL_SERVER_ERROR); // 500
-            } else {
-                response.setStatus(response.SC_OK);
-                response.setContentType("applicaton/json");
-                response.setContentLength(result.getBytes().length);
-                System.out.println(">>> RESPONSE BODY: "+response.getCharacterEncoding()+" written "+result.length() +" character\n");
-                // LOG System.out.println("INFO: "+result + "\n");
-                // write back
-                PrintWriter writer = response.getWriter();
-                writer.print(result);
-                writer.checkError();
-                writer.close();
-            }
+          // if POST / PUT / DELETE
+          String remoteMethodCall = "";
+          String remoteParams = "";
+          // analyze body
+          BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
+          String requestBody;
+          while ((requestBody = in.readLine()) != null) {
+            int methodStart = requestBody.indexOf("\"method\": ");
+            int paramStart = requestBody.indexOf("\"params\": ");
+            // single method name
+            remoteMethodCall = requestBody.substring(methodStart + 11, paramStart - 3);
+            // rest is json parameter array
+            remoteParams = requestBody.substring(paramStart + 10, requestBody.length() - 1);
+            System.out.println(">>> JSONRPCServlet: " + method + " / " +requestBody);
+          }
+          in.close();
+          // --- trigger performPostrequest() hook
+          String result = performPostRequest(remoteMethodCall, remoteParams, session, directives);
+          if(result.equals("")) {
+            // response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
+            System.out.println(" === JSONRPC === *** unexpected result *** " + result + " setting response to continue...");
+            response.sendError(response.SC_INTERNAL_SERVER_ERROR); // 500
+          } else {
+            response.setStatus(response.SC_OK);
+            response.setContentType("application/json");
+            System.out.println(">>> RESPONSE BODY: written in "+response.getCharacterEncoding()+"\r");
+            // write back
+            PrintWriter writer = response.getWriter();
+            writer.write(result);
+            writer.checkError();
+            writer.close();
+          }
         }
         // process directives
 		directives.updateCorporateMemory(as, session, null, null);
