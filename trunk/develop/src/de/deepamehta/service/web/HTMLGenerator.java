@@ -32,7 +32,7 @@ import java.util.Vector;
 /**
  * <p>
  * <hr>
- * Last change: 29.10.2008 (2.0b8)<br>
+ * Last change: 03.01.2012 (2.0b8e)<br>
  * J&ouml;rg Richter / Malte Rei&szlig;ig<br>
  * jri@deepamehta.de / mre@deepamehta.de
  */
@@ -414,12 +414,40 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	 */
 	public String form(String typeID, String action, String id, String[] propSel, boolean hideSel, Hashtable hints) {
 		StringBuffer html = new StringBuffer();
-   		TypeTopic type = as.type(typeID, 1);	// throws DME
+		TypeTopic type = as.type(typeID, 1);	// throws DME
 		//
 		html.append("<form>\r");	// ### method="post" enctype="multipart/form-data"
 		html.append("<table>\r");
 		//
 		boolean containsFileField = formFields(type, id, true, "", type, propSel, hideSel, hints, html);	// deep=true, prefix=""
+		// ### System.out.println(">>> HTMLGenerator.form(): containsFileField=" + containsFileField);
+		if (containsFileField) {
+			html.insert(5, " method=\"post\" enctype=\"multipart/form-data\"");
+		}
+		submitButton(action, html);
+		//
+		html.append("</table>\r");
+		html.append("</form>\r");
+		//
+		return html.toString();
+	}
+
+	/**
+	 * Generates and returns a form for the specified type.
+	 * The type can be a topic type or an association type.
+	 *
+	 * @param	id		may be <CODE>null</CODE>
+	 */
+	public String extendedForm(String typeID, String action, String[] propSel, boolean hideSel, String ext) {
+		StringBuffer html = new StringBuffer();
+    		TypeTopic type = as.type(typeID, 1);	// throws DME
+		//
+		html.append("<form>\r");	// ### method="post" enctype="multipart/form-data"
+    		// insert html styled extension into the form...
+    		html.append(ext);
+		html.append("<table>\r");
+		//
+		boolean containsFileField = formFields(type, null, true, "", type, propSel, hideSel, null, html);	// deep=true, prefix=""
 		// ### System.out.println(">>> HTMLGenerator.form(): containsFileField=" + containsFileField);
 		if (containsFileField) {
 			html.insert(5, " method=\"post\" enctype=\"multipart/form-data\"");
@@ -837,6 +865,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
    		}
 		// --- trigger hiddenProperties(type, relTopicTypeID) hook ---
 		Vector hiddenProps = null;
+    		Hashtable describedPropertyNames = getPropertyDescriptions(formType);
 		// Note: only topic types (in contrast to association types) have related types
 		if (formType instanceof TopicTypeTopic) {
 			hiddenProps = as.triggerHiddenProperties(formType, type.getID());		// may return null
@@ -848,12 +877,16 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 			if (item instanceof PropertyDefinition) {
 				PropertyDefinition propDef = (PropertyDefinition) item;
 				String propName = propDef.getPropertyName();
-				String propLabel = as.triggerPropertyLabel(propDef, formType, type.getID());
+			        String propDescription = "";
+			        if (describedPropertyNames.get(propName) != null) {
+			        	propDescription = describedPropertyNames.get(propName).toString();
+			        }
+			        String propLabel = as.triggerPropertyLabel(propDef, formType, type.getID());
 				String propValue = (String) props.get(propName);
 				// Note: the hook returns _parameter names_ and the page delivers _field labels_
 				if ((hiddenProps == null || !hiddenProps.contains(propName)) && !propIsHidden(propLabel, propSel, hideSel)) {
 					String hint = hints != null ? (String) hints.get(propName) : null;
-					if (formField(propDef, propLabel, propValue, prefix, hint, html)) {
+					if (formField(propDef, propLabel, propValue, prefix, hint, html, propDescription)) {
 						containsFileField = true;
 					}
 				}
@@ -882,6 +915,27 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 		html.append("<input type=\"hidden\" name=\"" + prefix + "id\" value=\"" + id + "\">\r");	// ### id may be null
 		//
 		return containsFileField;
+	}
+
+	/**
+	 * fetches a simple "Topic" instance related to a "Property" TopicType via a new "Helptext"-AssociationType..
+	 **/
+	private Hashtable getPropertyDescriptions(TypeTopic formType) {
+		Hashtable descriptions = new Hashtable();
+		//
+    		Vector relatedProps = as.getRelatedTopics(formType.getID(), ASSOCTYPE_COMPOSITION, TOPICTYPE_PROPERTY, 2);
+		// 
+		Enumeration properties = relatedProps.elements();
+		while (properties.hasMoreElements()) {
+			BaseTopic property = (BaseTopic) properties.nextElement();
+			BaseTopic note = as.getRelatedTopic(property.getID(), ASSOCTYPE_HELPTEXT, TOPICTYPE_TOPIC, 2, true);
+			if (note != null) {
+				String descr = as.getTopicProperty(note, PROPERTY_DESCRIPTION);
+        			descr = descr.substring(descr.indexOf("<p>")+3, descr.indexOf("</p>")); // use everything within the first <p>
+				descriptions.put(property.getName(), descr);
+			}
+		}
+		return descriptions;
 	}
 	
 	// ---
@@ -1081,6 +1135,15 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	// ---
 
 	/**
+	 * A formField backwards compatibility method without for rendering of formFields without a propDescription/help text
+	 */
+	private boolean formField(PropertyDefinition propDef, String propLabel, String propValue, String prefix,
+        	                                String hint, StringBuffer html) {
+		//
+		return formField(propDef, propLabel, propValue, prefix, hint, html, "");
+	}
+
+	/**
 	 * Renders the input field for the specified property.
 	 *
 	 * @param	propValue	may be <CODE>null</CODE>
@@ -1091,7 +1154,7 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 	 * @see		#formFields
 	 */
 	private boolean formField(PropertyDefinition propDef, String propLabel, String propValue, String prefix,
-																					String hint, StringBuffer html) {
+						String hint, StringBuffer html, String propDescription) {
 		boolean isFileField = false;		// return variable
 		String propName = propDef.getPropertyName();
 		String visual = propDef.getVisualization();
@@ -1114,6 +1177,9 @@ public class HTMLGenerator implements DeepaMehtaConstants {
 			rows = TEXTAREA_HEIGHT;
 		}
 		//
+		if (propDescription != "") {
+			html.append("<tr valign=\"top\"><td colspan=\"2\" class=\"form-helptext\">Hinweis: " + propDescription + "</td></tr>");
+		}
 		html.append("<tr valign=\"top\"><td><small>" + propLabel + "</small></td><td>");
 		//
 		if (visual.equals(VISUAL_FIELD) || visual.equals(VISUAL_PASSWORD_FIELD) || visual.equals(VISUAL_COLOR_CHOOSER)) {

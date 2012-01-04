@@ -64,7 +64,7 @@ public interface DeepaMehtaConstants {
 	static final String REQUIRED_SERVER_VERSION = "2.0b8";
 	static final int REQUIRED_STANDARD_TOPICS = 19;
 	static final int REQUIRED_DB_MODEL = 2;
-	static final int REQUIRED_DB_CONTENT = 19;
+	static final int REQUIRED_DB_CONTENT = 20;
 	// --- application server ---
 	static final int DEFAULT_PORT = 7557;			// used by DeepaMehtaClient
 	static final int MAX_CLIENTS = 150;
@@ -565,6 +565,8 @@ public interface DeepaMehtaConstants {
 	static final String ASSOCTYPE_RECIPIENT = "at-recipient";
 	static final String ASSOCTYPE_SENDER = "at-sender";
 	static final String ASSOCTYPE_ATTACHMENT = "at-attachment";
+  	// form-helptext
+	static final String ASSOCTYPE_HELPTEXT = "at-form-helptext";
 
 
 

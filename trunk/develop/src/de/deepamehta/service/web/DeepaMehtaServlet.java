@@ -824,14 +824,18 @@ public class DeepaMehtaServlet extends HttpServlet implements ApplicationService
 			} else {
 				// value is simple property value
 				PropertyDefinition propDef = as.type(typeID, 1).getPropertyDefinition(propName);
-				// ### System.out.println(">>> DeepaMehtaServlet.getProperties(): typeID=\"" + typeID + "\" propName=\"" + propName + "\" propDef=" + propDef);
-				if (propDef.getVisualization().equals(VISUAL_TEXT_EDITOR)) {
-					propValue = DeepaMehtaUtils.replace(propValue, '\r', "<br>");		// ### was <br/>
-					if (!propValue.startsWith("<html>")) {	// ### must ignore case. <HTML> used in help texts?
-						propValue = "<html><body><p>" + propValue + "</p></body></html>";	// ### <html>
-					}
-				}
-				props.put(propName, propValue);
+        			if (propDef == null) { // ### FIXME: can happen if property label contain a "
+		        		System.out.println("ERROR *** cannot getProperty() by propName=\"" + propName + "\" skipping saving this prop");
+				} else {
+					// ### System.out.println(">>> DeepaMehtaServlet.getProperties(): typeID=\"" + typeID + "\" propName=\"" + propName + "\" propDef=" + propDef);
+				        if (propDef.getVisualization().equals(VISUAL_TEXT_EDITOR)) {
+				        	propValue = DeepaMehtaUtils.replace(propValue, '\r', "<br>");		// ### was <br/>
+			        		if (!propValue.startsWith("<html>")) {	// ### must ignore case. <HTML> used in help texts?
+							propValue = "<html><body><p>" + propValue + "</p></body></html>";	// ### <html>
+            					}
+	          			}
+        	  			props.put(propName, propValue);
+        			}
 			}
 			// remove processed parameter
 			if (params.remove(propName) == null) {
