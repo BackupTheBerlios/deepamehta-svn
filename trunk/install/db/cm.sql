@@ -1180,6 +1180,16 @@ INSERT INTO TopicProp VALUES ('at-attachment', 1, 'Name', 'Attachment');
 INSERT INTO TopicProp VALUES ('at-attachment', 1, 'Plural Name', 'Attachments');
 INSERT INTO TopicProp VALUES ('at-attachment', 1, 'Color', '#408000');
 
+--- "Helptext" (for Webforms) ---
+INSERT INTO Topic VALUES ('tt-assoctype', 1, 1, 'at-form-helptext', 'Helptext');
+INSERT INTO TopicProp VALUES ('at-form-helptext', 1, 'Name', 'Helptext');
+INSERT INTO TopicProp VALUES ('at-form-helptext', 1, 'Plural Name', 'Helptexts');
+INSERT INTO TopicProp VALUES ('at-form-helptext', 1, 'Description', '<html><body><p>A <i>Helptext</i>-Edge is used for setting a Note-Topic in relation with a Property-Topic. Once set, the Description-Text of the Note-Topic is rendered as a Hint in the form above the label and the input field of the associated Property.</p></body></html>');
+INSERT INTO TopicProp VALUES ('at-form-helptext', 1, 'Description Query', 'What is a Helptext association?');
+INSERT INTO TopicProp VALUES ('at-form-helptext', 1, 'Color', '#3f4da6');
+--- Assignment of the "Helptext"-Edge to the "Administration"-Workspace ---
+INSERT INTO Association VALUES ('at-uses', 1, 1, 'a-form-helptext-use', '', 't-administrationgroup', 1, 'at-form-helptext', 1);
+
 
 
 ------------------
@@ -2224,4 +2234,4 @@ INSERT INTO KeyGenerator VALUES ('Association', 1001);
 -- Not a Key Generator but the (constant) version of the database model
 INSERT INTO KeyGenerator VALUES ('DB-Model Version', 2);
 -- Not a Key Generator but the (constant) version of the database content
-INSERT INTO KeyGenerator VALUES ('DB-Content Version', 19);
+INSERT INTO KeyGenerator VALUES ('DB-Content Version', 20);

@@ -30,7 +30,8 @@
 		<fileset dir="${dm.base-dir}">
 			<include name="${db.libs}" />
 		</fileset>
-		<pathelement location="${dm.base-dir}/${libpath}/servlet.jar" />
+		<!-- Note: we should compile against the servlet.jar provided by our servlet-container here, like:-->
+		<pathelement location="${web.servlet.lib}"/>
 		<pathelement location="${dm.base-dir}/${libpath}/mail.jar" />
 		<pathelement location="${dm.base-dir}/${libpath}/activation.jar" />
 		<pathelement location="${dm.base-dir}/${libpath}/jndi.jar" />
