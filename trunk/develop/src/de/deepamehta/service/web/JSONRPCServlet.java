@@ -218,9 +218,9 @@ public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHos
 															throws IOException, ServletException {
 		RequestParameter params = new RequestParameter(request);
 		String method = request.getMethod();
-    Session session = getSession(request);
 		CorporateDirectives directives = new CorporateDirectives();
         if (method.equals("GET")) {
+            Session session = getSession(request);
             System.out.println("> JSONRPCServlet got delegates a GET request to ImplementingClass.performAction() hook");
             String page = "Print";
             if (params.getPathInfo().length() >= 3) {
@@ -262,11 +262,11 @@ public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHos
             remoteMethodCall = requestBody.substring(methodStart + 11, paramStart - 3);
             // rest is json parameter array
             remoteParams = requestBody.substring(paramStart + 10, requestBody.length() - 1);
-            System.out.println(">>> JSONRPCServlet: " + method + " / " +requestBody);
+            // System.out.println(">>> JSONRPCServlet: " + method + " / " +requestBody);
           }
           in.close();
           // --- trigger performPostrequest() hook
-          String result = performPostRequest(remoteMethodCall, remoteParams, session, directives);
+          String result = performPostRequest(remoteMethodCall, remoteParams, null, directives);
           if(result.equals("")) {
             // response.setStatus(response.SC_INTERNAL_SERVER_ERROR);
             System.out.println(" === JSONRPC === *** unexpected result *** " + result + " setting response to continue...");
@@ -274,7 +274,7 @@ public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHos
           } else {
             response.setStatus(response.SC_OK);
             response.setContentType("application/json");
-            System.out.println(">>> RESPONSE BODY: written in "+response.getCharacterEncoding()+"\r");
+            // System.out.println(">>> RESPONSE BODY: written in "+response.getCharacterEncoding()+"\r");
             // write back
             PrintWriter writer = response.getWriter();
             writer.write(result);
@@ -282,9 +282,8 @@ public class JSONRPCServlet extends HttpServlet implements ApplicationServiceHos
             writer.close();
           }
         }
-        // process directives
-		directives.updateCorporateMemory(as, session, null, null);
-		// Note: topicmapID=null, viewmode=null ### should be OK because in web interface there is no "default topicmap"
+        // process directives is never needed, since JSONRPC-Servlets just provide READ operations
+        // directives.updateCorporateMemory(as, null, null, null);
 	}
 
 	private void redirectToPage(String page, HttpServletRequest request, HttpServletResponse response)
